@@ -1,0 +1,24 @@
+{
+  "name": "angular-lazyload",
+  "version": "0.4.0",
+  "author": "TZ <atian25@qq.com>",
+  "description": "A lazyload service for angular projects, only load-on-demand, support seajs/requirejs/custom.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atian25/angular-lazyload"
+  },
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-connect": "latest",
+    "grunt-contrib-htmlmin": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "matchdep": "latest",
+    "connect-livereload": "latest",
+    "connect-route": "latest",
+    "shelljs": "latest"
+  }
+}

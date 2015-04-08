@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta id="site_viewport" name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="stylesheet" type="text/css" href="js/vendor/bootstrap/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/core.css">
+		<title>Shop SAAS</title>
+	</head>
+	<body>
+		<div id="site_wrapper" class="">
+			<header id="site_header" ng-controller="NavbarController" ng-class="{hidden:isHiddenNav()}" class="">
+				<div class="site-nav">
+					<a href="/" class="logo">
+						<img src="./img/blank.png" />
+					</a>
+					<nav>
+						<ul class="nav nav-pills nav-stacked">
+							<li ng-class="{active:isActive('/jiedan')}">
+								<a href="/jiedan">接单</a>
+							</li>
+							<li ng-class="{active:isActive('/diandan')}">
+								<a href="/diandan">点单</a>
+							</li>
+							<li ng-class="{active:isActive('/dingdan')}">
+								<a href="/dingdan">订单</a>
+							</li>
+							<li ng-class="{active:isActive('/huiyuan')}">
+								<a href="/huiyuan">会员</a>
+							</li>
+							<li ng-class="{active:isActive('/baobiao')}">
+								<a href="/baobiao">报表</a>
+							</li>
+							<li ng-class="{active:isActive('/signup')}">
+								<a href="/signup">注册</a>
+							</li>
+							<li ng-class="{active:isActive('/signin')}">
+								<a href="/signin">登录</a>
+							</li>
+							<li ng-class="{active:isActive('/more')}">
+								<a href="/more">更多</a>
+							</li>
+						</ul>
+						
+					</nav>
+				</div>
+			</header>
+			<div id="site_body" class="" ng-view></div>
+		</div>
+		<!-- <div id="site_wrapper" class="row">
+			<header id="site_header" class="col-xs-3 col-md-1">
+				<div class="site-nav" ng-controller="NavbarController">
+					<a href="/" class="logo">
+						<img src="" width=50 height=50/>
+					</a>
+					<nav>
+						<ul class="nav nav-pills nav-stacked">
+							<li ng-class="{active:isActive('/jiedan')}">
+								<a href="/jiedan">接单</a>
+							</li>
+							<li ng-class="{active:isActive('/diandan')}">
+								<a href="/diandan">点单</a>
+							</li>
+							<li ng-class="{active:isActive('/dingdan')}">
+								<a href="/dingdan">订单</a>
+							</li>
+							<li ng-class="{active:isActive('/huiyuan')}">
+								<a href="/huiyuan">会员</a>
+							</li>
+							<li ng-class="{active:isActive('/baobiao')}">
+								<a href="/baobiao">报表</a>
+							</li>
+							<li ng-class="{active:isActive('/more')}">
+								<a href="/more">更多</a>
+							</li>
+						</ul>
+						
+					</nav>
+				</div>
+			</header>
+			<div id="site_body" class="col-xs-9 col-md-11" ng-view>
+				
+			</div>
+		</div> -->
+		
+		<script type="text/javascript" src="js/vendor/requirejs/require.js" data-main="/js/main.js"></script>
+	</body>
+</html>

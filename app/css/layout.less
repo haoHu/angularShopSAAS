@@ -1,0 +1,78 @@
+/*html {
+	height : 100%; overflow: hidden;
+}
+body {
+	height : 100%;
+}
+
+// 页面框架
+#site_wrapper {
+	display : block; margin-left : 0; margin-right : 0; height : 100%;
+}
+
+#site_header {
+	height : 100%; position: relative;
+}
+
+#site_body {
+	height : 100%;
+	> .section, > section {
+		margin-left : -30px; margin-right : -15px;
+	}
+}
+
+#site_footer {
+	display: none;
+}
+
+// 左侧导航
+.site-nav {
+	.logo {
+		display: block; margin-top : 1rem; margin-bottom : 6rem; width : 80%; height : 80%;
+		> img {
+			display: block; width : 100%; height : 100%; border : 0 none;
+		}
+	}
+	.nav > li:last-child {
+		position : absolute; bottom : 5rem;
+	}
+}*/
+
+html {
+	width : 100%; height : 100%; overflow: hidden;
+}
+body {
+	width : 100%; height : 100%;
+}
+// 页面框架
+@siteHeaderW : 6rem;
+@siteLogoW : 5rem;
+@siteLogoH : 5rem;
+#site_wrapper {
+	position : relative; display : block; margin : 0; height : 100%;
+}
+#site_header {
+	position : absolute; top : 0; bottom : 0; left : 0;
+	width : @siteHeaderW;
+	outline : 1px solid #111;
+}
+#site_body {
+	height : 100%; margin-left : @siteHeaderW;
+	outline: 1px solid #f0f;
+	> .section, > section {
+
+	}
+}
+
+// 左侧导航
+.site-nav {
+	.logo {
+		display: block; margin : 1.5rem auto 6rem; width : @siteLogoW; height : @siteLogoH;
+		> img {
+			display: block; width : 100%; height : 100%; border : 0 none;
+		}
+	}
+	.nav > li:last-child {
+		position : absolute; bottom : 5rem;
+	}
+}
