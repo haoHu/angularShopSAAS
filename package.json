@@ -33,7 +33,15 @@
 		"jshint-stylish": "^0.4.0",
 		"load-grunt-tasks": "^0.4.0",
 		"time-grunt": "^0.4.0",
-		"grunt-targethtml" : ""
+		"grunt-targethtml" : "",
+		"grunt-karma" : "^0.10.1",
+		"karma" : "^0.12.31",
+		"karma-jasmine" : "^0.3.5",
+		"karma-ng-html2js-preprocessor" : "^0.1.2",
+		"karma-ng-scenario" : "^0.1.0",
+		"karma-phantomjs-launcher" : "^0.1.4",
+		"karma-requirejs" : "^0.2.2",
+		"requirejs" : "^2.1.17"
 	},
 	"engines" : {
 		"node" : ">=0.10.0"

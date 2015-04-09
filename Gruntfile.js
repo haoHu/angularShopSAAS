@@ -223,6 +223,12 @@ module.exports = function (grunt) {
 			compile : {
 				options : {}
 			}
+		},
+		karma : {
+			unit : {
+				configFile : 'karma.conf.js',
+				singleRun : true
+			}
 		}
 		
 	});
@@ -251,6 +257,18 @@ module.exports = function (grunt) {
 			'bower',
 			'targethtml:' + htmlTarget,
 			'requirejs'
+			]);
+	});
+
+	// 单元测试
+	grunt.registerTask('test', function () {
+		grunt.task.run([
+				'clean:server',
+				'less',
+				'bower',
+				'concurrent:test',
+				'connect:test',
+				'karma'
 			]);
 	});
 };

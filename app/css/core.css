@@ -1,42 +1,3 @@
-/*html {
-	height : 100%; overflow: hidden;
-}
-body {
-	height : 100%;
-}
-
-// 页面框架
-#site_wrapper {
-	display : block; margin-left : 0; margin-right : 0; height : 100%;
-}
-
-#site_header {
-	height : 100%; position: relative;
-}
-
-#site_body {
-	height : 100%;
-	> .section, > section {
-		margin-left : -30px; margin-right : -15px;
-	}
-}
-
-#site_footer {
-	display: none;
-}
-
-// 左侧导航
-.site-nav {
-	.logo {
-		display: block; margin-top : 1rem; margin-bottom : 6rem; width : 80%; height : 80%;
-		> img {
-			display: block; width : 100%; height : 100%; border : 0 none;
-		}
-	}
-	.nav > li:last-child {
-		position : absolute; bottom : 5rem;
-	}
-}*/
 html {
   width: 100%;
   height: 100%;
@@ -58,12 +19,11 @@ body {
   bottom: 0;
   left: 0;
   width: 6rem;
-  outline: 1px solid #111;
+  border-right: 1px solid #e6e6e6;
 }
 #site_body {
   height: 100%;
   margin-left: 6rem;
-  outline: 1px solid #f0f;
 }
 .site-nav .logo {
   display: block;
@@ -81,22 +41,12 @@ body {
   position: absolute;
   bottom: 5rem;
 }
-/*.section-diandan {
-	height : 100%;
-	.order-plain, .menu-plain {
-		position : relative; padding-left : 0; padding-right : 0; height : 100%;
-		outline: 1px solid #333;
-	}
-	.menu-plain {
-		padding-bottom: 5rem;
-	}
-	.btns-plain {
-		height : 5rem; padding : 0; margin-top : -5rem; outline : 1px solid #123;
-	}
-}*/
 .section-diandan {
   position: relative;
   height: 100%;
+}
+.section-diandan .btn {
+  border-radius: 0;
 }
 .section-diandan .order-plain {
   position: absolute;
@@ -106,7 +56,7 @@ body {
   padding: 0;
   margin: 0;
   width: 372px;
-  outline: 1px solid red;
+  border-right: 1px solid #e6e6e6;
 }
 .section-diandan .menu-plain {
   position: absolute;
@@ -117,7 +67,7 @@ body {
   padding: 0;
   margin: 0;
   margin-left: 372px;
-  padding-bottom: 5rem;
+  padding-bottom: 6rem;
 }
 .section-diandan .btns-plain {
   position: absolute;
@@ -125,6 +75,166 @@ body {
   right: 0;
   bottom: 0;
   margin-left: 292px;
+  height: 6rem;
+}
+.section-diandan .order-box {
+  height: 100%;
+  width: 292px;
+  position: relative;
+  border-right: 1px solid #e6e6e6;
+}
+.section-diandan .order-box .order-header {
+  position: relative;
+  z-index: 2;
+  height: 220px;
+  background-color: #ffffcc;
+}
+.section-diandan .order-box .order-body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-top: 220px;
+  padding-bottom: 10rem;
+}
+.section-diandan .order-box .order-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  height: 10rem;
+  background-color: #e6e6e6;
+}
+.section-diandan .order-btngrp {
+  width: 80px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  padding-bottom: 6rem;
+}
+.section-diandan .menu-plain .cates,
+.section-diandan .menu-plain .foods {
+  overflow: hidden;
+  position: relative;
+}
+.section-diandan .menu-plain .cell-btn {
+  padding: 0;
+  border: 1px solid #e6e6e6;
+  color: #333333;
+  cursor: pointer;
+}
+.section-diandan .menu-plain .cates {
+  height: 25%;
+}
+.section-diandan .menu-plain .foods {
+  height: 75%;
+}
+.section-diandan .menu-plain .cates > .cell-btn {
+  height: 50%;
+  background-color: #99ccff;
+}
+.section-diandan .menu-plain .cates > .cell-btn:nth-of-type(5n) {
+  margin-left: 16.66666667%;
+  right: 16.66666667%;
+}
+.section-diandan .menu-plain .cates > .cell-btn.btn-search,
+.section-diandan .menu-plain .cates > .cell-btn.btn-pager {
+  position: absolute;
+  right: 0;
+}
+.section-diandan .menu-plain .cates > .cell-btn.btn-search {
+  top: 0;
+}
+.section-diandan .menu-plain .cates > .cell-btn.btn-pager {
+  bottom: 0;
+}
+.section-diandan .menu-plain .foods > .cell-btn {
+  height: 16.66666667%;
+  background-color: #e6f2fd;
+}
+.section-diandan .menu-plain .foods > .cell-btn.btn-prev,
+.section-diandan .menu-plain .foods > .cell-btn.btn-next {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.section-diandan .menu-plain .foods > .cell-btn.btn-prev {
+  right: 16.66666667%;
+}
+.section-diandan .order-header > div {
+  padding: 0 .5rem;
+  margin-top: .5rem;
+}
+.section-diandan .order-header label {
+  padding: 0;
+  padding-right: .5rem;
+}
+.section-diandan .order-header label + span {
+  padding: 0;
+}
+.section-diandan .order-body {
+  overflow: hidden;
+}
+.section-diandan .order-body .grid-header {
+  margin: 0;
+  padding: .5rem 5px;
+}
+.section-diandan .order-body .grid-header > span {
+  padding: 0;
+}
+.section-diandan .order-body .grid-row {
+  margin: 0;
+  padding: .5rem 5px;
+  cursor: pointer;
+}
+.section-diandan .order-body .grid-row > span {
+  padding: 0;
+}
+.section-diandan .order-body .grid-row:nth-of-type(odd) {
+  background: #f0f0f0;
+}
+.section-diandan .order-footer > .order-remark > div,
+.section-diandan .order-footer > .btn-grp > div {
+  padding: 0;
+}
+.section-diandan .order-footer > .btn-grp .btn {
+  height: 4rem;
+}
+.section-diandan .order-footer > .order-remark {
+  line-height: 6rem;
+  vertical-align: middle;
+  padding: 0 .5rem;
+}
+.section-diandan .order-footer > .order-remark .btn {
+  height: 4rem;
+  margin-top: 1rem;
+}
+.section-diandan .order-footer > .order-remark .dollar,
+.section-diandan .order-footer > .order-remark .cash,
+.section-diandan .order-footer > .order-remark label {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+.section-diandan .order-footer > .order-remark .dollar,
+.section-diandan .order-footer > .order-remark .cash {
+  color: red;
+}
+.section-diandan .order-btngrp > .btn {
+  margin: 0;
   height: 5rem;
-  outline: 1px solid blue;
+  border-radius: 0;
+  border-right: 0 none;
+}
+.section-diandan .btns-plain > div,
+.section-diandan .btns-plain > div > div {
+  padding: 0;
+}
+.section-diandan .btns-plain .btn {
+  height: 6rem;
+}
+.section-diandan .btns-plain .col-xs-2:first-of-type > .btn {
+  background-color: #f96;
 }

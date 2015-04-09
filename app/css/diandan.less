@@ -1,27 +1,21 @@
-/*.section-diandan {
-	height : 100%;
-	.order-plain, .menu-plain {
-		position : relative; padding-left : 0; padding-right : 0; height : 100%;
-		outline: 1px solid #333;
-	}
-	.menu-plain {
-		padding-bottom: 5rem;
-	}
-	.btns-plain {
-		height : 5rem; padding : 0; margin-top : -5rem; outline : 1px solid #123;
-	}
-}*/
-
 .section-diandan {
 	@orderPlainWidth : 372px;
 	@orderBtnWidth : 80px;
 	@orderBoxWidth : @orderPlainWidth - @orderBtnWidth;
-	@bottomBtnHeight : 5rem;
+	@bottomBtnHeight : 6rem;
+
+	@orderHeaderHeight : 220px;
+	@orderFooterHeight : 10rem;
+	
+	@orderFooterBG : rgb(230, 230, 230);
+	@orderHeaderBG : #ffc;
+	// 页面框架
 	position : relative; height : 100%;
+	.btn {border-radius: 0;}
 	.order-plain {
 		position : absolute; left : 0; top : 0; bottom : 0; padding : 0; margin : 0;
-		width : @orderPlainWidth; 
-		outline : 1px solid red;
+		width : @orderPlainWidth; border-right : 1px solid @xBaseBorderColor;
+		// outline : 1px solid red;
 	}
 	.menu-plain {
 		position : absolute; left : 0; top : 0; bottom : 0; right : 0; padding : 0; margin : 0;
@@ -32,6 +26,149 @@
 		position : absolute; left : 0; right : 0; bottom : 0;
 		margin-left : @orderBoxWidth;
 		height : @bottomBtnHeight;
-		outline: 1px solid blue;
+		// outline: 1px solid blue;
 	}
+
+
+	// 订单样式
+	.order-box {
+		height : 100%; width : @orderBoxWidth; position : relative;
+		border-right : 1px solid @xBaseBorderColor;
+		.order-header {
+			position : relative; z-index : 2; height : @orderHeaderHeight; 
+			background-color: @orderHeaderBG;
+			// outline: 1px solid #111;
+		}
+		.order-body {
+			position : absolute; top : 0; bottom : 0; left : 0; right : 0;
+			padding-top : @orderHeaderHeight; padding-bottom: @orderFooterHeight;
+			// outline: 1px solid #123;
+		}
+		.order-footer  {
+			position : absolute; left : 0; right : 0; bottom : 0; z-index: 2;
+			height : @orderFooterHeight;
+			background-color: @orderFooterBG;
+			// outline: 1px solid blue;
+		}
+	}
+
+	// 订单菜品按钮群组
+	.order-btngrp {
+		width : @orderBtnWidth; position : absolute; right : 0; bottom : 0; top : 0;
+		padding-bottom : @bottomBtnHeight;
+		// outline: 1px solid #abc;
+	}
+
+	// 菜单样式
+	.menu-plain {
+		.cates, .foods {overflow : hidden; position : relative;}
+		.cell-btn {
+			padding : 0; border : 1px solid @xBaseBorderColor; color : @xBaseColor;
+			cursor : pointer;
+		}
+		.cates {
+			height : 25%;
+			// outline: 1px solid red;
+		}
+		.foods {
+			height : 75%;
+			// outline: 1px solid green;
+		}
+		.cates > .cell-btn {
+			height : 50%;
+			background-color: @xDarkBtnBG;
+			&:nth-of-type(5n) {
+				margin-left : percentage(2 / 12);
+				right : percentage(2 / 12);
+			}
+			&.btn-search, &.btn-pager {
+				position : absolute; right : 0;
+			}
+			&.btn-search {
+				top : 0;
+			}
+			&.btn-pager {
+				bottom : 0;
+			}
+		}
+		.foods > .cell-btn {
+			@rows : 6;
+			@height : percentage(1 / 6);
+			height : @height;
+			background-color: @xLightBtnBG;
+			// &:nth-of-type(36n-1) {
+			// 	margin-left : percentage(4 / 12);
+			// 	right : percentage(4 / 12);
+			// }
+			// &:nth-of-type(36n) {
+			// 	margin-left : percentage(-2 / 12);
+			// 	right : percentage(2 / 12);
+			// }
+			// &:nth-of-type(37n) {
+			// 	margin-left : percentage(-2 / 12);
+			// }
+			&.btn-prev, &.btn-next {
+				position : absolute; bottom : 0; right : 0;
+			}
+			&.btn-prev {
+				right : percentage(2 / 12);
+			}
+
+		}
+		
+	}
+
+	// 单头信息样式
+	.order-header {
+		> div {padding : 0 .5rem; margin-top : .5rem;}
+		label {padding : 0; padding-right : .5rem;}
+		label + span {padding : 0;}
+	}
+
+	// 订单样式
+	.order-body {
+		overflow: hidden;
+		.grid-header {
+			margin : 0;  padding : .5rem 5px;
+			& > span {padding : 0;}
+		}
+		.grid-row {
+			margin : 0; padding : .5rem 5px; 
+			cursor: pointer;
+			& > span {padding : 0;}
+		}
+		.grid-row:nth-of-type(odd) {
+			background : rgb(240, 240, 240);
+		}
+	}
+
+	.order-footer {
+		> .order-remark > div, > .btn-grp > div {padding : 0;}
+		> .btn-grp .btn {height : @orderFooterHeight - @bottomBtnHeight;}
+		> .order-remark{
+			line-height: @bottomBtnHeight; vertical-align: middle; padding : 0 .5rem;
+			.btn {height : 4rem; margin-top: 1rem;}
+
+			.dollar, .cash, label {font-weight: 700; font-size: 1.5rem;}
+			.dollar, .cash {color : red;}
+		}
+
+	}
+	
+	// 订单菜品操作按钮组
+	.order-btngrp {
+		& > .btn {
+			margin : 0; height : 5rem; border-radius: 0; border-right : 0 none;
+		}
+	}
+	
+	// 订单操作按钮组
+	.btns-plain {
+		& > div, & > div > div {padding : 0;}
+		.btn {height : @bottomBtnHeight;}
+
+		.col-xs-2:first-of-type > .btn {background-color: #f96;}
+
+	}
+
 }
