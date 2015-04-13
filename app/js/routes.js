@@ -12,49 +12,49 @@ define([], function () {
 				templateUrl : 'js/jiedan/jiedan.html',
 				dependencies : [
 					'jiedan/JieDanViewController',
-					'directives/app-color'
+					'directives/appDirectives'
 				]
 			},
 			'/diandan' : {
 				templateUrl : 'js/diandan/diandan.html',
 				dependencies : [
 					'diandan/DianDanViewController',
-					'directives/app-color'
+					'directives/appDirectives'
 				]
 			},
 			'/dingdan' : {
 				templateUrl : 'js/dingdan/dingdan.html',
 				dependencies : [
 					'dingdan/DingDanViewController',
-					'directives/app-color'
+					'directives/appDirectives'
 				]
 			},
 			'/huiyuan' : {
 				templateUrl : 'js/huiyuan/huiyuan.html',
 				dependencies : [
 					'huiyuan/HuiYuanViewController',
-					'directives/app-color'
+					'directives/appDirectives'
 				]
 			},
 			'/baobiao' : {
 				templateUrl : 'js/baobiao/baobiao.html',
 				dependencies : [
 					'baobiao/BaoBiaoViewController',
-					'directives/app-color'
+					'directives/appDirectives'
 				]
 			},
 			'/signin' : {
 				templateUrl : 'js/signin/signin.html',
 				dependencies : [
 					'signin/SigninViewController',
-					'directives/app-color'
+					'directives/appDirectives'
 				]
 			},
 			'/signup' : {
 				templateUrl : 'js/signup/signup.html',
 				dependencies : [
 					'signup/SignupViewController',
-					'directives/app-color'
+					'directives/appDirectives'
 				]
 			}
 		}

@@ -1,4 +1,67 @@
-<section class="section" ng-controller="SigninViewController">
-    <p app-color="blue">{{page.heading}}</p>
-    <p>This is the '登录' page</p>
+<section class="section container" ng-controller="SigninViewController">
+	<div class="panel panel-primary">
+		<div class="panel-heading">O2O餐饮管理系统</div>
+		<div class="panel-body">
+			<form action="" name="loginForm" class="form-horizontal" role="form" novalidate="novalidate" >
+				<div class="form-group" >
+					<label for="" class="col-xs-2 control-label">店铺名称</label>
+					<div class="col-xs-6">
+						<p class="form-control-static">{{login.shopName}}</p>
+					</div>
+				</div>
+				<div class="form-group" >
+					<label for="" class="col-xs-2 control-label">设备</label>
+					<div class="col-xs-6">
+						<input type="hidden" ng-model="login.deviceKey" />
+						<p class="form-control-static">{{login.deviceKey}}</p>
+					</div>
+				</div>
+				<div class="form-group has-feedback">
+					<label for="empCode" class="col-xs-2 control-label">员工编号</label>
+					<div class="col-xs-6" ng-class="{'has-success' : loginForm.empCode.$dirty && loginForm.empCode.$valid, 'has-error' : loginForm.empCode.$invalid}">
+						<input type="text" id="empCode" class="form-control" name="empCode" ng-model="login.empCode" placeholeder="员工编号" bv-notempty bv-strlength min="5" max="12">
+						<small class="help-block" ng-show="loginForm.empCode.$dirty && loginForm.empCode.$error.bvNotempty">请输入员工编号</small>
+						<small class="help-block" ng-show="loginForm.empCode.$dirty && loginForm.empCode.$error.bvStrlength">员工编号必须是5-12位字符</small>
+					</div>
+				</div>
+				<div class="form-group has-feedback">
+					<label for="empCode" class="col-xs-2 control-label">登录密码</label>
+					<div class="col-xs-6" ng-class="{'has-success' : loginForm.empCode.$dirty && loginForm.empPWD.$valid, 'has-error' : loginForm.empPWD.$invalid}">
+						<input type="password" id="empPWD" class="form-control" name="empPWD" ng-model="login.empPWD" placeholder="请输入登录密码" bv-notempty bv-strlength min="5" max="12">
+						<small class="help-block" ng-show="loginForm.empPWD.$dirty && loginForm.empPWD.$error.bvNotempty">请输入登录密码</small>
+						<small class="help-block" ng-show="loginForm.empPWD.$dirty && loginForm.empPWD.$error.bvStrlength">密码必须在5-12位之间</small>
+					</div>
+				</div>
+				<!-- <div class="form-group has-feedback" supertextvalidate="notEmpty;textRange" min="5" max="12" >
+					<label for="empCode" class="col-xs-2 control-label">员工编号</label>
+					<div class="col-xs-6">
+						<input type="text" id="empCode" name="empCode" ng-model="login.empCode" class="form-control" placeholder="员工编号"  >
+						
+						<helpblock validators="notEmpty;textRange" min="5" max="12">
+							<small class="help-block" bv-validator="notEmpty">请输入员工编号</small>
+							<small class="help-block" bv-validator="textRange">请输入6-11个字符</small>
+						</helpblock>
+					</div>
+				</div>
+				<div class="form-group has-feedback" supertextvalidate="notEmpty;textRange" min="2" >
+					<label for="empPWD" class="col-xs-2 control-label">登录密码</label>
+					<div class="col-xs-6">
+						<input type="password" id="empPWD" name="empPWD" ng-model="login.empPWD" class="form-control" placeholder="员工登录密码" >
+						<helpblock validators="notEmpty;textRange" min="2" >
+							<small class="help-block" bv-validator="notEmpty">请输入员登录密码</small>
+							<small class="help-block" bv-validator="textRange">密码最小三位</small>
+						</helpblock>
+					</div>
+				</div> -->
+				<div class="form-group" >
+					<div class="col-xs-6 col-xs-offset-2">
+						<button class="btn btn-success" type="button" ng-disabled="loginForm.$invalid || loginForm.$pristine" fm-submit="submitForm()">登录</button>
+						<button class="btn btn-default" type="button" ng-click="reset()">取消</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 </section>

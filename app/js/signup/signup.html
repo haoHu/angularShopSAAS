@@ -1,4 +1,33 @@
-<section class="section" ng-controller="SignupViewController">
-    <p app-color="blue">{{page.heading}}</p>
-    <p>This is the '注册' page</p>
+<section class="section container" ng-controller="SignupViewController">
+	<div class="panel panel-primary">
+		<div class="panel-heading">O2O餐饮管理系统</div>
+		<div class="panel-body">
+			<form action="" name="signupForm" class="form-horizontal" role="form" novalidate="novalidate">
+				<div class="form-group has-feedback">
+					<label for="shopID" class="col-xs-2 control-label">店铺ID</label>
+					<div class="col-xs-6" ng-class="{'has-class' : signupForm.shopID.$dirty && signupForm.shopID.$valid, 'has-error' : signupForm.shopID.$invalid}">
+						<input type="text" class="form-control" id="shopID" name="shopID" ng-model="signup.shopID" placeholder="请输入店铺ID" bv-notempty >
+						<small class="help-block" ng-show="signupForm.shopID.$dirty && signupForm.shopID.$error.bvNotempty">请输入店铺ID</small>
+					</div>
+				</div>
+
+				<div class="form-group has-feedback">
+					<label for="shopSecret" class="col-xs-2 control-label">通讯密钥</label>
+					<div class="col-xs-6" ng-class="{'has-class' : signupForm.shopSecret.$dirty && signupForm.shopSecret.$valid, 'has-error' : signupForm.shopSecret.$invalid}">
+						<input type="password" class="form-control" id="shopSecret" name="shopSecret" ng-model="signup.shopSecret" placeholder="请输入通讯密钥" bv-notempty bv-strlength min=6 max=32 >
+						<small class="help-block" ng-show="signupForm.shopSecret.$dirty && signupForm.shopSecret.$error.bvNotempty">请输入通讯密钥</small>
+						<small class="help-block" ng-show="signupForm.shopSecret.$dirty && signupForm.shopSecret.$error.bvStrlength">通讯密钥在6到32位之间</small>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-xs-6 col-xs-offset-2">
+						<button class="btn btn-success" type="button" ng-disabled="signupForm.$invalid || signupForm.$pristine" fm-submit="submitForm()">注册</button>
+						<button class="btn btn-default" type="button" ng-click="reset()">取消</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 </section>

@@ -1,6 +1,6 @@
 define(['routes','services/dependencyResolverFor'], function(config, dependencyResolverFor)
 {
-    var app = angular.module('app', ['ngRoute']);
+    var app = angular.module('app', ['ngRoute', 'ngResource', 'ui.bootstrap']);
 
     app.config(
     [
@@ -19,7 +19,8 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
 	        app.factory    = $provide.factory;
 	        app.service    = $provide.service;
 
-            $locationProvider.html5Mode(true);
+            // $locationProvider.html5Mode(true);
+            // $locationProvider.html5Mode(true).hashPrefix('!');
 
             if(config.routes !== undefined)
             {

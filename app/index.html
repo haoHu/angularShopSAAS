@@ -16,29 +16,29 @@
 					</a>
 					<nav>
 						<ul class="nav nav-pills nav-stacked">
-							<li ng-class="{active:isActive('/jiedan')}">
-								<a href="/jiedan">接单</a>
+							<li ng-class="{active:isActive('#/jiedan')}">
+								<a href="#/jiedan">接单</a>
 							</li>
-							<li ng-class="{active:isActive('/diandan')}">
-								<a href="/diandan">点单</a>
+							<li ng-class="{active:isActive('#/diandan')}">
+								<a href="#/diandan">点单</a>
 							</li>
-							<li ng-class="{active:isActive('/dingdan')}">
-								<a href="/dingdan">订单</a>
+							<li ng-class="{active:isActive('#/dingdan')}">
+								<a href="#/dingdan">订单</a>
 							</li>
-							<li ng-class="{active:isActive('/huiyuan')}">
-								<a href="/huiyuan">会员</a>
+							<li ng-class="{active:isActive('#/huiyuan')}">
+								<a href="#/huiyuan">会员</a>
 							</li>
-							<li ng-class="{active:isActive('/baobiao')}">
-								<a href="/baobiao">报表</a>
+							<li ng-class="{active:isActive('#/baobiao')}">
+								<a href="#/baobiao">报表</a>
 							</li>
-							<li ng-class="{active:isActive('/signup')}">
-								<a href="/signup">注册</a>
+							<li ng-class="{active:isActive('#/signup')}">
+								<a href="#/signup">注册</a>
 							</li>
-							<li ng-class="{active:isActive('/signin')}">
-								<a href="/signin">登录</a>
+							<li ng-class="{active:isActive('#/signin')}">
+								<a href="#/signin">登录</a>
 							</li>
-							<li ng-class="{active:isActive('/more')}">
-								<a href="/more">更多</a>
+							<li ng-class="{active:isActive('#/more')}">
+								<a href="#/more">更多</a>
 							</li>
 						</ul>
 						
@@ -83,6 +83,22 @@
 			</div>
 		</div> -->
 		
+		
+		<script type="text/javascript">
+			<!--(if target dev)>
+			window.HualalaWorkMode = "dev";
+			<!(endif)-->
+			<!--(if target mu)>
+			window.HualalaWorkMode = "mu";
+			<!(endif)-->
+			<!--(if target dohko)>
+			window.HualalaWorkMode = "dohko";
+			<!(endif)-->
+			<!--(if target dist)>
+			window.HualalaWorkMode = "release";
+			<!(endif)-->
+			
+		</script>
 		<script type="text/javascript" src="js/vendor/requirejs/require.js" data-main="/js/main.js"></script>
 	</body>
 </html>
