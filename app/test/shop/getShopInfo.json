@@ -1,0 +1,17 @@
+{
+	"code" : "CS001",
+	"msg" : "店铺未注册",
+	"data" : {
+		"records" : [{
+			"grounID" : "6",
+			"groupName" : "哗啦啦体验店",
+			"shopID" : "1",
+			"shopName" : "西直门店",
+			"tel" : "010-111111111",
+			"address" : "",
+			"operationMode" : "1",
+			"serviceFeatures" : "",
+			"deviceCode" : "0001"
+		}]
+	}
+}

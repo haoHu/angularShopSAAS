@@ -1,6 +1,6 @@
 define(['routes','services/dependencyResolverFor'], function(config, dependencyResolverFor)
 {
-    var app = angular.module('app', ['ngRoute', 'ngResource', 'ui.bootstrap']);
+    var app = angular.module('app', ['ngRoute', 'ngResource', 'ui.bootstrap', 'angularLocalStorage']);
 
     app.config(
     [
@@ -37,12 +37,22 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         }
     ]);
 
-    app.controller('NavbarController', ['$scope', '$location', function ($scope, $location) {
+    app.controller('NavbarController', ['$scope', '$rootScope', '$location', function ($scope, $rootScope, $location) {
         $scope.isActive = function (route) {
             return route === $location.path();
         };
         $scope.isHiddenNav = function () {
             return $location.path() == '/signin' || $location.path() == '/signup';
+        };
+        $scope.siteStyle = function () {
+            var path = $location.path();
+            if (path == '/') {
+                return 'welcome';
+            } else if (path == '/signin' || path == '/signup') {
+                return 'sign';
+            } else {
+                return '';
+            }
         };
     }]);
 

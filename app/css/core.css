@@ -41,6 +41,14 @@ body {
   position: absolute;
   bottom: 5rem;
 }
+.welcome #site_header,
+.sign #site_header {
+  display: none;
+}
+.welcome #site_body,
+.sign #site_body {
+  margin-left: 0;
+}
 .section-diandan {
   position: relative;
   height: 100%;

@@ -8,8 +8,8 @@
 		<title>Shop SAAS</title>
 	</head>
 	<body>
-		<div id="site_wrapper" class="">
-			<header id="site_header" ng-controller="NavbarController" ng-class="{hidden:isHiddenNav()}" class="">
+		<div id="site_wrapper" class="" ng-controller="NavbarController" ng-class="[siteStyle()]">
+			<header id="site_header" ng-class="{hidden:isHiddenNav()}" class="">
 				<div class="site-nav">
 					<a href="/" class="logo">
 						<img src="./img/blank.png" />

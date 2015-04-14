@@ -19,7 +19,7 @@ define(['app'], function (app) {
             CommonCallServer.shopRegister($scope.login)
                 .success(function (data, status) {
                     HC.TopTip.addTopTips($scope, data);
-                    $location.path('/signin').replace();
+                    $location.path('/').replace();
                     
                 })
                 .error(function (data, status) {

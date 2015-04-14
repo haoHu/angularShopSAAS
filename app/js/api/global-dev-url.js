@@ -14,7 +14,9 @@ define(['IX'], function () {
 		// 门店用户修改密码
 		["empModifyPWD", "/test/emp/ModifyPWD.ajax", "", "GET"],
 		// 门店用户重置密码
-		["empResetPWD", "/test/emp/ResetPWD.ajax", "", "GET"]
+		["empResetPWD", "/test/emp/ResetPWD.ajax", "", "GET"],
+		// 获取店铺信息
+		["getShopInfo", "/test/shop/getShopInfo.json", "", "GET"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;
