@@ -10,7 +10,7 @@
 			"tel" : "010-111111111",
 			"address" : "",
 			"operationMode" : "1",
-			"serviceFeatures" : "",
+			"serviceFeatures" : "commonreserve_order,justeat_order,takeaway_order,takeout_order,crm,bi,spot_pay,spot_order",
 			"deviceCode" : "0001"
 		}]
 	}
