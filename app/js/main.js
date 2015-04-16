@@ -47,6 +47,15 @@ require.config({
 		'datatype' : {
 			exports : 'datatype',
 			deps : ['IX']
+		},
+		'ui.bootstrap' : {
+			deps : ['angular']
+		},
+		'angularLocalStorage' : {
+			dep : ['angular']
+		},
+		'angular-cookies' : {
+			dep : ['angular']
 		}
 	}
 });

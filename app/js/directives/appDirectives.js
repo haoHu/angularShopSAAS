@@ -183,7 +183,12 @@ define(['app'], function (app) {
                         $modal.open({
                             size : 'lg',
                             controller : "OrderHeaderSetController",
-                            templateUrl : "js/diandan/orderheaderset.html"
+                            templateUrl : "js/diandan/orderheaderset.html",
+                            resolve : {
+                                _scope : function () {
+                                    return scope;
+                                }
+                            }
                         });
                     });
                     
