@@ -37,7 +37,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         }
     ]);
 
-    app.controller('NavbarController', ['$scope', '$rootScope', '$location', function ($scope, $rootScope, $location) {
+    app.controller('NavbarController', ['$scope', '$rootScope', '$location', 'storage', function ($scope, $rootScope, $location, storage) {
         $scope.isActive = function (route) {
             return route === $location.path();
         };
@@ -53,6 +53,10 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             } else {
                 return '';
             }
+        };
+        $scope.isRightOperationMode = function (m) {
+            var operationMode = $XP(storage.get('SHOPINFO'), 'operationMode');
+            return operationMode == m;
         };
     }]);
 

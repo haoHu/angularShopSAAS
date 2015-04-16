@@ -163,6 +163,48 @@ define(['app'], function (app) {
                     scope.$apply(attr.fmSubmit);
                 });
             }
+        };
+    });
+
+    /**
+     * 单头表单框
+     */
+    app.directive('orderheader', ["$modal", "$rootScope", function ($modal, $rootScope) {
+            return {
+                restrict : 'E',
+                template : '<div><div class="col-xs-6" ng-repeat="el in fmels" ><label for="" class="col-xs-4">{{el.label}}</label><span class="col-xs-8"><span class="btn btn-default btn-block">{{el.value}}</span></span></div></div>',
+                // transclude : true,
+                replace : true,
+                scope : {
+                    'fmels' : '=fmels'
+                },
+                link : function (scope, el, attrs) {
+                    el.on('click', '.btn', function (e) {
+                        $modal.open({
+                            size : 'lg',
+                            controller : "OrderHeaderSetController",
+                            templateUrl : "js/diandan/orderheaderset.html"
+                        });
+                    });
+                    
+                }
+            }
+    }]);
+
+    /**
+     * 数字软键盘
+     */
+    app.directive('numkeyboard', function () {
+        return {
+            restrict : 'E',
+            template : '<div class="site-numkeyboard"><table><tbody><tr><td><div class="btn btn-default btn-block btn-lg">7</div></td><td><div class="btn btn-default btn-block btn-lg">8</div></td><td><div class="btn btn-default btn-block btn-lg">9</div></td><td rowspan="2"><div class="btn btn-default btn-block btn-lg"><-</div></td></tr><tr><td><div class="btn btn-default btn-block btn-lg">4</div></td><td><div class="btn btn-default btn-block btn-lg">5</div></td><td><div class="btn btn-default btn-block btn-lg">6</div></td></tr><tr><td><div class="btn btn-default btn-block btn-lg">1</div></td><td><div class="btn btn-default btn-block btn-lg">2</div></td><td><div class="btn btn-default btn-block btn-lg">3</div></td><td rowspan="2"><div class="btn btn-default btn-block btn-lg">CE</div></td></tr><tr><td colspan="2"><div class="btn btn-default btn-block btn-lg">0</div></td><td><div class="btn btn-default btn-block btn-lg">.</div></td></tr></tbody></table></div>',
+            replace : true,
+            scope : {
+
+            },
+            link : function (scope, el, attrs) {
+                
+            }
         }
     });
     
@@ -180,5 +222,7 @@ define(['app'], function (app) {
             }
         };
     });
+
+
 
 });

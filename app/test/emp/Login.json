@@ -2,6 +2,22 @@
 	"code" : "000",
 	"msg" : "登录成功",
 	"data" : {
-		"name" : "Hualala"
+		"records" : [{
+			"empCode" : "1001",
+			"empCodeNo" : "894589345345",
+			"empMobile" : "18888888888",
+			"empName" : "大仙",
+			"positionName" : "店长",
+			"photoImage" : "",
+			"rightIDLst" : "1010010,1010020,1010030",
+			"maxDiscountRate" : "0.5",
+			"maxFreeAmount" : "10.00",
+			"deviceKey" : "dk_45235jsdlfa",
+			"deviceName" : "hllpos",
+			"siteCode" : "001",
+			"siteBizModel" : "1",
+			"siteAreaKeyLst" : "",
+			"siteFoodCategoryKeyLst" : ""
+		}]
 	}
 }

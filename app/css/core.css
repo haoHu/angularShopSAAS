@@ -40,6 +40,7 @@ body {
 .site-nav .nav > li:last-child {
   position: absolute;
   bottom: 5rem;
+  width: 100%;
 }
 .welcome #site_header,
 .sign #site_header {
@@ -48,6 +49,28 @@ body {
 .welcome #site_body,
 .sign #site_body {
   margin-left: 0;
+}
+.site-numkeyboard {
+  display: block;
+  width: 240px;
+  height: 240px;
+  margin: 0 auto;
+}
+.site-numkeyboard > table {
+  width: 100%;
+  height: 100%;
+}
+.site-numkeyboard > table td {
+  width: 25%;
+  position: relative;
+}
+.site-numkeyboard td > .btn {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
 }
 .section-diandan {
   position: relative;

@@ -30,4 +30,11 @@
 	Hualala.TypeDef.CommonErrorMsgs = {
 		"connect_faild" : "通信失败，请稍后再试"
 	};
+
+	// 营业模式
+	Hualala.TypeDef.ShopOperationMode = [
+		{id : 0, name : 'dinner', label : '正餐'},
+		{id : 1, name : 'snack', label : '快餐'},
+		{id : 2, name : 'stall', label : '美食广场'}
+	];
 })();

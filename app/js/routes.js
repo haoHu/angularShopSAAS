@@ -2,12 +2,14 @@ define([], function () {
 	return {
 		defaultRoutePaths : '/',
 		routes : {
+			// 欢迎
 			'/' : {
 				templateUrl : 'js/home/home.html',
 				dependencies : [
 					'home/HomeViewController'
 				]
 			},
+			// 接单
 			'/jiedan' : {
 				templateUrl : 'js/jiedan/jiedan.html',
 				dependencies : [
@@ -15,10 +17,28 @@ define([], function () {
 					'directives/appDirectives'
 				]
 			},
-			'/diandan' : {
-				templateUrl : 'js/diandan/diandan.html',
+			// 快餐点单
+			'/snack' : {
+				templateUrl : 'js/diandan/snack.html',
 				dependencies : [
-					'diandan/DianDanViewController',
+					'diandan/SnackViewController',
+					'directives/appDirectives',
+					'services/appServices'
+				]
+			},
+			// 正餐桌台选择
+			'/dinner/table' : {
+				templateUrl : 'js/diandan/table.html',
+				dependencies : [
+					'diandan/TableViewController',
+					'directives/appDirectives'
+				]
+			},
+			// 正餐点菜
+			'/dinner/:tableID' : {
+				templateUrl : 'js/diandan/dinner.html',
+				dependencies : [
+					'diandan/DinnerViewController',
 					'directives/appDirectives'
 				]
 			},

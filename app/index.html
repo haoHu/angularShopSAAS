@@ -16,28 +16,28 @@
 					</a>
 					<nav>
 						<ul class="nav nav-pills nav-stacked">
-							<li ng-class="{active:isActive('#/jiedan')}">
+							<li ng-class="{active:isActive('/jiedan')}">
 								<a href="#/jiedan">接单</a>
 							</li>
-							<li ng-class="{active:isActive('#/diandan')}">
-								<a href="#/diandan">点单</a>
+							<!-- 正餐选台 -->
+							<li ng-class="{active:isActive('/dinner/table')}" ng-show="isRightOperationMode('0')">
+								<a href="#/dinner/table">点单</a>
 							</li>
-							<li ng-class="{active:isActive('#/dingdan')}">
+							<!-- 快餐 -->
+							<li ng-class="{active:isActive('/snack')}" ng-show="isRightOperationMode('1')">
+								<a href="#/snack">点单</a>
+							</li>
+							<li ng-class="{active:isActive('/dingdan')}">
 								<a href="#/dingdan">订单</a>
 							</li>
-							<li ng-class="{active:isActive('#/huiyuan')}">
+							<li ng-class="{active:isActive('/huiyuan')}">
 								<a href="#/huiyuan">会员</a>
 							</li>
-							<li ng-class="{active:isActive('#/baobiao')}">
+							<li ng-class="{active:isActive('/baobiao')}">
 								<a href="#/baobiao">报表</a>
 							</li>
-							<li ng-class="{active:isActive('#/signup')}">
-								<a href="#/signup">注册</a>
-							</li>
-							<li ng-class="{active:isActive('#/signin')}">
-								<a href="#/signin">登录</a>
-							</li>
-							<li ng-class="{active:isActive('#/more')}">
+							
+							<li ng-class="{active:isActive('/more')}">
 								<a href="#/more">更多</a>
 							</li>
 						</ul>
