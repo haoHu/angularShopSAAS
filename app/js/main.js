@@ -19,6 +19,9 @@ require.config({
 		'angularLocalStorage' : 'vendor/angularLocalStorage/angularLocalStorage'
 	},
 	shim : {
+		'angular' : {
+			deps : ['jquery']
+		},
 		'app' : {
 			deps : ['angular', 'angular-route', 'angular-resource', 'bootstrap', 'ui.bootstrap', 'angularLocalStorage', 'angular-cookies']
 		},
