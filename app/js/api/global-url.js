@@ -16,7 +16,18 @@ define(['IX'], function () {
 		// 门店用户重置密码
 		["empResetPWD", "/saas/emp/ResetPWD.ajax", "", "POST"],
 		// 获取店铺信息
-		["getShopInfo", "/saas/base/getShopInfo.ajax", "", "POST"]
+		["getShopInfo", "/saas/base/getShopInfo.ajax", "", "POST"],
+
+		// 获取渠道列表
+		["getChannelLst", "/saas/base/getChannelLst.ajax", "", "POST"],
+		// 获取订单字典表
+		["getOrderNotesLst", "/saas/base/getOrderNotesLst.ajax", "", "POST"],
+		// 获取菜单列表数据
+		["getFoodLst", "/saas/base/getFoodLst.ajax", "", "POST"],
+		// 获取沽清列表
+		["getSoldOutFoodLst", "/bass/getSoldOutFoodLst.ajax", "", "POST"],
+		// 根据订单Key获取订单详情数据
+		["getOrderByOrderKey", "/saas/order/getOrderByOrderKey.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

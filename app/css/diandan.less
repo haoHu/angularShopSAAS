@@ -38,6 +38,7 @@
 			position : relative; z-index : 2; height : @orderHeaderHeight; 
 			background-color: @orderHeaderBG;
 			// outline: 1px solid #111;
+			
 		}
 		.order-body {
 			position : absolute; top : 0; bottom : 0; left : 0; right : 0;
@@ -57,6 +58,11 @@
 		width : @orderBtnWidth; position : absolute; right : 0; bottom : 0; top : 0;
 		padding-bottom : @bottomBtnHeight;
 		// outline: 1px solid #abc;
+		@btnCount : 12;
+		@btnHeight : percentage(1 / 12);
+		> .btn {
+			height: @btnHeight;
+		}
 	}
 
 	// 菜单样式
@@ -120,9 +126,18 @@
 
 	// 单头信息样式
 	.order-header {
-		> div {padding : 0 .5rem; margin-top : .5rem;}
-		label {padding : 0; padding-right : .5rem;}
-		label + span {padding : 0;}
+		> div {padding : .5rem;}
+		.item {
+			padding : 0; 
+			label, span {
+				padding : 0; padding-right : .5rem;
+				line-height: 3rem; height : 3rem; line-height: 2.5rem; vertical-align: middle; font-weight: bolder;
+			}
+			.btn-block {
+				height : 3rem; line-height: 3rem; padding: 0 .5rem; vertical-align: middle;
+				white-space: nowrap;text-overflow: ellipsis;overflow: hidden;
+			}
+		}
 	}
 
 	// 订单样式
@@ -135,6 +150,7 @@
 		.grid-row {
 			margin : 0; padding : .5rem 5px; 
 			cursor: pointer;
+			border-bottom : 1px solid #234;
 			& > span {padding : 0;}
 		}
 		.grid-row:nth-of-type(odd) {

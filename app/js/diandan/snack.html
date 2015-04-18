@@ -3,47 +3,66 @@
 		<div class="order-box">
 			<!-- 单头信息 -->
 			<header class="order-header" >
-				<orderheader fmels="orderHeader" ></orderheader>
-
+				<orderheader fmels="orderHeader" channels="OrderChannels" class="clearfix" ></orderheader>
 			</header>
 			<div class="order-body">
 				<!-- 订单条目 -->
 				<div class="grid-header row">
-					<span class="col-xs-2">状态</span>
+					<span class="col-xs-2"></span>
 					<span class="col-xs-4">品名</span>
 					<span class="col-xs-2">数量</span>
 					<span class="col-xs-2">单价</span>
 					<span class="col-xs-2">规格</span>
 				</div>
-				<!-- <div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼1</span>
+				<div class="grid-row row">
+					<span class="col-xs-2">急</span>
+					<span class="col-xs-4">套餐111</span>
 					<span class="col-xs-2">2</span>
 					<span class="col-xs-2">128.00</span>
 					<span class="col-xs-2">半份</span>
+					<!-- 套餐明细 -->
+					<div class="col-xs-12 clearfix ">
+						<div class="col-xs-offset-1 col-xs-4">拉面1</div>
+						<div class="col-xs-2">2</div>
+						<!-- 显示套餐明细的加价 -->
+						<div class="col-xs-2">20.00</div>
+						<!-- 显示套餐明细的规格 -->
+						<div class="col-xs-2">大份</div>
+					</div>
+					<div class="col-xs-12 clearfix ">
+						<div class="col-xs-offset-1 col-xs-4">拉面2</div>
+						<div class="col-xs-2">2</div>
+					</div>
+					<div class="col-xs-12 clearfix ">
+						<div class="col-xs-offset-1 col-xs-4">拉面3</div>
+						<div class="col-xs-2">2</div>
+					</div>
+					<!-- 作法 -->
+					<!-- 口味 -->
+					<!--  -->
 				</div>
 				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
+					<span class="col-xs-2">急</span>
 					<span class="col-xs-4">铁板烧汁鲈鱼2</span>
 					<span class="col-xs-2">2</span>
 					<span class="col-xs-2">128.00</span>
 					<span class="col-xs-2">半份</span>
 				</div>
 				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
+					<span class="col-xs-2">急</span>
 					<span class="col-xs-4">铁板烧汁鲈鱼3</span>
 					<span class="col-xs-2">2</span>
 					<span class="col-xs-2">128.00</span>
 					<span class="col-xs-2">半份</span>
 				</div>
 				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
+					<span class="col-xs-2">即</span>
 					<span class="col-xs-4">铁板烧汁鲈鱼4</span>
 					<span class="col-xs-2">2</span>
 					<span class="col-xs-2">128.00</span>
 					<span class="col-xs-2">半份</span>
 				</div>
-				<div class="grid-row row">
+				<!-- <div class="grid-row row">
 					<span class="col-xs-2">落</span>
 					<span class="col-xs-4">铁板烧汁鲈鱼5</span>
 					<span class="col-xs-2">2</span>
@@ -246,14 +265,22 @@
 		</div>
 		<div class="order-btngrp">
 			<!-- 订单菜品操作按钮组 -->
-			<button class="btn btn-default btn-block" type="button">赠菜</button>
-			<button class="btn btn-default btn-block" type="button">退菜</button>
-			<button class="btn btn-default btn-block" type="button">取消</button>
+			<button class="btn btn-default btn-block" type="button">赠</button>
+			<button class="btn btn-default btn-block" type="button">退</button>
+			<button class="btn btn-default btn-block" type="button">删</button>
 			<button class="btn btn-default btn-block" type="button">+</button>
 			<button class="btn btn-default btn-block" type="button">-</button>
-			<button class="btn btn-default btn-block" type="button">改价/量</button>
+			<button class="btn btn-default btn-block" type="button">改量</button>
+			<button class="btn btn-default btn-block" type="button">改价</button>
+			<button class="btn btn-default btn-block" type="button">作法</button>
 			<button class="btn btn-default btn-block" type="button">口味</button>
-			<button class="btn btn-default btn-block" type="button">做法</button>
+			<!-- 隐藏按钮组  当菜品有多规格时动态显示不同规格-->
+			<button class="btn btn-default btn-block" type="button">小份</button>
+			<button class="btn btn-default btn-block" type="button">中份</button>
+			<button class="btn btn-default btn-block" type="button">大份</button>
+
+
+			
 		</div>
 	</div>
 	<div class="menu-plain">

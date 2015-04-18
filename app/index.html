@@ -7,84 +7,36 @@
 		<link rel="stylesheet" type="text/css" href="css/core.css">
 		<title>Shop SAAS</title>
 	</head>
-	<body>
-		<div id="site_wrapper" class="" ng-controller="NavbarController" ng-class="[siteStyle()]">
-			<header id="site_header" ng-class="{hidden:isHiddenNav()}" class="">
+	<body ng-controller="AppController">
+		<div id="site_wrapper" class="" ng-class="{welcome : isWelcomPage, sign : isSignPage}" >
+			<header id="site_header" class="">
 				<div class="site-nav">
 					<a href="/" class="logo">
 						<img src="./img/blank.png" />
 					</a>
 					<nav>
 						<ul class="nav nav-pills nav-stacked">
-							<li ng-class="{active:isActive('/jiedan')}">
-								<a href="#/jiedan">接单</a>
-							</li>
-							<!-- 正餐选台 -->
-							<li ng-class="{active:isActive('/dinner/table')}" ng-show="isRightOperationMode('0')">
+							<li ng-class="{active: curNav=='/jiedan'}"><a href="#/jiedan">接单</a></li>
+							<li ng-class="{active: curNav=='/dinner/table'}" ng-show="ShopOperationMode == '0'">
 								<a href="#/dinner/table">点单</a>
 							</li>
-							<!-- 快餐 -->
-							<li ng-class="{active:isActive('/snack')}" ng-show="isRightOperationMode('1')">
+							<li ng-class="{active: curNav=='/snack'}" ng-show="ShopOperationMode == '1'">
 								<a href="#/snack">点单</a>
 							</li>
-							<li ng-class="{active:isActive('/dingdan')}">
-								<a href="#/dingdan">订单</a>
-							</li>
-							<li ng-class="{active:isActive('/huiyuan')}">
-								<a href="#/huiyuan">会员</a>
-							</li>
-							<li ng-class="{active:isActive('/baobiao')}">
-								<a href="#/baobiao">报表</a>
-							</li>
-							
-							<li ng-class="{active:isActive('/more')}">
-								<a href="#/more">更多</a>
-							</li>
+							<li ng-class="{active: curNav=='/dingdan'}"><a href="#/dingdan">订单</a></li>
+							<li ng-class="{active: curNav=='/huiyuan'}"><a href="#/huiyuan">会员</a></li>
+							<li ng-class="{active: curNav=='/baobiao'}"><a href="#/baobiao">报表</a></li>
+							<li ng-class="{active: curNav=='/more'}"><a href="#/more">更多</a></li>
 						</ul>
-						
 					</nav>
 				</div>
 			</header>
 			<div id="site_body" class="" ng-view></div>
 		</div>
-		<!-- <div id="site_wrapper" class="row">
-			<header id="site_header" class="col-xs-3 col-md-1">
-				<div class="site-nav" ng-controller="NavbarController">
-					<a href="/" class="logo">
-						<img src="" width=50 height=50/>
-					</a>
-					<nav>
-						<ul class="nav nav-pills nav-stacked">
-							<li ng-class="{active:isActive('/jiedan')}">
-								<a href="/jiedan">接单</a>
-							</li>
-							<li ng-class="{active:isActive('/diandan')}">
-								<a href="/diandan">点单</a>
-							</li>
-							<li ng-class="{active:isActive('/dingdan')}">
-								<a href="/dingdan">订单</a>
-							</li>
-							<li ng-class="{active:isActive('/huiyuan')}">
-								<a href="/huiyuan">会员</a>
-							</li>
-							<li ng-class="{active:isActive('/baobiao')}">
-								<a href="/baobiao">报表</a>
-							</li>
-							<li ng-class="{active:isActive('/more')}">
-								<a href="/more">更多</a>
-							</li>
-						</ul>
-						
-					</nav>
-				</div>
-			</header>
-			<div id="site_body" class="col-xs-9 col-md-11" ng-view>
-				
-			</div>
-		</div> -->
 		
 		
 		<script type="text/javascript">
+			window.count = 0;
 			<!--(if target dev)>
 			window.HualalaWorkMode = "dev";
 			<!(endif)-->

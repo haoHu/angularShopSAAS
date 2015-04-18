@@ -33,8 +33,18 @@
 
 	// 营业模式
 	Hualala.TypeDef.ShopOperationMode = [
-		{id : 0, name : 'dinner', label : '正餐'},
-		{id : 1, name : 'snack', label : '快餐'},
-		{id : 2, name : 'stall', label : '美食广场'}
+		{value : 0, name : 'dinner', label : '正餐'},
+		{value : 1, name : 'snack', label : '快餐'},
+		{value : 2, name : 'stall', label : '美食广场'}
 	];
+
+	/**
+	 * 订单类型
+	 * 0 : 堂食；20：外卖；21： 自提
+	 */
+	Hualala.TypeDef.OrderSubTypes = {
+		"0" : {value : 0,  label : '堂食', name : "INNER"},
+		"20" : {value : 20, label : '外卖', name : "TAKEOUT"},
+		"21" : {value : 21, label : '自提', name : "PICKUP"}
+	}
 })();

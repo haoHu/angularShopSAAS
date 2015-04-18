@@ -146,6 +146,9 @@ body {
   top: 0;
   padding-bottom: 6rem;
 }
+.section-diandan .order-btngrp > .btn {
+  height: 8.33333333%;
+}
 .section-diandan .menu-plain .cates,
 .section-diandan .menu-plain .foods {
   overflow: hidden;
@@ -196,15 +199,29 @@ body {
   right: 16.66666667%;
 }
 .section-diandan .order-header > div {
-  padding: 0 .5rem;
-  margin-top: .5rem;
+  padding: .5rem;
 }
-.section-diandan .order-header label {
+.section-diandan .order-header .item {
+  padding: 0;
+}
+.section-diandan .order-header .item label,
+.section-diandan .order-header .item span {
   padding: 0;
   padding-right: .5rem;
+  line-height: 3rem;
+  height: 3rem;
+  line-height: 2.5rem;
+  vertical-align: middle;
+  font-weight: bolder;
 }
-.section-diandan .order-header label + span {
-  padding: 0;
+.section-diandan .order-header .item .btn-block {
+  height: 3rem;
+  line-height: 3rem;
+  padding: 0 .5rem;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .section-diandan .order-body {
   overflow: hidden;
@@ -220,6 +237,7 @@ body {
   margin: 0;
   padding: .5rem 5px;
   cursor: pointer;
+  border-bottom: 1px solid #234;
 }
 .section-diandan .order-body .grid-row > span {
   padding: 0;

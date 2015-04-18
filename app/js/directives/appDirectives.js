@@ -167,19 +167,52 @@ define(['app'], function (app) {
     });
 
     /**
-     * 单头表单框
+     * 表单单头表单框
      */
     app.directive('orderheader', ["$modal", "$rootScope", function ($modal, $rootScope) {
             return {
                 restrict : 'E',
-                template : '<div><div class="col-xs-6" ng-repeat="el in fmels" ><label for="" class="col-xs-4">{{el.label}}</label><span class="col-xs-8"><span class="btn btn-default btn-block">{{el.value}}</span></span></div></div>',
+                // template : '<div><div class="" ng-class="{\'col-xs-6\' : $index <= 4, \'col-xs-12\' : $index > 4}" ng-repeat="el in fmels" ><label for="" class="col-xs-4">{{el.label}}</label><span class="col-xs-8"><span class="btn btn-default btn-block">{{el.value}}</span></span></div></div>',
+                template : [
+                    '<div>',
+                        '<div class="clearfix">',
+                            '<div class="item col-xs-4"><label for="" class="col-xs-6">单号</label><span class="col-xs-6">{{fmels.saasOrderNo}}</span></div>',
+                            '<div class="item col-xs-4"><label for="" class="col-xs-6">人数</label><span class="col-xs-6">{{fmels.person}}</span></div>',
+                            '<div class="item col-xs-4"><label for="" class="col-xs-6">类型</label><span class="col-xs-6">{{fmels.orderSubType | getOrderSubTypeLabel}}</span></div>',
+                        '</div>',
+                        
+                        '<div class="clearfix">',
+                            '<div class="item col-xs-4"><label for="" class="col-xs-7">台/牌号</label><span class="col-xs-5">{{fmels.tableName}}</span></div>',
+                            '<div class="item col-xs-8"><label for="" class="col-xs-3">渠道</label><span class="col-xs-9">{{fmels.channelName | getOrderChannelLabel:channels}}</span></div>',
+                        '</div>',
+                        '<div class="item col-xs-12">',
+                            '<label for="" class="col-xs-2">姓名</label>',
+                            '<span class="col-xs-10">',
+                                '<span class="btn btn-default btn-block">{{fmels.userName}}</span>',
+                            '</span>',
+                        '</div>',
+                        '<div class="item col-xs-12">',
+                            '<label for="" class="col-xs-2">电话</label>',
+                            '<span class="col-xs-10">',
+                                '<span class="btn btn-default btn-block">{{fmels.userMobile}}</span>',
+                            '</span>',
+                        '</div>',
+                        '<div class="item col-xs-12">',
+                            '<label for="" class="col-xs-2">地址</label>',
+                            '<span class="col-xs-10">',
+                                '<span class="btn btn-default btn-block">{{fmels.userAddress}}</span>',
+                            '</span>',
+                        '</div>',
+                    '</div>'
+                ].join(''),
                 // transclude : true,
                 replace : true,
                 scope : {
-                    'fmels' : '=fmels'
+                    'fmels' : '=fmels',
+                    'channels' : '=channels'
                 },
                 link : function (scope, el, attrs) {
-                    el.on('click', '.btn', function (e) {
+                    el.on('click', function (e) {
                         $modal.open({
                             size : 'lg',
                             controller : "OrderHeaderSetController",
@@ -195,6 +228,36 @@ define(['app'], function (app) {
                 }
             }
     }]);
+
+    /**
+     * 订单类型选择器
+     */
+    app.directive('radiogroup', ["$rootScope", function ($rootScope) {
+        return {
+            restrict : 'E',
+            template : [
+                '<div>',
+                    '<label for="" class="btn btn-default" ng-repeat="el in groupOpts" ng-class="{active: curVal==el.value}">',
+                        '<input type="radio" name="{{radioName}}" autocomplete="off" value="{{el.value}}" ng-checked="curVal == el.value" >{{el.label}}</input>',
+                    '</label>',
+                '</div>'
+            ].join(''),
+            replace : true,
+            scope : {
+                'curVal' : '@curVal',
+                'groupOpts' : '=groupOpts',
+                'radioName' : '@radioName',
+                'onChange' : '&onChange'
+            },
+            link : function (scope, el, attrs) {
+                el.on('change', ':radio', function (e) {
+                    scope.curVal = $(e.target).val();
+                    scope.onChange({val : scope.curVal});
+                });
+            }
+        };
+    }]);
+
 
     /**
      * 数字软键盘

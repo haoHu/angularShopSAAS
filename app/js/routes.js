@@ -23,7 +23,8 @@ define([], function () {
 				dependencies : [
 					'diandan/SnackViewController',
 					'directives/appDirectives',
-					'services/appServices'
+					'services/appServices',
+					'filters/appFilters'
 				]
 			},
 			// 正餐桌台选择

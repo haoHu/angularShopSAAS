@@ -37,28 +37,21 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         }
     ]);
 
-    app.controller('NavbarController', ['$scope', '$rootScope', '$location', 'storage', function ($scope, $rootScope, $location, storage) {
-        $scope.isActive = function (route) {
-            return route === $location.path();
-        };
-        $scope.isHiddenNav = function () {
-            return $location.path() == '/signin' || $location.path() == '/signup';
-        };
-        $scope.siteStyle = function () {
-            var path = $location.path();
-            if (path == '/') {
-                return 'welcome';
-            } else if (path == '/signin' || path == '/signup') {
-                return 'sign';
-            } else {
-                return '';
-            }
-        };
-        $scope.isRightOperationMode = function (m) {
-            var operationMode = $XP(storage.get('SHOPINFO'), 'operationMode');
-            return operationMode == m;
-        };
+    app.controller('AppController', ['$scope', '$rootScope', '$location', 'storage', function ($scope, $rootScope, $location, storage) {
+        $scope.curNav = $location.path();
+        $scope.isWelcomPage = false;
+        $scope.isSignPage = false;
+        $scope.ShopOperationMode = null;
+        $rootScope.$on('$routeChangeSuccess', function (event) {
+            window.console.info(window.count++);
+            $scope.curNav = $location.path();
+            $scope.ShopOperationMode = $XP(storage.get('SHOPINFO'), 'operationMode');
+            $scope.isSignPage = $scope.curNav == '/signin' || $scope.curNav == '/signup' ? true : false;
+            $scope.isWelcomPage = $scope.curNav == '/' ? true : false;
+
+        });
     }]);
+
 
    return app;
 });

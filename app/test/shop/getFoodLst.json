@@ -1,0 +1,362 @@
+{
+    "code": "000",
+    "data": {
+        "records": [
+            {
+                "foodCategoryName": "菜",
+                "foodCategoryCode": "101",
+                "foodCategoryKey": "fck_101",
+                "foodKey": "fk_101001",
+                "foodName": "巧拌羊肚丝",
+                "isDiscount": "1",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "Z",
+                "salesCount": "6",
+                "takeawayTag": "0",
+                "takeoutPackagingFee": "0",
+                "units": [
+                    {
+                        "unitCode": "101001",
+                        "unit": "份",
+                        "originalPrice": "28.00.00",
+                        "price": "28.00.00",
+                        "vipPrice": "25.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "菜",
+                "foodCategoryCode": "101",
+                "foodCategoryKey": "fck_101",
+                "foodKey": "fk_101002",
+                "foodName": "烧椒皮蛋",
+                "isDiscount": "0",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "X",
+                "salesCount": "16",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "0",
+                "units": [
+                    {
+                        "unitCode": "101002",
+                        "unit": "份",
+                        "originalPrice": "38.00",
+                        "price": "38.00",
+                        "vipPrice": "35.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "菜",
+                "foodCategoryCode": "101",
+                "foodCategoryKey": "fck_101",
+                "foodKey": "fk_101003",
+                "foodName": "干锅手撕包菜",
+                "isDiscount": "0",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "J",
+                "salesCount": "99",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "0",
+                "units": [
+                    {
+                        "unitCode": "101003",
+                        "unit": "份",
+                        "originalPrice": "48.00",
+                        "price": "48.00",
+                        "vipPrice": "45.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "主食",
+                "foodCategoryCode": "102",
+                "foodCategoryKey": "fck_102",
+                "foodKey": "fk_102001",
+                "foodName": "扬州炒饭",
+                "isDiscount": "0",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "",
+                "salesCount": "18",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "0",
+                "units": [
+                    {
+                        "unitCode": "102001",
+                        "unit": "大腕",
+                        "originalPrice": "18.00",
+                        "price": "18.00",
+                        "vipPrice": "15.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "主食",
+                "foodCategoryCode": "102",
+                "foodCategoryKey": "fck_102",
+                "foodKey": "fk_102002",
+                "foodName": "水饺",
+                "isDiscount": "0",
+                "minOrderCount": "2",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "",
+                "salesCount": "22",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "0",
+                "units": [
+                    {
+                        "unitCode": "102001",
+                        "unit": "斤",
+                        "originalPrice": "15.00",
+                        "price": "15.00",
+                        "vipPrice": "13.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "饮料",
+                "foodCategoryCode": "103",
+                "foodCategoryKey": "fck_103",
+                "foodKey": "fk_103001",
+                "foodName": "酸梅汁",
+                "isDiscount": "0",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "常温,冰",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "",
+                "salesCount": "3",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "1.00",
+                "units": [
+                    {
+                        "unitCode": "103001",
+                        "unit": "扎",
+                        "originalPrice": "36.00",
+                        "price": "36.00",
+                        "vipPrice": "33.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "饮料",
+                "foodCategoryCode": "103",
+                "foodCategoryKey": "fck_103",
+                "foodKey": "fk_103002",
+                "foodName": "玉米汁",
+                "isDiscount": "0",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "",
+                "salesCount": "3",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "1.00",
+                "units": [
+                    {
+                        "unitCode": "103002",
+                        "unit": "扎",
+                        "originalPrice": "37.00",
+                        "price": "37.00",
+                        "vipPrice": "34.00"
+                    },
+                    {
+                        "unitCode": "103002",
+                        "unit": "杯",
+                        "originalPrice": "18.00",
+                        "price": "18.00",
+                        "vipPrice": "15.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "海鲜",
+                "foodCategoryCode": "201",
+                "foodCategoryKey": "fck_201",
+                "foodKey": "fk_201001",
+                "foodName": "三文鱼",
+                "isDiscount": "0",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "1",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "刺身@G10.00,清蒸@S5.00,红烧@R6.00",
+                "hotTag": "0",
+                "ZXJ": "J",
+                "salesCount": "3",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "0.00",
+                "units": [
+                    {
+                        "unitCode": "201001",
+                        "unit": "斤",
+                        "originalPrice": "37.00",
+                        "price": "37.00",
+                        "vipPrice": "34.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": ""
+            },
+            {
+                "foodCategoryName": "套餐",
+                "foodCategoryCode": "901",
+                "foodCategoryKey": "fck_901",
+                "foodKey": "fk_901001",
+                "foodName": "午市特惠双人套餐",
+                "isDiscount": "0",
+                "minOrderCount": "1",
+                "IsNeedConfirmFoodNumber": "0",
+                "description": "",
+                "tasteList": "",
+                "makingMethodList": "",
+                "hotTag": "0",
+                "ZXJ": "",
+                "salesCount": "1",
+                "takeawayTag": "1",
+                "takeoutPackagingFee": "2.00",
+                "units": [
+                    {
+                        "unitCode": "901001",
+                        "unit": "套",
+                        "originalPrice": "108.00",
+                        "price": "108.00",
+                        "vipPrice": "100.00"
+                    }
+                ],
+                "isSetFood": "0",
+                "setFoodDetailJson": {
+                    "specialDesc": "",
+                    "foodLst": [
+                        {
+                            "foodCategoryName": "菜",
+                            "chooseCount": "2",
+                            "items": [
+                                {
+                                    "foodKey": "fk_101001",
+                                    "unitCode": "101001",
+                                    "foodName": "巧拌羊肚丝",
+                                    "unit": "份",
+                                    "number": "1",
+                                    "addPrice": "0",
+                                    "selected": "1"
+                                },
+                                {
+                                    "foodKey": "fk_101002",
+                                    "unitCode": "101002",
+                                    "foodName": "烧椒皮蛋",
+                                    "unit": "份",
+                                    "number": "1",
+                                    "addPrice": "0",
+                                    "selected": "1"
+                                },
+                                {
+                                    "foodKey": "fk_101003",
+                                    "unitCode": "101003",
+                                    "foodName": "干锅手撕包菜",
+                                    "unit": "份",
+                                    "number": "1",
+                                    "addPrice": "0",
+                                    "selected": "0"
+                                }
+                            ]
+                        },
+                        {
+                            "foodCategoryName": "主食",
+                            "chooseCount": "1",
+                            "items": [
+                                {
+                                    "foodKey": "fk_102001",
+                                    "unitCode": "102001",
+                                    "foodName": "扬州炒饭",
+                                    "unit": "大碗",
+                                    "number": "1",
+                                    "addPrice": "0",
+                                    "selected": "1"
+                                },
+                                {
+                                    "foodKey": "fk_102002",
+                                    "unitCode": "102002",
+                                    "foodName": "水饺",
+                                    "unit": "斤",
+                                    "number": "1",
+                                    "addPrice": "0",
+                                    "selected": "0"
+                                }
+                            ]
+                        },
+                        {
+                            "foodCategoryName": "饮料",
+                            "chooseCount": "1",
+                            "items": [
+                                {
+                                    "foodKey": "fk_103001",
+                                    "unitCode": "103001",
+                                    "foodName": "酸梅汁",
+                                    "unit": "扎",
+                                    "number": "1",
+                                    "addPrice": "0",
+                                    "selected": "1"
+                                },
+                                {
+                                    "foodKey": "fk_103002",
+                                    "unitCode": "103002",
+                                    "foodName": "玉米汁",
+                                    "unit": "扎",
+                                    "number": "1",
+                                    "addPrice": "2.00",
+                                    "selected": "0"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "msg": "成功！",
+    "success": "true"
+}

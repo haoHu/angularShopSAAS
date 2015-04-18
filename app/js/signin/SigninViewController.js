@@ -15,7 +15,7 @@ define(['app'], function (app) {
 			var empInfo = $XP(data, 'data.records')[0],
 				operationMode = $XP(shopInfo, 'operationMode'),
 				opset = Hualala.TypeDef.ShopOperationMode[parseInt(operationMode)],
-				path = '/' + (opset.id == 0 ? (opset.name + '/table') : opset.name);
+				path = '/' + (opset.value == 0 ? (opset.name + '/table') : opset.name);
 			// 保存登录员工的信息到缓存中
 			storage.set("EMPINFO", empInfo);
 			// 根据餐厅业态跳转模块页

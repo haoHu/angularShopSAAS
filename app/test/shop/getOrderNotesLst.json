@@ -1,0 +1,261 @@
+{
+    "data": {
+        "records": [
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "全单少辣",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "少糖",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "少盐",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "少油",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "不吃葱",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "清真",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "清真",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "全单少盐",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "不吃香菜",
+                "notesType": "10"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "油炬",
+                "notesType": "20"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "清蒸",
+                "notesType": "20"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "红烧",
+                "notesType": "20"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "麻辣",
+                "notesType": "20"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "刺身",
+                "notesType": "20"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "白灼",
+                "notesType": "20"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "加热",
+                "notesType": "30"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "加冰",
+                "notesType": "30"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "重辣",
+                "notesType": "30"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "中辣",
+                "notesType": "30"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "微辣",
+                "notesType": "30"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "免辣",
+                "notesType": "30"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "未按要求制作",
+                "notesType": "40"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "不新鲜",
+                "notesType": "40"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "发现异物",
+                "notesType": "40"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "上菜慢",
+                "notesType": "40"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "错点",
+                "notesType": "40"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "多点",
+                "notesType": "40"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "友情赠送",
+                "notesType": "50"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "赠送活动",
+                "notesType": "50"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "客投诉质量问题改赠菜",
+                "notesType": "50"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "菜价错误",
+                "notesType": "60"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "优惠让利",
+                "notesType": "60"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "支付方式填写错误",
+                "notesType": "70"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "改用会员卡打折",
+                "notesType": "70"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "结账后退菜",
+                "notesType": "70"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "店满无法接待",
+                "notesType": "80"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "无适合房台",
+                "notesType": "80"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "顾客要求退订",
+                "notesType": "80"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "店满无法接待",
+                "notesType": "90"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "无适合房台",
+                "notesType": "90"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "顾客要求退订",
+                "notesType": "90"
+            },
+            {
+                "addPriceType": "0",
+                "addPriceValue": "0.00",
+                "notesName": "未按顾客要求制作",
+                "notesType": "90"
+            }
+        ]
+    },
+    "code": "000",
+    "msg": "成功",
+    "success": "true"
+}

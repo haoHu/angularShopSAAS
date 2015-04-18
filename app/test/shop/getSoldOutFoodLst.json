@@ -1,0 +1,15 @@
+{
+    "code": "000",
+    "data": {
+        "records": [
+            {
+                "foodKey": "101001",
+                "foodName": "巧拌羊肚丝",
+                "unit": "份",
+                "qty": "1000"
+            }
+        ]
+    },
+    "msg": "成功！",
+    "success": "true"
+}

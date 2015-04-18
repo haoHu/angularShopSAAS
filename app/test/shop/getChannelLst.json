@@ -1,0 +1,59 @@
+{
+    "code": "000",
+    "data": {
+        "records": [
+            {
+                "channelCode": "100_diannei",
+                "channelKey": "686c9357-8885-4c29-8aff-a1364f22a90f",
+                "channelName": "店内"
+            },
+            {
+                "channelCode": "100_dianhua",
+                "channelKey": "0cc9f639-4df8-4b23-8316-f798eaa0e113",
+                "channelName": "电话"
+            },
+            {
+                "channelCode": "100_wanglshang",
+                "channelKey": "ed5911bc-d4e3-4c73-800c-d6ddc327b085",
+                "channelName": "网上"
+            },
+            {
+                "channelCode": "200_dianping",
+                "channelKey": "fbe89344-dc4f-42df-a2de-65b22a9c16bb",
+                "channelName": "点评"
+            },
+            {
+                "channelCode": "200_meituan",
+                "channelKey": "34d79b4b-21ec-433a-830d-cd80b2646da4",
+                "channelName": "美团"
+            },
+            {
+                "channelCode": "200_nuomi",
+                "channelKey": "a4191869-ef02-4121-acb9-75265350e346",
+                "channelName": "糯米"
+            },
+            {
+                "channelCode": "200_ele",
+                "channelKey": "8f67094e-05df-46c3-b7b1-c9e306570695",
+                "channelName": "饿了吗"
+            },
+            {
+                "channelCode": "200_taodiandian",
+                "channelKey": "27809182-58b2-43a5-8b09-c17230936ff5",
+                "channelName": "淘点点"
+            },
+            {
+                "channelCode": "200_baidu",
+                "channelKey": "18aa28fe-e77b-4469-a867-476b2b2f1cc6",
+                "channelName": "百度"
+            },
+            {
+                "channelCode": "200_daojia",
+                "channelKey": "67b60734-7c60-4d0b-aaf3-3e9bbfa4c0d3",
+                "channelName": "到家"
+            }
+        ]
+    },
+    "msg": "成功",
+    "success": "true"
+}
