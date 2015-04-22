@@ -274,214 +274,33 @@
 			<button class="btn btn-default btn-block" type="button">改价</button>
 			<button class="btn btn-default btn-block" type="button">作法</button>
 			<button class="btn btn-default btn-block" type="button">口味</button>
-			<!-- 隐藏按钮组  当菜品有多规格时动态显示不同规格-->
-			<button class="btn btn-default btn-block" type="button">小份</button>
-			<button class="btn btn-default btn-block" type="button">中份</button>
-			<button class="btn btn-default btn-block" type="button">大份</button>
+			
 
 
 			
 		</div>
 	</div>
 	<div class="menu-plain">
-		<div class="cates">
-			<div class="col-xs-2 cell-btn"><span>菜品分类01</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类02</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类03</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类04</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类05</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类06</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类07</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类08</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类09</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类10</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类11</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类12</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类13</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类14</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类15</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类16</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类17</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类18</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类19</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类20</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类21</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类22</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类23</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类24</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类25</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类26</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类27</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类28</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类29</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类30</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类31</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类32</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类33</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类34</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类35</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类36</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类37</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类38</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类39</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类40</span></div>
-			<div class="col-xs-2 cell-btn btn-search"><span>搜索</span></div>
-			<div class="col-xs-2 cell-btn btn-pager"><span>翻页</span></div>
+		<div class="tab cates"  pager-list="loop" pager-data="{{FoodCategories}}" page-size="10" item-selector=".cell-btn[food-category]" btn-selector=".btn-pager" page-num="0">
+			<div class="col-xs-2 btn cell-btn" ng-repeat="cate in FoodCategories" ng-class="{active : curFoodCategory == cate.foodCategoryKey}" food-category="{{cate.foodCategoryKey}}" ng-click="changeFoodCategory(cate.foodCategoryKey)">
+				<p>{{cate.foodCategoryName}}</p>
+			</div>
+			<div class="col-xs-2 cell-btn btn btn-search" food-search="{{curFoodCategory}}"><span>搜索</span></div>
+			<div class="col-xs-2 cell-btn btn btn-pager" pager-direction="+1"><span>翻页</span></div>
 		</div>
-		<div class="foods">
-			<div class="col-xs-2 cell-btn"><span>菜品名称01</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称02</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称03</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称04</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称05</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称06</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称07</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称08</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称09</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称10</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称11</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称12</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称13</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称14</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称15</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称16</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称17</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称18</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称19</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称20</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称21</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称22</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称23</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称24</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称25</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称26</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称27</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称28</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称29</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称30</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称31</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称32</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称33</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称34</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称35</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称36</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称37</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称38</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称39</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称40</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称41</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称42</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称43</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称44</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称45</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称46</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称47</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称48</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称49</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称50</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称51</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称52</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称53</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称54</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称55</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称56</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称57</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称58</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称59</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称60</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称61</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称62</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称63</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称64</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称65</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称66</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称67</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称68</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称69</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称70</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称71</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称72</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称73</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称74</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称75</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称76</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称77</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称78</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称79</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称80</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称81</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称82</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称83</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称84</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称85</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称86</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称87</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称88</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称89</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称90</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称91</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称92</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称93</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称94</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称95</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称96</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称97</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称98</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称99</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称100</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称101</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称102</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称103</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称104</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称105</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称106</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称107</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称108</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称109</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称110</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称111</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称112</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称113</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称114</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称115</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称116</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称117</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称118</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称119</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称120</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称121</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称122</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称123</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称124</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称125</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称126</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称127</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称128</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称129</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称130</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称131</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称132</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称133</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称134</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称135</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称136</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称137</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称138</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称139</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称140</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称141</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称142</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称143</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称144</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称145</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称146</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称147</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称148</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称149</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称150</span></div>
-			<div class="col-xs-2 cell-btn btn-prev"><span>上页</span></div>
-			<div class="col-xs-2 cell-btn btn-next"><span>下页</span></div>
+
+		<div class="foods" pager-list="common" pager-data="{{curFoods}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">
+			<div class="col-xs-2 btn cell-btn" unit-key="{{food.__foodUnit.unitKey}}" ng-repeat="food in curFoods" >
+				<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>
+				<p class="unit">
+					{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}
+				</p>
+			</div>
+			<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><span>上页</span></div>
+			<div class="col-xs-2 btn cell-btn btn-next" pager-direction="+1"><span>下页</span></div>
 		</div>
+		
+		
 	</div>
 	<div class="btns-plain">
 		<!-- 订单操作按钮组 -->

@@ -237,7 +237,7 @@ define(['app'], function (app) {
             restrict : 'E',
             template : [
                 '<div>',
-                    '<label for="" class="btn btn-default" ng-repeat="el in groupOpts" ng-class="{active: curVal==el.value}">',
+                    '<label for="" class="btn btn-default btn-radio" ng-repeat="el in groupOpts" ng-class="{active: curVal==el.value}">',
                         '<input type="radio" name="{{radioName}}" autocomplete="off" value="{{el.value}}" ng-checked="curVal == el.value" >{{el.label}}</input>',
                     '</label>',
                 '</div>'
@@ -275,6 +275,95 @@ define(['app'], function (app) {
             }
         }
     });
+
+    /**
+     * 分页处理
+     * 
+     */
+    app.directive('pagerList', ["$rootScope", function ($rootScope) {
+        return {
+            restrict : 'A',
+            scope : {
+                'pagerData' : '@pagerData',
+                'pagerList' : '@pagerList',
+                'pageSize' : '@pageSize',
+                'itemSelector' : '@itemSelector',
+                'btnSelector' : '@btnSelector',
+                'pageNum' : '@pageNum'
+            },
+            link : function (scope, el, attrs) {
+                var btnSelector = scope.btnSelector,
+                    pagerType = scope.pagerList,
+                    count = scope.pagerData.length,
+                    pageSize = parseInt(scope.pageSize),
+                    itemSelector = scope.itemSelector;
+                
+                scope.$watch('pagerData', function (newVal, oldVal) {
+                    newVal = _.isEmpty(newVal) ? newVal : JSON.parse(newVal);
+                    oldVal = _.isEmpty(oldVal) ? oldVal : JSON.parse(oldVal);
+                    if (_.isEqual(newVal, oldVal)) return;
+                    var pagerType = scope.pagerList,
+                        count = newVal.length,
+                        pageSize = parseInt(scope.pageSize),
+                        noPager = pageSize >= count;
+                    var items = el.find(itemSelector);
+                    scope.pageNum = 0;
+                    items.filter(function (i) {
+                        return i >= pageSize;
+                    }).addClass('hidden');
+                    if (pagerType == 'common') {
+                        if (noPager) {
+                            el.find(btnSelector).addClass('disabled');
+                        } else {
+                            el.find(btnSelector).each(function (i, btn) {
+                                var $btn = $(btn);
+                                var step = parseInt($btn.attr('pager-direction'));
+                                $btn[step < 0 ? 'addClass' : 'removeClass']('disabled');
+                            });
+                        }
+                        
+                    }
+                });
+                el.on('click', btnSelector, function (e) {
+                    var btn = $(this),
+                        step = parseInt(btn.attr('pager-direction')),
+                        itemSelector = scope.itemSelector,
+                        items = el.find(itemSelector);
+                    var count = items.length,
+                        pageNum = parseInt(scope.pageNum),
+                        curPageNum = pageNum,
+                        nextPageNum = curPageNum + step,
+                        pageSize = parseInt(scope.pageSize),
+                        // pagerType : loop | common
+                        pagerType = scope.pagerList || 'common',
+                        pageCount = Math.ceil(count / pageSize) - 1,
+                        itemSelector = scope.itemSelector;
+                    if (pagerType == 'loop') {
+                        nextPageNum = nextPageNum > pageCount ? 0 : nextPageNum;
+                    } else {
+                        nextPageNum = nextPageNum > pageCount ? pageCount : (nextPageNum < 0 ? 0 : nextPageNum);
+                    }
+                    items.addClass('hidden');
+                    items.filter(function (i) {
+                        return  i >= nextPageNum * pageSize && i <= ((nextPageNum + 1) * pageSize - 1);
+                    }).removeClass('hidden');
+                    scope.pageNum = nextPageNum;
+                    if (pagerType == 'common') {
+                        el.find(btnSelector).each(function (i, btn) {
+                            var $btn = $(btn);
+                            var step = parseInt($btn.attr('pager-direction'));
+                            if (step <= 0) {
+                                $btn[scope.pageNum == 0 ? 'addClass' : 'removeClass']('disabled');
+                            } else {
+                                $btn[scope.pageNum == pageCount ? 'addClass' : 'removeClass']('disabled');
+                            }
+                        });
+                    }
+
+                });
+            }
+        };
+    }]);
     
 
     app.directive('appColor', function () {

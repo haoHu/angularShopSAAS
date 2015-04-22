@@ -27,7 +27,8 @@ define(['app'], function (app) {
 	// 显示订单渠道label
 	app.filter("getOrderChannelLabel", function () {
 		var filterFn = function (v, channels) {
-			console.info(window.count++);
+			// IX.Debug.info("Run Count: ");
+   //          IX.Debug.info(window.count++);
 			var ret = _.find(channels, function (channel) {
 				return v == _.result(channel, 'channelCode');
 			});

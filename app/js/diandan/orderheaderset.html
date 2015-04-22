@@ -43,16 +43,24 @@
 				</div>
 			</div>
 
-			<div class="btngrp-box">
+			<div class="btngrp-box" >
 				<h4>订单类型</h4>
-				<!-- 订单类型选择控件 -->
-				<radiogroup group-opts="OrderSubTypes" radio-name="orderSubType" cur-val="{{fmels.orderSubType}}" class="btn-group" role="group" data-toggle="buttons" on-change="onOrderSubTypeChange(val)"></radiogroup>
+				<div pager-list="loop" pager-data="{{OrderSubTypes}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<!-- 订单类型选择控件 -->
+					<radiogroup group-opts="OrderSubTypes" radio-name="orderSubType" cur-val="{{fmels.orderSubType}}" class="btn-group" role="group" data-toggle="buttons" on-change="onOrderSubTypeChange(val)"></radiogroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+				
 			</div>
 
-			<div class="btngrp-box">
+			<div class="btngrp-box" >
 				<h4>渠道</h4>
-				<!-- 订单渠道选择控件 -->
-				<radiogroup group-opts="OrderChannels" radio-name="channelName" cur-val="{{fmels.channelName}}" class="btn-group" role="group" data-toggle="buttons" on-change="onChannelChange(val)"></radiogroup>
+				<div pager-list="loop" pager-data="{{OrderChannels}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<!-- 订单渠道选择控件 -->
+					<radiogroup group-opts="OrderChannels" radio-name="channelName" cur-val="{{fmels.channelName}}" class="btn-group" role="group" data-toggle="buttons" on-change="onChannelChange(val)"></radiogroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+				
 			</div>
 			
 		</div>

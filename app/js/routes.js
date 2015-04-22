@@ -24,6 +24,8 @@ define([], function () {
 					'diandan/SnackViewController',
 					'directives/appDirectives',
 					'services/appServices',
+					'services/orderServices',
+					'services/foodMenuServices',
 					'filters/appFilters'
 				]
 			},

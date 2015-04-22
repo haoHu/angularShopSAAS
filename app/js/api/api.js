@@ -37,10 +37,11 @@ define(['app'], function(app){
 				var name = apiCfg.name, url = apiCfg.url, 
 					urlType = apiCfg.urlType || 'ajax', type = apiCfg.type;
 				var ajaxUrl = Hualala.Global.AJAX_DOMAIN + url;
+				var params = !pdata ? {} : pdata;
 				return $http({
 					method : type,
 					url : ajaxUrl,
-					data : JSON.stringify(pdata),
+					data : JSON.stringify(params),
 					headers : {
 						"Content-Type" : "application/json; charset=UTF-8"
 					}

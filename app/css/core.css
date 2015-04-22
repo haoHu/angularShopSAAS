@@ -162,9 +162,11 @@ body {
 }
 .section-diandan .menu-plain .cates {
   height: 25%;
+  background: #99ccff;
 }
 .section-diandan .menu-plain .foods {
   height: 75%;
+  background-color: #cce5ff;
 }
 .section-diandan .menu-plain .cates > .cell-btn {
   height: 50%;

@@ -3,8 +3,9 @@
     "data": {
         "records": [
             {
-                "foodKey": "101001",
+                "foodKey": "fk_101001",
                 "foodName": "巧拌羊肚丝",
+                "unitKey": "fk_101001_01",              
                 "unit": "份",
                 "qty": "1000"
             }

@@ -43,7 +43,8 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         $scope.isSignPage = false;
         $scope.ShopOperationMode = null;
         $rootScope.$on('$routeChangeSuccess', function (event) {
-            window.console.info(window.count++);
+            // IX.Debug.info("Run Count: ");
+            // IX.Debug.info(window.count++);
             $scope.curNav = $location.path();
             $scope.ShopOperationMode = $XP(storage.get('SHOPINFO'), 'operationMode');
             $scope.isSignPage = $scope.curNav == '/signin' || $scope.curNav == '/signup' ? true : false;
