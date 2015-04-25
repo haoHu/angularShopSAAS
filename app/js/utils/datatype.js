@@ -46,5 +46,27 @@
 		"0" : {value : 0,  label : '堂食', name : "INNER"},
 		"20" : {value : 20, label : '外卖', name : "TAKEOUT"},
 		"21" : {value : 21, label : '自提', name : "PICKUP"}
-	}
+	};
+
+	/**
+	 * 菜品制作状态
+	 * @type {Array} {value, name, label}
+	 */
+	Hualala.TypeDef.FoodMakeStatus = [
+		{value : 0, label : '等', name : 'wait'},
+		{value : 1, label : '即', name : 'immediate'},
+		{value : 2, label : '急', name : 'urgent'},
+		{value : 3, label : '上', name : 'up'}
+	];
+
+	/**
+	 * 点菜订单菜品条目记录类型
+	 * 0:点菜；1：退餐；2：赠菜
+	 */
+	Hualala.TypeDef.OrderFoodItemType = {
+		ORDER : 0,
+		CANCEL : 1,
+		SEND : 2
+
+	};
 })();

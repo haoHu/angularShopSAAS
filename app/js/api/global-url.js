@@ -27,7 +27,9 @@ define(['IX'], function () {
 		// 获取沽清列表
 		["getSoldOutFoodLst", "/bass/getSoldOutFoodLst.ajax", "", "POST"],
 		// 根据订单Key获取订单详情数据
-		["getOrderByOrderKey", "/saas/order/getOrderByOrderKey.ajax", "", "POST"]
+		["getOrderByOrderKey", "/saas/order/getOrderByOrderKey.ajax", "", "POST"],
+		// 修改订单头消息
+		["updateOrderHead", "/saas/order/updateOrderHead.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

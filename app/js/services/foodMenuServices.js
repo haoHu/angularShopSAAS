@@ -4,6 +4,7 @@ define(['app'], function (app) {
 			var self = this;
 			// 当前浏览菜品分类Key
 			var curCateKey = null;
+			var curFoodSearchKey = null;
 			// 菜品，沽清菜品源数据
 			this._Foods = [];
 			this._SoldOutFoods = [];
@@ -45,6 +46,9 @@ define(['app'], function (app) {
 							break;
 						case "__soldout":
 							val = _.isEmpty(soldoutFood) ? null : soldoutFood;
+							break;
+						case "py":
+							val = _.result(food, 'foodKey').split(';') + _.result(food, 'foodKey') + ';';
 							break;
 						default :
 							val = _.result(food, k1);
@@ -121,7 +125,7 @@ define(['app'], function (app) {
 				var FoodDBKeys = ('foodCategoryNameAlias,foodCategoryName,foodCategoryCode,foodCategoryKey,foodSubjectKey,departmentKeyLst,'
 										+ 'foodKey,foodName,foodCode,isDiscount,minOrderCount,IsNeedConfirmFoodNumber,description,tasteList,'
 										+ 'makingMethodList,hotTag,ZXJ,salesCount,takeawayTag,takeoutPackagingFee,isSetFood,'
-										+ 'setFoodDetailJson,__foodUnit,__soldout').split(','),
+										+ 'setFoodDetailJson,__foodUnit,__soldout,py').split(','),
 					FoodUnitKeys = 'unitKey,unit,originalPrice,price,vipPrice'.split(','),
 					FoodCategoryDBKeys = 'foodCategoryNameAlias,foodCategoryName,foodCategoryCode,foodCategoryKey,__foods'.split(',');
 				// 生成沽清菜品列表字典
@@ -278,11 +282,50 @@ define(['app'], function (app) {
 
 			/**
 			 * 获取用户当前选中的菜品类别
-			 * @param  {[type]} v [description]
-			 * @return {[type]}   [description]
+			 * @return {String}   当前选中菜品类别
 			 */
 			this.getCurFoodCategory = function () {
 				return curCateKey;
+			};
+
+
+			/**
+			 * 设置当前用户搜索菜品关键字
+			 * @param {string} code 搜索词
+			 */
+			this.setCurFoodSearchKey = function (code) {
+				curFoodSearchKey = code;
+				$rootScope.$broadcast('foodSearch.change');
+			};
+
+			/**
+			 * 获取当前搜索关键字
+			 * @return {[type]} [description]
+			 */
+			this.getCurFoodSearchKey = function () {
+				return curFoodSearchKey;
+			};
+
+			/**
+			 * 根据助记码搜索菜品
+			 * @param  {String} code 菜品助记码
+			 * @return {Array}       返回匹配的菜品数据队列
+			 */
+			this.searchFoodsByFoodCode = function (code) {
+				var matcher = (new Pymatch([]));
+				var foods = self.foodHT.getAll();
+				var getMatchedFn = function (searchText) {
+					matcher.setNames(_.map(foods, function (el) {
+						return _.extend(el, {name : el.foodKey});
+					}));
+					var matchedSections = matcher.match(searchText);
+					var matchedOptions = _.map(matchedSections, function (el, i) {
+						return el[0];
+					});
+					
+					return matchedOptions;
+				};
+				return getMatchedFn(code);
 			};
 
 

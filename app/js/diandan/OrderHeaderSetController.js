@@ -10,6 +10,7 @@ define(['app'], function (app) {
 			_.each($scope.fmels, function (v, k) {
 				_scope.fmels[k] = v;
 			});
+			_scope.$parent.updateOrderHeader(_scope.fmels);
 			$scope.close();
 		};
 		// 为本作用域的orderSubType值变化时，更新其值
@@ -18,7 +19,11 @@ define(['app'], function (app) {
 		};
 		// 为本作用域的channelname值变化时，更新其值
 		$scope.onChannelChange = function (v) {
-			$scope.fmels.channelName = v;
+			var d = _.find($scope.OrderChannels, function(el) {
+				return _.result(el, 'channelCode') == v;
+			});
+			$scope.fmels.channelKey = v;
+			$scope.fmels.channelName = _.result(d, 'channelName', '');
 		};
 		// 加载单头表单数据
 		// _scope依赖的scope

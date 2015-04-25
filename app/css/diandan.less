@@ -6,6 +6,8 @@
 
 	@orderHeaderHeight : 220px;
 	@orderFooterHeight : 10rem;
+
+	@orderGridHeaderHeight : 32px;
 	
 	@orderFooterBG : rgb(230, 230, 230);
 	@orderHeaderBG : #ffc;
@@ -42,7 +44,7 @@
 		}
 		.order-body {
 			position : absolute; top : 0; bottom : 0; left : 0; right : 0;
-			padding-top : @orderHeaderHeight; padding-bottom: @orderFooterHeight;
+			padding-top : (@orderHeaderHeight + @orderGridHeaderHeight); padding-bottom: @orderFooterHeight;
 			// outline: 1px solid #123;
 		}
 		.order-footer  {
@@ -96,30 +98,25 @@
 			&.btn-pager {
 				bottom : 0;
 			}
+			&.active, &:active {
+				background-color: darken(@xDarkBtnBG, 50%);
+				color : #fff;
+			}
 		}
 		.foods > .cell-btn {
 			@rows : 6;
 			@height : percentage(1 / 6);
 			height : @height;
 			background-color: @xLightBtnBG;
-			// &:nth-of-type(36n-1) {
-			// 	margin-left : percentage(4 / 12);
-			// 	right : percentage(4 / 12);
-			// }
-			// &:nth-of-type(36n) {
-			// 	margin-left : percentage(-2 / 12);
-			// 	right : percentage(2 / 12);
-			// }
-			// &:nth-of-type(37n) {
-			// 	margin-left : percentage(-2 / 12);
-			// }
 			&.btn-prev, &.btn-next {
 				position : absolute; bottom : 0; right : 0;
 			}
 			&.btn-prev {
 				right : percentage(2 / 12);
 			}
-
+			&.active, &:active {
+				background-color: @xDarkBtnBG;
+			}
 		}
 		
 	}
@@ -142,21 +139,65 @@
 
 	// 订单样式
 	.order-body {
-		overflow: hidden;
+		// overflow: hidden;
+		overflow: auto;
 		.grid-header {
-			margin : 0;  padding : .5rem 5px;
-			& > span {padding : 0;}
+			position : relative; z-index: 1; margin-top : (-1 * @orderGridHeaderHeight); background-color: #fff;
 		}
-		.grid-row {
-			margin : 0; padding : .5rem 5px; 
-			cursor: pointer;
-			border-bottom : 1px solid #234;
-			& > span {padding : 0;}
+		// 菜品制作状态
+		.make-status {
+			@waitBG : #eb9316; @waitColor : #fff;
+			@immediateBG : #2aabd2; @immediateColor : #fff;
+			@urgentBG : #c12e2a; @urgentColor : #fff;
+			@upBG : #419641; @upColor : #fff;
+			display: inline-block; font-size: 1rem; width: 1.5rem; height: 1.5rem; line-height: 1.5rem; text-align: center; vertical-align: middle;
+			// 即起
+			&[title="即"] {
+				background-color: @immediateBG; color : @immediateColor;
+			}
+			// 等叫
+			&[title="等"] {
+				background-color: @waitBG; color : @waitColor;
+			}
+			// 加急
+			&[title="急"] {
+				background-color: @urgentBG; color : @urgentColor;
+			}
+			// 已上菜
+			&[title="上"] {
+				background-color: @upBG; color : @upColor;
+			}
+			&:after {
+				content : attr(title);		
+			}
 		}
-		.grid-row:nth-of-type(odd) {
-			background : rgb(240, 240, 240);
+		// 用户选择的菜品条目
+		.grid-row.active {
+			background-color: #265a88!important; color : #fff!important;
+		}
+		// 已下单菜品条目状态
+		.grid-row.ordered {
+			background-color: #5cb85c;
+		}
+		// 待确认数量
+		.food-item.check-count > .num {
+			&:after{
+				content : '?';
+				color : red;
+			}
+		}
+		.food-item {
+			background-color: #fff; border : 0 none;
+			border-top : 1px solid #111;
+			> .txt, > .num, > .price, > .unit {font-weight: 700;}
+		}
+		.food-child-item {
+			background-color: #fff; border : 0 none;
+			> .txt, > .num, > .price, > .unit {font-weight: 400;}
 		}
 	}
+
+
 
 	.order-footer {
 		> .order-remark > div, > .btn-grp > div {padding : 0;}
@@ -185,6 +226,41 @@
 
 		.col-xs-2:first-of-type > .btn {background-color: #f96;}
 
+	}
+
+}
+
+.btngrp-box {
+	@btnCols : 3; 
+	@btnRows : 2;
+	@btnWidth : percentage(1 / @btnCols);
+	@btnHeight : percentage(1 / @btnRows);
+	width : 100%; height : 9rem; position: relative;
+	background : @xLightBtnBG; overflow: hidden;
+	> .btn-group {
+		height : 100%; width : 100%; margin : 0; padding : 0;
+		.btn-radio {
+			width : @btnWidth; height: @btnHeight; margin : 0; bottom : 0; border-radius: 0;
+			display: block; background-color: @xLightBtnBG; 
+			border : 1px solid @xBaseBorderColor;
+		}
+		.btn-radio.active {
+			background-color: @xDarkBtnBG;
+		}
+	}
+	.btn-pager {
+		position : absolute; bottom : 0; right : 0;
+		width : @btnWidth; height : @btnHeight; background-color: @xLightBtnBG;
+		border-radius: 0;
+	}
+}
+
+#search_food {
+	> .modal-dialog {
+		position : absolute;
+		right : 0;
+		top : 0;
+		margin : 0;
 	}
 
 }

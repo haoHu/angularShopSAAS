@@ -16,7 +16,10 @@ require.config({
 		'global-const' : 'api/global-const',
 		'global-dev-url' : 'api/global-dev-url',
 		'global-url' : 'api/global-url',
-		'angularLocalStorage' : 'vendor/angularLocalStorage/angularLocalStorage'
+		'angularLocalStorage' : 'vendor/angularLocalStorage/angularLocalStorage',
+		'pymatch' : 'utils/pymatch',
+		'matcher' : 'utils/matcher',
+		'uuid' : 'vendor/node-uuid/uuid'
 	},
 	shim : {
 		'angular' : {
@@ -44,6 +47,9 @@ require.config({
 			exports : 'commonFn',
 			deps : ['IX']
 		},
+		'matcher' : {
+			deps : ['IX', 'pymatch']
+		},
 		'datatype' : {
 			exports : 'datatype',
 			deps : ['IX']
@@ -60,7 +66,7 @@ require.config({
 	}
 });
 
-require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const'], function (app, _) {
+require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'matcher', 'uuid'], function (app, _) {
 	if (window.HualalaWorkMode == 'dev') {
 		require(['global-dev-url', 'api'], function () {
 			angular.bootstrap(document, ['app']);

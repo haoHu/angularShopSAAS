@@ -23,6 +23,7 @@
 		"underscore" : "~1.8.2",
 		"requirejs-text" : "~2.0.14",
 		"requirejs-domready" : "*",
-		"angularLocalStorage" : "*"
+		"angularLocalStorage" : "*",
+		"node-uuid" : "1.4.2"
 	}
 }

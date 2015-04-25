@@ -954,7 +954,26 @@ IX.IList = function(){
 				removeFn(idx);
 				dstIdx = indexOfFn(dstKey);
 			}
-			_keyList = _keyList.slice(0, dstIdx).concat([key], _keyList.slice(idx));
+			_keyList = _keyList.slice(0, dstIdx).concat([key], _keyList.slice(dstIdx));
+		},
+		insertAfter : function (key, dstKey) {
+			// find the dstKey, if not exist, append current key to the end of list.
+			var dstIdx = indexOfFn(dstKey);
+			if (dstIdx == -1) {
+				appendFn(key);
+				return;
+			}
+			// find the key, if current key is after dstKey, do nothing
+			var idx = indexOfFn(key);
+			if (idx != -1 && idx - dstIdx == 1) {
+				return ;
+			}
+			// else remove the existed record and insert it after dstKey
+			if (idx >= 0) {
+				removeFn(idx);
+				dstIdx = indexOfFn(dstKey);
+			}
+			_keyList = _keyList.slice(0, (dstIdx + 1)).concat([key], _keyList.slice(dstIdx + 1));
 		},
 		clear : function(){
 			_keyList = [];

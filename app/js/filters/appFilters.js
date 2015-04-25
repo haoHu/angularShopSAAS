@@ -1,8 +1,17 @@
 define(['app'], function (app) {
+	// 显示简写单号
+	app.filter("getSaasOrderNo", function () {
+		var filterFn = function (t) {
+			var l = _.isEmpty(t) ? 0 : t.length;
+			return l == 0 ? '' : t.slice(-4);
+		};
+		return filterFn;
+	});
 	// 显示订单类型的label
 	app.filter("getOrderSubTypeLabel", function () {
 		IX.ns('Hualala.TypeDef');
 		var filterFn = function (t) {
+			if (_.isEmpty(t)) return '';
 			var orderSubTypes = Hualala.TypeDef.OrderSubTypes;
 			var label = orderSubTypes[t]['label'];
 			return label;

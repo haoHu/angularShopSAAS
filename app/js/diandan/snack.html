@@ -5,8 +5,91 @@
 			<header class="order-header" >
 				<orderheader fmels="orderHeader" channels="OrderChannels" class="clearfix" ></orderheader>
 			</header>
-			<div class="order-body">
-				<!-- 订单条目 -->
+			<div class="order-body grid-box">
+				<!-- 订单条目头 -->
+				<div class="row grid-header">
+					<span class="col-xs-1 grid-cell txt"></span>
+					<span class="col-xs-4 grid-cell txt">品名</span>
+					<span class="col-xs-2 grid-cell num">数量</span>
+					<span class="col-xs-3 grid-cell price">单价</span>
+					<span class="col-xs-2 grid-cell unit">规格</span>
+				</div>
+				<ul class="list-unstyled grid-body">
+					<li class="row grid-row food-item setfood" item-key="0e8518c5-32bc-41c3-a59c-f7e37ade638a">
+						<span class="col-xs-1 grid-cell txt"><span class="make-status" title="即"></span></span>
+						<span class="col-xs-4 grid-cell txt">套餐</span>
+						<span class="col-xs-2 grid-cell num">1</span>
+						<span class="col-xs-3 grid-cell price">180.00</span>
+						<span class="col-xs-2 grid-cell unit">套</span>
+						<div class="col-xs-12 grid-cell clearfix foodremark">
+							<span class="col-xs-offset-1 col-xs-11 grid-cell txt">[口味]加辣;加糖;少油</span>
+						</div>
+						<div class="col-xs-12 grid-cell clearfix sendreason">
+							<span class="col-xs-offset-1 col-xs-4 grid-cell txt">[赠]赠菜原因</span>
+							<span class="col-xs-2 grid-cell num">1</span>
+							<span class="col-xs-3 grid-cell price"></span>
+							<span class="col-xs-2 grid-cell unit"></span>
+						</div>
+					</li>
+					<li class="row grid-row food-child-item method" item-key="">
+						<span class="col-xs-offset-1 col-xs-4 grid-cell txt">[作法]红烧加价</span>
+						<span class="col-xs-2 grid-cell num">3</span>
+						<span class="col-xs-3 grid-cell price">10.00</span>
+						<span class="col-xs-2 grid-cell unit">位</span>
+					</li>
+					<li class="row grid-row food-child-item setfood" item-key="">
+						<span class="col-xs-offset-1 col-xs-4 grid-cell txt">拉面1</span>
+						<span class="col-xs-2 grid-cell num">2</span>
+						<span class="col-xs-3 grid-cell price">0.00</span>
+						<span class="col-xs-2 grid-cell unit">大份</span>
+						<!-- 口味 -->
+						<div class="col-xs-12 grid-cell clearfix">
+							<span class="col-xs-offset-1 col-xs-11 grid-cell txt">[口味]加辣;加糖;少油</span>
+						</div>
+					</li>
+					<li class="row grid-row food-child-item setfood method" item-key="">
+						<span class="col-xs-offset-1 col-xs-4 grid-cell txt">[作法]红烧加价</span>
+						<span class="col-xs-2 grid-cell num">3</span>
+						<span class="col-xs-3 grid-cell price">10.00</span>
+						<span class="col-xs-2 grid-cell unit">位</span>
+					</li>
+					<li class="row grid-row food-item check-count ordered" item-key="">
+						<span class="col-xs-1 grid-cell txt"><span class="make-status" title="即"></span></span>
+						<span class="col-xs-4 grid-cell txt">古老肉</span>
+						<span class="col-xs-2 grid-cell num ">2</span>
+						<span class="col-xs-3 grid-cell price">180.00</span>
+						<span class="col-xs-2 grid-cell unit">份</span>
+						<!-- 口味 -->
+						<div class="col-xs-12 grid-cell clearfix foodremark">
+							<span class="col-xs-offset-1 col-xs-11 grid-cell txt">[口味]加辣;加糖;少油</span>
+						</div>
+						
+						<!-- 赠菜原因 -->
+						<div class="col-xs-12 grid-cell clearfix sendreason">
+							<span class="col-xs-offset-1 col-xs-4 grid-cell txt">[赠]赠菜原因</span>
+							<span class="col-xs-2 grid-cell num">1</span>
+							<span class="col-xs-3 grid-cell price"></span>
+							<span class="col-xs-2 grid-cell unit"></span>
+						</div>
+						<!-- 退菜原因 -->
+						<div class="col-xs-12 grid-cell clearfix cancelreason">
+							<span class="col-xs-offset-1 col-xs-4 grid-cell txt">[退]退菜原因</span>
+							<span class="col-xs-2 grid-cell num">1</span>
+							<span class="col-xs-3 grid-cell price"></span>
+							<span class="col-xs-2 grid-cell unit"></span>
+						</div>
+					</li>
+					<li class="row grid-row food-child-item ">
+						<span class="col-xs-offset-1 col-xs-4 grid-cell txt">[作法]红烧固定</span>
+						<span class="col-xs-2 grid-cell num">1</span>
+						<span class="col-xs-3 grid-cell price">10.00</span>
+						<span class="col-xs-2 grid-cell unit">项</span>
+					</li>
+				</ul>
+				
+			</div>
+			<!-- <div class="order-body">
+
 				<div class="grid-header row">
 					<span class="col-xs-2"></span>
 					<span class="col-xs-4">品名</span>
@@ -20,13 +103,13 @@
 					<span class="col-xs-2">2</span>
 					<span class="col-xs-2">128.00</span>
 					<span class="col-xs-2">半份</span>
-					<!-- 套餐明细 -->
+
 					<div class="col-xs-12 clearfix ">
 						<div class="col-xs-offset-1 col-xs-4">拉面1</div>
 						<div class="col-xs-2">2</div>
-						<!-- 显示套餐明细的加价 -->
+
 						<div class="col-xs-2">20.00</div>
-						<!-- 显示套餐明细的规格 -->
+
 						<div class="col-xs-2">大份</div>
 					</div>
 					<div class="col-xs-12 clearfix ">
@@ -37,9 +120,7 @@
 						<div class="col-xs-offset-1 col-xs-4">拉面3</div>
 						<div class="col-xs-2">2</div>
 					</div>
-					<!-- 作法 -->
-					<!-- 口味 -->
-					<!--  -->
+					
 				</div>
 				<div class="grid-row row">
 					<span class="col-xs-2">急</span>
@@ -62,189 +143,8 @@
 					<span class="col-xs-2">128.00</span>
 					<span class="col-xs-2">半份</span>
 				</div>
-				<!-- <div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼5</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼6</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼7</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼8</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼9</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼10</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼11</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼12</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼13</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼14</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼15</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼16</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼17</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼18</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼19</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼20</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼21</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼22</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼23</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼24</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼25</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼26</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼27</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼28</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼29</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼30</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div> -->
-			</div>
+
+			</div> -->
 			<footer class="order-footer">
 				<!-- 订单操作按钮组 -->
 				<div class="btn-grp clearfix">
@@ -281,15 +181,15 @@
 		</div>
 	</div>
 	<div class="menu-plain">
-		<div class="tab cates"  pager-list="loop" pager-data="{{FoodCategories}}" page-size="10" item-selector=".cell-btn[food-category]" btn-selector=".btn-pager" page-num="0">
+		<div class="tab cates"  pager-list="loop" pager-data="{{FoodCategories.length}}" page-size="10" item-selector=".cell-btn[food-category]" btn-selector=".btn-pager" page-num="0">
 			<div class="col-xs-2 btn cell-btn" ng-repeat="cate in FoodCategories" ng-class="{active : curFoodCategory == cate.foodCategoryKey}" food-category="{{cate.foodCategoryKey}}" ng-click="changeFoodCategory(cate.foodCategoryKey)">
 				<p>{{cate.foodCategoryName}}</p>
 			</div>
-			<div class="col-xs-2 cell-btn btn btn-search" food-search="{{curFoodCategory}}"><span>搜索</span></div>
+			<div class="col-xs-2 cell-btn btn btn-search" food-search="{{curFoodCategory}}" ng-click="openSearch()"><span>搜索</span></div>
 			<div class="col-xs-2 cell-btn btn btn-pager" pager-direction="+1"><span>翻页</span></div>
 		</div>
 
-		<div class="foods" pager-list="common" pager-data="{{curFoods}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">
+		<div class="foods" pager-list="common" pager-data="{{curFoods.length}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">
 			<div class="col-xs-2 btn cell-btn" unit-key="{{food.__foodUnit.unitKey}}" ng-repeat="food in curFoods" >
 				<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>
 				<p class="unit">
@@ -314,6 +214,168 @@
 		</div>
 		<div class="col-xs-2">
 			<button class="btn btn-default btn-block" type="button" btn-act="return">返回</button>
+		</div>
+	</div>
+	<div class="modal fade" id="search_food">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<label for="" class="col-xs-3 control-label">菜品助记码</label>
+							<div class="col-xs-9">
+								<input type="text" class="form-control" ng-model="curSearchKey" ng-change="searchFood()" >
+							</div>
+						</div>
+					</div>
+					<!-- 软键盘 -->
+					<!-- <numkeyboard></numkeyboard> -->
+					<!-- <div class="site-fullkeyboard table-responsive">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td><div class="btn btn-default btn-block invisible">&nbsp;</div></td>
+									<td>
+										<div class="btn btn-default btn-block">1</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">2</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">3</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">4</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">5</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">6</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">7</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">8</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">9</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">10</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">退格</div>
+									</td>
+								</tr>
+								<tr>
+									<td><div class="btn btn-default btn-block">&nbsp;</div></td>
+									<td>
+										<div class="btn btn-default btn-block">Q</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">W</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">E</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">R</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">T</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">Y</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">U</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">I</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">O</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">P</div>
+									</td>
+									<td><div class="btn btn-default btn-block">&nbsp;</div></td>
+								</tr>
+								<tr>
+									<td>
+										<div class="btn btn-default btn-block">大小写</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">A</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">S</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">D</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">F</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">G</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">H</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">J</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">K</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">L</div>
+									</td>
+									<td colspan="2">
+										<div class="btn btn-default btn-block">回车</div>
+									</td>
+								</tr>
+								<tr>
+									<td><div class="btn btn-default btn-block">&nbsp;</div></td>
+									<td>
+										<div class="btn btn-default btn-block">Z</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">X</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">C</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">V</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">B</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">N</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">M</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">.</div>
+									</td>
+									<td colspan="3">
+										<div class="btn btn-default btn-block">空格</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div> -->
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default btn-block">关闭</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>

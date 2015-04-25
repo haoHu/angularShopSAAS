@@ -176,14 +176,14 @@ define(['app'], function (app) {
                 template : [
                     '<div>',
                         '<div class="clearfix">',
-                            '<div class="item col-xs-4"><label for="" class="col-xs-6">单号</label><span class="col-xs-6">{{fmels.saasOrderNo}}</span></div>',
+                            '<div class="item col-xs-4"><label for="" class="col-xs-6">单号</label><span class="col-xs-6">{{fmels.saasOrderNo | getSaasOrderNo}}</span></div>',
                             '<div class="item col-xs-4"><label for="" class="col-xs-6">人数</label><span class="col-xs-6">{{fmels.person}}</span></div>',
                             '<div class="item col-xs-4"><label for="" class="col-xs-6">类型</label><span class="col-xs-6">{{fmels.orderSubType | getOrderSubTypeLabel}}</span></div>',
                         '</div>',
                         
                         '<div class="clearfix">',
                             '<div class="item col-xs-4"><label for="" class="col-xs-7">台/牌号</label><span class="col-xs-5">{{fmels.tableName}}</span></div>',
-                            '<div class="item col-xs-8"><label for="" class="col-xs-3">渠道</label><span class="col-xs-9">{{fmels.channelName | getOrderChannelLabel:channels}}</span></div>',
+                            '<div class="item col-xs-8"><label for="" class="col-xs-3">渠道</label><span class="col-xs-9">{{fmels.channelKey | getOrderChannelLabel:channels}}</span></div>',
                         '</div>',
                         '<div class="item col-xs-12">',
                             '<label for="" class="col-xs-2">姓名</label>',
@@ -277,6 +277,21 @@ define(['app'], function (app) {
     });
 
     /**
+     * 全键盘
+     */
+    // app.directive('fullkeyboard', function () {
+    //     return {
+    //         restrict : 'E',
+    //         template : '',
+    //         replace : true,
+    //         scope : {},
+    //         link : function (scope, el, attrs) {
+                
+    //         }
+    //     };
+    // });
+
+    /**
      * 分页处理
      * 
      */
@@ -299,11 +314,14 @@ define(['app'], function (app) {
                     itemSelector = scope.itemSelector;
                 
                 scope.$watch('pagerData', function (newVal, oldVal) {
-                    newVal = _.isEmpty(newVal) ? newVal : JSON.parse(newVal);
-                    oldVal = _.isEmpty(oldVal) ? oldVal : JSON.parse(oldVal);
+                    // newVal = _.isEmpty(newVal) ? newVal : JSON.parse(newVal);
+                    // oldVal = _.isEmpty(oldVal) ? oldVal : JSON.parse(oldVal);
+                    // if (_.isEqual(newVal, oldVal)) return;
+                    newVal = _.isEmpty(newVal) ? 0 : parseInt(newVal);
+                    oldVal = _.isEmpty(oldVal) ? 0 : parseInt(oldVal);
                     if (_.isEqual(newVal, oldVal)) return;
                     var pagerType = scope.pagerList,
-                        count = newVal.length,
+                        count = newVal,
                         pageSize = parseInt(scope.pageSize),
                         noPager = pageSize >= count;
                     var items = el.find(itemSelector);

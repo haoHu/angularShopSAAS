@@ -1,0 +1,22 @@
+.grid-box {
+	.grid-header {
+		margin : 0;  padding : .5rem 5px;
+	}
+	.grid-body {
+		height : auto; 
+	}
+	.grid-row {
+		margin : 0; padding : .5rem 5px; cursor:pointer; border-bottom: 1px solid @xBaseBorderColor;
+		&:nth-of-type(odd) {
+			background : rgb(240, 240, 240);
+		}
+		
+	}
+
+	.grid-cell {
+		padding : 0;
+		&.txt {text-align: left;}
+		&.num, &.price, &.unit {text-align: right;}
+	}
+	
+}

@@ -72,6 +72,33 @@ body {
   right: 0;
   border-radius: 0;
 }
+.grid-box .grid-header {
+  margin: 0;
+  padding: .5rem 5px;
+}
+.grid-box .grid-body {
+  height: auto;
+}
+.grid-box .grid-row {
+  margin: 0;
+  padding: .5rem 5px;
+  cursor: pointer;
+  border-bottom: 1px solid #e6e6e6;
+}
+.grid-box .grid-row:nth-of-type(odd) {
+  background: #f0f0f0;
+}
+.grid-box .grid-cell {
+  padding: 0;
+}
+.grid-box .grid-cell.txt {
+  text-align: left;
+}
+.grid-box .grid-cell.num,
+.grid-box .grid-cell.price,
+.grid-box .grid-cell.unit {
+  text-align: right;
+}
 .section-diandan {
   position: relative;
   height: 100%;
@@ -126,7 +153,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  padding-top: 220px;
+  padding-top: 252px;
   padding-bottom: 10rem;
 }
 .section-diandan .order-box .order-footer {
@@ -187,6 +214,11 @@ body {
 .section-diandan .menu-plain .cates > .cell-btn.btn-pager {
   bottom: 0;
 }
+.section-diandan .menu-plain .cates > .cell-btn.active,
+.section-diandan .menu-plain .cates > .cell-btn:active {
+  background-color: #004c99;
+  color: #fff;
+}
 .section-diandan .menu-plain .foods > .cell-btn {
   height: 16.66666667%;
   background-color: #e6f2fd;
@@ -199,6 +231,10 @@ body {
 }
 .section-diandan .menu-plain .foods > .cell-btn.btn-prev {
   right: 16.66666667%;
+}
+.section-diandan .menu-plain .foods > .cell-btn.active,
+.section-diandan .menu-plain .foods > .cell-btn:active {
+  background-color: #99ccff;
 }
 .section-diandan .order-header > div {
   padding: .5rem;
@@ -226,26 +262,73 @@ body {
   overflow: hidden;
 }
 .section-diandan .order-body {
-  overflow: hidden;
+  overflow: auto;
 }
 .section-diandan .order-body .grid-header {
-  margin: 0;
-  padding: .5rem 5px;
+  position: relative;
+  z-index: 1;
+  margin-top: -32px;
+  background-color: #fff;
 }
-.section-diandan .order-body .grid-header > span {
-  padding: 0;
+.section-diandan .order-body .make-status {
+  display: inline-block;
+  font-size: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  text-align: center;
+  vertical-align: middle;
 }
-.section-diandan .order-body .grid-row {
-  margin: 0;
-  padding: .5rem 5px;
-  cursor: pointer;
-  border-bottom: 1px solid #234;
+.section-diandan .order-body .make-status[title="即"] {
+  background-color: #2aabd2;
+  color: #ffffff;
 }
-.section-diandan .order-body .grid-row > span {
-  padding: 0;
+.section-diandan .order-body .make-status[title="等"] {
+  background-color: #eb9316;
+  color: #ffffff;
 }
-.section-diandan .order-body .grid-row:nth-of-type(odd) {
-  background: #f0f0f0;
+.section-diandan .order-body .make-status[title="急"] {
+  background-color: #c12e2a;
+  color: #ffffff;
+}
+.section-diandan .order-body .make-status[title="上"] {
+  background-color: #419641;
+  color: #ffffff;
+}
+.section-diandan .order-body .make-status:after {
+  content: attr(title);
+}
+.section-diandan .order-body .grid-row.active {
+  background-color: #265a88!important;
+  color: #fff!important;
+}
+.section-diandan .order-body .grid-row.ordered {
+  background-color: #5cb85c;
+}
+.section-diandan .order-body .food-item.check-count > .num:after {
+  content: '?';
+  color: red;
+}
+.section-diandan .order-body .food-item {
+  background-color: #fff;
+  border: 0 none;
+  border-top: 1px solid #111;
+}
+.section-diandan .order-body .food-item > .txt,
+.section-diandan .order-body .food-item > .num,
+.section-diandan .order-body .food-item > .price,
+.section-diandan .order-body .food-item > .unit {
+  font-weight: 700;
+}
+.section-diandan .order-body .food-child-item {
+  background-color: #fff;
+  border: 0 none;
+}
+.section-diandan .order-body .food-child-item > .txt,
+.section-diandan .order-body .food-child-item > .num,
+.section-diandan .order-body .food-child-item > .price,
+.section-diandan .order-body .food-child-item > .unit {
+  font-weight: 400;
 }
 .section-diandan .order-footer > .order-remark > div,
 .section-diandan .order-footer > .btn-grp > div {
@@ -288,4 +371,45 @@ body {
 }
 .section-diandan .btns-plain .col-xs-2:first-of-type > .btn {
   background-color: #f96;
+}
+.btngrp-box {
+  width: 100%;
+  height: 9rem;
+  position: relative;
+  background: #e6f2fd;
+  overflow: hidden;
+}
+.btngrp-box > .btn-group {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.btngrp-box > .btn-group .btn-radio {
+  width: 33.33333333%;
+  height: 50%;
+  margin: 0;
+  bottom: 0;
+  border-radius: 0;
+  display: block;
+  background-color: #e6f2fd;
+  border: 1px solid #e6e6e6;
+}
+.btngrp-box > .btn-group .btn-radio.active {
+  background-color: #99ccff;
+}
+.btngrp-box .btn-pager {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 33.33333333%;
+  height: 50%;
+  background-color: #e6f2fd;
+  border-radius: 0;
+}
+#search_food > .modal-dialog {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0;
 }
