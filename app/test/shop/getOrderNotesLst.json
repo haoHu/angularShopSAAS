@@ -62,20 +62,20 @@
                 "notesType": "20"
             },
             {
-                "addPriceType": "0",
-                "addPriceValue": "0.00",
+                "addPriceType": "1",
+                "addPriceValue": "20.00",
                 "notesName": "清蒸",
                 "notesType": "20"
             },
             {
-                "addPriceType": "0",
-                "addPriceValue": "0.00",
+                "addPriceType": "2",
+                "addPriceValue": "30.00",
                 "notesName": "红烧",
                 "notesType": "20"
             },
             {
-                "addPriceType": "0",
-                "addPriceValue": "0.00",
+                "addPriceType": "3",
+                "addPriceValue": "40.00",
                 "notesName": "麻辣",
                 "notesType": "20"
             },

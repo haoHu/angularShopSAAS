@@ -67,6 +67,17 @@
 		ORDER : 0,
 		CANCEL : 1,
 		SEND : 2
-
 	};
+
+	Hualala.TypeDef.OrderNoteTypes = [
+		{name : "orderRemark", value : "10", label : "点单备注"},
+		{name : "foodMethod", value : "20", label : "作法"},
+		{name : "foodRemark", value : "30", label : "口味"},
+		{name : "foodCancel", value : "40", label : "退菜原因"},
+		{name : "foodSend", value : "50", label : "赠菜原因"},
+		{name : "foodPrice", value : "60", label : "改价原因"},
+		{name : "orderChange", value : "70", label : "改单原因"},
+		{name : "orderCancel", value : "80", label : "预订退订原因"},
+		{name : "takeoutCancel", value : "90", label : "外卖退单原因"}
+	];
 })();

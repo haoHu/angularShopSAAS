@@ -185,19 +185,19 @@ define(['app'], function (app) {
                             '<div class="item col-xs-4"><label for="" class="col-xs-7">台/牌号</label><span class="col-xs-5">{{fmels.tableName}}</span></div>',
                             '<div class="item col-xs-8"><label for="" class="col-xs-3">渠道</label><span class="col-xs-9">{{fmels.channelKey | getOrderChannelLabel:channels}}</span></div>',
                         '</div>',
-                        '<div class="item col-xs-12">',
+                        '<div class="item col-xs-12" ng-class="{hidden : !fmels.userName || fmels.userName.length == 0}">',
                             '<label for="" class="col-xs-2">姓名</label>',
                             '<span class="col-xs-10">',
                                 '<span class="btn btn-default btn-block">{{fmels.userName}}</span>',
                             '</span>',
                         '</div>',
-                        '<div class="item col-xs-12">',
+                        '<div class="item col-xs-12" ng-class="{hidden : !fmels.userMobile || fmels.userMobile.length == 0}">',
                             '<label for="" class="col-xs-2">电话</label>',
                             '<span class="col-xs-10">',
                                 '<span class="btn btn-default btn-block">{{fmels.userMobile}}</span>',
                             '</span>',
                         '</div>',
-                        '<div class="item col-xs-12">',
+                        '<div class="item col-xs-12" ng-class="{hidden : !fmels.userAddress || fmels.userAddress.length == 0}">',
                             '<label for="" class="col-xs-2">地址</label>',
                             '<span class="col-xs-10">',
                                 '<span class="btn btn-default btn-block">{{fmels.userAddress}}</span>',
@@ -232,13 +232,15 @@ define(['app'], function (app) {
     /**
      * 订单类型选择器
      */
-    app.directive('radiogroup', ["$rootScope", function ($rootScope) {
+    app.directive('radiogroup', ["$rootScope",  "$sce", function ($rootScope, $sce) {
         return {
             restrict : 'E',
             template : [
                 '<div>',
                     '<label for="" class="btn btn-default btn-radio" ng-repeat="el in groupOpts" ng-class="{active: curVal==el.value}">',
-                        '<input type="radio" name="{{radioName}}" autocomplete="off" value="{{el.value}}" ng-checked="curVal == el.value" >{{el.label}}</input>',
+                        '<input type="radio" name="{{radioName}}" autocomplete="off" value="{{el.value}}" ng-checked="curVal == el.value" >',
+                            '<div ng-bind-html="parseSnippet(el.label)"></div>',
+                        '</input>',
                     '</label>',
                 '</div>'
             ].join(''),
@@ -250,6 +252,9 @@ define(['app'], function (app) {
                 'onChange' : '&onChange'
             },
             link : function (scope, el, attrs) {
+                scope.parseSnippet = function (v) {
+                    return $sce.trustAsHtml(v);
+                };
                 el.on('change', ':radio', function (e) {
                     scope.curVal = $(e.target).val();
                     scope.onChange({val : scope.curVal});

@@ -35,17 +35,16 @@
 	// 订单样式
 	.order-box {
 		height : 100%; width : @orderBoxWidth; position : relative;
-		border-right : 1px solid @xBaseBorderColor;
-		.order-header {
-			position : relative; z-index : 2; height : @orderHeaderHeight; 
-			background-color: @orderHeaderBG;
-			// outline: 1px solid #111;
-			
-		}
+		border-right : 1px solid @xBaseBorderColor; padding-bottom : @orderFooterHeight;
+		
 		.order-body {
-			position : absolute; top : 0; bottom : 0; left : 0; right : 0;
-			padding-top : (@orderHeaderHeight + @orderGridHeaderHeight); padding-bottom: @orderFooterHeight;
+			// position : absolute; top : 0; bottom : 0; left : 0; right : 0;
+			// padding-top : (@orderHeaderHeight + @orderGridHeaderHeight); padding-bottom: @orderFooterHeight;
 			// outline: 1px solid #123;
+			position : relative; padding-top : 0; padding-bottom : 0; height: 100%;
+			display: -webkit-box; display : -moz-box; display : -ms-box;
+			-webkit-box-orient : vertical; -moz-box-orient : vertical; -ms-box-orient : vertical;
+
 		}
 		.order-footer  {
 			position : absolute; left : 0; right : 0; bottom : 0; z-index: 2;
@@ -139,10 +138,26 @@
 
 	// 订单样式
 	.order-body {
-		// overflow: hidden;
-		overflow: auto;
+		overflow: hidden;
+		// overflow: auto;
+		.order-header {
+			position : relative; z-index : 2; max-height : @orderHeaderHeight; 
+			background-color: @orderHeaderBG;
+			// outline: 1px solid #111;
+			-webkit-box-flex : 1;
+			-webkit-box-flex-group : 2;
+		}
 		.grid-header {
-			position : relative; z-index: 1; margin-top : (-1 * @orderGridHeaderHeight); background-color: #fff;
+			position : relative; z-index: 1; 
+			// margin-top : (-1 * @orderGridHeaderHeight); 
+			background-color: #fff; border-bottom : 1px solid @xBaseBorderColor;
+			-webkit-box-flex : 1;
+			-webkit-box-flex-group : 2;
+		}
+		.order-list {
+			-webkit-box-flex : 1;
+			-webkit-box-flex-group : 1;
+			height : 100%; overflow: hidden; padding-bottom : @orderFooterHeight;
 		}
 		// 菜品制作状态
 		.make-status {
@@ -151,25 +166,29 @@
 			@urgentBG : #c12e2a; @urgentColor : #fff;
 			@upBG : #419641; @upColor : #fff;
 			display: inline-block; font-size: 1rem; width: 1.5rem; height: 1.5rem; line-height: 1.5rem; text-align: center; vertical-align: middle;
-			// 即起
-			&[title="即"] {
+			// 即起 -- 1
+			&[title="1"] {
 				background-color: @immediateBG; color : @immediateColor;
+				&:after {content : "即";}
 			}
-			// 等叫
-			&[title="等"] {
+			// 等叫 -- 0
+			&[title="0"] {
 				background-color: @waitBG; color : @waitColor;
+				&:after {content : "等";}
 			}
-			// 加急
-			&[title="急"] {
+			// 加急 -- 2
+			&[title="2"] {
 				background-color: @urgentBG; color : @urgentColor;
+				&:after {content : "急";}
 			}
-			// 已上菜
-			&[title="上"] {
+			// 已上菜 -- 3
+			&[title="3"] {
 				background-color: @upBG; color : @upColor;
+				&:after {content : "上";}
 			}
-			&:after {
-				content : attr(title);		
-			}
+			// &:after {
+			// 	content : attr(title);		
+			// }
 		}
 		// 用户选择的菜品条目
 		.grid-row.active {
@@ -188,13 +207,36 @@
 		}
 		.food-item {
 			background-color: #fff; border : 0 none;
-			border-top : 1px solid #111;
+			border-top : 1px solid @xBaseBorderColor;
 			> .txt, > .num, > .price, > .unit {font-weight: 700;}
 		}
 		.food-child-item {
 			background-color: #fff; border : 0 none;
 			> .txt, > .num, > .price, > .unit {font-weight: 400;}
 		}
+		.food-item, .food-child-item {
+			.cancelreason > .txt:first-child {
+				&:before {
+					content : "[退]";
+				}
+			}
+			.sendreason > .txt:first-child {
+				&:before {
+					content : "[赠]";
+				}
+			}
+			.foodremark > .txt:first-child {
+				&:before {
+					content : "[味]";
+				}
+			}
+			.modifyprice > .txt:first-child {
+				&:before {
+					content : "[改]";
+				}
+			}
+		}
+		
 	}
 
 

@@ -5,6 +5,7 @@ require.config({
 		'angular-route' : 'vendor/angular-route/angular-route',
 		'angular-resource' : 'vendor/angular-resource/angular-resource',
 		'angular-cookies' : 'vendor/angular-cookies/angular-cookies',
+		'angular-sanitize' : 'vendor/angular-sanitize/angular-sanitize',
 		'ui.bootstrap' : 'vendor/angular-bootstrap/ui-bootstrap-tpls',
 		'bootstrap' : 'vendor/bootstrap/bootstrap',
 		'jquery' : 'vendor/jquery/jquery',
@@ -26,12 +27,15 @@ require.config({
 			deps : ['jquery']
 		},
 		'app' : {
-			deps : ['angular', 'angular-route', 'angular-resource', 'bootstrap', 'ui.bootstrap', 'angularLocalStorage', 'angular-cookies']
+			deps : ['angular', 'angular-route', 'angular-resource', 'bootstrap', 'ui.bootstrap', 'angularLocalStorage', 'angular-cookies', 'angular-sanitize']
 		},
 		'angular-route' : {
 			deps : ['angular']
 		},
 		'angular-resource' : {
+			deps : ['angular']
+		},
+		'angular-sanitize' : {
 			deps : ['angular']
 		},
 		'bootstrap' : {
@@ -45,7 +49,7 @@ require.config({
 		},
 		'commonFn' : {
 			exports : 'commonFn',
-			deps : ['IX']
+			deps : ['IX', 'jquery']
 		},
 		'matcher' : {
 			deps : ['IX', 'pymatch']

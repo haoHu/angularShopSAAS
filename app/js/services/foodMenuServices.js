@@ -328,6 +328,25 @@ define(['app'], function (app) {
 				return getMatchedFn(code);
 			};
 
+			/**
+			 * 获取菜单中菜品数据
+			 * @param  {[type]} unitKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getFoodByUnitKey = function (unitKey) {
+				return self.foodHT.get(unitKey);
+			};
+
+			/**
+			 * 判断菜品是否套餐菜品（普通菜品、套餐菜品）
+			 * @param  {[type]} unitKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.isSetFood = function (unitKey) {
+				var food = self.foodHT.get(unitKey),
+					isSetFood = _.result(food, 'isSetFood', 0);
+				return isSetFood == 1 ? true : false;
+			};
 
 		}]
 	);

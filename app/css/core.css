@@ -140,21 +140,19 @@ body {
   width: 292px;
   position: relative;
   border-right: 1px solid #e6e6e6;
-}
-.section-diandan .order-box .order-header {
-  position: relative;
-  z-index: 2;
-  height: 220px;
-  background-color: #ffffcc;
+  padding-bottom: 10rem;
 }
 .section-diandan .order-box .order-body {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding-top: 252px;
-  padding-bottom: 10rem;
+  position: relative;
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 100%;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-box;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -ms-box-orient: vertical;
 }
 .section-diandan .order-box .order-footer {
   position: absolute;
@@ -262,13 +260,30 @@ body {
   overflow: hidden;
 }
 .section-diandan .order-body {
-  overflow: auto;
+  overflow: hidden;
+}
+.section-diandan .order-body .order-header {
+  position: relative;
+  z-index: 2;
+  max-height: 220px;
+  background-color: #ffffcc;
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 2;
 }
 .section-diandan .order-body .grid-header {
   position: relative;
   z-index: 1;
-  margin-top: -32px;
   background-color: #fff;
+  border-bottom: 1px solid #e6e6e6;
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 2;
+}
+.section-diandan .order-body .order-list {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 1;
+  height: 100%;
+  overflow: hidden;
+  padding-bottom: 10rem;
 }
 .section-diandan .order-body .make-status {
   display: inline-block;
@@ -279,24 +294,33 @@ body {
   text-align: center;
   vertical-align: middle;
 }
-.section-diandan .order-body .make-status[title="即"] {
+.section-diandan .order-body .make-status[title="1"] {
   background-color: #2aabd2;
   color: #ffffff;
 }
-.section-diandan .order-body .make-status[title="等"] {
+.section-diandan .order-body .make-status[title="1"]:after {
+  content: "即";
+}
+.section-diandan .order-body .make-status[title="0"] {
   background-color: #eb9316;
   color: #ffffff;
 }
-.section-diandan .order-body .make-status[title="急"] {
+.section-diandan .order-body .make-status[title="0"]:after {
+  content: "等";
+}
+.section-diandan .order-body .make-status[title="2"] {
   background-color: #c12e2a;
   color: #ffffff;
 }
-.section-diandan .order-body .make-status[title="上"] {
+.section-diandan .order-body .make-status[title="2"]:after {
+  content: "急";
+}
+.section-diandan .order-body .make-status[title="3"] {
   background-color: #419641;
   color: #ffffff;
 }
-.section-diandan .order-body .make-status:after {
-  content: attr(title);
+.section-diandan .order-body .make-status[title="3"]:after {
+  content: "上";
 }
 .section-diandan .order-body .grid-row.active {
   background-color: #265a88!important;
@@ -312,7 +336,7 @@ body {
 .section-diandan .order-body .food-item {
   background-color: #fff;
   border: 0 none;
-  border-top: 1px solid #111;
+  border-top: 1px solid #e6e6e6;
 }
 .section-diandan .order-body .food-item > .txt,
 .section-diandan .order-body .food-item > .num,
@@ -329,6 +353,22 @@ body {
 .section-diandan .order-body .food-child-item > .price,
 .section-diandan .order-body .food-child-item > .unit {
   font-weight: 400;
+}
+.section-diandan .order-body .food-item .cancelreason > .txt:first-child:before,
+.section-diandan .order-body .food-child-item .cancelreason > .txt:first-child:before {
+  content: "[退]";
+}
+.section-diandan .order-body .food-item .sendreason > .txt:first-child:before,
+.section-diandan .order-body .food-child-item .sendreason > .txt:first-child:before {
+  content: "[赠]";
+}
+.section-diandan .order-body .food-item .foodremark > .txt:first-child:before,
+.section-diandan .order-body .food-child-item .foodremark > .txt:first-child:before {
+  content: "[味]";
+}
+.section-diandan .order-body .food-item .modifyprice > .txt:first-child:before,
+.section-diandan .order-body .food-child-item .modifyprice > .txt:first-child:before {
+  content: "[改]";
 }
 .section-diandan .order-footer > .order-remark > div,
 .section-diandan .order-footer > .btn-grp > div {

@@ -1,6 +1,7 @@
 define(['app', 'uuid'], function (app, uuid) {
+	// 订单数据服务
 	app.service('OrderService', 
-		['$location', '$filter', 'storage', 'CommonCallServer', function ($location, $filter, storage, CommonCallServer) {
+		['$rootScope', '$location', '$filter', 'storage', 'CommonCallServer', function ($rootScope, $location, $filter, storage, CommonCallServer) {
 			IX.ns('Hualala');
 			var self = this;
 			this._OrderData = null;
@@ -59,6 +60,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					foods = _.result(self._OrderData, 'foodLst', []);
 				_.each(foods, function (food) {
 					var itemKey = _.result(food, 'itemKey');
+					var nodeType = getOrderFoodItemType(food);
+					food = _.extend(food, {
+						__nodeType : nodeType == 7 ? 1 : (nodeType == 1 ? 2 : 0)
+					});
 					// 为字典注册菜品条目数据
 					_HT.register(itemKey, food);
 				});
@@ -84,7 +89,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			});
 
 			/**
-			 * [matchOrderFoodItemType description]
+			 * 通过itemKey获取该条数据的类型判断值
 			 * @param  {[type]} itemKey [description]
 			 * @return {[type]}         [description]
 			 */
@@ -115,6 +120,21 @@ define(['app', 'uuid'], function (app, uuid) {
 					return 'root';
 				}
 				return _HT.get(parentFoodFromItemKey);
+			};
+
+			/**
+			 * 根据itemKey获取该item的根节点条目
+			 * @param  {[type]} itemKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getRootParentItem = function (itemKey) {
+				var curItemKey = itemKey;
+				var pItem = self.getParentFoodItemByItemKey(curItemKey);
+				if (pItem == 'root') {
+					return self.getOrderFoodItemByItemKey(curItemKey);
+				} else {
+					return self.getRootParentItem(_.result(pItem, 'itemKey'));
+				}
 			};
 
 			/**
@@ -172,6 +192,15 @@ define(['app', 'uuid'], function (app, uuid) {
 					self._OrderData = _.extend(self._OrderData, defaultData);
 				}
 				return _.pick(self._OrderData, OrderHeaderKeys);
+			};
+
+
+			/**
+			 * 获取订单备注信息
+			 * @return {[type]} [description]
+			 */
+			this.getOrderRemark = function () {
+				return _.result(self._OrderData, 'orderRemark', '');
 			};
 
 
@@ -252,6 +281,14 @@ define(['app', 'uuid'], function (app, uuid) {
 						case 'unit':
 							v = _.result(foodUnit, 'unit', '');
 							break;
+						case 'foodPayPrice':
+						case 'foodProPrice':
+							v = _.result(foodUnit, 'price', 0);
+							break;
+						case 'foodSendNumber':
+						case 'foodCancelNumber':
+							v = 0;
+							break;
 						case 'parentFoodFromItemKey':
 							v = '';
 							break;
@@ -259,12 +296,14 @@ define(['app', 'uuid'], function (app, uuid) {
 							v = _.result(_.find(Hualala.TypeDef.FoodMakeStatus, function (o) {
 									return o.name == 'immediate';
 								}), 'value');
+							break;
 						default :
 							v = _.result(food, k, '');
 							break;
 					}
 					ret[k] = v;
 				});
+				ret['__nodeType'] = '0';
 				return ret;
 			};
 
@@ -303,23 +342,49 @@ define(['app', 'uuid'], function (app, uuid) {
 						case 'unit':
 							v = _.result(food, 'unit', '');
 							break;
+						case 'foodPayPrice':
+						case 'foodProPrice':
+							v = _.result(food, 'addPrice', 0);
+							break;
+						case 'foodSendNumber':
+						case 'foodCancelNumber':
+							v = 0;
+							break;
 						case 'parentFoodFromItemKey':
 							v = pItemKey;
 							break;
 						case 'makeStatus':
 							v = '';
+							break;
 						default :
 							v = _.result(food, k, '');
 							break;
 					}
 					ret[k] = v;
 				});
+				ret['__nodeType'] = '1';
 				return ret;
 			};
 
-			var mapFoodMethodItemData = function (itemKey, item, pItemKey) {
+			/**
+			 * 生成插入订单列表的菜品作法数据
+			 * @param  {[type]} itemKey  [description]
+			 * @param  {[type]} item     [description]
+			 * @param  {[type]} pItem [description]
+			 * @return {[type]}          [description]
+			 */
+			var mapFoodMethodItemData = function (itemKey, item, pItem) {
 				var foodItemPostKeys = 'itemKey,itemType,isSetFood,isSFDetail,foodKey,foodName,foodNumber,unit,foodProprice,foodPayPrice,foodRemark,parentFoodFromItemKey,makeStatus'.split(',');
 				var ret = {};
+				var pItemKey = _.result(pItem, 'itemKey');
+				var addPriceType = parseInt(_.result(item, 'addPriceType', 0)),
+					addPriceValue = _.result(item, 'addPriceValue', 0),
+					notesType = _.result(item, 'notesType'),
+					notesName = _.result(item, 'notesName', '');
+				var orderPerson = _.result(self._OrderData, 'person', 1),
+					pItemFoodNumber = _.result(pItem, 'foodNumber', 0),
+					pItemFoodUnit = _.result(pItem, 'unit', '');
+
 				_.each(foodItemPostKeys, function (k) {
 					var v = '';
 					switch(k) {
@@ -330,33 +395,48 @@ define(['app', 'uuid'], function (app, uuid) {
 							v = Hualala.TypeDef.OrderFoodItemType.ORDER;
 							break;
 						case 'foodKey':
-							v = _.result(item, 'notesType', '') + '-' + _.result(item, 'addPriceType', '');
+							v = notesType + '-' + addPriceType;
 							break;
 						case 'isWaitConfirmNumber':
 							v = '';
 							break;
+						case 'isSetFood':
 						case 'isSFDetail':
 							v = 0;
 							break;
 						case 'foodNumber':
-							v = _.result(item, 'number', 0);
+							v = addPriceType < 2 ? 1 : (addPriceType == 2 ? pItemFoodNumber : orderPerson);
+							// v = _.result(item, 'number', 0);
 							break;
+						case 'foodProPrice':
 						case 'foodPayPrice':
 							v = _.result(item, 'addPriceValue', 0);
+							break;
+						case 'foodSendNumber':
+						case 'foodCancelNumber':
+							v = 0;
+							break;
 						case 'unit':
-							v = _.result(item, 'unit', '');
+							v = addPriceType == 0 ? pItemFoodUnit : (addPriceType == 1 ? '项' : (addPriceType == 2 ? pItemFoodUnit : '位'));
+							// v = _.result(item, 'unit', '');
 							break;
 						case 'parentFoodFromItemKey':
 							v = pItemKey;
 							break;
 						case 'makeStatus':
 							v = '';
+							break;
+						case 'foodName':
+							v = notesName;
+							break;
 						default :
 							v = _.result(item, k, '');
 							break;
 					}
 					ret[k] = v;
 				});
+				ret['__nodeType'] = '2';
+				return ret;
 			};
 
 			/**
@@ -373,9 +453,10 @@ define(['app', 'uuid'], function (app, uuid) {
 				var itemKey = uuid.v4();
 				var item = mapFoodItemData(itemKey, food),
 					firstItem = self.OrderFoodHT.getFirst(),
-					firstKey = _.result(firstItem, 'itemkey', '');
-				self.OrderFoodHT.register(item);
+					firstKey = _.result(firstItem, 'itemKey', '');
+				self.OrderFoodHT.register(itemKey, item);
 				self.OrderFoodHT.insertBefore(itemKey, firstKey);
+				return item;
 			};
 
 			/**
@@ -394,14 +475,15 @@ define(['app', 'uuid'], function (app, uuid) {
 				var itemKey = uuid.v4();
 				var item = mapFoodItemData(itemKey, food),
 					firstItem = self.OrderFoodHT.getFirst(),
-					firstKey = _.result(firstItem, 'itemkey', '');
+					firstKey = _.result(firstItem, 'itemKey', '');
 				var setFoodDetailJson = _.result(food, 'setFoodDetailJson'),
 					foodLst = _.result(setFoodDetailJson, 'foodLst', []);
-				self.OrderFoodHT.register(item);
+				self.OrderFoodHT.register(itemKey, item);
 				self.OrderFoodHT.insertBefore(itemKey, firstKey);
 				_.each(foodLst.reverse(), function (f) {
 					self.insertSetFoodDetailItem(f, item);
 				});
+				return item;
 			};
 
 			/**
@@ -418,7 +500,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				var itemKey = uuid.v4(),
 					pItemKey = _.result(pItem, 'itemKey');
 				var item = mapSetFoodDetailItemData(itemKey, detail, pItemKey);
-				self.OrderFoodHT.register(item);
+				self.OrderFoodHT.register(itemKey, item);
 				self.OrderFoodHT.insertAfter(itemKey, pItemKey);
 			};
 
@@ -435,15 +517,387 @@ define(['app', 'uuid'], function (app, uuid) {
 				// 4. 将记录插入到其父节点（当前操作菜品条目）之后
 				var itemKey = uuid.v4(),
 					pItemKey = _.result(pItem, 'itemKey');
-				var item = mapFoodMethodItemData(itemKey, item, pItemKey);
-				self.OrderFoodHT.register(item);
-				self.OrderFoodHT.insertAfter(itemKey, pItemKey)
+				var item = mapFoodMethodItemData(itemKey, item, pItem);
+				self.OrderFoodHT.register(itemKey, item);
+				self.OrderFoodHT.insertAfter(itemKey, pItemKey);
 			};
 
 
+			/**
+			 * 获取所有订单条目数据
+			 * @return {[type]} [description]
+			 */
+			this.getOrderFoodItemsHT = function () {
+				return self.OrderFoodHT;
+			};
 
 
+			/**
+			 * 根据itemKey获取订单条目数据
+			 * @param  {[type]} itemKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getOrderFoodItemByItemKey = function (itemKey) {
+				return self.OrderFoodHT.get(itemKey);
+			};
+
+			/**
+			 * 根据记录的itemKey，查找该条记录的所有子记录
+			 * @param  {[type]} itemKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getOrderChildrenItemsByItemKey = function (itemKey) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey);
+				var ret;
+				if (_.isEmpty(item) || itemType.isFoodMethod) return null;
+				if (itemType.isCommonFood || itemType.isSetFoodDetail) {
+					ret = _.filter(self.OrderFoodHT.getAll(), function (el) {
+						return _.result(el, 'parentFoodFromItemKey') == itemKey;
+					});
+				} else if (itemType.isSetFood) {
+					ret = _.filter(self.OrderFoodHT.getAll(), function (el) {
+						return _.result(el, 'parentFoodFromItemKey') == itemKey;
+					});
+					ret = _.map(ret, function (el) {
+						var k = _.result(el, 'itemKey');
+						return [el, self.getOrderChildrenItemsByItemKey(k)];
+					});
+				}
+				return _.flatten(ret);
+			};
+
+			/**
+			 * 删除订单条目记录
+			 * 只有未落单的条目可以删除
+			 * 根据条目类型进行删除：
+			 * 普通菜品--删除自身，同时删除其作法条目
+			 * 普通菜品作法条目--删除自身
+			 * 套餐菜品--删除自身，同时删除其所有子节点（作法、套餐详情菜品、套餐详情菜品作法）
+			 * 套餐作法条目--删除自身
+			 * 套餐详情菜品--删除自身，同时删除其作法子节点
+			 * 套餐详情作法--删除自身
+			 * @param  {[type]} itemKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.deleteOrderItem = function (itemKey) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0);
+				if (printStatus != 0) return;
+
+				var childItems = this.getOrderChildrenItemsByItemKey(itemKey);
+
+				self.OrderFoodHT.remove(itemKey);
+				_.each(childItems, function (el) {
+					self.OrderFoodHT.remove(_.result(el, 'itemKey'));
+				});
+			};
+
+			/**
+			 * 更新订单条目的数量
+			 * @param  {String} itemKey 条目的itemKey
+			 * @param  {Number} step    加、减
+			 * @param {Number} count  直接更新数量
+			 * @return {Object} 条目数据         
+			 */
+			this.updateOrderItemCount = function (itemKey, step, count) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0);
+				step = parseFloat(step);
+				count = parseFloat(count);
+				if (printStatus != 0 ) return;
+				if (step > 0) {
+					// 加数量
+					item.foodNumber += step;
+				} else if (step < 0) {
+					// 减数量
+					item.foodNumber += step;
+				} else if(step == 0 && count >= 0) {
+					item.foodNumber = count;
+				}
+				if (item.foodNumber <= 0) {
+					// 删除记录
+					self.deleteOrderItem(itemKey);
+					return null;
+				}
+				return item;
+			};
+
+
+			/**
+			 * 设置赠菜原因和数量
+			 * @param  {[type]} itemKey    [description]
+			 * @param  {[type]} sendNumber [description]
+			 * @param  {[type]} sendReason [description]
+			 * @return {[type]}            [description]
+			 */
+			this.sendOrderFoodItem = function (itemKey, sendNumber, sendReason) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0);
+				if (itemType.isFoodMethod || itemType.isNotExist) return;
+				item.foodSendNumber = sendNumber;
+				item.sendReason = sendReason;
+				if (printStatus != 0) {
+					// TODO 已落单菜品修改赠送， 更新数据字典后，要直接提交，并刷新订单数据
+					
+				}
+			};
+
+			/**
+			 * 设置退菜原因和数量
+			 * @param  {[type]} itemKey      [description]
+			 * @param  {[type]} cancelNumber [description]
+			 * @param  {[type]} cancelReason [description]
+			 * @return {[type]}              [description]
+			 */
+			this.cancelOrderFoodItem = function (itemKey, cancelNumber, cancelReason) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0); 
+				if (itemType.isFoodMethod || itemType.isNotExist) return;
+				item.foodCancelNumber = cancelNumber;
+				item.cancelReason = cancelReason;
+				if (printStatus != 0) {
+					// TODO 已落单菜品修改退菜， 更新数据字典后，要直接提交，并刷新订单数据
+					
+				}
+			};
+
+			/**
+			 * 设置菜品口味
+			 * @param  {[type]} itemKey    [description]
+			 * @param  {[type]} foodRemark [description]
+			 * @return {[type]}            [description]
+			 */
+			this.updateOrderFoodRemark = function (itemKey, foodRemark) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0); 
+				if (itemType.isFoodMethod || itemType.isNotExist) return;
+				item['foodRemark'] = foodRemark;
+				
+			};
+
+			
+			/**
+			 * 根据菜品条目的itemKey获取这条菜品的作法节点
+			 * @param  {[type]} itemKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getOrderFoodMethodItem = function (itemKey) {
+				var childItems = self.getOrderChildrenItemsByItemKey(itemKey);
+				var methodItem = _.find(childItems, function (item) {
+					var parentFoodFromItemKey = _.result(item, 'parentFoodFromItemKey'),
+						k = _.result(item, 'itemKey'),
+						itemType = self.orderFoodItemType(k);
+					return parentFoodFromItemKey == itemKey && itemType.isFoodMethod;
+				});
+				return methodItem;
+			};
+
+			/**
+			 * 设置菜品作法
+			 * 1.查找当前菜品下是否有作法子节点
+			 * 2.如果没有作法，直接插入作法子节点
+			 * 3.如果有作法，删除作法子节点
+			 * @param  {[type]} itemKey    [description]
+			 * @param  {Object} methodSetting 作法配置数据 
+			 *         methodSetting : {addPriceType,addPriceValue,notesName,notesType}
+			 * @return {[type]}            [description]
+			 */
+			this.updateOrderFoodMethod = function (itemKey, methodSetting) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0),
+					_methodItem = self.getOrderFoodMethodItem(itemKey); 
+				if (itemType.isNotExist) return;
+				// TODO 判断菜品是否有作法节点，如果有，删除作法节点
+				if (!_.isEmpty(_methodItem)) {
+					self.deleteOrderItem(_.result(_methodItem, 'itemKey'));
+				}
+				self.insertFoodMethodItem(methodSetting, item);
+			};
+
+			/**
+			 * 设置菜品改价
+			 * @param  {[type]} itemKey   [description]
+			 * @param  {[type]} foodPrice [description]
+			 * @param  {[type]} priceNote [description]
+			 * @return {[type]}           [description]
+			 */
+			this.updateOrderFoodPrice = function (itemKey, foodPrice, priceNote) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0); 
+				if (itemType.isNotExist) return;
+				// 更新菜品modifyReason字段作为改价原因；更新菜品foodPayPrice作为修改后价格
+				item.modifyReason = priceNote;
+				item.foodPayPrice = foodPrice;
+				if (printStatus != 0) {
+					// TODO 已落单菜品改价，更新菜品数据字典后，要直接提交，并刷新订单数据
+					
+				}
+			};
+
+			/**
+			 * 设置单注信息
+			 * @param  {[type]} orderRemark [description]
+			 * @return {[type]}             [description]
+			 */
+			this.updateOrderRemark = function (orderRemark) {
+				self._OrderData['orderRemark'] = orderRemark;
+			};
+
+
+			
+			
 
 		}]
 	);
+
+	// 订单附加信息字典服务
+	// 10：点单备注；20：作法；30：口味；40：退菜原因；50：赠菜原因；
+	// 60：改价原因；70：改单原因；80：预定退订原因；90：外卖退单原因
+	app.service('OrderNoteService',[
+		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			var OrderNoteTypes = Hualala.TypeDef.OrderNoteTypes;
+			self.OrderNoteDict = _.indexBy(OrderNoteTypes, 'value');
+
+			/**
+			 * 清空订单附加信息字典数据
+			 * @return {[type]} [description]
+			 */
+			this.clearOrderNoteDict = function () {
+				_.each(self.OrderNoteDict, function (o) {
+					if (o.items) {
+						o.items = [];
+					}
+				});
+			};
+
+			/**
+			 * 初始化订单附加信息字典数据
+			 * @param  {[type]} data [description]
+			 * @return {[type]}      [description]
+			 */
+			this.initOrderNoteDictDB = function (data) {
+				var _data = _.groupBy(data, 'notesType');
+				self.OrderNoteDict = _.mapObject(self.OrderNoteDict, function (v, k) {
+					return _.extend(v, {
+						items : _.map(_data[k], function (el) {
+							var label = _.result(el, 'notesName', '');
+							return _.extend(el, {
+								label : label,
+								value : label
+							});
+						})
+					});
+				});
+			};
+			
+			/**
+			 * 获取所有字典数据
+			 * @param  {[type]} params  [description]
+			 * @param  {[type]} success [description]
+			 * @param  {[type]} error   [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getOrderNotesLst = function (params, success, error) {
+				return CommonCallServer.getOrderNotesLst(params)
+					.success(function (data, status, headers, config) {
+						var ret = _.result(data, 'data', {});
+						self.clearOrderNoteDict();
+						self.initOrderNoteDictDB(_.result(ret, 'records', []));
+						_.isFunction(success) && success(data, status, headers, config);
+					})
+					.error(function (data, status, headers, config) {
+						_.isFunction(error) && error(data, status, headers, config);
+					});
+			};
+
+			/**
+			 * 根据备注类型，获取字典数据
+			 * @param  {[type]} notesType [description]
+			 * @return {[type]}           [description]
+			 */
+			this.getOrderNotesByNotesType = function (notesType) {
+				var ret = self.OrderNoteDict[notesType];
+				return ret;
+			};
+
+			/**
+			 * 获取赠菜原因字典数据
+			 * @return {[type]} [description]
+			 */
+			this.getSendFoodReasonNotes = function () {
+				return self.getOrderNotesByNotesType(50);
+			};
+
+			/**
+			 * 获取退菜原因字典数据
+			 * @return {[type]} [description]
+			 */
+			this.getCancelFoodReasonNotes = function () {
+				return self.getOrderNotesByNotesType(40);
+			};
+
+			/**
+			 * 获取菜品口味字典数据
+			 * @return {[type]} [description]
+			 */
+			this.getFoodRemarkNotes = function () {
+				return self.getOrderNotesByNotesType(30);
+			};
+
+			/**
+			 * 获取菜品作法字典数据
+			 * @return {[type]} [description]
+			 */
+			this.getFoodMethodNotes = function () {
+				var noteData = self.getOrderNotesByNotesType(20);
+				noteData = _.extend(noteData, {
+					items : _.map(_.result(noteData, 'items', []), function (el) {
+						var label = _.result(el, 'notesName', ''),
+							addPriceType = _.result(el, 'addPriceType', 0),
+							addPriceValue = _.result(el, 'addPriceValue', 0);
+						var txt = '<p>' + label + '</p>';
+						if (addPriceType == 1) {
+							txt += '<p>加价￥' + addPriceValue + '</p>';
+						} else if (addPriceType == 2) {
+							txt += '<p>加价￥' + addPriceValue + '/份</p>';
+						} else if (addPriceType == 3) {
+							txt += '<p>加价￥' + addPriceValue + '/人</p>';
+						}
+
+						return _.extend(el, {
+							label : txt
+						});
+					})
+				});
+				return self.getOrderNotesByNotesType(20);
+			};
+
+			/**
+			 * 获取菜品改价原因数据字典
+			 * @return {[type]} [description]
+			 */
+			this.getModifyPriceNotes = function () {
+				return self.getOrderNotesByNotesType(60);
+			};
+
+			/**
+			 * 获取单注数据字典
+			 * @return {[type]} [description]
+			 */
+			this.getOrderRemarkNotes = function () {
+				return self.getOrderNotesByNotesType(10);
+			};
+		}
+	]);
 });

@@ -1058,6 +1058,7 @@ IX.IListManager = function() {
 		// only for key. append will remove existed record in keyList and append it to the end
 		append : _list.append,
 		insertBefore : _list.insertBefore,
+		insertAfter : _list.insertAfter,
 		remove : function(key) {registerFn(key);},
 		
 		clear : function(){
