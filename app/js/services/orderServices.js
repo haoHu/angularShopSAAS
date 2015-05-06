@@ -892,9 +892,11 @@ define(['app', 'uuid'], function (app, uuid) {
 				IX.Debug.info("Current Post Order Data:");
 				IX.Debug.info(params);
 				IX.Debug.info(JSON.stringify(params));
-
-				return CommonCallServer.submitOrder(params);
-
+				var callServer = CommonCallServer.submitOrder(params);
+				callServer.success(function (data) {
+					self.removeCurrentSuspendedOrder();
+				});
+				return callServer;
 			};
 
 			/**
@@ -946,6 +948,74 @@ define(['app', 'uuid'], function (app, uuid) {
 				return CommonCallServer.foodOperation(postData);
 			};
 			
+			/**
+			 * 挂单操作
+			 * 将当前订单实例数据缓存到localstorage中
+			 * 
+			 * @return {[type]} [description]
+			 */
+			this.suspendOrder = function () {
+				var order = self._OrderData,
+					foodLst = self.OrderFoodHT.getAll();
+				
+				var catchID = _.result(order, '__catchID');
+				catchID = _.isEmpty(catchID) ? uuid.v4() : catchID;
+				order = _.extend(order, {
+					foodLst : foodLst,
+					__catchID : catchID
+				});
+				
+				IX.Debug.info("Current Order Data:");
+				IX.Debug.info(order);
+				var ordersCatch = storage.get('OrderCatch');
+				if (_.isEmpty(ordersCatch)) {
+					ordersCatch = [];
+				}
+				var curCatch = _.find(ordersCatch, function (el) {
+					return el['__catchID'] == catchID;
+				});
+				if (!_.isEmpty(curCatch)) {
+					ordersCatch = _.reject(ordersCatch, function (el) {
+						return el['__catchID'] == catchID;
+					});
+				}
+				ordersCatch.push(order);
+				storage.set('OrderCatch', ordersCatch);
+
+			};
+
+			/**
+			 * 清除localStorage中当前订单的挂单数据
+			 * @return {[type]} [description]
+			 */
+			this.removeCurrentSuspendedOrder = function () {
+				var order = self._OrderData,
+					catchID = _.result(order, '__catchID');
+				var ordersCatch = storage.get('OrderCatch');
+				if (_.isEmpty(catchID) || _.isEmpty(ordersCatch)) return;
+				ordersCatch = _.reject(ordersCatch, function (el) {
+					return el['__catchID'] == catchID;
+				});
+				storage.set('OrderCatch', ordersCatch);
+			};
+
+			/**
+			 * 提单操作
+			 * 将当前localStorage中缓存的订单实例数据提取出来
+			 * 1.将当前操作订单数据缓存到localStorage中（挂单）
+			 * 2.从本地缓存中提取订单数据，更新订单数据
+			 * 3.从本地缓存中删除提取出来的订单数据
+			 * @return {[type]} [description]
+			 */
+			this.pickOrder = function (catchID) {
+				var ordersCatch = storage.get('OrderCatch') || [];
+				var curOrderCatch = _.find(ordersCatch, function (el) {
+					return el['__catchID'] == catchID;
+				});
+				self.suspendOrder();
+				self.initOrderFoodDB(curOrderCatch);
+				self.removeCurrentSuspendedOrder();
+			};
 
 		}]
 	);

@@ -333,6 +333,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					});
 			};
 
+			// 挂单操作
+			$scope.suspendOrder = function () {
+				OrderService.suspendOrder();
+			};
+
+			// 提单操作
+			$scope.pickOrder = function () {
+				OrderService.pickOrder();
+			};
+
 		}
 	]);
 
@@ -1006,6 +1016,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						switch(act) {
 							case "submitOrder":
 								scope.$apply("submitOrder()");
+								break;
+							case "suspendOrder":
+								scope.$apply("suspendOrder()");
+								break;
+							case "pickOrder":
+								scope.$apply("pickOrder()");
 								break;
 						}
 					});
