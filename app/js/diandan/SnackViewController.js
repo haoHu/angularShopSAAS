@@ -24,6 +24,23 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "method", active : false, label : "作法"},
 				{name : "remark", active : false, label : "口味"}
 			];
+			$scope.OrderHandleBtns = [
+				{name : "submitOrder", active : true, label : "落单"},
+				{name : "suspendOrder", active : true, label : "挂单"},
+				{name : "pickOrder", active : true, label : "提单"},
+				{name : "cashPayOrder", active : true, label : "现金"},
+				{name : "payOrder", active : true, label : "其他结账"},
+				{name : "openCashBox", active : true, label : "开钱箱"}
+			];
+			var shopInfo = storage.get("SHOPINFO"),
+				operationMode = _.result(shopInfo, 'operationMode');
+			$scope.OrderHandleBtns = _.map($scope.OrderHandleBtns, function (btn) {
+				var name = btn.name;
+				// 正餐模式下没有挂单、提单
+				return _.extend(btn, {
+					active : (operationMode == 0 && (name == "suspendOrder" || name == "pickOrder")) ? false : true
+				});
+			});
 			var tmpSearchFoods = null;
 
 
@@ -151,7 +168,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					item = null;
 				// 向订单中添加菜品条目
 				if (isSetFood) {
-					item = OrderService.insertSetFoodItem(food);
+					// TODO  套餐需要弹出配置套餐的窗口
+					$scope.curSetFoodUnitKey = unitKey;
+					$scope.openSetFoodCfg();
+					// item = OrderService.insertSetFoodItem(food);
 				} else {
 					item = OrderService.insertCommonFoodItem(food);
 				}
@@ -180,6 +200,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.selectOrderItem = function (itemKey) {
 				var orderItemType = OrderService.orderFoodItemType(itemKey),
 					orderItem = OrderService.getOrderFoodItemByItemKey(itemKey),
+					isNeedConfirmFoodNumber = _.result(orderItem, 'isNeedConfirmFoodNumber', "0");
 					itemStatus = _.result(orderItem, 'printStatus', 0),
 					activeBtns = '';
 				$scope.curFocusOrderItemKey = itemKey;
@@ -191,11 +212,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				if (orderItemType.isCommonFood || orderItemType.isSetFood) {
 					activeBtns = itemStatus == 0 
 						? ['send','delete','addOne','subOne', 'count','price','method','remark']
-						: ['send','cancel','price'];
+						: (isNeedConfirmFoodNumber != 0 ? ['send','cancel', 'count', 'price'] : ['send','cancel','price']);
 				} else if (orderItemType.isFoodMethod) {
 					activeBtns = itemStatus == 0
 						? ['delete','addOne','subOne','count']
-						: [];
+						: ['send', 'cancel'];
 				} else if (orderItemType.isSetFoodDetail) {
 					activeBtns = itemStatus == 0
 						? ['delete','price','method','remark']
@@ -273,6 +294,43 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					templateUrl : templateUrl,
 					resolve : resolve
 				});
+			};
+
+			// 打开套餐配置窗口
+			$scope.openSetFoodCfg = function () {
+				var modalSize = "lg",
+					controller = "SetFoodCfgController",
+					templateUrl = "js/diandan/setFoodCfg.html",
+					resolve = {
+						_scope : function () {
+							return $scope;
+						}
+					};
+				$modal.open({
+					size : modalSize,
+					controller : controller,
+					templateUrl : templateUrl,
+					resolve : resolve
+				});
+			};
+
+			// 落单操作
+			$scope.submitOrder = function () {
+				var callServer = OrderService.submitOrder('LD');
+				if (_.isEmpty(callServer)) return;
+				callServer.success(function (data, status, headers, config) {
+						var ret = _.result(data, 'data', {});
+						OrderService.initOrderFoodDB(ret);
+						$scope.orderHeader = OrderService.getOrderHeaderData();
+						$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
+						$scope.curOrderRemark = OrderService.getOrderRemark();
+						$scope.curOrderRemark = _.isEmpty($scope.curOrderRemark) ? '单注' : $scope.curOrderRemark;
+						IX.Debug.info("Order List Info:");
+						IX.Debug.info($scope.curOrderItems);
+					})
+					.error(function (data, status, headers, config) {
+						
+					});
 			};
 
 		}
@@ -411,6 +469,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};
 			// 提交并关闭窗口
 			$scope.save = function () {
+				var callServer;
 				// TODO submit Modify result
 				if ((_.isEmpty($scope.priceNote) && parseFloat($scope.foodPrice) > 0) || $scope.foodPrice.length == 0) {
 					return ;
@@ -418,8 +477,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 				IX.Debug.info("Food Modify Price Setting:");
 				IX.Debug.info("foodPrice:" + $scope.foodPrice + "; priceNote:" + $scope.priceNote);
-				OrderService.updateOrderFoodPrice(curItemKey, $scope.foodPrice, $scope.priceNote);
-				_scope.refreshOrderList();
+				callServer = OrderService.updateOrderFoodPrice(curItemKey, $scope.foodPrice, $scope.priceNote);
+				if (!callServer) {
+					_scope.refreshOrderList();
+				} else {
+					callServer.success(function (data, status, headers, config) {
+						_scope.refreshOrderList();
+					});
+				}
 				$modalInstance.close();
 			};
 			// 改价原因变化
@@ -454,7 +519,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					return el.notesName == $scope.foodMethod;
 				});
 				IX.Debug.info("Food Method Setting:");
-				IX.Debug.info("foodMethodSetting:" + foodMethodSetting);
+				IX.Debug.info(foodMethodSetting);
 				OrderService.updateOrderFoodMethod(curItemKey, foodMethodSetting);
 				_scope.refreshOrderList();
 				$modalInstance.close();
@@ -531,6 +596,118 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		}
 	]);	
 
+	// 套餐搭配操作控制器
+	app.controller('SetFoodCfgController', [
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'FoodMenuService',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, FoodMenuService) {
+			IX.ns("Hualala");
+			var curUnitKey = _scope.curSetFoodUnitKey;
+			var setFoodData = FoodMenuService.getFoodByUnitKey(curUnitKey),
+				setFoodDetailJson = _.result(setFoodData, 'setFoodDetailJson');
+			var curSetFoodData = _.mapObject(setFoodData, function (v, k) {
+				if (k == 'setFoodDetailJson') {
+					var s = JSON.stringify(v);
+					return JSON.parse(s);
+				}
+				return v;
+			});
+			// 整理套餐配置的数据结构，方便模板渲染
+			var mapSetFoodSettings = function (foodLst) {
+				return _.map(foodLst, function (cate) {
+					var items = _.result(cate, 'items', []);
+					var selectedFoods = [];
+					items = _.map(items, function (food) {
+						var foodName = _.result(food, 'foodName', ''),
+							unit = _.result(food, 'unit', ''),
+							addPrice = _.result(food, 'addPrice', 0),
+							selected = _.result(food, 'selected', 0),
+							unitKey = _.result(food, 'unitKey');
+						selected == 1 && selectedFoods.push(unitKey);
+						var txt = '<p>' + foodName + '/' + unit + '</p>';
+						if (parseFloat(addPrice) > 0) {
+							txt += '<p>加价￥' + addPrice + '</p>';
+						}
+						return _.extend(food, {
+							label :  txt,
+							value : unitKey
+						});
+					});
+					return _.extend(cate, {
+						items : items,
+						selectedFoods : selectedFoods
+					});
+				});
+			};
+			$scope.curSetFoodLst = mapSetFoodSettings(_.result(setFoodDetailJson, 'foodLst', []));
+			// 关闭窗口
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+			// 提交并关闭窗口
+			$scope.save = function () {
+				// TODO submit Modify result
+				if (_.isEmpty(curSetFoodData) || !$scope.isValid()) {
+					alert("菜品搭配有误")
+					return ;
+				}
+				IX.Debug.info("Current SetFood Settings is:");
+				IX.Debug.info(curSetFoodData);
+				IX.Debug.info(setFoodData);
+				// 向订单插入套餐配置信息
+				OrderService.insertSetFoodItem(curSetFoodData);
+				_scope.refreshOrderList();
+				$modalInstance.close();
+			};
+
+			// 套餐配置变化
+			$scope.onSetFoodChange = function (v, checkboxName) {
+				// console.info(arguments);
+				var i = parseInt(checkboxName.slice('cate_'.length));
+				var cate = curSetFoodData.setFoodDetailJson.foodLst[i];
+				var items = _.result(cate, 'items', []);
+				var chooseCount = parseInt(_.result(cate, 'chooseCount'));
+				var foodCategoryName = _.result(cate, 'foodCategoryName');
+				if (v.length > chooseCount || v.length < chooseCount) {
+					alert(foodCategoryName + "类菜品是" + items.length + "选" + chooseCount);
+				}
+				items = _.map(items, function (food) {
+					var selected = 0;
+					if (_.indexOf(v, _.result(food, 'unitKey')) > -1) {
+						selected = 1;
+					}
+					return _.extend(food, {
+						selected : selected
+					})
+				});
+				
+				var curSetFoodDetail = curSetFoodData.setFoodDetailJson;
+				curSetFoodDetail.foodLst[i] = _.extend(cate, {
+					items : items
+				});
+				IX.Debug.info("Current SetFood Settings is:");
+				IX.Debug.info(curSetFoodData);
+			};
+
+			// 检测是否可以提交
+			$scope.isValid = function () {
+				var cates = curSetFoodData.setFoodDetailJson.foodLst;
+				var valid = true;
+				_.each(cates, function (cate) {
+					var items = _.result(cate, 'items', []);
+					var chooseCount = parseInt(_.result(cate, 'chooseCount'));
+					var choosenFoods = _.filter(items, function (food) {
+						return _.result(food, 'selected') == 1;
+					});
+					if (chooseCount != choosenFoods.length) {
+						valid = false;
+					}
+				});
+				return valid;
+			};
+
+		}
+	]);
+
 	// 订单列表
 	app.directive('orderlist', [
 		"$rootScope", "$filter", "OrderService", 
@@ -539,7 +716,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				restrict : 'E',
 				template : [
 					'<ul class="list-unstyled grid-body" >',
-						'<li class="row grid-row" ng-repeat="el in curOrderItems" ng-class="{\'food-item\' : (el.__nodeType == 0), \'food-child-item\' : (el.__nodeType != 0), ordered : el.printStatus == 2, setfood : (el.isSetFood == 1 && el.isSFDetail == 0), \'check-count\' : (el.isWaitConfirmNumber > 0), active : (curFocusOrderItemKey == el.itemKey)}" item-key="{{el.itemKey}}" ng-click="selectOrderItem(el.itemKey)" >',
+						'<li class="row grid-row" ng-repeat="el in curOrderItems" ng-class="{\'food-item\' : (el.__nodeType == 0), \'food-child-item\' : (el.__nodeType != 0), ordered : el.printStatus == 2, setfood : (el.isSetFood == 1 && el.isSFDetail == 0), \'check-count\' : (el.isNeedConfirmFoodNumber > 0), active : (curFocusOrderItemKey == el.itemKey)}" item-key="{{el.itemKey}}" ng-click="selectOrderItem(el.itemKey)" >',
 							'<span class="col-xs-1 grid-cell txt" ng-if="el.__nodeType == 0"><span class="make-status" title="{{el.makeStatus}}"></span></span>',
 							'<span class="col-xs-4 grid-cell txt" ng-class="{\'col-xs-offset-1\' : el.__nodeType != 0}">{{el.foodName}}</span>',
 							'<span class="col-xs-2 grid-cell num">{{el.foodNumber}}</span>',
@@ -804,8 +981,38 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		}
 	]);
 	
-
-	
+	// 订单操作按钮组
+	app.directive('orderhandlebtns', [
+		"$modal", "$rootScope", "$filter", "OrderService",
+		function ($modal, $rootScope, $filter, OrderService) {
+			return {
+				restrict : 'E',
+				template : [
+					'<div class="btns-plain">',
+						'<div class="col-xs-10">',
+							'<div class="col-xs-2" ng-repeat="btn in OrderHandleBtns">',
+								'<button class="btn btn-warning btn-block" ng-disabled="!btn.active" type="button" name="{{btn.name}}">{{btn.label}}</button>',
+							'</div>',
+						'</div>',
+						'<div class="col-xs-2">',
+							'<button class="btn btn-default btn-block" type="button" name="return">返回</button>',
+						'</div>',
+					'</div>'
+				].join(''),
+				replace : true,
+				link : function (scope, el, attr) {
+					el.on('click', '.btn-block', function (e) {
+						var btn = $(this), act = btn.attr('name');
+						switch(act) {
+							case "submitOrder":
+								scope.$apply("submitOrder()");
+								break;
+						}
+					});
+				}
+			};
+		}
+	]);
 
 });
 

@@ -31,7 +31,11 @@ define(['IX'], function () {
 		// 根据订单Key获取订单详情数据
 		["getOrderByOrderKey", "/test/order/getOrderByOrderKey.json", "", "GET"],
 		// 更改订单头消息
-		["updateOrderHead", "/test/commonSuccess.json", "", "GET"]
+		["updateOrderHead", "/test/commonSuccess.json", "", "GET"],
+		// 提交订单服务
+		["submitOrder", "/test/order/submitOrder.json", "", "GET"],
+		// 已落单菜品操作服务
+		["foodOperation", "/test/commonSuccess.json", "", "GET"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

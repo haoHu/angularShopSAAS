@@ -48,7 +48,8 @@ define(['app'], function (app) {
 							val = _.isEmpty(soldoutFood) ? null : soldoutFood;
 							break;
 						case "py":
-							val = _.result(food, 'foodKey').split(';') + _.result(food, 'foodKey') + ';';
+							// val = _.result(food, 'foodKey').split(';') + _.result(food, 'foodKey') + ';';
+							val = _.result(food, 'foodMnemonicCode', '');
 							break;
 						default :
 							val = _.result(food, k1);
@@ -102,7 +103,7 @@ define(['app'], function (app) {
 			 * $$Foods : [$$Food,...]
 			 * $$Food : {
 			 * 		foodCategoryNameAlias, foodCategoryName, foodCategoryCode, foodCategoryKey, foodSubjectKey, departmentKeyLst, 
-			 * 		foodKey, foodName, foodCode, isDiscount, minOrderCount, IsNeedConfirmFoodNumber, description, tasteList, 
+			 * 		foodKey, foodName, foodCode, isDiscount, minOrderCount, isNeedConfirmFoodNumber, description, tasteList, 
 			 * 		makingMethodList, hotTag, ZXJ, salesCount, takeawayTag, takeoutPackagingFee, isSetFood, 
 			 * 		setFoodDetailJson, __foodUnit : $$FoodUnit, __soldout : {qty}
 			 *   }
@@ -123,7 +124,7 @@ define(['app'], function (app) {
 					foodCategoryHT = new IX.IListManager(),
 					foodSoldOutHT = new IX.IListManager();
 				var FoodDBKeys = ('foodCategoryNameAlias,foodCategoryName,foodCategoryCode,foodCategoryKey,foodSubjectKey,departmentKeyLst,'
-										+ 'foodKey,foodName,foodCode,isDiscount,minOrderCount,IsNeedConfirmFoodNumber,description,tasteList,'
+										+ 'foodKey,foodName,foodCode,isDiscount,minOrderCount,isNeedConfirmFoodNumber,description,tasteList,'
 										+ 'makingMethodList,hotTag,ZXJ,salesCount,takeawayTag,takeoutPackagingFee,isSetFood,'
 										+ 'setFoodDetailJson,__foodUnit,__soldout,py').split(','),
 					FoodUnitKeys = 'unitKey,unit,originalPrice,price,vipPrice'.split(','),

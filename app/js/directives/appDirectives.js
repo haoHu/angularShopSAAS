@@ -230,7 +230,7 @@ define(['app'], function (app) {
     }]);
 
     /**
-     * 订单类型选择器
+     * 单选按钮组选择器
      */
     app.directive('radiogroup', ["$rootScope",  "$sce", function ($rootScope, $sce) {
         return {
@@ -238,7 +238,7 @@ define(['app'], function (app) {
             template : [
                 '<div>',
                     '<label for="" class="btn btn-default btn-radio" ng-repeat="el in groupOpts" ng-class="{active: curVal==el.value}">',
-                        '<input type="radio" name="{{radioName}}" autocomplete="off" value="{{el.value}}" ng-checked="curVal == el.value" >',
+                        '<input type="radio" name="{{checkboxName}}" autocomplete="off" value="{{el.value}}" ng-checked="curVal == el.value" >',
                             '<div ng-bind-html="parseSnippet(el.label)"></div>',
                         '</input>',
                     '</label>',
@@ -258,6 +258,58 @@ define(['app'], function (app) {
                 el.on('change', ':radio', function (e) {
                     scope.curVal = $(e.target).val();
                     scope.onChange({val : scope.curVal});
+                });
+            }
+        };
+    }]);
+
+    /**
+     *  多选按钮组选择器
+     */
+    app.directive('checkboxgroup', ["$rootScope", "$sce", function ($rootScope, $sce) {
+        return {
+            restrict : 'E',
+            template : [
+                '<div>',
+                    '<label for="" class="btn btn-default btn-checkbox" ng-repeat="el in groupOpts" ng-class="{active: isChecked(el.value)}">',
+                        '<input type="checkbox" name="{{checkboxName}}" autocomplete="off" value="{{el.value}}" ng-checked="isChecked(el.value)" >',
+                            '<div ng-bind-html="parseSnippet(el.label)"></div>',
+                        '</input>',
+                    '</label>',
+                '</div>'
+            ].join(''),
+            replace : true,
+            scope : {
+                'curVal' : '=curVal',
+                'groupOpts' : '=groupOpts',
+                'checkboxName' : '@checkboxName',
+                'onChange' : '&onChange'
+            },
+            link : function (scope, el, attrs) {
+                scope.parseSnippet = function (v) {
+                    return $sce.trustAsHtml(v);
+                };
+                scope.isChecked = function (val) {
+                    var item = _.find(scope.curVal, function (el) {
+                        return el == val;
+                    });
+                    // console.info(scope.curVal);
+                    // console.info(val);
+                    return _.isEmpty(item) ? false : true;
+                };
+                el.on('change', ':checkbox', function (e) {
+                    var checkbox = $(this),
+                        val = checkbox.val(),
+                        isChecked = checkbox.is(':checked');
+                    if (!isChecked) {
+                        scope.curVal = _.without(scope.curVal, val);
+                    } else {
+                        scope.curVal.push(val);
+                    }
+                    scope.onChange({
+                        val : scope.curVal,
+                        checkboxName : scope.checkboxName
+                    });
                 });
             }
         };

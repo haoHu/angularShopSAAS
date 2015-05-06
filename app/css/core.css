@@ -425,7 +425,8 @@ body {
   margin: 0;
   padding: 0;
 }
-.btngrp-box > .btn-group .btn-radio {
+.btngrp-box > .btn-group .btn-radio,
+.btngrp-box > .btn-group .btn-checkbox {
   width: 33.33333333%;
   height: 50%;
   margin: 0;
@@ -435,7 +436,8 @@ body {
   background-color: #e6f2fd;
   border: 1px solid #e6e6e6;
 }
-.btngrp-box > .btn-group .btn-radio.active {
+.btngrp-box > .btn-group .btn-radio.active,
+.btngrp-box > .btn-group .btn-checkbox.active {
   background-color: #99ccff;
 }
 .btngrp-box .btn-pager {
@@ -446,6 +448,15 @@ body {
   height: 50%;
   background-color: #e6f2fd;
   border-radius: 0;
+}
+.btngrp-box.setfood-btn {
+  height: auto;
+  position: relative;
+  background: #e6f2fd;
+}
+.btngrp-box.setfood-btn .btn-checkbox {
+  width: 16.66666667%;
+  height: 5rem;
 }
 #search_food > .modal-dialog {
   position: absolute;

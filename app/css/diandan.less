@@ -281,12 +281,12 @@
 	background : @xLightBtnBG; overflow: hidden;
 	> .btn-group {
 		height : 100%; width : 100%; margin : 0; padding : 0;
-		.btn-radio {
+		.btn-radio, .btn-checkbox {
 			width : @btnWidth; height: @btnHeight; margin : 0; bottom : 0; border-radius: 0;
 			display: block; background-color: @xLightBtnBG; 
 			border : 1px solid @xBaseBorderColor;
 		}
-		.btn-radio.active {
+		.btn-radio.active, .btn-checkbox.active {
 			background-color: @xDarkBtnBG;
 		}
 	}
@@ -294,6 +294,17 @@
 		position : absolute; bottom : 0; right : 0;
 		width : @btnWidth; height : @btnHeight; background-color: @xLightBtnBG;
 		border-radius: 0;
+	}
+}
+
+// 套餐搭配选项
+.btngrp-box.setfood-btn {
+	@btnCols : 6; 
+	@btnWidth : percentage(1 / @btnCols);
+	@btnHeight : 5rem;
+	height : auto; position : relative; background : @xLightBtnBG;
+	.btn-checkbox {
+		width : @btnWidth; height : @btnHeight;
 	}
 }
 

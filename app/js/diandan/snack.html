@@ -72,12 +72,13 @@
 		 -->
 		
 	</div>
-	<div class="btns-plain">
-		<!-- 订单操作按钮组 -->
+	<orderhandlebtns></orderhandlebtns>
+	<!-- <div class="btns-plain">
+
 		<div class="col-xs-10">
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">落单</button></div>
-			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">挂单</button></div>
-			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">提单</button></div>
+			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="guadan">挂单</button></div>
+			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="tidan">提单</button></div>
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">现金</button></div>
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">其他结账</button></div>
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">开钱箱</button></div>
@@ -85,7 +86,7 @@
 		<div class="col-xs-2">
 			<button class="btn btn-default btn-block" type="button" btn-act="return">返回</button>
 		</div>
-	</div>
+	</div> -->
 	<div class="modal fade" id="search_food">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -464,6 +465,32 @@
 		<div class="modal-footer">
 			<div class="btn-group btn-group-lg" role="group">
 				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 套餐配置窗口 -->
+	<script type="text/ng-template" id="js/diandan/setFoodCfg.html">
+		<div class="modal-header">
+			<h4 class="modal-title">套餐搭配</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-6" ng-repeat="el in curSetFoodLst">
+					<div class="" >
+						<h4>{{el.foodCategoryName}}({{el.items.length}}选<span class="text-danger">{{el.chooseCount}}</span>)</h4>
+						<div class="btngrp-box " pager-list="loop" pager-data="{{el.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<checkboxgroup group-opts="el.items" checkbox-name="cate_{{$index}}" cur-val="el.selectedFoods" class="btn-group" role="group" data-toggle="buttons" on-change="onSetFoodChange(val, checkboxName)" ></checkboxgroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()" >保存</button>
 				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
 			</div>
 		</div>

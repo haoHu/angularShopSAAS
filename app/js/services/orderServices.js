@@ -8,7 +8,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.OrderFoodHT = null;
 
 			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate'.split(','),
-				FoodItemKeys = "itemKey,saasOrderKey,foodCategorySortIndex,foodCategoryKey,foodCategoryName,foodSubjectKey,foodSubjectCode,foodSubjectName,departmentKeyLst,isSetFood,isSFDetail,foodKey,foodName,foodNumber,foodCancelNumber,foodSendNumber,cancelReason,cancelTime,sendReason,sendTime,isWaitConfirmNumber,unit,isDiscount,foodSourcePrice,foodProPrice,foodVipPrice,foodPayPrice,foodPayPriceReal,foodRemark,modifyReason,modifyPriceLog,modifyTime,parentFoodFromItemKey,orderBy,makeStatus,makedTime,printStatus,actionTime,createTime".split(','),
+				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,foodKey,foodName,foodNumber,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
 				FoodItemTypes = {
 					"-1" : "NotExist",
 					"0" : "CommonFood",
@@ -55,9 +55,11 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 初始化订单菜品数据字典
 			 * @return {NULL} 
 			 */
-			var initOrderFoodDB = function () {
+			this.initOrderFoodDB = function (data) {
+				self._OrderData = data;
 				var _HT = self.OrderFoodHT,
 					foods = _.result(self._OrderData, 'foodLst', []);
+				_HT.clear();
 				_.each(foods, function (food) {
 					var itemKey = _.result(food, 'itemKey');
 					var nodeType = getOrderFoodItemType(food);
@@ -155,8 +157,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				return CommonCallServer.getOrderByOrderKey(params)
 					.success(function (data, status, headers, config) {
 						var ret = _.result(data, 'data', {});
-						self._OrderData = ret;
-						initOrderFoodDB();
+						self.initOrderFoodDB(ret);
 						_.isFunction(success) && success(data, status, headers, config);
 					})
 					.error(function (data, status, headers, config) {
@@ -194,14 +195,6 @@ define(['app', 'uuid'], function (app, uuid) {
 				return _.pick(self._OrderData, OrderHeaderKeys);
 			};
 
-
-			/**
-			 * 获取订单备注信息
-			 * @return {[type]} [description]
-			 */
-			this.getOrderRemark = function () {
-				return _.result(self._OrderData, 'orderRemark', '');
-			};
 
 
 			/**
@@ -250,11 +243,11 @@ define(['app', 'uuid'], function (app, uuid) {
 			var mapFoodItemData = function (itemKey, food) {
 				var foodUnit = _.result(food, '__foodUnit'),
 					soldout = _.result(food, '__soldout', null),
-					isNeedConfirmFoodNumber = _.result(food, 'IsNeedConfirmFoodNumber', 0),
+					isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', 0),
 					isSetFood = _.result(food, 'isSetFood', 0),
 					setFoodDetailJson = _.result(food, 'setFoodDetailJson', ''),
 					setFoodDetailLst = _.isEmpty(setFoodDetailJson) ? [] : _.result(setFoodDetailJson, 'foodLst');
-				var foodItemPostKeys = 'itemKey,itemType,isSetFood,isSFDetail,foodKey,foodName,foodNumber,unit,foodProprice,foodPayPrice,foodRemark,parentFoodFromItemKey,makeStatus'.split(',');
+				var foodItemPostKeys = FoodItemKeys;
 				var ret = {};
 
 				_.each(foodItemPostKeys, function (k) {
@@ -269,25 +262,34 @@ define(['app', 'uuid'], function (app, uuid) {
 						case 'foodKey':
 							v = _.result(foodUnit, 'unitKey');
 							break;
-						case 'isWaitConfirmNumber':
+						case 'isNeedConfirmFoodNumber':
 							v = isNeedConfirmFoodNumber;
 							break;
 						case 'isSFDetail':
-							v = 0;
+							v = "0";
 							break;
 						case 'foodNumber':
-							v = 1;
+							v = "1";
 							break;
 						case 'unit':
 							v = _.result(foodUnit, 'unit', '');
 							break;
 						case 'foodPayPrice':
 						case 'foodProPrice':
-							v = _.result(foodUnit, 'price', 0);
+							v = _.result(foodUnit, 'price', "0");
+							break;
+						case 'foodVipPrice':
+							v = _.result(foodUnit, 'vipPrice', "0");
+							break;
+						case 'unitAdjuvant':
+							v = _.result(food, 'unitAdjuvant', "");
+							break;
+						case 'unitAdjuvantNumber':
+							v = "0";
 							break;
 						case 'foodSendNumber':
 						case 'foodCancelNumber':
-							v = 0;
+							v = "0";
 							break;
 						case 'parentFoodFromItemKey':
 							v = '';
@@ -315,8 +317,8 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]}          [description]
 			 */
 			var mapSetFoodDetailItemData = function (itemKey, food, pItemKey) {
-				var isNeedConfirmFoodNumber = _.result(food, 'IsNeedConfirmFoodNumber', 0),
-					foodItemPostKeys = 'itemKey,itemType,isSetFood,isSFDetail,foodKey,foodName,foodNumber,unit,foodProprice,foodPayPrice,foodRemark,parentFoodFromItemKey,makeStatus'.split(',');
+				var isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', 0),
+					foodItemPostKeys = FoodItemKeys;
 				var ret = {};
 				_.each(foodItemPostKeys, function (k) {
 					var v = '';
@@ -330,10 +332,11 @@ define(['app', 'uuid'], function (app, uuid) {
 						case 'foodKey':
 							v = _.result(food, 'unitKey');
 							break;
-						case 'isWaitConfirmNumber':
+						case 'isNeedConfirmFoodNumber':
 							v = isNeedConfirmFoodNumber;
 							break;
 						case 'isSFDetail':
+						case 'isSetFood':
 							v = 1;
 							break;
 						case 'foodNumber':
@@ -344,7 +347,14 @@ define(['app', 'uuid'], function (app, uuid) {
 							break;
 						case 'foodPayPrice':
 						case 'foodProPrice':
+						case 'foodVipPrice':
 							v = _.result(food, 'addPrice', 0);
+							break;
+						case 'unitAdjuvant':
+							v = _.result(food, 'unitAdjuvant', "");
+							break;
+						case 'unitAdjuvantNumber':
+							v = "0";
 							break;
 						case 'foodSendNumber':
 						case 'foodCancelNumber':
@@ -374,7 +384,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]}          [description]
 			 */
 			var mapFoodMethodItemData = function (itemKey, item, pItem) {
-				var foodItemPostKeys = 'itemKey,itemType,isSetFood,isSFDetail,foodKey,foodName,foodNumber,unit,foodProprice,foodPayPrice,foodRemark,parentFoodFromItemKey,makeStatus'.split(',');
+				var foodItemPostKeys = FoodItemKeys;
 				var ret = {};
 				var pItemKey = _.result(pItem, 'itemKey');
 				var addPriceType = parseInt(_.result(item, 'addPriceType', 0)),
@@ -395,9 +405,9 @@ define(['app', 'uuid'], function (app, uuid) {
 							v = Hualala.TypeDef.OrderFoodItemType.ORDER;
 							break;
 						case 'foodKey':
-							v = notesType + '-' + addPriceType;
+							v = notesType + '-' + addPriceType + '-' + pItemKey;
 							break;
-						case 'isWaitConfirmNumber':
+						case 'isNeedConfirmFoodNumber':
 							v = '';
 							break;
 						case 'isSetFood':
@@ -410,7 +420,14 @@ define(['app', 'uuid'], function (app, uuid) {
 							break;
 						case 'foodProPrice':
 						case 'foodPayPrice':
+						case 'foodVipPrice':
 							v = _.result(item, 'addPriceValue', 0);
+							break;
+						case 'unitAdjuvant':
+							v = _.result(food, 'unitAdjuvant', "");
+							break;
+						case 'unitAdjuvantNumber':
+							v = "0";
 							break;
 						case 'foodSendNumber':
 						case 'foodCancelNumber':
@@ -480,8 +497,17 @@ define(['app', 'uuid'], function (app, uuid) {
 					foodLst = _.result(setFoodDetailJson, 'foodLst', []);
 				self.OrderFoodHT.register(itemKey, item);
 				self.OrderFoodHT.insertBefore(itemKey, firstKey);
-				_.each(foodLst.reverse(), function (f) {
-					self.insertSetFoodDetailItem(f, item);
+				// 遍历套餐中各个分类
+				// 过滤每个分类中选中的菜品
+				// 将选中菜品插入到订单列表数据字典中
+				_.each(foodLst.reverse(), function (cate) {
+					var items = _.result(cate, 'items');
+					_.each(items, function (f) {
+						var selected = _.result(f, 'selected');
+						if (selected == 1) {
+							self.insertSetFoodDetailItem(f, item);
+						}
+					});
 				});
 				return item;
 			};
@@ -604,10 +630,11 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.updateOrderItemCount = function (itemKey, step, count) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
-					printStatus = _.result(item, 'printStatus', 0);
+					printStatus = _.result(item, 'printStatus', "0"),
+					isNeedConfirmFoodNumber = _.result(item, 'isNeedConfirmFoodNumber', "0");
 				step = parseFloat(step);
 				count = parseFloat(count);
-				if (printStatus != 0 ) return;
+				if (printStatus != 0 && isNeedConfirmFoodNumber == 0) return;
 				if (step > 0) {
 					// 加数量
 					item.foodNumber += step;
@@ -622,6 +649,48 @@ define(['app', 'uuid'], function (app, uuid) {
 					self.deleteOrderItem(itemKey);
 					return null;
 				}
+				// 1. 如果当前条目为普通菜品主条目
+				// 	改变主条目的数量
+				// 	同时查找主条目下的作法子条目
+				// 	如果有作法子条目并且是按数量加价的作法
+				// 	更新作法子条目的数量
+				// 2. 如果当前条目为套餐菜品主条目
+				// 	改变主条目数量
+				// 	同时查找主条目下的所有子条目
+				// 	如果子条目为套餐明细菜品
+				// 	更新套餐明细菜品数量
+				// 	如果子条目是套餐主条目的作法节点，并且是按量加价类型的作法
+				// 	更新作法子条目的数量
+				// 	如果子条目是套餐明细菜品的作法子条目，并且是按量加价类型的作法
+				// 	更新作法子条目的数量
+				// 
+				var childrenItems = self.getOrderChildrenItemsByItemKey(itemKey);
+				_.each(childrenItems, function (child) {
+					var childItemKey = _.result(child, 'itemKey'),
+						childType = self.orderFoodItemType(childItemKey),
+						parentFoodFromItemKey = _.result(child, 'parentFoodFromItemKey'),
+						addPriceType = null;
+					if (itemType.isCommonFood) {
+						addPriceType = _.result(child, 'foodKey', '').split('-')[1];
+						if (childType.isFoodMethod && addPriceType == 2) {
+							// child['foodNumber'] = item.foodNumber;
+							self.updateOrderItemCount(childItemKey, 0, _.result(item, 'foodNumber', 0));
+						}
+					} else if (itemType.isSetFood) {
+						addPriceType = _.result(child, 'foodKey', '').split('-')[1];
+						if (childType.isFoodMethod && parentFoodFromItemKey == itemKey && addPriceType == 2) {
+							// child['foodNumber'] = item.foodNumber;
+							self.updateOrderItemCount(childItemKey, 0, _.result(item, 'foodNumber', 0));
+						} else if (childType.isSetFoodDetail) {
+							self.updateOrderItemCount(childItemKey, 0, _.result(item, 'foodNumber', 0));
+						} else if (childType.isFoodMethod && parentFoodFromItemKey != itemKey && addPriceType == 2) {
+							var _pItem = self.getParentFoodItemByItemKey(childItemKey);
+							self.updateOrderItemCount(childItemKey, 0, _.result(_pItem, 'foodNumber', 0));
+						}
+					}
+				});
+				
+				
 				return item;
 			};
 
@@ -642,8 +711,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				item.sendReason = sendReason;
 				if (printStatus != 0) {
 					// TODO 已落单菜品修改赠送， 更新数据字典后，要直接提交，并刷新订单数据
-					
+					callServer = self.foodOperation('ZC', [itemKey]);
 				}
+				return callServer;
 			};
 
 			/**
@@ -657,13 +727,15 @@ define(['app', 'uuid'], function (app, uuid) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', 0); 
+				var callServer = null;
 				if (itemType.isFoodMethod || itemType.isNotExist) return;
 				item.foodCancelNumber = cancelNumber;
 				item.cancelReason = cancelReason;
 				if (printStatus != 0) {
 					// TODO 已落单菜品修改退菜， 更新数据字典后，要直接提交，并刷新订单数据
-					
+					callServer = self.foodOperation('TC', [itemKey]);
 				}
+				return callServer;
 			};
 
 			/**
@@ -711,7 +783,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.updateOrderFoodMethod = function (itemKey, methodSetting) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
-					printStatus = _.result(item, 'printStatus', 0),
+					printStatus = _.result(item, 'printStatus', "0"),
 					_methodItem = self.getOrderFoodMethodItem(itemKey); 
 				if (itemType.isNotExist) return;
 				// TODO 判断菜品是否有作法节点，如果有，删除作法节点
@@ -731,28 +803,148 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.updateOrderFoodPrice = function (itemKey, foodPrice, priceNote) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
-					printStatus = _.result(item, 'printStatus', 0); 
+					printStatus = _.result(item, 'printStatus', "0"); 
+				var callServer = null;
 				if (itemType.isNotExist) return;
 				// 更新菜品modifyReason字段作为改价原因；更新菜品foodPayPrice作为修改后价格
 				item.modifyReason = priceNote;
 				item.foodPayPrice = foodPrice;
+				item.foodProPrice = foodPrice;
+				item.foodVipPrice = foodPrice;
 				if (printStatus != 0) {
 					// TODO 已落单菜品改价，更新菜品数据字典后，要直接提交，并刷新订单数据
-					
+					callServer = self.foodOperation('GJ', [itemKey]);
 				}
+				return callServer;
+			};
+
+			/**
+			 * 获取订单备注信息
+			 * @return {[type]} [description]
+			 */
+			this.getOrderRemark = function () {
+				return _.result(self._OrderData, 'allFoodRemark', '');
 			};
 
 			/**
 			 * 设置单注信息
-			 * @param  {[type]} orderRemark [description]
+			 * @param  {[type]} allFoodRemark [description]
 			 * @return {[type]}             [description]
 			 */
-			this.updateOrderRemark = function (orderRemark) {
-				self._OrderData['orderRemark'] = orderRemark;
+			this.updateOrderRemark = function (allFoodRemark) {
+				self._OrderData['allFoodRemark'] = allFoodRemark;
 			};
 
+			/**
+			 * 落单操作
+			 * @return {[type]} [description]
+			 */
+			this.submitOrder = function (actionType) {
+				var params = {};
+				var foodItemPostKeys = FoodItemKeys,
+					postKeys = 'actionType,submitBatchNo,orderJson'.split(','),
+					orderKeys = 'saasOrderKey,empCode,empName,bizModel,allFoodRemark,foodLst'.split(','),
+					checkoutKeys = 'serviceAmount,packAmount,discountRate,discountRange,isVipPrice,promotionDesc,invoiceTitle,invoiceAmount,payLst'.split(','),
+					payKeys = 'paySubjectKey,paySubjectCode,paySubjectName,debitAmount,giftItemNoLst,payRemark,payTransNo'.split(','),
+					orderHeaderKeys = 'tablename,channelKey,channelName,orderSubType,person,userName,userSex,userMobile,userAddress,saasOrderRemark'.split(',');
+				var empInfo = storage.get("EMPINFO"),
+					empName = _.result(empInfo, 'empName'),
+					empCode = _.result(empInfo, 'empCode');
+				var shopInfo = storage.get("SHOPINFO"),
+					operationMode = _.result(shopInfo, 'operationMode');
+				var orderHeader = self.getOrderHeaderData(),
+					allFoodRemark = self.getOrderRemark();
+				var saasOrderKey = self.getSaasOrderKey(),
+					foodLst = _.filter(self.OrderFoodHT.getAll(), function (food) {
+						var printStatus = _.result(food, 'printStatus');
+						// 过滤出所有未落单菜品
+						return printStatus != 2;
+					}),
+					// 如果存在未落单菜品需要落单，需要给出批次号（UUID）
+					submitBatchNo = foodLst.length > 0 ? uuid.v4() : '';
+				if (foodLst.length == 0) return null;
 
-			
+				// 过滤出落单需要的订单条目数据
+				foodLst = _.map(foodLst, function (food) {
+					return _.pick(food, foodItemPostKeys);
+				});
+				// 过滤出落单需要的单头信息
+				orderHeader = _.pick(orderHeader, orderHeaderKeys);
+
+				var orderJson = _.extend({
+					saasOrderKey : saasOrderKey,
+					empCode : empCode,
+					empName : empName,
+					bizModel : operationMode,
+					allFoodRemark : allFoodRemark
+				}, orderHeader, {
+					foodLst : foodLst
+				});
+
+				params = _.extend(params, {
+					actionType : actionType,
+					submitBatchNo : submitBatchNo
+				}, {
+					orderJson : orderJson
+				});
+				params = Hualala.Common.formatPostData(params);
+
+				IX.Debug.info("Current Post Order Data:");
+				IX.Debug.info(params);
+				IX.Debug.info(JSON.stringify(params));
+
+				return CommonCallServer.submitOrder(params);
+
+			};
+
+			/**
+			 * 落单菜品条目的操作
+			 * @param  {[type]} actionType [description]
+			 * @param  {[type]} itemKeys    [description]
+			 * @return {[type]}            [description]
+			 */
+			this.foodOperation = function (actionType, itemKeys) {
+				itemKeys = _.isString(itemKeys) ? [itemKeys] : itemKeys;
+				var saasOrderKey = self.getSaasOrderKey();
+				var foodLst = _.map(itemKeys, function (itemKey) {
+					var item = self.getOrderFoodItemByItemKey(itemKey),
+						remark = '',
+						foodNumber = '',
+						modifyFoodPrice = '';
+					var params = {};
+					switch(actionType) {
+						case "GJ":
+							modifyFoodPrice = _.result(item, 'foodPayPrice', "0");
+							remark = _.result(item, 'modifyReason', "");
+							break;
+						case "TC":
+							foodNumber = _.result(item, 'foodCancelNumber', "0");
+							remark = _.result(item, 'cancelReason', "");
+							break;
+						case "ZC":
+							foodNumber = _.result(item, 'foodSendNumber', "0");
+							remark = _.result(item, 'sendReason', "");
+							break;
+					}
+					params = _.extend(params, {
+						itemKey : itemKey,
+						modifyFoodPrice : modifyFoodPrice,
+						foodNumber : foodNumber,
+						remark : remark
+					});
+					return params;
+				});
+				var postData = {
+					actionType : actionType,
+					saasOrderKey : saasOrderKey,
+					foodLst : {
+						foodLst : foodLst	
+					}
+				};
+				IX.Debug.info("Current Food Operation Post Data:");
+				IX.Debug.info(postData);
+				return CommonCallServer.foodOperation(postData);
+			};
 			
 
 		}]

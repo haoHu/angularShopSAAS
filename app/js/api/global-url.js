@@ -29,7 +29,11 @@ define(['IX'], function () {
 		// 根据订单Key获取订单详情数据
 		["getOrderByOrderKey", "/saas/order/getOrderByOrderKey.ajax", "", "POST"],
 		// 修改订单头消息
-		["updateOrderHead", "/saas/order/updateOrderHead.ajax", "", "POST"]
+		["updateOrderHead", "/saas/order/updateOrderHead.ajax", "", "POST"],
+		// 提交订单服务
+		["submitOrder", "/saas/order/submitOrder.ajax", "", "POST"],
+		// 已落单菜品操作
+		["foodOperation", "/saas/order/foodOperation.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

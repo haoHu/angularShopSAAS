@@ -269,4 +269,26 @@
 	};
 	Hualala.Common.smoothScroll = smoothScroll;
 	Hualala.Common.smoothScrollMiddle = smoothScrollMiddle;
+
+	/**
+	 * 格式化Ajax提交数据，所有字段的值都必须转换成字符类型
+	 * @param  {[type]} data [description]
+	 * @return {[type]}      [description]
+	 */
+	var formatPostData = function (data) {
+		if (_.isObject(data)) {
+			return _.mapObject(data, function (v, k) {
+				return formatPostData(v);
+			});
+		} else if (_.isArray(data)) {
+			return _.map(data, function (v, k) {
+				return formatPostData(v);
+			});
+		} else if (_.isNumber(data)) {
+			return data.toString();
+		} else {
+			return data;
+		}
+	};
+	Hualala.Common.formatPostData = formatPostData;
 })(jQuery);
