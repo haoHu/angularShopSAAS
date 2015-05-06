@@ -62,10 +62,10 @@ require.config({
 			deps : ['angular']
 		},
 		'angularLocalStorage' : {
-			dep : ['angular']
+			deps : ['angular']
 		},
 		'angular-cookies' : {
-			dep : ['angular']
+			deps : ['angular']
 		}
 	}
 });

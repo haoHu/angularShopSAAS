@@ -32,6 +32,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "payOrder", active : true, label : "其他结账"},
 				{name : "openCashBox", active : true, label : "开钱箱"}
 			];
+			
 			var shopInfo = storage.get("SHOPINFO"),
 				operationMode = _.result(shopInfo, 'operationMode');
 			$scope.OrderHandleBtns = _.map($scope.OrderHandleBtns, function (btn) {
@@ -718,6 +719,24 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		}
 	]);
 
+	// 提单操作控制器
+	app.controller('PickOrderController', [
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'FoodMenuService',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, FoodMenuService) {
+			IX.ns("Hualala");
+			$scope.OrdersCatch = storage.get('OrderCatch');
+			// 关闭窗口
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+			// 选择要提取的订单
+			$scope.onOrderRemarkChange = function (v) {
+				$scope.orderRemark = v;
+			};
+		}
+	]);
+	
+
 	// 订单列表
 	app.directive('orderlist', [
 		"$rootScope", "$filter", "OrderService", 
@@ -1013,6 +1032,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				link : function (scope, el, attr) {
 					el.on('click', '.btn-block', function (e) {
 						var btn = $(this), act = btn.attr('name');
+						var modalSize = "lg",
+							controller = "",
+							templateUrl = "",
+							resolve = {
+								_scope : function () {
+									return scope;
+								}
+							};
 						switch(act) {
 							case "submitOrder":
 								scope.$apply("submitOrder()");
@@ -1021,8 +1048,17 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								scope.$apply("suspendOrder()");
 								break;
 							case "pickOrder":
-								scope.$apply("pickOrder()");
+								controller = "PickOrderController";
+								templateUrl = "js/diandan/pickOrder.html";
 								break;
+						}
+						if (act == "pickOrder") {
+							$modal.open({
+								size : modalSize,
+								controller : controller,
+								templateUrl : templateUrl,
+								resolve : resolve
+							});
 						}
 					});
 				}
