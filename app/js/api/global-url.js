@@ -25,7 +25,7 @@ define(['IX'], function () {
 		// 获取菜单列表数据
 		["getFoodLst", "/saas/base/getFoodLst.ajax", "", "POST"],
 		// 获取沽清列表
-		["getSoldOutFoodLst", "/bass/getSoldOutFoodLst.ajax", "", "POST"],
+		["getSoldOutFoodLst", "/saas/base/getSoldOutFoodLst.ajax", "", "POST"],
 		// 根据订单Key获取订单详情数据
 		["getOrderByOrderKey", "/saas/order/getOrderByOrderKey.ajax", "", "POST"],
 		// 修改订单头消息

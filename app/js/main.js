@@ -72,8 +72,14 @@ require.config({
 
 require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'matcher', 'uuid'], function (app, _) {
 	if (window.HualalaWorkMode == 'dev') {
-		require(['global-dev-url', 'api'], function () {
+		// require(['global-dev-url', 'api'], function () {
+		// 	angular.bootstrap(document, ['app']);
+		// });
+		require(['global-url', 'api'], function () {
+			Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.15:8080';
+			// Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.42:8080';
 			angular.bootstrap(document, ['app']);
+
 		});
 	} else {
 		require(['global-url', 'api'], function () {

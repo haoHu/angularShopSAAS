@@ -13,7 +13,7 @@
 					<span class="col-xs-4 grid-cell txt">品名</span>
 					<span class="col-xs-2 grid-cell num">数量</span>
 					<span class="col-xs-2 grid-cell unit">规格</span>
-					<span class="col-xs-3 grid-cell price">金额</span>
+					<span class="col-xs-3 grid-cell price">小计</span>
 				</div>
 				<!-- <div>{{curOrderItems.length}}</div> -->
 				<div class="order-list">
@@ -33,7 +33,7 @@
 				<!-- 订单单注 -->
 				<div class="order-remark clearfix">
 					<div class="col-xs-7">
-						<label for="">应收总计</label>
+						<label for="">账单合计</label>
 						<span class="dollar">￥</span>
 						<!-- <span class="cash">58888</span> -->
 						<span class="cash">{{calcOrderAmount()}}</span>
@@ -501,22 +501,114 @@
 			<h4 class="modal-title">提单操作</h4>
 		</div>
 		<div class="modal-body">
-			<div class="row">
-				<div class="col-xs-6" ng-repeat="el in curSetFoodLst">
-					<div class="" >
-						<h4>{{el.foodCategoryName}}({{el.items.length}}选<span class="text-danger">{{el.chooseCount}}</span>)</h4>
-						<div class="btngrp-box " pager-list="loop" pager-data="{{el.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
-							<checkboxgroup group-opts="el.items" checkbox-name="cate_{{$index}}" cur-val="el.selectedFoods" class="btn-group" role="group" data-toggle="buttons" on-change="onSetFoodChange(val, checkboxName)" ></checkboxgroup>
-							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			
+			<ul class="row list-unstyled">
+				<li class="col-xs-4" ng-repeat="el in OrdersCatch" id="el.__catchID" ng-click="onOrderCatchClick(el.__catchID)">
+					<p>订单号:{{el.saasOrderKey}}</p>
+					<p>时间:{{el.startTime | formatDateTimeStr:"yyyy-MM-dd HH:mm:ss"}}</p>
+					<p ng-repeat="food in el.foodLst" ng-if="$index < 4">
+						{{food.foodName}}
+					</p>
+				</li>
+			</ul>
 		</div>
 		<div class="modal-footer">
 			<div class="btn-group btn-group-lg" role="group">
 				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 订单支付操作窗口 -->
+	<script type="text/ng-template" id="js/diandan/payOrder.html">
+		<div class="modal-body">
+			<div class="pay-ctrl">
+				<section class="pay-schema">
+					<header class="schema-header">
+						<h4>结账</h4>
+						<button class="btn btn-default btn-close">返回</button>
+						
+						<div class="row">
+							<label class="col-xs-5 control-label">应收金额</label>
+							<p class="col-xs-7">￥300.05</p>
+						</div>
+					</header>
+					<section class="schema-body">
+						<div class="list-group">
+							<a href="#" class="list-group-item clearfix">
+								<label class="col-xs-5">账单元整</label>
+								<p class="col-xs-4">￥0.5</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item  clearfix">
+								<label class="col-xs-5">账单打折</label>
+								<p class="col-xs-4">50%</p>
+								<p class="col-xs-12">8折，部分菜品打折</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item  clearfix">
+								<label class="col-xs-5">账单减免</label>
+								<p class="col-xs-4">￥10</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item active  clearfix">
+								<label class="col-xs-5">现金</label>
+								<p class="col-xs-4">￥40</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item  clearfix">
+								<label class="col-xs-5">银行卡</label>
+								<p class="col-xs-12">招商银行：￥200</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item  clearfix">
+								<label class="col-xs-5">会员卡</label>
+								<p class="col-xs-4">￥420</p>
+								<p class="col-xs-12">卡号：123112331234，积分：20，储值：200，代金券：20</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item clearfix">
+								<label class="col-xs-5">哗啦啦</label>
+								<p class="col-xs-4">￥100</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item clearfix">
+								<label class="col-xs-5">团购</label>
+								<p class="col-xs-4">￥100</p>
+								<p class="col-xs-12">美团券100</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item clearfix">
+								<label class="col-xs-5">代金券</label>
+								<p class="col-xs-4">￥100</p>
+								<p class="col-xs-12">现金券100</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+							<a href="#" class="list-group-item clearfix">
+								<label class="col-xs-5">挂账</label>
+								<p class="col-xs-4">￥100</p>
+								<p class="col-xs-12">中纪委：100</p>
+								<button class="btn btn-default">取消</button>
+							</a>
+						</div>
+					</section>
+					<footer class="schema-footer">
+						<div class="row">
+							<label class="col-xs-5 control-label">未付</label>
+							<p class="col-xs-7">￥300.05</p>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<button type="button" class="btn btn-default btn-block">开钱箱</button>
+							</div>
+							<div class="col-xs-6">
+								<button type="button" class="btn btn-default btn-block">打印结账清单</button>
+							</div>
+						</div>
+						<button type="button" class="btn btn-default btn-block">完成结账</button>
+					</footer>
+				</section>
+				<section class="pay-subject">
+				
+				</section>
 			</div>
 		</div>
 	</script>

@@ -44,15 +44,17 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			});
 			var tmpSearchFoods = null;
 
-
-
-
-			// 获取订单数据
-			OrderService.getOrderByOrderKey(urlParams, function (data) {
+			var resetOrderInfo = function () {
 				$scope.orderHeader = OrderService.getOrderHeaderData();
 				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
 				$scope.curOrderRemark = OrderService.getOrderRemark();
 				$scope.curOrderRemark = _.isEmpty($scope.curOrderRemark) ? '单注' : $scope.curOrderRemark;
+			};
+
+
+			// 获取订单数据
+			OrderService.getOrderByOrderKey(urlParams, function (data) {
+				resetOrderInfo();
 				// IX.Debug.info("Order Header Info:");
 				// IX.Debug.info($scope.orderHeader);
 				IX.Debug.info("Order List Info:");
@@ -134,20 +136,29 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 搜索菜品操作
 			$scope.searchFood = function () {
 				console.info($scope.curSearchKey);
-				var matchedFoods = FoodMenuService.searchFoodsByFoodCode($scope.curSearchKey);
-				if (_.isEqual(tmpSearchFoods, matchedFoods)) {
-					return;
-				} else {
-					$('.menu-plain .foods').addClass('hidden');
-					tmpSearchFoods = matchedFoods;
-					$scope.curFoods = matchedFoods;
-					IX.Debug.info("Matched Foods:");
-					IX.Debug.info(matchedFoods);
-					setTimeout(function () {
-						$('.menu-plain .foods').removeClass('hidden');
-					}, 100);
-				}
+				// var matchedFoods = FoodMenuService.searchFoodsByFoodCode($scope.curSearchKey);
+				// if (_.isEqual(tmpSearchFoods, matchedFoods)) {
+				// 	return;
+				// } else {
+				// 	$('.menu-plain .foods').addClass('hidden');
+				// 	tmpSearchFoods = matchedFoods;
+				// 	$scope.curFoods = matchedFoods;
+				// 	IX.Debug.info("Matched Foods:");
+				// 	IX.Debug.info(matchedFoods);
+				// 	setTimeout(function () {
+				// 		$('.menu-plain .foods').removeClass('hidden');
+				// 	}, 100);
+				// }
 				
+				var matchedFoods = FoodMenuService.searchFoodsByFoodCode($scope.curSearchKey);
+				$('.menu-plain .foods').addClass('hidden');
+
+				$scope.curFoods = matchedFoods.slice(0, 35);
+				IX.Debug.info("Matched Foods:");
+				IX.Debug.info(matchedFoods);
+				$('.menu-plain .foods').removeClass('hidden');
+
+
 			};
 
 			// 为菜品分类绑定事件
@@ -337,11 +348,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 挂单操作
 			$scope.suspendOrder = function () {
 				OrderService.suspendOrder();
+				resetOrderInfo();
 			};
 
 			// 提单操作
-			$scope.pickOrder = function () {
-				OrderService.pickOrder();
+			$scope.pickOrder = function (catchID) {
+				OrderService.pickOrder(catchID);
+				resetOrderInfo();
 			};
 
 		}
@@ -721,8 +734,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 提单操作控制器
 	app.controller('PickOrderController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'FoodMenuService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, FoodMenuService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderNoteService', 'OrderService', 'FoodMenuService',
+		function ($scope, $modalInstance, $filter, _scope, storage, OrderNoteService, OrderService, FoodMenuService) {
 			IX.ns("Hualala");
 			$scope.OrdersCatch = storage.get('OrderCatch');
 			// 关闭窗口
@@ -730,8 +743,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				$modalInstance.close();
 			};
 			// 选择要提取的订单
-			$scope.onOrderRemarkChange = function (v) {
-				$scope.orderRemark = v;
+			$scope.onOrderCatchClick = function (catchID) {
+				_scope.pickOrder(catchID);
+				$modalInstance.close();
+			};
+		}
+	]);
+
+
+	// 订单支付操作控制器
+	app.controller('PayOrderController', [
+		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderNoteService', 'OrderService', 'FoodMenuService',
+		function ($scope, $modalInstance, $filter, _scope, storage, OrderNoteService, OrderService, FoodMenuService) {
+			IX.ns("Hualala");
+			// 关闭窗口
+			$scope.close = function () {
+				$modalInstance.close();
 			};
 		}
 	]);
@@ -1051,10 +1078,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								controller = "PickOrderController";
 								templateUrl = "js/diandan/pickOrder.html";
 								break;
+							case "payOrder":
+							case "cashPayOrder":
+								controller = "PayOrderController";
+								templateUrl = "js/diandan/payOrder.html";
+								break;
 						}
-						if (act == "pickOrder") {
+						if (act == "pickOrder" || act == "payOrder" || act == "cashPayOrder") {
 							$modal.open({
 								size : modalSize,
+								windowClass : act == 'pickOrder' ? "" : "pay-modal",
 								controller : controller,
 								templateUrl : templateUrl,
 								resolve : resolve
@@ -1065,6 +1098,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};
 		}
 	]);
+
+
+	
 
 });
 

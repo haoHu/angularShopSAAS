@@ -308,12 +308,63 @@
 	}
 }
 
+// 搜索菜品窗口
 #search_food {
 	> .modal-dialog {
 		position : absolute;
 		right : 0;
 		top : 0;
 		margin : 0;
+	}
+
+}
+
+// 支付窗口
+.pay-modal {
+	.modal-dialog {
+		position : absolute; left : 372px; right : 0; top : 0; bottom : 6rem;
+		margin : 0; padding : 0; width : auto!important;
+		> .modal-content, .modal-body, .pay-ctrl {height : 100%; width : 100%; padding : 0; margin : 0;}
+	}
+	.pay-ctrl {
+		position : relative; display: -webkit-box; display: -moz-box; display: -ms-flexbox;
+		-webkit-box-orient : horizontal; -moz-box-orient : horizontal; -ms-box-orient : horizontal; -o-box-orient : horizontal; box-orient : horizontal;
+		
+		.pay-schema {
+			width : 35%;
+			// -webkit-box-flex : 1; -moz-box-flex : 1; -ms-box-flex : 1; -o-box-flex : 1; -box-flex : 1; outline: 1px solid blue;
+			position : relative; display: -webkit-box; display: -moz-box; display: -ms-box;
+			-webkit-box-orient : vertical; -moz-box-orient : vertical; -ms-box-orient : vertical; -o-box-orient : vertical; box-orient : vertical;
+			border-right : 1px solid @xBaseBorderColor;
+			> header {
+				-webkit-box-flex : 1;
+				-webkit-box-flex-group : 2;
+				.btn-close {position : absolute; right : 0; top : 0;}
+			}
+			> section {
+				-webkit-box-flex : 1;
+				-webkit-box-flex-group : 1;
+				outline: #123;
+				.list-group-item {
+					padding : 0; position : relative;
+					.btn-default {position : absolute; right : 0; }
+				}
+				.list-group-item.active {
+					background-color: #265a88!important; color : #fff!important;
+				}
+			}
+			> footer {
+				-webkit-box-flex : 1;
+				-webkit-box-flex-group : 2;
+			}
+			.form-group, .list-group {
+				margin : 0;
+			}
+		}
+		.pay-subject {
+			-webkit-box-flex : 1; -moz-box-flex : 1; -ms-box-flex : 1; -o-box-flex : 1; -box-flex : 1;
+			outline: 1px solid red;
+		}	
 	}
 
 }

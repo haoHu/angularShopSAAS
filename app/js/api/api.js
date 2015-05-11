@@ -3,6 +3,8 @@ define(['app'], function(app){
 
 	var ajaxEngine = Hualala.ajaxEngine;
 	var AjaxMappingURLs = Hualala.Global.AjaxMappingURLs;
+	// var AjaxDomain = window.HualalaWorkMode == 'dev' ? 'http://10.10.2.15:8080' : Hualala.Global.AJAX_DOMAIN;
+
 	// /**
 	//  * 接口库的维护
 	//  * @type {Array}	[apiName, apiPath, urlType, method]
@@ -34,17 +36,30 @@ define(['app'], function(app){
 		app.factory('CommonCallServer', ['$http', function ($http) {
 			var ret = {};
 			var doRequest = function (pdata, apiCfg) {
+				var AjaxDomain = Hualala.Global.AJAX_DOMAIN;
 				var name = apiCfg.name, url = apiCfg.url, 
 					urlType = apiCfg.urlType || 'ajax', type = apiCfg.type;
-				var ajaxUrl = Hualala.Global.AJAX_DOMAIN + url;
+				var ajaxUrl = AjaxDomain + url;
 				var params = !pdata ? {} : pdata;
+				console.info(params);
+				// 由于Angular采用postJSON方式发送数据到后台，所以form-data字段会变成json字符串
+				// 处理方法就是Angular中使用transformRequest，进行转换，利用jQuery的$.param将postJOSN解析成paras
+				var transFn = function (data) {
+					return $.param(data);
+				};
 				return $http({
 					method : type,
 					url : ajaxUrl,
-					data : JSON.stringify(params),
+					// data : JSON.stringify(params),
+					data : params,
 					headers : {
-						"Content-Type" : "application/json; charset=UTF-8"
-					}
+						// "Content-Type" : "application/json; charset=UTF-8"
+						"Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8",
+						// "X-Requested-With" : "XMLHttpRequest",
+						"Accept" : "*/*"
+					},
+					transformRequest : transFn,
+					withCredentials : true
 				});
 			};
 			_.each(ajaxAPICfgs, function (apiCfg) {

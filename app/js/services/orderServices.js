@@ -176,13 +176,17 @@ define(['app', 'uuid'], function (app, uuid) {
 						var v = '';
 						switch (k) {
 							case "orderSubType":
-								v = 0;
+								v = "0";
 								break;
 							case "person":
-								v = 1;
+								v = "1";
 								break;
 							case "createBy":
 								v = _.result(storage.get('EMPINFO'), 'empCode');
+								break;
+							case "startTime":
+								v = Hualala.Date(parseInt((new Date()).getTime() / 1000)).toText();
+								v = IX.Date.getDateByFormat(v, 'yyyyMMddHHmmss');
 								break;
 							default :
 								v = '';
@@ -424,7 +428,7 @@ define(['app', 'uuid'], function (app, uuid) {
 							v = _.result(item, 'addPriceValue', 0);
 							break;
 						case 'unitAdjuvant':
-							v = _.result(food, 'unitAdjuvant', "");
+							v = _.result(item, 'unitAdjuvant', "");
 							break;
 						case 'unitAdjuvantNumber':
 							v = "0";
@@ -637,10 +641,10 @@ define(['app', 'uuid'], function (app, uuid) {
 				if (printStatus != 0 && isNeedConfirmFoodNumber == 0) return;
 				if (step > 0) {
 					// 加数量
-					item.foodNumber += step;
+					item.foodNumber = parseFloat(item.foodNumber) + step;
 				} else if (step < 0) {
 					// 减数量
-					item.foodNumber += step;
+					item.foodNumber = parseFloat(item.foodNumber) + step;
 				} else if(step == 0 && count >= 0) {
 					item.foodNumber = count;
 				}
@@ -706,6 +710,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', 0);
+				var callServer = null;
 				if (itemType.isFoodMethod || itemType.isNotExist) return;
 				item.foodSendNumber = sendNumber;
 				item.sendReason = sendReason;
@@ -880,12 +885,13 @@ define(['app', 'uuid'], function (app, uuid) {
 				}, orderHeader, {
 					foodLst : foodLst
 				});
+				orderJson = Hualala.Common.formatPostData(orderJson);
 
 				params = _.extend(params, {
 					actionType : actionType,
 					submitBatchNo : submitBatchNo
 				}, {
-					orderJson : orderJson
+					orderJson : JSON.stringify(orderJson)
 				});
 				params = Hualala.Common.formatPostData(params);
 
@@ -939,9 +945,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				var postData = {
 					actionType : actionType,
 					saasOrderKey : saasOrderKey,
-					foodLst : {
-						foodLst : foodLst	
-					}
+					foodLst : foodLst
 				};
 				IX.Debug.info("Current Food Operation Post Data:");
 				IX.Debug.info(postData);
@@ -964,7 +968,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					foodLst : foodLst,
 					__catchID : catchID
 				});
-				
+				if (foodLst.length == 0) return;
 				IX.Debug.info("Current Order Data:");
 				IX.Debug.info(order);
 				var ordersCatch = storage.get('OrderCatch');
@@ -981,6 +985,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				}
 				ordersCatch.push(order);
 				storage.set('OrderCatch', ordersCatch);
+				self.initOrderFoodDB();
 
 			};
 

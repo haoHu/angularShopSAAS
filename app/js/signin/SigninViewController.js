@@ -24,6 +24,7 @@ define(['app'], function (app) {
 
 		// 登录操作
 		$scope.submitForm = function () {
+			IX.Debug.info($scope.login);
 			CommonCallServer.empLogin($scope.login)
 				.success(function (data, status) {
 					
@@ -41,7 +42,7 @@ define(['app'], function (app) {
 		};
 		
 		// 初始化登录表单数据
-		$scope.reset = function (shopInfo) {
+		$scope.reset = function () {
 			$scope.login = {
 				shopName : $XP(shopInfo, 'shopName', ''),
 				deviceCode : $XP(shopInfo, 'deviceCode', ''),
@@ -50,7 +51,7 @@ define(['app'], function (app) {
 			};
 		};
 
-		$scope.reset(shopInfo);
+		$scope.reset();
 	}]);
 
 });
