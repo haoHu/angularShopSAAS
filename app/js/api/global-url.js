@@ -33,7 +33,11 @@ define(['IX'], function () {
 		// 提交订单服务
 		["submitOrder", "/saas/order/submitOrder.ajax", "", "POST"],
 		// 已落单菜品操作
-		["foodOperation", "/saas/order/foodOperation.ajax", "", "POST"]
+		["foodOperation", "/saas/order/foodOperation.ajax", "", "POST"],
+		// 获取支付科目列表字典信息
+		["getPaySubjectLst", "/saas/base/getPaySubjectLst.ajax", "", "POST"],
+		// 获取订单打折方案列表
+		["getDiscountRuleLst", "/saas/base/getDiscountRuleLst.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

@@ -370,7 +370,7 @@ body {
 }
 .section-diandan .order-body .food-item .foodremark > .txt:first-child:before,
 .section-diandan .order-body .food-child-item .foodremark > .txt:first-child:before {
-  content: "[味]";
+  content: "[注]";
 }
 .section-diandan .order-body .food-item .modifyprice > .txt:first-child:before,
 .section-diandan .order-body .food-child-item .modifyprice > .txt:first-child:before {
@@ -475,7 +475,7 @@ body {
   left: 372px;
   right: 0;
   top: 0;
-  bottom: 6rem;
+  bottom: 0;
   margin: 0;
   padding: 0;
   width: auto!important;
@@ -512,9 +512,25 @@ body {
   box-orient: vertical;
   border-right: 1px solid #e6e6e6;
 }
+.pay-modal .pay-ctrl .pay-schema label,
+.pay-modal .pay-ctrl .pay-schema p {
+  margin-bottom: 0;
+  margin-top: .5rem;
+}
+.pay-modal .pay-ctrl .pay-schema p {
+  padding: 0 0.5rem 0 1rem;
+  font-size: 1rem;
+}
+.pay-modal .pay-ctrl .pay-schema label,
+.pay-modal .pay-ctrl .pay-schema p.sum {
+  font-size: 1.5rem;
+  color: #111;
+  padding: 0 0.5rem;
+}
 .pay-modal .pay-ctrl .pay-schema > header {
   -webkit-box-flex: 1;
   -webkit-box-flex-group: 2;
+  margin-bottom: .5rem;
 }
 .pay-modal .pay-ctrl .pay-schema > header .btn-close {
   position: absolute;
@@ -529,6 +545,8 @@ body {
 .pay-modal .pay-ctrl .pay-schema > section .list-group-item {
   padding: 0;
   position: relative;
+  min-height: 3rem;
+  cursor: pointer;
 }
 .pay-modal .pay-ctrl .pay-schema > section .list-group-item .btn-default {
   position: absolute;
@@ -536,6 +554,9 @@ body {
 }
 .pay-modal .pay-ctrl .pay-schema > section .list-group-item.active {
   background-color: #265a88!important;
+}
+.pay-modal .pay-ctrl .pay-schema > section .list-group-item.active label,
+.pay-modal .pay-ctrl .pay-schema > section .list-group-item.active p {
   color: #fff!important;
 }
 .pay-modal .pay-ctrl .pay-schema > footer {
@@ -552,5 +573,48 @@ body {
   -ms-box-flex: 1;
   -o-box-flex: 1;
   -box-flex: 1;
-  outline: 1px solid red;
+  position: relative;
+  height: 100%;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-box;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -ms-box-orient: vertical;
+  -o-box-orient: vertical;
+  box-orient: vertical;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel > .panel-heading,
+.pay-modal .pay-ctrl .pay-subject > .panel > .panel-footer {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 2;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel > .panel-body {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 1;
+}
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-move,
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-enter,
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-leave {
+  -webkit-transition: all linear 0.5s;
+  transition: all linear 0.5s;
+}
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-leave.ng-leave-active,
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-move,
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-enter {
+  opacity: 0;
+  max-height: 0;
+}
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-leave,
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-move.ng-move-active,
+.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-enter.ng-enter-active {
+  opacity: 1;
 }

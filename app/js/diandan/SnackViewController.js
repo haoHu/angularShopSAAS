@@ -44,21 +44,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			});
 			var tmpSearchFoods = null;
 
-			var resetOrderInfo = function () {
+			$scope.resetOrderInfo = function () {
 				$scope.orderHeader = OrderService.getOrderHeaderData();
 				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
 				$scope.curOrderRemark = OrderService.getOrderRemark();
 				$scope.curOrderRemark = _.isEmpty($scope.curOrderRemark) ? '单注' : $scope.curOrderRemark;
+				IX.Debug.info("Order List Info:");
+				IX.Debug.info($scope.curOrderItems);
 			};
 
 
 			// 获取订单数据
 			OrderService.getOrderByOrderKey(urlParams, function (data) {
-				resetOrderInfo();
-				// IX.Debug.info("Order Header Info:");
-				// IX.Debug.info($scope.orderHeader);
-				IX.Debug.info("Order List Info:");
-				IX.Debug.info($scope.curOrderItems);
+				$scope.resetOrderInfo();
 			}, function (data) {
 				HC.TopTip.addTopTips($scope, data);
 			});
@@ -333,28 +331,29 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				callServer.success(function (data, status, headers, config) {
 						var ret = _.result(data, 'data', {});
 						OrderService.initOrderFoodDB(ret);
-						$scope.orderHeader = OrderService.getOrderHeaderData();
-						$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
-						$scope.curOrderRemark = OrderService.getOrderRemark();
-						$scope.curOrderRemark = _.isEmpty($scope.curOrderRemark) ? '单注' : $scope.curOrderRemark;
-						IX.Debug.info("Order List Info:");
-						IX.Debug.info($scope.curOrderItems);
+						$scope.resetOrderInfo();
+						// $scope.orderHeader = OrderService.getOrderHeaderData();
+						// $scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
+						// $scope.curOrderRemark = OrderService.getOrderRemark();
+						// $scope.curOrderRemark = _.isEmpty($scope.curOrderRemark) ? '单注' : $scope.curOrderRemark;
+						
 					})
 					.error(function (data, status, headers, config) {
 						
 					});
+				return callServer;
 			};
 
 			// 挂单操作
 			$scope.suspendOrder = function () {
 				OrderService.suspendOrder();
-				resetOrderInfo();
+				$scope.resetOrderInfo();
 			};
 
 			// 提单操作
 			$scope.pickOrder = function (catchID) {
 				OrderService.pickOrder(catchID);
-				resetOrderInfo();
+				$scope.resetOrderInfo();
 			};
 
 		}
@@ -753,13 +752,224 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderNoteService', 'OrderService', 'FoodMenuService',
-		function ($scope, $modalInstance, $filter, _scope, storage, OrderNoteService, OrderService, FoodMenuService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService',
+		function ($scope, $modalInstance, $filter, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService) {
 			IX.ns("Hualala");
+			$scope.orderPayDetail = OrderPayService.mapOrderPayDetail();
+			IX.Debug.info("OrderPayDetail:")
+			IX.Debug.info($scope.orderPayDetail);
+			$scope.payFormCfg = {
+				"cashPay" : [
+					{label : "实收", name : "realPrice", value : "", disabled : false},
+					{label : "找零", name : "change", value : "", disabled : true}
+				],
+				"remissionPay" : [
+					{label : "减免金额", name : "realPrice", value : "", disabled : false}
+				],
+				"voucherPay" : [
+					{label : "抵扣金额", name : "realPrice", value : "", disabled : false}
+				],
+				"hualalaPay" : [
+					{label : "金额", name : "realPrice", value : "", disabled : false}
+				],
+				"hangingPay" : [
+					{label : "金额", name : "realPrice", value : "", disabled : false}
+				],
+				"bankCardPay" : [
+					{label : "金额", name : "realPrice", value : "", disabled : false}
+				],
+				"groupBuyPay" : [
+					{label : "金额", name : "realPrice", value : "", disabled : false}
+				]
+			};
+			
+			// 当前选中支付科目组名称
+			$scope.curPaySubjectGrpName = "cashPay";
+			
+			$scope.isHiddenPrice = function (v) {
+				console.info(v);
+				return parseFloat(v) == 0;
+			};
+			// 判断是否空字符串
+			$scope.isNotEmptyStr = function (v) {
+				return !_.isEmpty(v);
+			};
+			// 判断是否不可选择的支付科目
+			$scope.isDisabledPaySubjectGrp = function (paySubjectGrp) {
+				var name = _.result(paySubjectGrp, 'name'),
+					disabledKeys = "sendFoodPromotionPay,vipPricePromotionPay,wipeZeroPay".split(",");
+				return _.find(disabledKeys, function (k) {return k == name;});
+			};
+			// 判断是当前选中支付科目组名称
+			$scope.isCurPaySubjectGrpName = function (name) {
+				return name == $scope.curPaySubjectGrpName;
+			};
+			// 判断是可以隐藏的支付科目组
+			$scope.isHiddenPaySubjectGrp = function (paySubjectGrp) {
+				var name = _.result(paySubjectGrp, 'name'),
+					amount = _.result(paySubjectGrp, 'amount');
+				return name == "sendFoodPromotionPay" && amount == 0;
+			};
+			// 判断支付科目组有支付金额
+			$scope.isNotZeroAmount = function (paySubjectGrp) {
+				var amount = _.result(paySubjectGrp, 'amount'),
+					name = _.result(paySubjectGrp, 'name');
+				return amount != 0 && name != "sendFoodPromotionPay";
+			};
+			// 切换支付科目组
+			$scope.changeCurrentPaySubjectGrp = function (paySubjectGrp) {
+				var name = _.result(paySubjectGrp, 'name');
+				if ($scope.isDisabledPaySubjectGrp(paySubjectGrp)) return;
+				$scope.curPaySubjectGrpName = name;
+			};
+			// 获取当前支付科目组的类型
+			$scope.getPayFormType = function (paySubjectGrp) {
+				var name = _.result(paySubjectGrp, 'name');
+				return (name == 'vipCardPay' ? 'vip' : 'common');
+			};
 			// 关闭窗口
 			$scope.close = function () {
 				$modalInstance.close();
 			};
+			// 支付科目组提交
+			$scope.submitPayForm = function (paySubjectGrp) {
+				var name = _.result(paySubjectGrp, 'name');
+				$scope.$broadcast('pay.submit', paySubjectGrp);
+			};
+			// 取消支付科目组支付金额
+			$scope.resetPaySubject = function (paySubjectGrp) {
+				var name = _.result(paySubjectGrp, 'name'),
+					items = _.result(paySubjectGrp, 'items', []);
+				var subjectCodes = _.pluck(items, 'subjectCode');
+				OrderPayService.deletePaySubjectItem(subjectCodes);
+				$scope.$broadcast('pay.detailUpdate');
+			};		
+
+			// 绑定更新支付详情事件
+			$scope.$on('pay.detailUpdate', function () {
+				$scope.orderPayDetail = OrderPayService.mapOrderPayDetail();
+			});
+		}
+	]);
+
+	// 通用支付科目表单
+	app.directive('commonpayform', [
+		"$rootScope", "$filter", "OrderService", "OrderPayService",
+		function ($rootScope, $filter, OrderService, OrderPayService) {
+			return {
+				restrict : 'E',
+				templateUrl : 'js/diandan/commonpayform.html',
+				scope : {
+					paySubjectGrp : '=paySubjectGrp',
+					formCfg : '=formCfg'
+				},
+				replace : true,
+				link : function (scope, el, attr) {
+					IX.ns("Hualala");
+					var HCMath = Hualala.Common.Math;
+					var curPayGrpName = scope.paySubjectGrp.name;
+					var mapFormCfg = function () {
+						var formCfg = scope.formCfg;
+						var prePayAmount = OrderPayService.preCalcPayAmountByPaySubjectGrpName(curPayGrpName);
+						switch(curPayGrpName) {
+							case "cashPay":
+							case "remissionPay":
+							case "voucherPay":
+							case "hualalaPay":
+								_.each(formCfg, function (el) {
+									var name = _.result(el, 'name');
+									if (name == 'realPrice') {
+										el.value = prePayAmount;
+									} else {
+										el.value = 0;
+									}
+								});
+								
+								break;
+						}
+					};
+					var initPayForm = function () {
+						// 整理支付表单数据
+						mapFormCfg();
+					};
+					initPayForm();
+					el.on('change', 'input[name=realPrice]', function (e) {
+						var txtEl = $(this), v = txtEl.val();
+						var changeEl = el.find('input[name=change]');
+						var prePayAmount = OrderPayService.preCalcPayAmountByPaySubjectGrpName(curPayGrpName);
+						var changeVal = HCMath.sub(prePayAmount, v);
+						changeEl.val(changeVal);
+					});
+					scope.needLeftBar = function (name) {
+						var curName = scope.paySubjectGrp.name;
+						var leftBarNames = 'discountPay,bankCardPay,groupBuyPay,hangingPay'.split(',');
+						return _.find(leftBarNames, function (k) {
+							return k == curName;
+						});
+					};
+					scope.$on('pay.submit', function (d, targetPaySubjectGrp) {
+						var curName = scope.paySubjectGrp.name,
+							tarName = targetPaySubjectGrp.name;
+						if (curName != tarName) return;	
+						switch(curName) {
+							case "cashPay":
+							case "remissionPay":
+							case "voucherPay":
+							case "hualalaPay":
+								var realPriceEl = el.find('input[name=realPrice]');
+								var prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName(curName));
+								var realPay = parseFloat(realPriceEl.val());
+								var delta = HCMath.sub(prePayAmount, realPay);
+								var payRemark = '';
+								if (delta < 0 && curName == 'cashPay') {
+									payRemark = '实收:' + realPay + ';找零:' + delta;
+									realPay = prePayAmount;
+								}
+								OrderPayService.updatePaySubjectItem(curName, {
+									debitAmount : realPay,
+									payRemark : payRemark
+								});
+								break;
+						}
+						scope.$emit('pay.detailUpdate');
+						initPayForm();
+						console.info(d);
+						console.info(targetPaySubjectGrp);
+						console.info(scope);
+						console.info(el);
+						console.info(attr);
+						d.preventDefault();
+						return ;
+					});
+
+					
+				}
+			}
+		}
+	]);
+
+	// 会员卡支付科目表单
+	app.directive('vippayform', [
+		"$rootScope", "$filter", "OrderService", "OrderPayService",
+		function ($rootScope, $filter, OrderService, OrderPayService) {
+			return {
+				restrict : 'E',
+				templateUrl : 'js/diandan/vippayform.html',
+				scope : {
+					paySubjectGrp : '=paySubjectGrp'
+				},
+				replace : true,
+				link : function (scope, el, attr) {
+					scope.$on('pay.submit', function (d, targetPaySubjectGrp) {
+						var curName = scope.paySubjectGrp.name,
+							tarName = targetPaySubjectGrp.name;
+						if (curName != tarName) return;	
+						
+						console.info(data);
+						return ;
+					})
+				}
+			}
 		}
 	]);
 	
@@ -1039,8 +1249,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	
 	// 订单操作按钮组
 	app.directive('orderhandlebtns', [
-		"$modal", "$rootScope", "$filter", "OrderService",
-		function ($modal, $rootScope, $filter, OrderService) {
+		"$modal", "$rootScope", "$filter", "OrderService", "OrderPayService",
+		function ($modal, $rootScope, $filter, OrderService, OrderPayService) {
 			return {
 				restrict : 'E',
 				template : [
@@ -1057,6 +1267,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				].join(''),
 				replace : true,
 				link : function (scope, el, attr) {
+					var submitOrder = null;
 					el.on('click', '.btn-block', function (e) {
 						var btn = $(this), act = btn.attr('name');
 						var modalSize = "lg",
@@ -1084,15 +1295,42 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								templateUrl = "js/diandan/payOrder.html";
 								break;
 						}
-						if (act == "pickOrder" || act == "payOrder" || act == "cashPayOrder") {
+						if (act == "pickOrder") {
+							// 提餐操作，直接打开提单窗口
 							$modal.open({
 								size : modalSize,
-								windowClass : act == 'pickOrder' ? "" : "pay-modal",
+								windowClass : "",
 								controller : controller,
 								templateUrl : templateUrl,
 								resolve : resolve
 							});
+						} else if (act == "payOrder" || act == "cashPayOrder") {
+							// 结账操作，需要先提交一次订单，待服务返回结账数据后进行结账
+							submitOrder = OrderService.submitOrder('LD');
+							var openOrderPayModal = function () {
+								OrderPayService.initOrderPay(function () {
+									$modal.open({
+										size : modalSize,
+										windowClass : "pay-modal",
+										controller : controller,
+										templateUrl : templateUrl,
+										resolve : resolve
+									});
+								});
+							};
+							if (_.isEmpty(submitOrder)) {
+								openOrderPayModal();
+							} else {
+								submitOrder.success(function (data) {
+									var ret = _.result(data, 'data', {});
+									OrderService.initOrderFoodDB(ret);
+									scope.resetOrderInfo();
+									openOrderPayModal();
+								});
+							}
+							
 						}
+						
 					});
 				}
 			};

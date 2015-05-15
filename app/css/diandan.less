@@ -227,7 +227,7 @@
 			}
 			.foodremark > .txt:first-child {
 				&:before {
-					content : "[味]";
+					content : "[注]";
 				}
 			}
 			.modifyprice > .txt:first-child {
@@ -322,7 +322,7 @@
 // 支付窗口
 .pay-modal {
 	.modal-dialog {
-		position : absolute; left : 372px; right : 0; top : 0; bottom : 6rem;
+		position : absolute; left : 372px; right : 0; top : 0; bottom : 0;
 		margin : 0; padding : 0; width : auto!important;
 		> .modal-content, .modal-body, .pay-ctrl {height : 100%; width : 100%; padding : 0; margin : 0;}
 	}
@@ -336,9 +336,13 @@
 			position : relative; display: -webkit-box; display: -moz-box; display: -ms-box;
 			-webkit-box-orient : vertical; -moz-box-orient : vertical; -ms-box-orient : vertical; -o-box-orient : vertical; box-orient : vertical;
 			border-right : 1px solid @xBaseBorderColor;
+			label, p {margin-bottom : 0; margin-top : .5rem;}
+			p {padding : 0 0.5rem 0 1rem; font-size : 1rem;}
+			label, p.sum {font-size : 1.5rem; color : #111; padding : 0 0.5rem;}
 			> header {
 				-webkit-box-flex : 1;
 				-webkit-box-flex-group : 2;
+				margin-bottom : .5rem;
 				.btn-close {position : absolute; right : 0; top : 0;}
 			}
 			> section {
@@ -346,11 +350,12 @@
 				-webkit-box-flex-group : 1;
 				outline: #123;
 				.list-group-item {
-					padding : 0; position : relative;
+					padding : 0; position : relative; min-height: 3rem; cursor : pointer;
 					.btn-default {position : absolute; right : 0; }
 				}
 				.list-group-item.active {
-					background-color: #265a88!important; color : #fff!important;
+					background-color: #265a88!important; 
+					label, p {color : #fff!important;}
 				}
 			}
 			> footer {
@@ -363,7 +368,40 @@
 		}
 		.pay-subject {
 			-webkit-box-flex : 1; -moz-box-flex : 1; -ms-box-flex : 1; -o-box-flex : 1; -box-flex : 1;
-			outline: 1px solid red;
+			// outline: 1px solid red;
+			position : relative; height : 100%;
+			> .panel {
+				display: -webkit-box; display: -moz-box; display: -ms-box;
+				-webkit-box-orient : vertical; -moz-box-orient : vertical; -ms-box-orient : vertical; -o-box-orient : vertical; box-orient : vertical;
+				position : absolute; left : 0; top : 0; right : 0; bottom : 0;
+				margin : 0;
+				> .panel-heading, > .panel-footer {
+					-webkit-box-flex : 1; -webkit-box-flex-group : 2;
+				}
+				> .panel-body {
+					-webkit-box-flex : 1; -webkit-box-flex-group : 1;
+				}
+			}
+
+			.animate-repeat.ng-move,
+			.animate-repeat.ng-enter,
+			.animate-repeat.ng-leave {
+			  -webkit-transition:all linear 0.5s;
+			  transition:all linear 0.5s;
+			}
+
+			.animate-repeat.ng-leave.ng-leave-active,
+			.animate-repeat.ng-move,
+			.animate-repeat.ng-enter {
+			  opacity:0;
+			  max-height:0;
+			}
+
+			.animate-repeat.ng-leave,
+			.animate-repeat.ng-move.ng-move-active,
+			.animate-repeat.ng-enter.ng-enter-active {
+			  opacity:1;
+			}
 		}	
 	}
 

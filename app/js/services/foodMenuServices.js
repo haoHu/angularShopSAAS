@@ -150,6 +150,9 @@ define(['app'], function (app) {
 				self.foodHT = foodHT;
 				self.foodCategoryHT = foodCategoryHT;
 				self.foodSoldOutHT = foodSoldOutHT;
+				if(window.IXDEBUG) {
+					storage.set('_FOODS_', self.foodHT.getAll());
+				}
 			};
 			
 			/**

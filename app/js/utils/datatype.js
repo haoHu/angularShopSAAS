@@ -80,4 +80,19 @@
 		{name : "orderCancel", value : "80", label : "预订退订原因"},
 		{name : "takeoutCancel", value : "90", label : "外卖退单原因"}
 	];
+
+	Hualala.TypeDef.OrderPaySubjectGroups = [
+		{name : "sendFoodPromotionPay", value : "51010501", isPrefix : "0", label : "账单赠送"},
+		{name : "vipPricePromotionPay", value : "51010502", isPrefix : "0", label : "会员价优惠"},
+		{name : "discountPay", value : "51010503", isPrefix : "0", label : "账单折扣"},
+		{name : "wipeZeroPay", value : "51010504", isPrefix : "0", label : "账单元整"},
+		{name : "remissionPay", value : "51010505", isPrefix : "0", label : "账单减免"},
+		{name : "cashPay", value : "10010", isPrefix : "1", label : "现金"},
+		{name : "vipCardPay", value : "510106", isPrefix : "1", label : "会员卡"},
+		{name : "bankCardPay", value : "10020", isPrefix : "1", label : "银行存款"},
+		{name : "hualalaPay", value : "11311000", isPrefix : "0", label : "哗啦啦"},
+		{name : "groupBuyPay", value : "11310", isPrefix : "1", label : "团购"},
+		{name : "voucherPay", value : "51010507", isPrefix : "0", label : "代金券"},
+		{name : "hangingPay", value : "11312", isPrefix : "1", label : "挂账"}
+	];
 })();

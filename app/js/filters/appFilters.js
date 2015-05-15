@@ -49,11 +49,25 @@ define(['app'], function (app) {
 	// 格式化时间显示
 	app.filter("formatDateTimeStr", function () {
 		var filterFn = function (v, format) {
-			IX.Debug.info(v);
-			IX.Debug.info(format);
+			// IX.Debug.info(v);
+			// IX.Debug.info(format);
 			var dateStr = Hualala.Common.formatDateTimeValue(v);
 
 			return _.isEmpty(dateStr) ? '' : IX.Date.getDateByFormat(dateStr, 'yyyy/MM/dd HH:mm:ss');
+
+		};
+		return filterFn;
+	});
+
+	// 格式化货币显示
+	app.filter("mycurrency", function () {
+		var filterFn = function (v, format) {
+			// IX.Debug.info(v);
+			// IX.Debug.info(format);
+			var dataStr = Hualala.Common.Math.standardPrice(v),
+				currencyPrefix = format || '$';
+
+			return _.isEmpty(dataStr) ? '' : currencyPrefix + dataStr;
 
 		};
 		return filterFn;

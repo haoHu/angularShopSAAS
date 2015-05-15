@@ -1,4 +1,5 @@
 define(['app'], function (app) {
+	// 订单渠道服务
 	app.service('OrderChannel', 
 		['$location', '$filter', 'storage', 'CommonCallServer', function ($location, $filter, storage, CommonCallServer) {
 			var self = this;
@@ -57,4 +58,5 @@ define(['app'], function (app) {
 			}
 		}]
 	);
+
 });

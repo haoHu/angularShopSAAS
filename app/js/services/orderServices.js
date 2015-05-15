@@ -8,7 +8,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.OrderFoodHT = null;
 
 			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate'.split(','),
-				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,foodKey,foodName,foodNumber,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
+				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
 				FoodItemTypes = {
 					"-1" : "NotExist",
 					"0" : "CommonFood",
@@ -103,6 +103,22 @@ define(['app', 'uuid'], function (app, uuid) {
 				return _.mapObject(o, function (v, f) {
 					return self[f](itemKey);
 				});
+			};
+
+			/**
+			 * 获取订单数据
+			 * @return {[type]} [description]
+			 */
+			this.getOrderData = function () {
+				return self._OrderData;
+			};
+
+			/**
+			 * 获取订单条目字典
+			 * @return {[type]} [description]
+			 */
+			this.getOrderFoodHT = function () {
+				return self.OrderFoodHT;
 			};
 
 			/**
@@ -247,8 +263,9 @@ define(['app', 'uuid'], function (app, uuid) {
 			var mapFoodItemData = function (itemKey, food) {
 				var foodUnit = _.result(food, '__foodUnit'),
 					soldout = _.result(food, '__soldout', null),
-					isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', 0),
-					isSetFood = _.result(food, 'isSetFood', 0),
+					isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', "0"),
+					isDiscount = _.result(food, 'isDiscount', "0"),
+					isSetFood = _.result(food, 'isSetFood', "0"),
 					setFoodDetailJson = _.result(food, 'setFoodDetailJson', ''),
 					setFoodDetailLst = _.isEmpty(setFoodDetailJson) ? [] : _.result(setFoodDetailJson, 'foodLst');
 				var foodItemPostKeys = FoodItemKeys;
@@ -264,7 +281,11 @@ define(['app', 'uuid'], function (app, uuid) {
 							v = Hualala.TypeDef.OrderFoodItemType.ORDER;
 							break;
 						case 'foodKey':
-							v = _.result(foodUnit, 'unitKey');
+							// v = _.result(foodUnit, 'unitKey');
+							v = _.result(food, 'foodKey');
+							break;
+						case 'isDiscount':
+							v = isDiscount;
 							break;
 						case 'isNeedConfirmFoodNumber':
 							v = isNeedConfirmFoodNumber;
@@ -321,7 +342,8 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]}          [description]
 			 */
 			var mapSetFoodDetailItemData = function (itemKey, food, pItemKey) {
-				var isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', 0),
+				var isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', "0"),
+					isDiscount = _.result(food, 'isDiscount', "0"),
 					foodItemPostKeys = FoodItemKeys;
 				var ret = {};
 				_.each(foodItemPostKeys, function (k) {
@@ -334,10 +356,14 @@ define(['app', 'uuid'], function (app, uuid) {
 							v = Hualala.TypeDef.OrderFoodItemType.ORDER;
 							break;
 						case 'foodKey':
-							v = _.result(food, 'unitKey');
+							// v = _.result(food, 'unitKey');
+							v = _.result(food, 'foodKey');
 							break;
 						case 'isNeedConfirmFoodNumber':
 							v = isNeedConfirmFoodNumber;
+							break;
+						case 'isDiscount':
+							v = isDiscount;
 							break;
 						case 'isSFDetail':
 						case 'isSetFood':
@@ -945,7 +971,8 @@ define(['app', 'uuid'], function (app, uuid) {
 				var postData = {
 					actionType : actionType,
 					saasOrderKey : saasOrderKey,
-					foodLst : foodLst
+					// foodLst : foodLst
+					foodLst : JSON.stringify(Hualala.Common.formatPostData({foodLst : foodLst}))
 				};
 				IX.Debug.info("Current Food Operation Post Data:");
 				IX.Debug.info(postData);
@@ -1024,6 +1051,766 @@ define(['app', 'uuid'], function (app, uuid) {
 
 		}]
 	);
+
+	// 订单支付服务
+	app.service('OrderPayService', [
+		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderService', 'PaySubjectService', 'OrderDiscountRuleService',
+		function ($rootScope, $location, $filter, storage, CommonCallServer, OrderService, PaySubjectService, OrderDiscountRuleService) {
+			IX.ns('Hualala');
+			var HCMath = Hualala.Common.Math;
+			var self = this;
+			this._OrderData = null;
+			this.OrderFoodHT = null;
+			var paySubjectGrpLst = null,
+				discountRuleLst = null;
+			// 订单支付科目组的数据表
+			this.OrderPaySubjectGrpHT = new IX.IListManager();
+			// 结账使用的订单支付科目数据表
+			this.OrderPaySubjectHT = new IX.IListManager();
+			// 订单条目金额小计数据表
+			this.OrderItemSubTotalHT = new IX.IListManager();
+			// 订单支付计算涉及的相关全局配置参数关键字
+			// 包括：是否会员价(isVipPrice)、折扣率(discountRate)、折扣范围(discountRange)、抹零方式(moneyWipeZeroType)、订单菜品金额合计(foodAmount)
+			var OrderPaySettingKeys = "isVipPrice,discountRate,discountRange,moneyWipeZeroType,foodAmount".split(',');
+			// 订单条目用于计算金额小计所需要的基本关键字段，用于组成OrderItemSubTotalHT数据表的字段
+			// 包括：条目ID(itemKey)、点菜数量(foodNumber)、退菜数量(foodCancelNumber)、赠菜数量(foodSendNumber)、
+			// 是否打折(isDiscount)、售价(foodProPrice)、会员价(foodVipPrice)、成交价(foodPayPrice)	
+			var OrderItemBaseKeys = ("itemKey,foodKey,foodName,foodNumber,foodCancelNumber,foodSendNumber,isDiscount,"
+							+ "foodProPrice,foodVipPrice,foodPayPrice").split(',');
+			// 订单条目金额小计字段
+			// 点菜金额小计(foodProSubTotal)、赠菜优惠小计(sendFoodPromotionSubTotal)、会员价优惠小计(vipFoodPromotionSubTotal)、
+			// 打折优惠小计(discountPromotionSubTotal)、实收小计(realSubTotal)
+			var OrderItemSubTotalKeys =	"foodProSubTotal,sendFoodPromotionSubTotal,vipFoodPromotionSubTotal,discountPromotionSubTotal,realSubTotal".split(',');
+
+			// 订单支付科目字段
+			var PaySubjectItemKeys = "paySubjectKey,paySubjectCode,paySubjectName,debitAmount,giftItemNoLst,payRemark,payTransNo".split(',');
+			/**
+			 * 初始化订单支付科目相关的所有数据表
+			 * @return {[type]} [description]
+			 */
+			var initOrderPaySettings = function () {
+				// 获得订单支付科目计算必须的相关全局参数
+				// self.isVipPrice;self.discountRate;self.discountRange;self.moneyWipeZeroType,self.foodAmount
+				_.each(OrderPaySettingKeys, function (k) {
+					self[k] = _.result(self._OrderData, k);
+					// for test set moneyWipeZeroType = 4
+					if (k == 'moneyWipeZeroType') {
+						self[k] = 4;
+					}
+				});
+				IX.Debug.info("初始化订单支付相关全局参数:");
+				IX.Debug.info(OrderPaySettingKeys.join('\t'));
+				IX.Debug.info(_.values(_.pick(self, OrderPaySettingKeys)).join('\t'));
+				// IX.Debug.info(self.isVipPrice + "\t" + self.discountRate + "\t" + self.discountRange + "\t" + self.moneyWipeZeroType);
+
+				// 计算订单条目金额小计数据表
+				self.calcOrderItemsSubTotal();
+				// 计算并更新订单菜品金额合计
+				self.updateFoodAmount();
+				// 计算并更新账单赠送菜品金额合计
+				self.updatePaySubjectItem("sendFoodPromotionPay");
+				// 计算并更新会员价优惠金额合计
+				self.updatePaySubjectItem("vipPricePromotionPay");
+				// 计算并更新账单折扣合计
+				self.updatePaySubjectItem("discountPay");
+				// 计算并更新账单元整
+				self.updatePaySubjectItem("wipeZeroPay");
+			};
+
+			/**
+			 * 初始化订单支付科目组的数据表
+			 * 记录所有支付科目组，并且每个组下面有具体的支付科目配置信息
+			 * @return {[type]} [description]
+			 */
+			this.initOrderPaySubjectGrpHT = function () {
+				self.OrderPaySubjectGrpHT.clear();
+				_.each(paySubjectGrpLst, function (payGrp) {
+					var name = _.result(payGrp, 'name');
+					self.OrderPaySubjectGrpHT.register(name, payGrp);
+				});
+			};
+
+			/**
+			 * 初始化订单支付
+			 * @return {[type]} [description]
+			 */
+			this.initOrderPay = function (successFn) {
+				var paySubjectCallServer = PaySubjectService.getPaySubjectLst(),
+					discountRuleCallServer = OrderDiscountRuleService.getDiscountRuleLst();
+				// 获取支付科目字典数据
+				paySubjectCallServer.success(function () {
+					paySubjectGrpLst = PaySubjectService.getAllPaySubject();
+					IX.Debug.info("Pay Subject Group Lst:");
+					IX.Debug.info(paySubjectGrpLst);
+					// 支付科目字典数据加载完成后，
+					// 将订单数据模型中，涉及支付相关字段载入订单支付服务的数据模型中
+					self._OrderData = OrderService.getOrderData();
+					self.OrderFoodHT = OrderService.getOrderFoodHT();
+					// 初始化支付科目组数据表
+					self.initOrderPaySubjectGrpHT();
+					// 初始化订单支付科目相关的数据表
+					initOrderPaySettings();
+					_.isFunction(successFn) && successFn();
+					
+				});
+				// 获取账单折扣优惠方案字典数据
+				discountRuleCallServer.success(function () {
+					discountRuleLst = OrderDiscountRuleService.getDiscountRules();
+					IX.Debug.info("Discount Rule Lst:");
+					IX.Debug.info(discountRuleLst);
+				});
+			};
+
+			/**
+			 * 计算订单菜品条目点菜金额小计
+			 * 公式：
+			 * foodProSubTotal = (foodNumber - foodCancelNumber) * foodProPrice
+			 * @param  {[type]} item [description]
+			 * @return {[type]}      [description]
+			 */
+			this.calcFoodProSubTotal = function (item) {
+				var foodNumber = parseFloat(_.result(item, 'foodNumber')),
+					foodCancelNumber = parseFloat(_.result(item, 'foodCancelNumber')),
+					foodProPrice = parseFloat(_.result(item, 'foodProPrice'));
+				// 初始计算结果(float)
+				var v = HCMath.multi(HCMath.sub(foodNumber - foodCancelNumber), foodProPrice);
+				// 精确到小数点后4位
+				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
+				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
+				return v;
+			};
+
+			/**
+			 * 计算订单菜品条目赠菜优惠小计
+			 * 公式：
+			 * sendFoodPromotionSubTotal = (foodSendNumber) * foodProPrice
+			 * @param  {[type]} item [description]
+			 * @return {[type]}      [description]
+			 */
+			this.calcSendFoodPromotionSubTotal = function (item) {
+				var foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0)),
+					foodProPrice = parseFloat(_.result(item, 'foodProPrice', 0));
+				// 初始计算结构（float）
+				var v = HCMath.multi(foodSendNumber, foodProPrice);
+				// 精确到小数点后4位
+				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
+				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
+				return v;
+			};
+
+			/**
+			 * 计算订单菜品条目会员价优惠小计
+			 * 公式：
+			 * vipFoodPromotionSubTotal = (isVipPrice == 1 ? (foodProPrice - foodPayPrice) : (foodProPrice - foodProPrice)) * (foodNumber - foodCancelNumber - foodSendNumber)
+			 * @param  {[type]} item [description]
+			 * @return {[type]}      [description]
+			 */
+			this.calcVipFoodPromotionSubTotal = function (item) {
+				var isVipPrice = parseFloat(self.isVipPrice),
+					foodProPrice = parseFloat(_.result(item, 'foodProPrice', 0)),
+					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice', 0)),
+					foodNumber = parseFloat(_.result(item, 'foodNumber', 0)),
+					foodCancelNumber = parseFloat(_.result(item, 'foodCancelNumber', 0)),
+					foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0));
+				var deltaPrice = isVipPrice == 1 
+					? parseFloat(HCMath.sub(foodProPrice, foodPayPrice))
+					: parseFloat(HCMath.sub(foodProPrice, foodProPrice)),
+					deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber));
+				var v = HCMath.multi(deltaPrice, deltaNumber);
+				// 精确到小数点后4位
+				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
+				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
+				return v;
+			};
+
+			/**
+			 * 计算订单菜品条目打折优惠小计
+			 * 公式：
+			 * discountPromotionSubTotal = (foodNumber - foodCancelNumber - foodSendNumber) * foodPayPrice * (1 - (isDiscount == 1 ? discountRate : (discountRange == 1 ? discountRate : 1)))
+			 * @param  {[type]} item [description]
+			 * @return {[type]}      [description]
+			 */
+			this.calcDiscountPromotionSubTotal = function (item) {
+				var foodNumber = parseFloat(_.result(item, 'foodNumber', 0)),
+					foodCancelNumber = parseFloat(_.result(item, 'foodCancelNumber', 0)),
+					foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0)),
+					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice', 0)),
+					isDiscount = parseFloat(_.result(item, 'isDiscount', 0)),
+					discountRange = parseFloat(self.discountRange),
+					discountRate = parseFloat(self.discountRate);
+				var deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber)),
+					deltaRate = HCMath.sub(1, 
+						(isDiscount == 1 ? discountRate 
+							: (discountRange == 1 ? discountRate : 1))
+					);
+				var v = HCMath.multi(deltaNumber, foodPayPrice, deltaRate);
+				// 精确到小数点后4位
+				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
+				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
+				return v;
+
+			};
+
+			/**
+			 * 计算订单菜品条目实收小计
+			 * 公式：
+			 * realSubTotal  = foodProSubTotal - sendFoodPromotionSubTotal - vipFoodPromotionSubTotal - discountPromotionSubTotal
+			 * @param  {[type]} item [description]
+			 * @return {[type]}      [description]
+			 */
+			this.calcRealSubTotal = function (item) {
+				// foodProSubTotal,sendFoodPromotionSubTotal,vipFoodPromotionSubTotal,discountPromotionSubTotal,realSubTotal
+				var foodProSubTotal = parseFloat(_.result(item, 'foodProSubTotal', 0)),
+					sendFoodPromotionSubTotal = parseFloat(_.result(item, 'sendFoodPromotionSubTotal', 0)),
+					vipFoodPromotionSubTotal = parseFloat(_.result(item, 'vipFoodPromotionSubTotal', 0)),
+					discountPromotionSubTotal = parseFloat(_.result(item, 'discountPromotionSubTotal', 0));
+				var v = HCMath.sub(foodProSubTotal, sendFoodPromotionSubTotal, vipFoodPromotionSubTotal, discountPromotionSubTotal);
+				// 精确到小数点后4位
+				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
+				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
+				return v;
+
+			};
+
+			/**
+			 * 计算所有订单条目表的金额小计
+			 * 1. 清空OrderItemSubTotalHT表中的数据；
+			 * 2. 遍历所有订单条目；
+			 * 3. 计算订单条目的各个小计字段；
+			 * 4. 将条目数据与计算后的小计数据注册到OrderItemSubTotalHT表中；
+			 * @return {[type]} [description]
+			 */
+			this.calcOrderItemsSubTotal = function () {
+				var foodItems = self.OrderFoodHT.getAll();
+				self.OrderItemSubTotalHT.clear();
+				_.each(foodItems, function (item) {
+					var itemKey = _.result(item, 'itemKey');
+					var _item = {}, _subtotal = {};
+					_.each(OrderItemBaseKeys, function (k) {
+						// 如果self.isVipPrice == 1, foodPayPrice = foodVipPrice,否则foodPayPrice = foodProPrice
+						_item[k] = (k == 'foodPayPrice') 
+							? _.result(item, (self.isVipPrice == 1 ? 'foodVipPrice' : 'foodProPrice'), "0")
+							: _.result(item, k, "0");
+					});
+					_.each(OrderItemSubTotalKeys, function (k) {
+						var fnName = 'calc' + k.slice(0, 1).toUpperCase() + k.slice(1);
+						_subtotal[k] = self[fnName](_item);
+						_item = _.extend(_item, _subtotal);
+					});
+					self.OrderItemSubTotalHT.register(itemKey, _item);
+				});
+				// Test Log
+				IX.Debug.info("订单支菜品条目金额小计表:");
+				var _keys = OrderItemBaseKeys.concat(OrderItemSubTotalKeys);
+				IX.Debug.info(_keys.join('\t'));
+				_.each(self.OrderItemSubTotalHT.getAll(), function (item) {
+					IX.Debug.info(_.values(item).join('\t'));
+				});
+			};
+
+			/**
+			 * 计算账单金额合计
+			 * @return {[type]} [description]
+			 */
+			this.sumFoodAmount = function () {
+				var items = self.OrderItemSubTotalHT.getAll();
+				var subtotals = _.pluck(items, 'foodProSubTotal');
+				var sum = HCMath.add.apply(null, subtotals);
+				// 精确到小数点后2位
+				// 将初始计算结果放大100倍(小数点向右移动2位)，然后向下取整，最后缩小100倍(小数点向左移动2位)
+				sum = parseFloat(Math.floor(sum.toString().movePointRight(2)).toString().movePointLeft(2));
+				return sum;
+			};
+
+			/**
+			 * 计算账单赠送菜品优惠合计
+			 * @return {[type]} [description]
+			 */
+			this.sumSendFoodPromotion = function () {
+				var items = self.OrderItemSubTotalHT.getAll();
+				var subtotals = _.pluck(items, 'sendFoodPromotionSubTotal');
+				var sum = HCMath.add.apply(null, subtotals);
+				// 精确到小数点后2位
+				// 将初始计算结果放大100倍(小数点向右移动2位)，然后向下取整，最后缩小100倍(小数点向左移动2位)
+				sum = parseFloat(Math.floor(sum.toString().movePointRight(2)).toString().movePointLeft(2));
+				return sum;
+			};
+
+			/**
+			 * 计算菜品会员价优惠合计
+			 * @return {[type]} [description]
+			 */
+			this.sumVipFoodPromotion = function () {
+				var items = self.OrderItemSubTotalHT.getAll();
+				var subtotals = _.pluck(items, 'vipFoodPromotionSubTotal');
+				var sum = HCMath.add.apply(null, subtotals);
+				// 精确到小数点后2位
+				// 将初始计算结果放大100倍(小数点向右移动2位)，然后向下取整，最后缩小100倍(小数点向左移动2位)
+				sum = parseFloat(Math.floor(sum.toString().movePointRight(2)).toString().movePointLeft(2));
+				return sum;
+			};
+			
+			/**
+			 * 计算账单折扣合计
+			 * @return {[type]} [description]
+			 */
+			this.sumDiscountPromotion = function () {
+				var items = self.OrderItemSubTotalHT.getAll();
+				var subtotals = _.pluck(items, 'discountPromotionSubTotal');
+				var sum = HCMath.add.apply(null, subtotals);
+				// 精确到小数点后2位
+				// 将初始计算结果放大100倍(小数点向右移动2位)，然后向下取整，最后缩小100倍(小数点向左移动2位)
+				sum = parseFloat(Math.floor(sum.toString().movePointRight(2)).toString().movePointLeft(2));
+				return sum;
+			};
+
+			/**
+			 * 计算实际应收收小计的合计
+			 * @return {[type]} [description]
+			 */
+			this.sumRealFoodAmount = function () {
+				var foodAmountSum = self.sumFoodAmount(),
+					sendFoodPromotionSum = self.sumSendFoodPromotion(),
+					vipFoodPromotionSum = self.sumVipFoodPromotion(),
+					discountPromotionSum = self.sumDiscountPromotion();
+				var sum = HCMath.sub(foodAmountSum, sendFoodPromotionSum, vipFoodPromotionSum, discountPromotionSum);
+				// 精确到小数点后2位
+				// 将初始计算结果放大100倍(小数点向右移动2位)，然后向下取整，最后缩小100倍(小数点向左移动2位)
+				sum = parseFloat(Math.floor(sum.toString().movePointRight(2)).toString().movePointLeft(2));
+				return sum;
+			};
+
+			/**
+			 * 计算账单元整
+			 * @return {[type]} [description]
+			 */
+			this.calcMoneyWipeZeroAmount = function () {
+				var moneyWipeZeroType = self.moneyWipeZeroType;
+				var sumRealFoodAmount = self.sumRealFoodAmount();
+				var v = 0;
+				switch (moneyWipeZeroType.toString()) {
+					case "0":
+					// 不抹零
+						v = sumRealFoodAmount;
+						break;
+					case "1":
+					// 四舍五入到角
+						v = parseFloat(Math.round(sumRealFoodAmount.toString().movePointRight(1)).toString().movePointLeft(1));
+						break;
+					case "2":
+					// 向上抹零到角
+						v = parseFloat(Math.ceil(sumRealFoodAmount.toString().movePointRight(1)).toString().movePointLeft(1));
+						break;
+					case "3":
+					// 向下抹零到角
+						v = parseFloat(Math.floor(sumRealFoodAmount.toString().movePointRight(1)).toString().movePointLeft(1));
+						break;
+					case "4":
+					// 四舍五入到元
+						v = parseFloat(Math.round(sumRealFoodAmount));
+						break;
+					case "5":
+					// 向上抹零到元
+						v = parseFloat(Math.ceil(sumRealFoodAmount));
+						break;
+					case "6":
+					// 向下抹零到元
+						v = parseFloat(Math.floor(sumRealFoodAmount));
+						break;
+					default :
+						break;
+				}
+				v = sumRealFoodAmount - v;
+				return v;
+			};
+
+			/**
+			 * 开启|关闭使用会员价
+			 * @param  {Number} enabled		1:使用会员价；0:不适用会员价 
+			 * @return {[type]}   [description]
+			 */
+			this.enableVipPrice = function (enabled) {
+				self.isVipPrice = enabled;
+			};
+
+			/**
+			 * 更新折扣率
+			 * @param  {Float} discountRate 1：不打折；0.5：5折
+			 * @return {[type]}              [description]
+			 */
+			this.updateDiscountRate = function (discountRate) {
+				self.discountRate = isNaN(discountRate) ? 1 : discountRate;
+			};
+
+			/**
+			 * 开启全部菜品折扣
+			 * @param  {Number} discountRange 0：部分菜品打折；1：全部菜品打折
+			 * @return {[type]}               [description]
+			 */
+			this.enableAllFoodsDiscount = function (discountRange) {
+				self.discountRange = discountRange;
+			};
+
+			/**
+			 * 更新抹零方式
+			 * @param  {Number} moneyWipeZeroType 0:不抹零;1:四舍五入到角;2:向上抹零到角;3:向下抹零到角;4:四舍五入到元;5:向上抹零到元;6:向下抹零到元;
+			 * @return {[type]}                   [description]
+			 */
+			this.updateWipeZeroType = function (moneyWipeZeroType) {
+				self.moneyWipeZeroType = (isNaN(moneyWipeZeroType) || moneyWipeZeroType < 0 || moneyWipeZeroType > 6) ? 0 : moneyWipeZeroType;
+			};
+
+			/**
+			 * 整理订单支付详情
+			 * 1. 计算并更新订单条目金额小计表
+			 * 2. 遍历支付科目组
+			 * 3. 读取支付科目组中的支付科目
+			 * 4. 根据读取的支付科目，在使用支付科目表中查找支付科目数据
+			 * 5. 整理出支付科目组下支付总金额，支付明细金额
+			 * 6. 整理成页面需要的数据结构
+			 * @return {[type]} [description]
+			 */
+			this.mapOrderPayDetail = function () {
+				var orderPayGrps = self.OrderPaySubjectGrpHT.getAll(),
+					orderPaySubjectHT = self.OrderPaySubjectHT;
+				// PaySubjectItemKeys
+				var payDetail = {
+					saasOrderKey : _.result(self._OrderData, 'saasOrderKey'),
+					isVipPrice : self.isVipPrice,
+					discountRate : self.discountRate,
+					discountRange : self.discountRange,
+					moneyWipeZeroType : self.moneyWipeZeroType,
+					foodAmount : self.foodAmount,
+					payGrps : []
+				};
+				// 整理一个支付科目组下的支付科目数据
+				var mapPayItemsData = function (items) {
+					var ret = _.map(items, function (item) {
+						var paySubjectCode = _.result(item, 'subjectCode');
+						var curPaySubject = orderPaySubjectHT.get(paySubjectCode);
+						return curPaySubject;
+					});
+					ret = _.reject(ret, function (el) {
+						return _.isEmpty(el);
+					});
+					return ret;
+				};
+				// 整理支付科目组数据
+				var mapPaySubjectGrpData = function () {
+					var orderPayGrps = self.OrderPaySubjectGrpHT.getAll();
+					var ret = _.map(orderPayGrps, function (payGrp) {
+						var items = _.result(payGrp, 'items', []),
+							payLst = [];
+						payLst = mapPayItemsData(items);
+						return self.mapPayGrpSchema(payGrp, payLst);
+					});
+					return ret;
+				};
+				// 更新订单条目金额小计表
+				self.calcOrderItemsSubTotal();
+				// 遍历支付科目组
+				var payGrps = mapPaySubjectGrpData();
+				var payGrpsAmount = HCMath.add.apply(null, _.pluck(payGrps, 'amount')),
+					unPayAmount = HCMath.sub(_.result(payDetail, 'foodAmount'), payGrpsAmount);
+				payDetail = _.extend(payDetail, {
+					payGrps : payGrps,
+					unPayAmount : unPayAmount
+				});
+				return payDetail;
+			};
+
+			/**
+			 * 格式化支付科目组数据结构
+			 * @param  {[type]} payGrp [description]
+			 * @param  {[type]} payLst [description]
+			 * @return {[type]}        [description]
+			 */
+			this.mapPayGrpSchema = function (payGrp, payLst) {
+				var name = _.result(payGrp, 'name');
+				var ret;
+				var mapCommonSubjectSchema = function (items) {
+					var amount = 0, detail = '',
+						isEmpty = _.isEmpty(items);
+					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+					return {
+						amount : amount,
+						detail : detail
+					};
+				};
+				var mapDiscountPaySchema = function (items) {
+					var amount = 0, detail = '',
+						isEmpty = _.isEmpty(items);
+					var discountRate = self.discountRate,
+						discountRange = self.discountRange;
+					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+					detail = discountRate == 1 ? '不打折' : (discountRate.toString().movePointRight(1) + '折, ' + (discountRange == 0 ? '部分菜品打折' : '全部菜品打折'));
+					return {
+						amount : amount,
+						detail : detail
+					};
+				};
+				var mapVipCardPaySchema = function (items) {
+					var amount = 0, detail = '',
+						isEmpty = _.isEmpty(items);
+					var vipCardNo = isEmpty ? '' : _.pluck(items, 'payTransNo')[0] + ';';
+					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+					var subjectNames = isEmpty ? '' : _.pluck(items, 'paySubjectName', ''),
+						debitAmounts = isEmpty ? '' : _.pluck(items, 'debitAmounts', '');
+					detail = _.zip(subjectNames, debitAmounts);
+					detail = _.map(detail, function (el) {
+						return el.join(':');
+					});
+					detail = vipCardNo + detail.join(';');
+					return {
+						amount : amount,
+						detail : detail
+					};
+				};
+				var mapBankCardPaySchema = function (items) {
+					var amount = 0, detail = '',
+						isEmpty = _.isEmpty(items);
+					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+					var subjectNames = isEmpty ? '' : _.pluck(items, 'paySubjectName', ''),
+						debitAmounts = isEmpty ? '' : _.pluck(items, 'debitAmounts', '');
+					detail = _.zip(subjectNames, debitAmounts);
+					detail = _.map(detail, function (el) {
+						return el.join(':');
+					});
+					detail = detail.join(';');
+					return {
+						amount : amount,
+						detail : detail
+					};
+				};
+				var mapGroupBuySchema = function (items) {
+					var amount = 0, detail = '',
+						isEmpty = _.isEmpty(items);
+					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+					var subjectNames = isEmpty ? '' : _.pluck(items, 'paySubjectName', ''),
+						debitAmounts = isEmpty ? '' : _.pluck(items, 'debitAmounts', '');
+					detail = _.zip(subjectNames, debitAmounts);
+					detail = _.map(detail, function (el) {
+						return el.join(':');
+					});
+					detail = detail.join(';');
+					return {
+						amount : amount,
+						detail : detail
+					};
+				};
+				var mapHangingPaySchema = function (items) {
+					var amount = 0, detail = '',
+						isEmpty = _.isEmpty(items);
+					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+					var subjectNames = isEmpty ? '' : _.pluck(items, 'paySubjectName', ''),
+						debitAmounts = isEmpty ? '' : _.pluck(items, 'debitAmounts', '');
+					detail = _.zip(subjectNames, debitAmounts);
+					detail = _.map(detail, function (el) {
+						return el.join(':');
+					});
+					detail = detail.join(';');
+					return {
+						amount : amount,
+						detail : detail
+					};
+				};
+				switch(name) {
+					// 账单赠送
+					case "sendFoodPromotionPay":
+					// 账单会员价优惠
+					case "vipPricePromotionPay":
+					// 账单元整
+					case "wipeZeroPay":
+					// 账单减免
+					case "remissionPay":
+					// 现金支付
+					case "cashPay":
+					// 哗啦啦
+					case "hualalaPay":
+					// 代金券
+					case "voucherPay":
+						ret = mapCommonSubjectSchema(payLst);
+						break;
+					// 账单折扣
+					case "discountPay":
+						ret = mapDiscountPaySchema(payLst);
+						break;
+					// 会员卡
+					case "vipCardPay":
+						ret = mapVipCardPaySchema(payLst);
+						break;
+					// 银行存款
+					case "bankCardPay":
+						ret = mapBankCardPaySchema(payLst);
+						break;
+					// 团购
+					case "groupBuyPay":
+						ret = mapGroupBuySchema(payLst);
+						break;
+					// 挂账
+					case "hangingPay":
+						ret = mapHangingPaySchema(payLst);
+						break;
+
+				}
+				return _.extend(ret, payGrp);
+				// return _.extend(ret, {
+				// 	name : name,
+				// 	label : _.result(payGrp, 'label', '')
+				// });
+			};
+
+			/**
+			 * 更新订单菜品金额
+			 * @return {[type]} [description]
+			 */
+			this.updateFoodAmount = function () {
+				self.foodAmount = self.sumFoodAmount();
+			};
+
+			/**
+			 * 删除已经记录的支付科目
+			 * @param  {[type]} subjectNames [description]
+			 * @return {[type]}              [description]
+			 */
+			this.deletePaySubjectItem = function (paySubjectCodes) {
+				var paySubjectHT = self.OrderPaySubjectHT;
+				_.each(paySubjectCodes, function (code) {
+					paySubjectHT.remove(code);
+				});
+			};
+
+			/**
+			 * 更新支付科目数据
+			 * @param  {[type]} subjectGrpName [description]
+			 * @param  {[type]} params      [description]
+			 * @return {[type]}             [description]
+			 */
+			this.updatePaySubjectItem = function (subjectGrpName, params) {
+				// var subjectSetting = self.getPaySubjectSettings(subjectCode);
+				var subjectGrp = self.OrderPaySubjectGrpHT.get(subjectGrpName),
+					items = _.result(subjectGrp, 'items');
+				var fnName;
+				switch(subjectGrpName) {
+					// 账单赠送
+					case "sendFoodPromotionPay":
+					// 账单会员价优惠
+					case "vipPricePromotionPay":
+					// 账单元整
+					case "wipeZeroPay":
+						// 自动计算值，或者取消
+						_.each(items, function (el) {
+							var paySubjectName = _.result(el, 'subjectName'),
+								paySubjectCode = _.result(el, 'subjectCode'),
+								paySubjectKey = _.result(el, 'subjectKey');
+							var debitAmount = 0;
+							if (subjectGrpName == "sendFoodPromotionPay") {
+								debitAmount = self.sumSendFoodPromotion();
+							} else if (subjectGrpName == "vipPricePromotionPay") {
+								debitAmount = self.sumVipFoodPromotion();
+							} else if (subjectGrpName == "wipeZeroPay") {
+								debitAmount = self.calcMoneyWipeZeroAmount();
+							}
+							self.OrderPaySubjectHT.register(paySubjectCode, {
+								paySubjectName : paySubjectName,
+								paySubjectCode : paySubjectCode,
+								paySubjectKey : paySubjectKey,
+								debitAmount : debitAmount,
+								giftItemNoLst : '',
+								payRemark : '',
+								payTransNo : ''
+							});
+						});
+						break;
+					// 账单减免
+					case "remissionPay":
+					// 现金支付
+					case "cashPay":
+					// 哗啦啦
+					case "hualalaPay":
+					// 代金券
+					case "voucherPay":
+						// 根据输入金额更新值，或者取消
+						_.each(items, function (el) {
+							var paySubjectName = _.result(el, 'subjectName'),
+								paySubjectCode = _.result(el, 'subjectCode'),
+								paySubjectKey = _.result(el, 'subjectKey');
+							var debitAmount = _.result(params, 'debitAmount', 0),
+								payRemark = _.result(params, 'payRemark', '');
+							self.OrderPaySubjectHT.register(paySubjectCode, {
+								paySubjectName : paySubjectName,
+								paySubjectCode : paySubjectCode,
+								paySubjectKey : paySubjectKey,
+								debitAmount : debitAmount,
+								giftItemNoLst : '',
+								payRemark : payRemark,
+								payTransNo : ''
+							});
+
+						});
+						break;
+					// 账单折扣
+					case "discountPay":
+						// 根据选择折扣方案，更新值，或者取消
+						break;
+					// 会员卡
+					case "vipCardPay":
+						// 根据选择使用会员卡支付方案，更新值，或者取消
+						break;
+					// 银行存款
+					case "bankCardPay":
+						// 根据选择银行
+						break;
+					// 团购
+					case "groupBuyPay":
+						// ret = mapGroupBuySchema(payLst);
+						break;
+					// 挂账
+					case "hangingPay":
+						// ret = mapHangingPaySchema(payLst);
+						break;
+				}
+				IX.Debug.info("OrderPaySubjectLst:");
+				IX.Debug.info(self.OrderPaySubjectHT.getAll());
+			};
+
+			/**
+			 * 根据支付科目code获取支付科目配置信息
+			 * @param  {[type]} subjectCode [description]
+			 * @return {[type]}             [description]
+			 */
+			this.getPaySubjectSettings = function (subjectCode) {
+				var subjects = self.OrderPaySubjectGrpHT.getAll(),
+					paySubjectHT = self.OrderPaySubjectHT;
+				subjects = _.flatten(_.pluck(subjects, 'items'));
+				var subjectSetting = _.find(subjects, function (el) {
+					return el.subjectCode == subjectCode;
+				});
+				return subjectSetting;
+			};
+
+			/**
+			 * 预计算应收
+			 * 根据订单支付科目详情和支付科目组名称，预计算支付科目组需要收取的金额
+			 * @return {[type]} [description]
+			 */
+			this.preCalcPayAmountByPaySubjectGrpName = function (name) {
+				var foodAmount = self.foodAmount,
+					payDetail = self.mapOrderPayDetail(),
+					payGrps = _.result(payDetail, 'payGrps', []);
+				// 过滤出当前支付科目组名称之外的所有支付科目组
+				var _otherAmounts = _.pluck(_.reject(payGrps, function (el) {
+					return el.name == name;
+				}), 'amount');
+				var sumOtherAmount = HCMath.add.apply(null, _otherAmounts);
+				var prePayAmount = HCMath.sub(foodAmount, sumOtherAmount);
+				return prePayAmount;
+			};
+			
+
+
+		}
+	]);
 
 	// 订单附加信息字典服务
 	// 10：点单备注；20：作法；30：口味；40：退菜原因；50：赠菜原因；
@@ -1167,4 +1954,124 @@ define(['app', 'uuid'], function (app, uuid) {
 			};
 		}
 	]);
+
+	// 订单支付科目字典服务
+	app.service('PaySubjectService',[
+		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			var paySubjectGroups = Hualala.TypeDef.OrderPaySubjectGroups;
+			// var paySubjectGroupNames = '账单赠送,账单会员价优惠,账单折扣,账单减免,现金,银行存款,会员卡,哗啦啦,团购,代金券,挂账,账单元整'.split(',');
+			self.paySubjectDict = new IX.IListManager();
+
+			/**
+			 * 初始化订单支付科目字典数据
+			 * @param  {[type]} records [description]
+			 * @return {[type]}         [description]
+			 */
+			this.initPaySubjectDict = function (records) {
+				// var datas = _.indexBy(records, 'subjectGroupName');
+				self.paySubjectDict.clear();
+				_.each(paySubjectGroups, function (g, i) {
+					var v = _.result(g, 'value', ''),
+						isPrefix = _.result(g, 'isPrefix'),
+						label = _.result(g, 'label', ''),
+						name = _.result(g, 'name', '');
+					var items = _.filter(records, function (item) {
+						var subjectCode = _.result(item, 'subjectCode'),
+							delta = isPrefix == "0" ? subjectCode : subjectCode.slice(0, v.length);
+						return delta == v;
+					});
+					self.paySubjectDict.register(name, _.extend(g, {
+						items : items
+					}));
+				});
+			};
+
+			/**
+			 * 向服务器获取支付科目字典信息
+			 * @param  {[type]} params  [description]
+			 * @param  {[type]} success [description]
+			 * @param  {[type]} error   [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getPaySubjectLst = function (params, success, error) {
+				return CommonCallServer.getPaySubjectLst(params)
+					.success(function (data, status, headers, config) {
+						var ret = _.result(data, 'data', {});
+						self.initPaySubjectDict(_.result(ret, 'records', []));
+						_.isFunction(success) && success(data, status, headers, config);
+					})
+					.error(function (data, status, headers, config) {
+						_.isFunction(error) && error(data, status, headers, config);
+					});
+			};
+
+			/**
+			 * 获取整理后的支付科目字典数据
+			 * @return {[type]} [description]
+			 */
+			this.getAllPaySubject = function () {
+				return self.paySubjectDict.getAll();
+			};
+		}
+	]);
+
+	// 订单打折方案服务
+	app.service('OrderDiscountRuleService', [
+		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			var _OrderDiscountRules = null;
+
+			/**
+			 * 初始化打折方案数据
+			 * @param  {[type]} records [description]
+			 * @return {[type]}         [description]
+			 */
+			this.initDiscountRules = function (records) {
+				_OrderDiscountRules = _.map(records, function (el) {
+					var discountWayName = _.result(el, 'discountWayName', ''),
+						discountRate = _.result(el, 'discountRate', ''),
+						discountRange = _.result(el, 'discountRange', ''),
+						isVipPrice = _.result(el, 'isVipPrice', '');
+					return _.extend(el, {
+						label : discountWayName,
+						// 默认顺序：折扣率；折扣范围；是否执行会员价
+						value : discountRate + ';' + discountRange + ';' + isVipPrice
+					});
+				});
+			};
+
+			/**
+			 * 向服务器获取打折方案字典数据
+			 * @param  {[type]} params  [description]
+			 * @param  {[type]} success [description]
+			 * @param  {[type]} error   [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getDiscountRuleLst = function (params, success, error) {
+				return CommonCallServer.getDiscountRuleLst(params)
+					.success(function (data, status, headers, config) {
+						var ret = _.result(data, 'data', {});
+						self.initDiscountRules(_.result(ret, 'records', []));
+					})
+					.error(function (data, status, headers, config) {
+						_.isFunction(error) && error(data, status, headers, config);
+					});
+			};
+
+			/**
+			 * 获取打折方案
+			 * @return {[type]} [description]
+			 */
+			this.getDiscountRules = function () {
+				return _OrderDiscountRules;
+			};
+		}
+	]);
+
+	
 });

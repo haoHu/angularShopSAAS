@@ -524,76 +524,26 @@
 				<section class="pay-schema">
 					<header class="schema-header">
 						<h4>结账</h4>
-						<button class="btn btn-default btn-close">返回</button>
-						
-						<div class="row">
-							<label class="col-xs-5 control-label">应收金额</label>
-							<p class="col-xs-7">￥300.05</p>
+						<button class="btn btn-default btn-close" ng-click="close()">返回</button>
+						<div class="row disabeld">
+							<label class="col-xs-5 control-label">菜品金额</label>
+							<p class="col-xs-7 sum">{{orderPayDetail.foodAmount | currency:"￥"}}</p>
 						</div>
 					</header>
 					<section class="schema-body">
-						<div class="list-group">
-							<a href="#" class="list-group-item clearfix">
-								<label class="col-xs-5">账单元整</label>
-								<p class="col-xs-4">￥0.5</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item  clearfix">
-								<label class="col-xs-5">账单打折</label>
-								<p class="col-xs-4">50%</p>
-								<p class="col-xs-12">8折，部分菜品打折</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item  clearfix">
-								<label class="col-xs-5">账单减免</label>
-								<p class="col-xs-4">￥10</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item active  clearfix">
-								<label class="col-xs-5">现金</label>
-								<p class="col-xs-4">￥40</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item  clearfix">
-								<label class="col-xs-5">银行卡</label>
-								<p class="col-xs-12">招商银行：￥200</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item  clearfix">
-								<label class="col-xs-5">会员卡</label>
-								<p class="col-xs-4">￥420</p>
-								<p class="col-xs-12">卡号：123112331234，积分：20，储值：200，代金券：20</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item clearfix">
-								<label class="col-xs-5">哗啦啦</label>
-								<p class="col-xs-4">￥100</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item clearfix">
-								<label class="col-xs-5">团购</label>
-								<p class="col-xs-4">￥100</p>
-								<p class="col-xs-12">美团券100</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item clearfix">
-								<label class="col-xs-5">代金券</label>
-								<p class="col-xs-4">￥100</p>
-								<p class="col-xs-12">现金券100</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-							<a href="#" class="list-group-item clearfix">
-								<label class="col-xs-5">挂账</label>
-								<p class="col-xs-4">￥100</p>
-								<p class="col-xs-12">中纪委：100</p>
-								<button class="btn btn-default">取消</button>
-							</a>
-						</div>
+						<ul class="list-group">
+							<li ng-repeat="paySubjectGrp in orderPayDetail.payGrps" class="list-group-item clearfix" name="{{paySubjectGrp.name}}" ng-class="{disabled : isDisabledPaySubjectGrp(paySubjectGrp), active : isCurPaySubjectGrpName(paySubjectGrp.name), hidden : isHiddenPaySubjectGrp(paySubjectGrp)}" ng-click="changeCurrentPaySubjectGrp(paySubjectGrp)">
+								<label class="col-xs-5">{{paySubjectGrp.label}}</label>
+								<p class="col-xs-7 sum" ng-class="{hidden : isHiddenPrice(paySubjectGrp.amount)}">{{paySubjectGrp.amount | mycurrency:"￥"}}</p>
+								<p class="col-xs-12" ng-if="isNotEmptyStr(paySubjectGrp.detail)">{{paySubjectGrp.detail}}</p>
+								<button class="btn btn-default" ng-if="isNotZeroAmount(paySubjectGrp)" ng-click="resetPaySubject(paySubjectGrp)">撤销</button>
+							</li>
+						</ul>
 					</section>
 					<footer class="schema-footer">
 						<div class="row">
 							<label class="col-xs-5 control-label">未付</label>
-							<p class="col-xs-7">￥300.05</p>
+							<p class="col-xs-7 sum">{{orderPayDetail.unPayAmount | mycurrency: "￥"}}</p>
 						</div>
 						<div class="row">
 							<div class="col-xs-6">
@@ -606,10 +556,61 @@
 						<button type="button" class="btn btn-default btn-block">完成结账</button>
 					</footer>
 				</section>
-				<section class="pay-subject">
 				
+				<section class="pay-subject">
+					<div class="panel panel-default animate-repeat" ng-repeat="paySubjectGrp in orderPayDetail.payGrps | filter:curPaySubjectGrpName" id="{{paySubjectGrp.name}}">
+						<div class="panel-heading">
+							{{paySubjectGrp.label}}
+						</div>
+						<div class="panel-body">
+							<commonpayform ng-if="getPayFormType(paySubjectGrp) == 'common'" pay-subject-grp="paySubjectGrp" form-cfg="payFormCfg[paySubjectGrp.name]" ></commonpayform>
+							<vippayform ng-if="getPayFormType(paySubjectGrp) == 'vip'" pay-subject-grp="paySubjectGrp"></vippayform>
+						</div>
+						<div class="panel-footer">
+							<button  class="btn btn-default btn-block" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)">
+								确认收款
+							</button>
+							<button  class="btn btn-default btn-block" ng-if="getPayFormType(paySubjectGrp) == 'vip'" ng-click="submitPayForm(paySubjectGrp)">
+								会员消费确认
+							</button>
+						</div>
+					</div>
+					
 				</section>
 			</div>
+		</div>
+	</script>
+	<!-- 通用支付表单部件 -->
+	<script type="text/ng-template" id="js/diandan/commonpayform.html">
+		<div class="row">
+			<div class="" ng-class="{'col-xs-12' : paySubjectGrp.name == 'discountPay', 'col-xs-4' : paySubjectGrp.name != 'discountPay'}" ng-if="needLeftBar(paySubjectGrp.name)">
+				<div class="btngrp-box" ng-if="paySubjectGrp.name == 'discountPay'" pager-list="loop" pager-data="{{SendFoodReasons}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<radiogroup group-opts="SendFoodReasons" radio-name="sendReason" cur-val="{{sendReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onSendReasonChange(val)"></radiogroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+			</div>
+			<div class="col-xs-8" ng-if="paySubjectGrp.name != 'discountPay'">
+				<div class="form-horizontal">
+					<div class="form-group" ng-repeat="el in formCfg">
+						<label class="col-xs-4 control-label">{{el.label}}</label>
+						<div class="col-xs-8">
+							<input type="number" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} />
+						</div>
+					</div>
+				</div>
+				<div>
+				<numkeyboard></numkeyboard>
+				</div>
+
+				
+			</div>
+		</div>
+	</script>
+	<!-- 会员卡支付表单部件 -->
+	<script type="text/ng-template" id="js/diandan/vippayform.html">
+		<div>
+		<h1>会员支付</h1>
+		<numkeyboard></numkeyboard>
 		</div>
 	</script>
 </section>
