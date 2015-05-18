@@ -297,6 +297,8 @@ define(['app'], function (app) {
                     // console.info(val);
                     return _.isEmpty(item) ? false : true;
                 };
+                
+
                 el.on('change', ':checkbox', function (e) {
                     var checkbox = $(this),
                         val = checkbox.val(),
@@ -308,7 +310,8 @@ define(['app'], function (app) {
                     }
                     scope.onChange({
                         val : scope.curVal,
-                        checkboxName : scope.checkboxName
+                        checkboxName : scope.checkboxName,
+                        tarScope : scope
                     });
                 });
             }

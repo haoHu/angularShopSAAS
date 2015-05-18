@@ -553,7 +553,7 @@
 								<button type="button" class="btn btn-default btn-block">打印结账清单</button>
 							</div>
 						</div>
-						<button type="button" class="btn btn-default btn-block">完成结账</button>
+						<button type="button" class="btn btn-default btn-block" ng-class="{disabled : !isCanbeSubmit(orderPayDetail)}" ng-click="submitOrderPay()">完成结账</button>
 					</footer>
 				</section>
 				
@@ -584,8 +584,13 @@
 	<script type="text/ng-template" id="js/diandan/commonpayform.html">
 		<div class="row">
 			<div class="" ng-class="{'col-xs-12' : paySubjectGrp.name == 'discountPay', 'col-xs-4' : paySubjectGrp.name != 'discountPay'}" ng-if="needLeftBar(paySubjectGrp.name)">
-				<div class="btngrp-box" ng-if="paySubjectGrp.name == 'discountPay'" pager-list="loop" pager-data="{{SendFoodReasons}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
-					<radiogroup group-opts="SendFoodReasons" radio-name="sendReason" cur-val="{{sendReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onSendReasonChange(val)"></radiogroup>
+				<div class="btngrp-box" ng-if="paySubjectGrp.name == 'discountPay'" pager-list="loop" pager-data="{{discountRuleLst}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<radiogroup group-opts="discountRuleLst" radio-name="discountRule" cur-val="{{curDiscountRule}}" class="btn-group" role="group" data-toggle="buttons" on-change="onDiscountChange(val)"></radiogroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+				
+				<div class="btngrp-box btngrp-vertical" ng-if="paySubjectGrp.name != 'discountPay'" pager-list="loop" pager-data="{{optCfg.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<radiogroup group-opts="optCfg.items" radio-name="pay_subject" cur-val="optCfg.selectedSubjects" class="btn-group" role="group" data-toggle="buttons" on-change="onPaySubjectChange(val)"></radiogroup>
 					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 				</div>
 			</div>
@@ -608,9 +613,69 @@
 	</script>
 	<!-- 会员卡支付表单部件 -->
 	<script type="text/ng-template" id="js/diandan/vippayform.html">
-		<div>
-		<h1>会员支付</h1>
-		<numkeyboard></numkeyboard>
+		<div class="row vip-pay">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-3 control-label">卡号</label>
+					<div class="col-xs-7">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="卡号/手机号"/>
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="button">查询</button>
+							</span>
+						</div>
+					</div>
+					<div class="col-xs-2">
+						<span class="label label-info">状态</span>
+					</div>
+					<p class="help-block info row">
+						<span class="col-xs-3">姓名:哗啦啦</span>
+						<span class="col-xs-4">手机:13322222222</span>
+						<span class="col-xs-3">生日:1988-12-24</span>
+						<span class="col-xs-2">金卡</span>
+					</p>
+				</div>
+				
+			</div>
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-3 control-label">使用卡值</label>
+					<div class="col-xs-5">
+						<input type="number" class="form-control" />
+					</div>
+					<div class="col-xs-4">
+						<p class="help-block info">使用余额:100</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">使用积分</label>
+					<div class="col-xs-5">
+						<input type="number" class="form-control" />
+					</div>
+					<div class="col-xs-4">
+						<p class="help-block info">使用积分:100</p>
+						<p class="help-block info">可抵金额:100</p>
+					</div>
+				</div>
+			</div>
+			<div class="user-voucher">
+				<div class="voucher-info">用券:</div>
+				<div class="btngrp-box " pager-list="loop" pager-data="{{el.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<checkboxgroup group-opts="el.items" checkbox-name="cate_{{$index}}" cur-val="el.selectedFoods" class="btn-group" role="group" data-toggle="buttons" on-change="onSetFoodChange(val, checkboxName)" ></checkboxgroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+			</div>
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-3 control-label">支付确认码</label>
+					<div class="col-xs-7">
+						<input type="number" class="form-control" />
+					</div>
+					
+				</div>
+			</div>
+			<numkeyboard></numkeyboard>
+
 		</div>
 	</script>
 </section>

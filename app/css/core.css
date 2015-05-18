@@ -450,10 +450,21 @@ body {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 10;
   width: 33.33333333%;
   height: 50%;
   background-color: #e6f2fd;
   border-radius: 0;
+}
+.btngrp-box.btngrp-vertical {
+  width: 100%;
+  height: 600px;
+}
+.btngrp-box.btngrp-vertical .btn-checkbox,
+.btngrp-box.btngrp-vertical .btn-radio,
+.btngrp-box.btngrp-vertical .btn-pager {
+  height: 16.66666667%;
+  width: 100%;
 }
 .btngrp-box.setfood-btn {
   height: auto;
@@ -617,4 +628,16 @@ body {
 .pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-move.ng-move-active,
 .pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-enter.ng-enter-active {
   opacity: 1;
+}
+.pay-modal .pay-ctrl .pay-subject .vip-pay .help-block.info {
+  margin-top: 0px;
+  margin-bottom: 3px;
+  font-size: 1rem;
+}
+.pay-modal .pay-ctrl .pay-subject .vip-pay .info.row > span {
+  padding: 0;
+  padding-left: 1rem;
+}
+.pay-modal .pay-ctrl .pay-subject .vip-pay .user-voucher {
+  margin-bottom: 15px;
 }

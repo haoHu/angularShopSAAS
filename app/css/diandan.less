@@ -291,10 +291,27 @@
 		}
 	}
 	.btn-pager {
-		position : absolute; bottom : 0; right : 0;
+		position : absolute; bottom : 0; right : 0; z-index: 10;
 		width : @btnWidth; height : @btnHeight; background-color: @xLightBtnBG;
 		border-radius: 0;
 	}
+}
+
+// 纵向多选按钮组
+// 先把配置参数写死，待以后维护
+.btngrp-box.btngrp-vertical {
+	@boxHeight : 600px;
+	@boxWidth : 100%;
+	@btnCols : 1;
+	@btnRows : 6;
+	@btnWidth : percentage(1 / @btnCols);
+	@btnHeight : percentage(1 / @btnRows);
+	width: @boxWidth; height : @boxHeight;
+
+	.btn-checkbox, .btn-radio, .btn-pager {
+		height : @btnHeight; width : @btnWidth;
+	}
+
 }
 
 // 套餐搭配选项
@@ -401,6 +418,19 @@
 			.animate-repeat.ng-move.ng-move-active,
 			.animate-repeat.ng-enter.ng-enter-active {
 			  opacity:1;
+			}
+
+			.vip-pay {
+				.help-block.info {
+					margin-top : 0px; margin-bottom : 3px; font-size: 1rem;
+				}
+				.info.row > span {
+					padding : 0; padding-left : 1rem;
+				}
+				.user-voucher {
+					margin-bottom : 15px;
+				}
+
 			}
 		}	
 	}

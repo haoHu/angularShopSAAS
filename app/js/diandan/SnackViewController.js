@@ -816,6 +816,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					name = _.result(paySubjectGrp, 'name');
 				return amount != 0 && name != "sendFoodPromotionPay";
 			};
+			// 判断是否可以完成结账
+			$scope.isCanbeSubmit = function (orderPayDetail) {
+				var unPayAmount = parseFloat(_.result(orderPayDetail, 'unPayAmount', 0));
+				return unPayAmount == 0;
+			};
 			// 切换支付科目组
 			$scope.changeCurrentPaySubjectGrp = function (paySubjectGrp) {
 				var name = _.result(paySubjectGrp, 'name');
@@ -841,9 +846,26 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var name = _.result(paySubjectGrp, 'name'),
 					items = _.result(paySubjectGrp, 'items', []);
 				var subjectCodes = _.pluck(items, 'subjectCode');
-				OrderPayService.deletePaySubjectItem(subjectCodes);
+				OrderPayService.deletePaySubjectItem(subjectCodes, name);
 				$scope.$broadcast('pay.detailUpdate');
 			};		
+			// 订单支付提交
+			$scope.submitOrderPay = function () {
+				var isOK = $scope.isCanbeSubmit($scope.orderPayDetail);
+				if (!isOK) return;
+				var callServer = OrderService.submitOrder('JZ', OrderPayService.getOrderPayParams());
+				!_.isEmpty(callServer) && callServer.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == "000") {
+						OrderService.initOrderFoodDB({});
+						_scope.resetOrderInfo();
+						$scope.close();
+					} else {
+						alert(_.result(data, 'msg', ''));
+					}
+					
+				});
+			};
 
 			// 绑定更新支付详情事件
 			$scope.$on('pay.detailUpdate', function () {
@@ -868,10 +890,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					IX.ns("Hualala");
 					var HCMath = Hualala.Common.Math;
 					var curPayGrpName = scope.paySubjectGrp.name;
+					scope.discountRuleLst = OrderPayService.getDiscountRules();
+					scope.curDiscountRule = OrderPayService.getCurDiscountRule();
+					// 格式化支付操作表单元素数据
 					var mapFormCfg = function () {
 						var formCfg = scope.formCfg;
 						var prePayAmount = OrderPayService.preCalcPayAmountByPaySubjectGrpName(curPayGrpName);
 						switch(curPayGrpName) {
+							// 现金支付，账单减免，代金券，哗啦啦支付
 							case "cashPay":
 							case "remissionPay":
 							case "voucherPay":
@@ -884,13 +910,67 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 										el.value = 0;
 									}
 								});
-								
+							case "hangingPay":
+							case "groupBuyPay":
+							case "bankCardPay":
+								_.each(formCfg, function (el) {
+									var name = _.result(el, 'name');
+									var delta = HCMath.sub(prePayAmount, _.result(scope.optCfg, 'selectedAmount', 0));
+									if (name == 'realPrice') {
+										el.value = delta;
+									} else {
+										el.value = 0;
+									}
+								});
 								break;
 						}
 					};
+					// 格式化支付科目选项数据
+					var mapPaySubjectOptsCfg = function () {
+						var items = _.result(scope.paySubjectGrp, 'items', []),
+							subCodes = _.pluck(items, 'subjectCode'),
+							subLabels = _.pluck(items, 'subjectName'),
+							subAmounts = _.map(subCodes, function (c) {
+								var record = OrderPayService.getPaySubjectRecord(c);
+								return _.result(record, 'debitAmount', 0);
+							});
+						var opts, selectedOpts, selectedAmount = 0;
+						switch(curPayGrpName) {
+							// 挂账，团购支付，银行卡支付
+							case "hangingPay":
+							case "groupBuyPay":
+							case "bankCardPay":
+								opts = _.zip(subCodes, subLabels, subAmounts);
+								opts = _.map(opts, function (v) {
+									var item = _.object(['value', 'label', 'amount'], v);
+									var amount = parseFloat(_.result(item, 'amount', 0)),
+										label = _.result(item, 'label', '');
+									var txt = '<p>' + label + '</p>' 
+										+ (amount == 0 ? '' : ('<p>已支付:￥' + amount + '</p>'));
+
+									return _.extend(item, {
+										label : txt
+									});
+								});
+								selectedOpts = _.filter(opts, function (el) {return parseFloat(_.result(el, 'amount', 0)) != 0;});
+								selectedAmount = HCMath.add.apply(null, _.pluck(opts, 'amount'));
+								break;
+							default : 
+								opts = [];
+								break;
+						}
+						scope.optCfg = {
+							items : opts,
+							selectedSubjects : _.pluck(selectedOpts, 'value'),
+							selectedAmount : selectedAmount
+						};
+					};
 					var initPayForm = function () {
+						// 整理支付科目选项数据
+						mapPaySubjectOptsCfg();
 						// 整理支付表单数据
 						mapFormCfg();
+						
 					};
 					initPayForm();
 					el.on('change', 'input[name=realPrice]', function (e) {
@@ -900,6 +980,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var changeVal = HCMath.sub(prePayAmount, v);
 						changeEl.val(changeVal);
 					});
+					// 判断是否需要左侧栏位
 					scope.needLeftBar = function (name) {
 						var curName = scope.paySubjectGrp.name;
 						var leftBarNames = 'discountPay,bankCardPay,groupBuyPay,hangingPay'.split(',');
@@ -907,6 +988,43 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							return k == curName;
 						});
 					};
+					// 选择支付科目
+					// scope.onPaySubjectChange = function (subCodes, name, tarScope) {
+					// 	console.info(subCodes + '--' + name);
+					// 	// 要删除以选中的支付科目中没有设置金额的并且不止当前正在选中的科目
+					// 	var opts = scope.optCfg.items,
+					// 		lastSelected = subCodes[subCodes.length - 1],
+					// 		hasAmountSubCodes = _.pluck(_.reject(scope.optCfg.items, function (el) {
+					// 				return _.isEmpty(_.result(el, 'amount', 0));
+					// 			}), 'value');
+					// 	hasAmountSubCodes.push(lastSelected);
+					// 	scope.optCfg.selectedSubjects = hasAmountSubCodes;
+					// 	tarScope.curVal = scope.optCfg.selectedSubjects;
+					// };
+					scope.onPaySubjectChange = function (subCode) {
+						console.info(subCode);
+						var opts = scope.optCfg.items,
+							hasAmountSubCodes = _.pluck(_.reject(opts, function (el) {
+								return _.result(el, 'amount', 0) != 0;
+							}), 'value');
+						var idx = _.indexOf(hasAmountSubCodes, subCode);
+						// 将当前选择的支付科目号放在已支付的队列末尾s
+						if (idx != -1) {
+							hasAmountSubCodes = hasAmountSubCodes.slice(0, idx).concat(hasAmountSubCodes.slice(idx + 1));
+						}
+						hasAmountSubCodes.push(subCode);
+						scope.optCfg.selectedSubjects = hasAmountSubCodes;
+					};
+
+					// 选择打折方案
+					scope.onDiscountChange = function (discountRule) {
+						var params = _.object('discountRate,discountRange,isVipPrice'.split(','), discountRule.split(';'));
+						console.info("current discount rule:");
+						console.info(params);
+						curDiscountRule = discountRule;
+					};
+
+					// 结账提交
 					scope.$on('pay.submit', function (d, targetPaySubjectGrp) {
 						var curName = scope.paySubjectGrp.name,
 							tarName = targetPaySubjectGrp.name;
@@ -930,6 +1048,26 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									payRemark : payRemark
 								});
 								break;
+							// 挂账，团购支付，银行卡支付
+							case "hangingPay":
+							case "groupBuyPay":
+							case "bankCardPay":
+								// 找出scope.optCfg.selectedSubjects队列末尾的支付科目，为当前操作支付科目
+								var realPriceEl = el.find('input[name=realPrice]');
+								var realPay = parseFloat(realPriceEl.val());
+								var selectedSubCodes = scope.optCfg.selectedSubjects;
+								var curSubCode = selectedSubCodes[selectedSubCodes.length - 1];
+								OrderPayService.updatePaySubjectItem(curName, {
+									debitAmount : realPay,
+									subjectCode : curSubCode
+								});
+
+								break;
+							// 折扣方案选择
+							case "discountPay" :
+								var params = _.object('discountRate,discountRange,isVipPrice'.split(','), curDiscountRule.split(';'));
+								OrderPayService.updatePaySubjectItem(curName, params);
+								break;
 						}
 						scope.$emit('pay.detailUpdate');
 						initPayForm();
@@ -941,6 +1079,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						d.preventDefault();
 						return ;
 					});
+
+					
 
 					
 				}
