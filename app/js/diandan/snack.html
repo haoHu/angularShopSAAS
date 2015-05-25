@@ -87,6 +87,7 @@
 			<button class="btn btn-default btn-block" type="button" btn-act="return">返回</button>
 		</div>
 	</div> -->
+
 	<div class="modal fade" id="search_food">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -578,6 +579,7 @@
 					
 				</section>
 			</div>
+			<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 		</div>
 	</script>
 	<!-- 通用支付表单部件 -->
@@ -619,49 +621,58 @@
 					<label class="col-xs-3 control-label">卡号</label>
 					<div class="col-xs-7">
 						<div class="input-group">
-							<input type="text" class="form-control" placeholder="卡号/手机号"/>
+							<input type="text" class="form-control" name="card_id" value="18910021580" placeholder="卡号/手机号"/>
 							<span class="input-group-btn">
-								<button class="btn btn-default" type="button">查询</button>
+								<button class="btn btn-default" type="button" name="search" data-loading-text="查询中..." autocomplete="off" >查询</button>
 							</span>
 						</div>
 					</div>
 					<div class="col-xs-2">
-						<span class="label label-info">状态</span>
+						<span class="label label-success" ng-if="hasVIPInfo() && vipInfo.cardIsCanUsing == 1">
+							正常
+						</span>
+						<span class="label label-danger" ng-if="hasVIPInfo() && vipInfo.cardIsCanUsing != 1">
+							{{vipInfo.cardNotCanUsingNotes}}
+						</span>
+						
 					</div>
-					<p class="help-block info row">
-						<span class="col-xs-3">姓名:哗啦啦</span>
-						<span class="col-xs-4">手机:13322222222</span>
-						<span class="col-xs-3">生日:1988-12-24</span>
-						<span class="col-xs-2">金卡</span>
+					<p class="help-block info col-xs-offset-2 col-xs-10" >
+						<span class="">姓名:{{vipInfo.userName || '哗啦啦'}}</span>
+						<span class="">手机:{{vipInfo.userMobile || '13322222222'}}</span>
+						<span class="" ng-class="{hidden : vipInfo.customerBirthday.length == 0}">生日:{{vipInfo.customerBirthday || ''}}</span>
+						<span class="">{{vipInfo.cardTypeName || 'VIP1'}}</span>
 					</p>
 				</div>
 				
 			</div>
-			<div class="form-horizontal">
-				<div class="form-group">
-					<label class="col-xs-3 control-label">使用卡值</label>
-					<div class="col-xs-5">
-						<input type="number" class="form-control" />
-					</div>
-					<div class="col-xs-4">
-						<p class="help-block info">使用余额:100</p>
-					</div>
-				</div>
+			<div class="form-horizontal" >
 				<div class="form-group">
 					<label class="col-xs-3 control-label">使用积分</label>
 					<div class="col-xs-5">
-						<input type="number" class="form-control" />
+						<input type="number" class="form-control" name="point_amount" ng-model="payByPoint" />
 					</div>
 					<div class="col-xs-4">
-						<p class="help-block info">使用积分:100</p>
-						<p class="help-block info">可抵金额:100</p>
+						<p class="help-block info">使用积分:{{vipInfo.cardPointBalance}}</p>
+						<p class="help-block info">可抵金额:{{vipInfo.cardPointAsMoney | mycurrency:"￥"}}</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">使用卡值</label>
+					<div class="col-xs-5">
+						<input type="number" class="form-control" name="money_amount" ng-model="payByCash" />
+					</div>
+					<div class="col-xs-4">
+						<p class="help-block info">使用余额:{{vipInfo.cardCashBalance | mycurrency:"￥"}}</p>
 					</div>
 				</div>
 			</div>
 			<div class="user-voucher">
-				<div class="voucher-info">用券:</div>
-				<div class="btngrp-box " pager-list="loop" pager-data="{{el.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
-					<checkboxgroup group-opts="el.items" checkbox-name="cate_{{$index}}" cur-val="el.selectedFoods" class="btn-group" role="group" data-toggle="buttons" on-change="onSetFoodChange(val, checkboxName)" ></checkboxgroup>
+				<div class="voucher-info">
+					<label class="">用券:</label>
+					<span>{{curCashVoucherStr}}</span>
+				</div>
+				<div class="btngrp-box " pager-list="loop" pager-data="{{cashVoucherOpts}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<checkboxgroup group-opts="cashVoucherOpts" checkbox-name="cash_voucher" cur-val="curCashVouchers" class="btn-group" role="group" data-toggle="buttons" on-change="onCashVoucherChange(val, checkboxName, tarScope, curVal)" ></checkboxgroup>
 					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 				</div>
 			</div>
@@ -669,7 +680,7 @@
 				<div class="form-group">
 					<label class="col-xs-3 control-label">支付确认码</label>
 					<div class="col-xs-7">
-						<input type="number" class="form-control" />
+						<input type="password" class="form-control" name="auth_code" value="{{cardTransPWD}}"/>
 					</div>
 					
 				</div>

@@ -69,6 +69,10 @@
 		SEND : 2
 	};
 
+	/**
+	 * 订单字典类型
+	 * @type {Array}
+	 */
 	Hualala.TypeDef.OrderNoteTypes = [
 		{name : "orderRemark", value : "10", label : "点单备注"},
 		{name : "foodMethod", value : "20", label : "作法"},
@@ -81,6 +85,10 @@
 		{name : "takeoutCancel", value : "90", label : "外卖退单原因"}
 	];
 
+	/**
+	 * 订单支付科目组
+	 * @type {Array}
+	 */
 	Hualala.TypeDef.OrderPaySubjectGroups = [
 		{name : "sendFoodPromotionPay", value : "51010501", isPrefix : "0", label : "账单赠送"},
 		{name : "vipPricePromotionPay", value : "51010502", isPrefix : "0", label : "会员价优惠"},
@@ -94,5 +102,12 @@
 		{name : "groupBuyPay", value : "11310", isPrefix : "1", label : "团购"},
 		{name : "voucherPay", value : "51010507", isPrefix : "0", label : "代金券"},
 		{name : "hangingPay", value : "11312", isPrefix : "1", label : "挂账"}
+	];
+
+	Hualala.TypeDef.VIPCardStatus = [
+		{value : 10, label : "正常"},
+		{value : 20, label : "挂失中"},
+		{value : 30, label : "冻结"},
+		{value : 40, label : "注销"}
 	];
 })();

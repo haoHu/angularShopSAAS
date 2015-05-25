@@ -72,4 +72,17 @@ define(['app'], function (app) {
 		};
 		return filterFn;
 	});
+
+	// VIP会员卡状态
+	app.filter("vipCardStatus", function () {
+		IX.ns("Hualala");
+		var filterFn = function (v) {
+			var items = Hualala.TypeDef.VIPCardStatus;
+			var status = _.find(items, function (item) {
+				return _.result(item, 'value') == v;
+			});
+			return _.result(status, 'label', '');
+		};
+		return filterFn;
+	});
 });

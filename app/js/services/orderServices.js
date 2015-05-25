@@ -1076,7 +1076,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.OrderItemSubTotalHT = new IX.IListManager();
 			// 订单支付计算涉及的相关全局配置参数关键字
 			// 包括：是否会员价(isVipPrice)、折扣率(discountRate)、折扣范围(discountRange)、抹零方式(moneyWipeZeroType)、订单菜品金额合计(foodAmount)
-			var OrderPaySettingKeys = "isVipPrice,discountRate,discountRange,moneyWipeZeroType,foodAmount".split(',');
+			var OrderPaySettingKeys = "isVipPrice,discountRate,discountRange,moneyWipeZeroType,foodAmount,cardNo,cardKey,cardTransID".split(',');
 			// 订单条目用于计算金额小计所需要的基本关键字段，用于组成OrderItemSubTotalHT数据表的字段
 			// 包括：条目ID(itemKey)、点菜数量(foodNumber)、退菜数量(foodCancelNumber)、赠菜数量(foodSendNumber)、
 			// 是否打折(isDiscount)、售价(foodProPrice)、会员价(foodVipPrice)、成交价(foodPayPrice)	
@@ -1563,7 +1563,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				var mapVipCardPaySchema = function (items) {
 					var amount = 0, detail = '',
 						isEmpty = _.isEmpty(items);
-					var vipCardNo = isEmpty ? '' : _.pluck(items, 'payTransNo')[0] + ';';
+					// var vipCardNo = isEmpty ? '' : _.pluck(items, 'payTransNo')[0] + ';';
+					var vipCardNo = isEmpty ? '' : self.cardNo;
+					vipCardNo = _.isEmpty(vipCardNo) ? '' : ('卡号:' + vipCardNo + ';');
 					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
 					var subjectNames = isEmpty ? '' : _.pluck(items, 'paySubjectName', ''),
 						debitAmounts = isEmpty ? '' : _.pluck(items, 'debitAmount', '');
@@ -1808,7 +1810,30 @@ define(['app', 'uuid'], function (app, uuid) {
 						break;
 					// 会员卡
 					case "vipCardPay":
-						// 根据选择使用会员卡支付方案，更新值，或者取消
+						// 根据选择使用会员卡支付方案，更新值
+						_.each(items, function (el) {
+							var paySubjectName = _.result(el, 'subjectName'),
+								paySubjectCode = _.result(el, 'subjectCode'),
+								paySubjectKey = _.result(el, 'subjectKey');
+							// 先清空之前的支付科目
+							self.OrderPaySubjectHT.remove(paySubjectCode);
+							var _paySubjectParams = params[paySubjectCode];
+							if (!_.isEmpty(_paySubjectParams)) {
+								self.OrderPaySubjectHT.register(paySubjectCode, _.extend({
+									paySubjectName : paySubjectName,
+									paySubjectCode : paySubjectCode,
+									paySubjectKey : paySubjectKey
+								}, _paySubjectParams));
+							}
+							
+							self.calcOrderItemsSubTotal();
+							// 计算并更新账单赠送菜品金额合计
+							self.updatePaySubjectItem("sendFoodPromotionPay");
+							// 计算并更新会员价优惠金额合计
+							self.updatePaySubjectItem("vipPricePromotionPay");
+							// 计算并更新账单元整
+							self.updatePaySubjectItem("wipeZeroPay");
+						});
 						break;
 					// 银行存款
 					case "bankCardPay":
@@ -1888,6 +1913,22 @@ define(['app', 'uuid'], function (app, uuid) {
 			};
 
 			/**
+			 * 更新会员卡打折方案设置
+			 * 判断当前如果没有使用账单打折方案，才可以设置会员卡优惠方案
+			 * @param  {[type]} settings [description]
+			 * @return {[type]}          [description]
+			 */
+			this.updateVipCardDicountSettings = function (settings) {
+				var orderDiscount = self.OrderPaySubjectHT.get('51010503');
+				if (!orderDiscount || orderDiscount.debitAmount == 0) {
+					// self.discountRate = _.result(settings, 'discountRate');
+					// self.discountRange = _.result(settings, 'discountRange');
+					// self.isVipPrice = _.result(settings, 'isVipPrice');
+					self.updatePaySubjectItem('discountPay', settings);
+				}
+			};
+
+			/**
 			 * 获取支付提交数据
 			 * @return {[type]} [description]
 			 */
@@ -1911,6 +1952,10 @@ define(['app', 'uuid'], function (app, uuid) {
 				return discountRuleLst;
 			};
 
+			/**
+			 * 获取当前订单支付优惠规则
+			 * @return {[type]} [description]
+			 */
 			this.getCurDiscountRule = function () {
 				var params = _.pick(self, 'discountRate,discountRange,isVipPrice'.split(','));
 				if (params.discountRate == 1) {
@@ -1920,7 +1965,146 @@ define(['app', 'uuid'], function (app, uuid) {
 				}
 			};
 
+			/**
+			 * 设置当前打折优惠规则方案
+			 * @param {[type]} params {discountRate,discountRange,isVipPrice}
+			 */
+			this.setCurDiscountRule = function (params) {
+				params = _.pick(params, ['discountRate', 'discountRange', 'isVipPrice']);
+				_.extend(self, params);
+				self.updatePaySubjectItem('discountPay', params);
+			};
 
+			/**
+			 * 更新会员卡支付操作相关参数
+			 * @return {[type]} [description]
+			 */
+			this.updateVIPCardPayParams = function (params) {
+				self.cardNo = _.result(params, 'cardNo', '');
+				self.cardKey = _.result(params, 'cardKey', '');
+				self.cardTransPWD = _.result(params, 'cardTransPWD', '');
+			};
+
+			/**
+			 * 会员卡交易撤销服务操作
+			 * @return {[type]} [description]
+			 */
+			this.vipCardTransRevoke = function () {
+				var cardKey = self.cardKey,
+					transID = self.cardTransID;
+				var callServer = CommonCallServer.cardTransRevoke({
+					cardNoOrMobile : cardKey,
+					transID : transID
+				});
+				return callServer;
+			};
+
+			/**
+			 * 会员卡扣款服务操作
+			 * @return {[type]} [description]
+			 */
+			this.vipCardDeductMoney = function () {
+				var cardKey = self.cardKey,
+					cardTransPWD = self.cardTransPWD,
+					operator = _.result(storage.get('EMPINFO'), 'empCode'),
+					foodAmount = self.foodAmount,
+					consumptionAmount = 0,
+					consumptionPointAmount = 0,
+					paySubjects = self.getPaySubjectRecord(),
+					deductGiftAmount = 0,
+					deductMoneyAmount = 0,
+					deductPointAmount = 0,
+					discountAmount = 0,
+					EgiftItemIDList = '',
+					exchangeItemIDList = '',
+					posOrderNo = self._OrderData.saasOrderKey;
+				var payDetail = self.mapOrderPayDetail(),
+					payGrps = _.result(payDetail, 'payGrps', []);
+				// 计算消费金额
+				var promotionTotal = _.filter(payGrps, function (el) {
+					var promotionKeys = 'sendFoodPromotionPay,vipPricePromotionPay,wipeZeroPay,remissionPay,discountPay'.split(',');
+					var idx = _.indexOf(promotionKeys, el.name);
+					return idx > -1;
+				});
+				promotionTotal = _.pluck(promotionTotal, 'amount');
+				promotionTotal = HCMath.add.apply(null, promotionTotal);
+				consumptionAmount = HCMath.sub(foodAmount, promotionTotal);
+				// 计算消费可积分金额
+				consumptionPointAmount = _.filter(payGrps, function (el) {
+					var pointKeys = 'cashPay,bankCardPay,hualalaPay';
+					var idx = _.indexOf(pointKeys, el.name);
+					return idx > -1;
+				});
+				consumptionPointAmount = _.pluck(consumptionPointAmount, 'amount');
+				consumptionPointAmount = HCMath.add.apply(null, consumptionPointAmount);
+				// 计算会员卡代金券支付金额
+				deductGiftAmount = _.result(_.find(paySubjects, function (el) {
+					return el.paySubjectCode == '51010615';
+				}), 'debitAmount', 0);
+				// 计算会员卡现金支付金额
+				deductMoneyAmount = _.result(_.find(paySubjects, function (el) {
+					return el.paySubjectCode == '51010609';
+				}), 'debitAmount', 0);
+				// 计算会员卡积分支付金额
+				deductPointAmount = _.result(_.find(paySubjects, function (el) {
+					return el.paySubjectCode == '51010613';
+				}), 'debitAmount', 0);
+				// 代金券编号列表
+				EgiftItemIDList = _.result(_.find(paySubjects, function (el) {
+					return el.paySubjectCode == '51010615';
+				}), 'giftItemNoLst', '');
+
+				var postParams = {
+					cardKey : cardKey,
+					cardTransPWD : cardTransPWD,
+					operator : operator,
+					consumptionAmount : consumptionAmount,
+					consumptionPointAmount : consumptionPointAmount,
+					deductGiftAmount : deductGiftAmount,
+					deductMoneyAmount : deductMoneyAmount,
+					deductPointAmount : deductPointAmount,
+					discountAmount : discountAmount,
+					EgiftItemIDList : EgiftItemIDList,
+					exchangeItemIDList : exchangeItemIDList,
+					posOrderNo : posOrderNo
+				};
+				var callServer = CommonCallServer.cardDeductMoney(postParams);
+				callServer.success(function (data) {
+					var code = _.result(data, 'code'),
+						ret = _.result(data, 'data');
+					// 如果扣款成功，会返回交易号 
+					self.cardTransID = code == '000' ? _.result(ret, 'transID', '') : ''; 
+					var vipCardMoneyPay = _.find(paySubjects, function (el) {
+							return el.paySubjectCode == '51010609';
+						}),
+						vipCardPointPay = _.find(paySubjects, function (el) {
+							return el.paySubjectCode == '51010613';
+						}),
+						vipCashVoucherPay = _.find(paySubjects, function (el) {
+							return el.paySubjectCode == '51010615';
+						});
+					!_.isEmpty(vipCardMoneyPay) && _.extend(vipCardMoneyPay, {payTransNo : self.cardTransID});
+					!_.isEmpty(vipCardPointPay) && _.extend(vipCardPointPay, {payTransNo : self.cardTransID});
+					!_.isEmpty(vipCashVoucherPay) && _.extend(vipCashVoucherPay, {payTransNo : self.cardTransID});
+
+
+				}).error(function (data) {
+
+				});
+				return callServer;
+
+
+
+				// CommonCallServer.cardDeductMoney();
+			};
+
+			/**
+			 * 判断会员卡扣款服务成功
+			 * @return {[type]} [description]
+			 */
+			this.vipCardDeductMoneySuccess = function () {
+				return !_.isEmpty(self.cardTransID);
+			};
 		}
 	]);
 
@@ -2127,6 +2311,8 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.getAllPaySubject = function () {
 				return self.paySubjectDict.getAll();
 			};
+
+			
 		}
 	]);
 
@@ -2205,5 +2391,115 @@ define(['app', 'uuid'], function (app, uuid) {
 		}
 	]);
 
+
+	// 会员卡服务
+	app.service('VIPCardService', [
+		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			// BaseInfoKeys:会员卡基本信息字段
+			// BusinessKeys:会员卡金额、积分、优惠规则字段
+			// cashVoucherLstKey:会员卡代金券列表
+			// exchangeVoucherLst:可用现金代金券列表
+			var BaseInfoKeys = 'mobileIsCardID,cardKey,cardNo,cardIsCanUsing,cardNotCanUsingNotes,cardTypeName,userMobile,customerBirthday,userSex,userName'.split(','),
+				BusinessKeys = 'cardPointAsMoney,shopPointRate,pointRate,cardPointBalance,pointAsMoneyRate,cardGiveBalance,shopDiscountRate,cardCashBalance,discountRate,discountRange,isVIPPrice'.split(','),
+				cashVoucherLstKey = 'cashVoucherLst',
+				exchangeVoucherLstKey = 'exchangeVoucherLst';
+			this.origCardData = null;
+			this.BaseInfo = null;
+			this.BusinessInfo = null;
+			this.CashVoucherHT = new IX.IListManager();
+			this.ExchangeVoucherHT = new IX.IListManager();
+
+			/**
+			 * 初始化会员卡数据
+			 * @param  {[type]} data [description]
+			 * @return {[type]}      [description]
+			 */
+			this.initVIPCardInfo = function (data) {
+				self.BaseInfo = _.pick(data, BaseInfoKeys);
+				self.BusinessInfo = _.pick(data, BusinessKeys);
+				self.CashVoucherHT.clear();
+				self.ExchangeVoucherHT.clear();
+				var cashVouchers = _.result(data, cashVoucherLstKey, []),
+					exchangeVouchers = _.result(data, exchangeVoucherLstKey, []);
+				
+				_.each(cashVouchers, function (el) {
+					self.CashVoucherHT.register(_.result(el, 'voucherID'), el);
+				});
+				_.each(exchangeVouchers, function (el) {
+					self.ExchangeVoucherHT.register(_.result(el, 'voucherID'), el);
+				});
+			};
+
+			/**
+			 * 发送请求获取会员卡信息
+			 * @return {[type]} [description]
+			 */
+			this.loadVIPCardInfo = function (params) {
+				return CommonCallServer.getVIPCardInfo(params)
+					.success(function (data, status, headers, config) {
+						var ret = _.result(data, 'data', {});
+						self.origCardData = ret;
+						if (data.code == '000') {
+							self.initVIPCardInfo(ret);
+						}
+					});
+			};
+
+			/**
+			 * 整理会员卡信息渲染数据
+			 * @return {[type]} [description]
+			 */
+			this.mapVIPCardInfo = function () {
+				return _.extend({}, self.BaseInfo, self.BusinessInfo);
+			};
+
+			/**
+			 * 整理现金代金券选项数据
+			 * @return {[type]} [description]
+			 */
+			this.mapCashVoucherOpts = function () {
+				var opts = self.CashVoucherHT.getAll();
+				return _.map(opts, function (opt) {
+					var label = '￥' + _.result(opt, 'voucherValue') + '元',
+						id = _.result(opt, 'voucherID');
+					return _.extend({}, opt, {
+						label : label,
+						value : id
+					});
+				});
+			};
+
+			/**
+			 * 通过代金券的ID获取代金券信息
+			 * @return {[type]} [description]
+			 */
+			this.getCashVoucherInfoByID = function (voucherIDs) {
+				voucherIDs = _.isString(voucherIDs) ? voucherIDs.split(',') : (_.isArray(voucherIDs) ? voucherIDs : null);
+				if (_.isEmpty(voucherIDs) || _.isNull(voucherIDs) || _.isUndefined(voucherIDs)) {
+					return self.CashVoucherHT.getAll();
+				}
+				return self.CashVoucherHT.getByKeys(voucherIDs);
+			};
+
+			/**
+			 * 获取原始会员卡数据
+			 * @return {[type]} [description]
+			 */
+			this.getOrigVIPCardData = function () {
+				return self.origCardData;
+			}
+
+			this.clear = function () {
+				self.origCardData = null;
+				self.BaseInfo = null;
+				self.BusinessInfo = null;
+				self.CashVoucherHT.clear();
+				self.ExchangeVoucherHT.clear();
+			};
+		}
+	]);
 	
 });

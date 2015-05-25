@@ -272,7 +272,7 @@ define(['app'], function (app) {
             template : [
                 '<div>',
                     '<label for="" class="btn btn-default btn-checkbox" ng-repeat="el in groupOpts" ng-class="{active: isChecked(el.value)}">',
-                        '<input type="checkbox" name="{{checkboxName}}" autocomplete="off" value="{{el.value}}" ng-checked="isChecked(el.value)" >',
+                        '<input type="checkbox" name="{{checkboxName}}" autocomplete="off" id="{{el.id}}" value="{{el.value}}" ng-checked="isChecked(el.value)" >',
                             '<div ng-bind-html="parseSnippet(el.label)"></div>',
                         '</input>',
                     '</label>',
@@ -289,17 +289,18 @@ define(['app'], function (app) {
                 scope.parseSnippet = function (v) {
                     return $sce.trustAsHtml(v);
                 };
-                scope.isChecked = function (val) {
-                    var item = _.find(scope.curVal, function (el) {
-                        return el == val;
-                    });
-                    // console.info(scope.curVal);
-                    // console.info(val);
-                    return _.isEmpty(item) ? false : true;
-                };
-                
+                // scope.isChecked = function (val) {
+                //     var item = _.find(scope.curVal, function (el) {
+                //         return el == val;
+                //     });
+                //     // console.info(scope.curVal);
+                //     // console.info(val);
+                //     return _.isEmpty(item) ? false : true;
+                // };
+
 
                 el.on('change', ':checkbox', function (e) {
+                    console.info('change');
                     var checkbox = $(this),
                         val = checkbox.val(),
                         isChecked = checkbox.is(':checked');
@@ -311,8 +312,10 @@ define(['app'], function (app) {
                     scope.onChange({
                         val : scope.curVal,
                         checkboxName : scope.checkboxName,
-                        tarScope : scope
+                        tarScope : scope,
+                        curVal : val
                     });
+                    scope.$apply();
                 });
             }
         };

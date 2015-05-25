@@ -56,6 +56,15 @@ body {
 .sign #site_body {
   margin-left: 0;
 }
+.site-toptip {
+  position: fixed;
+  top: 3rem;
+  left: 50%;
+  margin-left: -20rem;
+  z-index: 9999;
+  width: 40rem;
+  text-align: center;
+}
 .site-numkeyboard {
   display: block;
   width: 240px;
@@ -612,29 +621,13 @@ body {
   -webkit-box-flex: 1;
   -webkit-box-flex-group: 1;
 }
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-move,
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-enter,
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-leave {
-  -webkit-transition: all linear 0.5s;
-  transition: all linear 0.5s;
-}
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-leave.ng-leave-active,
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-move,
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-enter {
-  opacity: 0;
-  max-height: 0;
-}
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-leave,
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-move.ng-move-active,
-.pay-modal .pay-ctrl .pay-subject .animate-repeat.ng-enter.ng-enter-active {
-  opacity: 1;
-}
 .pay-modal .pay-ctrl .pay-subject .vip-pay .help-block.info {
-  margin-top: 0px;
+  margin-top: 5px;
   margin-bottom: 3px;
+  padding: 0;
   font-size: 1rem;
 }
-.pay-modal .pay-ctrl .pay-subject .vip-pay .info.row > span {
+.pay-modal .pay-ctrl .pay-subject .vip-pay .help-block.info > span {
   padding: 0;
   padding-left: 1rem;
 }

@@ -37,7 +37,14 @@ define(['IX'], function () {
 		// 获取支付科目列表字典信息
 		["getPaySubjectLst", "/saas/base/getPaySubjectLst.ajax", "", "POST"],
 		// 获取订单打折方案列表
-		["getDiscountRuleLst", "/saas/base/getDiscountRuleLst.ajax", "", "POST"]
+		["getDiscountRuleLst", "/saas/base/getDiscountRuleLst.ajax", "", "POST"],
+
+		// 获取会员卡信息
+		["getVIPCardInfo", "/crm/card/get.ajax", "", "POST"],
+		// 会员卡扣款操作
+		["cardDeductMoney", "/crm/card/deductMoney.ajax", "", "POST"],
+		// 会员卡交易撤销
+		["cardTransRevoke", "/crm/card/transRevoke.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

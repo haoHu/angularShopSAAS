@@ -5,6 +5,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
+			HC.TopTip.reset($scope);
+			$scope.closeTopTip = function (index) {
+				HC.TopTip.closeTopTip($scope, index);
+			};
 			// 解析链接参数获取订单Key (saasOrderKey)
 			var urlParams = $location.search(),
 				saasOrderKey = _.result(urlParams, 'saasOrderKey', null);
@@ -752,12 +756,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService',
-		function ($scope, $modalInstance, $filter, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService',
+		function ($scope, $modalInstance, $filter, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService) {
 			IX.ns("Hualala");
+			var HC = Hualala.Common;
+			HC.TopTip.reset($scope);
+			$scope.closeTopTip = function (index) {
+				HC.TopTip.closeTopTip($scope, index);
+			};
 			$scope.orderPayDetail = OrderPayService.mapOrderPayDetail();
 			IX.Debug.info("OrderPayDetail:")
 			IX.Debug.info($scope.orderPayDetail);
+			$scope.curVIPCard = null;
 			$scope.payFormCfg = {
 				"cashPay" : [
 					{label : "实收", name : "realPrice", value : "", disabled : false},
@@ -785,6 +795,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			
 			// 当前选中支付科目组名称
 			$scope.curPaySubjectGrpName = "cashPay";
+			// 缓存会员卡数据
+			$scope.$on('pay.upVIPCard', function (d, card) {
+				$scope.curVIPCard = card;
+				if (_.isEmpty(card)) {
+					VIPCardService.clear();
+				}
+			});
 			
 			$scope.isHiddenPrice = function (v) {
 				console.info(v);
@@ -846,30 +863,94 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var name = _.result(paySubjectGrp, 'name'),
 					items = _.result(paySubjectGrp, 'items', []);
 				var subjectCodes = _.pluck(items, 'subjectCode');
-				OrderPayService.deletePaySubjectItem(subjectCodes, name);
+				if (name == "vipCardPay") {
+					// 如果扣款服务成功后进行会员卡撤销,需要发送会员卡交易撤销服务
+					if (OrderPayService.vipCardDeductMoneySuccess()) {
+						var callServer = OrderPayService.vipCardTransRevoke();
+						callServer.success(function (data) {
+							if (data.code == '000') {
+								OrderPayService.deletePaySubjectItem(subjectCodes, name);
+								// 如果是会员卡支付撤销，需要同时撤销账单打折科目
+								OrderPayService.setCurDiscountRule({
+									discountRate : 1,
+									discountRange : 0,
+									isVipPrice : 0
+								});
+								// $scope.curVIPCard = null;
+								$scope.$broadcast('pay.upVIPCard', null);
+							} else {
+								HC.TopTip.addTopTips($scope, data);
+							}
+						}).error(function (data) {
+							HC.TopTip.addTopTips($scope, {
+								code : '111', msg : '通信失败'
+							});
+						});
+					} else {
+						OrderPayService.deletePaySubjectItem(subjectCodes, name);
+						// 如果是会员卡支付撤销，需要同时撤销账单打折科目
+						OrderPayService.setCurDiscountRule({
+							discountRate : 1,
+							discountRange : 0,
+							isVipPrice : 0
+						});
+						// $scope.curVIPCard = null;
+						$scope.$broadcast('pay.upVIPCard', null);
+					}
+				} else {
+					OrderPayService.deletePaySubjectItem(subjectCodes, name);
+				}
 				$scope.$broadcast('pay.detailUpdate');
 			};		
 			// 订单支付提交
 			$scope.submitOrderPay = function () {
 				var isOK = $scope.isCanbeSubmit($scope.orderPayDetail);
 				if (!isOK) return;
-				var callServer = OrderService.submitOrder('JZ', OrderPayService.getOrderPayParams());
-				!_.isEmpty(callServer) && callServer.success(function (data) {
+				// 1. 获取会员卡支付科目数据
+				// 2. 如果存在会员卡的cardNo，并且cardTransID为空
+				// 3. 进行会员卡扣款提交，将所有会员卡支付科目的数据加入到会员卡扣款服务中，作为一条交易记录
+				// 4. 如果会员卡扣款服务失败，提示错误并返回
+				// 5. 如果会员卡扣款服务成功，先将会员卡支付科目中的payTransNo更新，再进行提交订单的结账服务
+				// 6. 如果提交订单结账服务失败， 会员卡支付部分不可编辑，如果点击撤销按钮，发送会员卡交易撤销请求
+				// 7. 如果交易撤销失败， 返回错误，界面不变
+				// 8. 如果交易撤销成功，清空会员卡支付科目中的交易号（payTransNo）
+				// 
+				var cardNo = OrderPayService.cardNo, cardTransID = OrderPayService.cardTransID;
+				var vipCardDeductMoneyCallServer = null, submitOrderCallServer = null;
+
+				if (!_.isEmpty(cardNo) && _.isEmpty(cardTransID)) {
+					// 会员卡扣款提交
+					vipCardDeductMoneyCallServer = OrderPayService.vipCardDeductMoney();
+				}
+				vipCardDeductMoneyCallServer.success(function (data) {
 					var code = _.result(data, 'code');
-					if (code == "000") {
-						OrderService.initOrderFoodDB({});
-						_scope.resetOrderInfo();
-						$scope.close();
+					if (code == '000') {
+						submitOrderCallServer = OrderService.submitOrder('JZ', OrderPayService.getOrderPayParams());
+						!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
+							var code = _.result(data, 'code');
+							if (code == "000") {
+								$scope.$broadcast('pay.upVIPCard', null);
+								OrderService.initOrderFoodDB({});
+								_scope.resetOrderInfo();
+								$scope.close();
+							} else {
+								alert(_.result(data, 'msg', ''));
+							}
+							
+						});
 					} else {
-						alert(_.result(data, 'msg', ''));
+						HC.TopTip.addTopTips($scope, data);
 					}
-					
 				});
+				
 			};
 
 			// 绑定更新支付详情事件
 			$scope.$on('pay.detailUpdate', function () {
 				$scope.orderPayDetail = OrderPayService.mapOrderPayDetail();
+				if (!_.isEmpty($scope.curVIPCard)) {
+					$scope.$broadcast('pay.setVIPCard', $scope.curVIPCard);
+				}
 			});
 		}
 	]);
@@ -1090,8 +1171,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 会员卡支付科目表单
 	app.directive('vippayform', [
-		"$rootScope", "$filter", "OrderService", "OrderPayService",
-		function ($rootScope, $filter, OrderService, OrderPayService) {
+		"$rootScope", "$filter", "OrderService", "OrderPayService", "VIPCardService",
+		function ($rootScope, $filter, OrderService, OrderPayService, VIPCardService) {
 			return {
 				restrict : 'E',
 				templateUrl : 'js/diandan/vippayform.html',
@@ -1100,14 +1181,234 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				},
 				replace : true,
 				link : function (scope, el, attr) {
+					IX.ns("Hualala");
+					var HCMath = Hualala.Common.Math;
+					// 初始化表单数据
+					var initPayForm = function () {
+						var discountRate = _.result(scope.vipInfo, 'shopDiscountRate'),
+							discountRange = _.result(scope.vipInfo, 'discountRange'),
+							isVipPrice = _.result(scope.vipInfo, 'isVIPPrice'),
+							cardPointAsMoney = parseFloat(_.result(scope.vipInfo, 'cardPointAsMoney', 0)),
+							cardCashBalance = parseFloat(_.result(scope.vipInfo, 'cardCashBalance', 0));
+
+						var prePayAmount = scope.prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName('vipCardPay'));
+						var delta = 0;
+						// 如果会员卡cardPointAsMoney >= prePayAmount, 全部使用积分
+						// 如果cardPointAsMoney < prePayAmount, 将积分全部使用
+						scope.payByPoint = cardPointAsMoney >= prePayAmount ? prePayAmount : cardPointAsMoney;
+						delta = HCMath.sub(prePayAmount, scope.payByPoint);
+						scope.payByCash = cardCashBalance >= delta ? delta : cardCashBalance;
+						delta = HCMath.sub(delta, scope.payByCash);
+						scope.prePayAmount = delta;
+					};
+					if (_.isEmpty(VIPCardService.getOrigVIPCardData())) {
+						scope.vipInfo = null;
+						scope.cashVoucherOpts = null;
+						scope.curCashVouchers = [];
+						scope.payByPoint = 0;
+						scope.payByCash = 0;
+						scope.prePayAmount = 0;
+						scope.cardTransPWD = '';
+					} else {
+						scope.vipInfo = VIPCardService.mapVIPCardInfo();
+						scope.cashVoucherOpts = VIPCardService.mapCashVoucherOpts();
+						scope.curCashVouchers = [];
+						scope.cardTransPWD = '';
+						initPayForm();
+					}
+					
+					scope.$on('pay.setVIPCard', function (d, card) {
+						if (!_.isEmpty(card)) {
+							// 初始化会员卡数据
+							VIPCardService.initVIPCardInfo(card);
+						}
+					});
+					/**
+					 * 格式化现金代金券使用记录
+					 * @return {[type]} [description]
+					 */
+					var formatCashVoucherText = function (items) {
+						var opts = _.isEmpty(items) ? [] : VIPCardService.getCashVoucherInfoByID(items);
+						var l = opts.length, amount = HCMath.add.apply(null, _.pluck(opts, 'voucherValue'));
+						var txt = '使用{count}张,共{amount}元'.replace('{count}', l).replace('{amount}', amount);
+						scope.curCashVoucherStr = txt;
+						scope.$apply();
+					};
+					
+					
+					// 判断是否有会员卡数据
+					scope.hasVIPInfo = function () {
+						return !_.isEmpty(scope.vipInfo);
+						// return true;
+					};
+
+					/**
+					 * 现金券选项改变操作
+					 * @param  {[type]} v            [description]
+					 * @param  {[type]} checkboxName [description]
+					 * @return {[type]}              [description]
+					 */
+					scope.onCashVoucherChange = function (v, checkboxName, tarScope, curVal) {
+						console.info(curVal);
+						var curVoucher = _.find(scope.cashVoucherOpts, function (el) {return el.value == curVal}),
+							isActive = _.indexOf(v, curVal);
+						if (isActive > -1) {
+							
+						}
+						formatCashVoucherText(v);
+
+					};
+					el.on('click', '.btn-checkbox', function (e) {
+						var btn = $(this),
+							chkbox = btn.find(':checkbox'),
+							val = chkbox.val();
+						var checked = chkbox.is(':checked');
+						var curVoucher = _.find(scope.cashVoucherOpts, function (el) {return el.value == val});
+						if (!checked) {
+							var a = confirm(curVoucher.voucherUsingNotes + '\n' + '是否使用?');
+							if (!a) {
+								e.stopPropagation();
+								return;
+							}
+						}
+						
+					});
+
+					
+
+					/**
+					 * 获取会员卡信息
+					 * @return {[type]} [description]
+					 */
+					scope.getVIPCardInfo = function (val) {
+						var callServer = VIPCardService.loadVIPCardInfo({
+							cardNoOrMobile : val
+						});
+						callServer.success(function () {
+							scope.vipInfo = VIPCardService.mapVIPCardInfo();
+							scope.cashVoucherOpts = VIPCardService.mapCashVoucherOpts();
+							scope.curCashVouchers = [];
+							// 触发保存会员卡数据到父层控制器
+							scope.$emit('pay.upVIPCard', VIPCardService.getOrigVIPCardData());
+							// formatCashVoucherText();
+							// 根据会员卡折扣率，折扣范围，是否享受会员价，更新支付配置，并进行应付金额的预计算
+							var discountRate = _.result(scope.vipInfo, 'shopDiscountRate'),
+								discountRange = _.result(scope.vipInfo, 'discountRange'),
+								isVipPrice = _.result(scope.vipInfo, 'isVIPPrice');
+							OrderPayService.updateVipCardDicountSettings({
+								discountRate : discountRate,
+								isVipPrice : isVipPrice,
+								discountRange : discountRange
+							});
+							// 更新会员卡支付相关参数
+							OrderPayService.updateVIPCardPayParams({
+								cardKey : _.result(scope.vipInfo, 'cardKey', ''),
+								cardNo : _.result(scope.vipInfo, 'mobileIsCardID') == 1 ? _.result(scope.vipInfo, 'userMobile', '') : _.result(scope.vipInfo, 'cardNo', ''),
+								cardTransPWD : scope.cardTransPWD
+							});
+							scope.$emit('pay.detailUpdate');
+							initPayForm();
+						});
+						
+					};
+
+					// 整理代金券支付科目提交数据
+					var mapCashVouchers = function (paySubjectGrp) {
+						var items = scope.curCashVouchers;
+						var opts = _.isEmpty(items) ? [] : VIPCardService.getCashVoucherInfoByID(items);
+						var amount = HCMath.add.apply(null, _.pluck(opts, 'voucherValue')),
+							voucherIDs = _.pluck(opts, 'voucherID').join(',');
+						var payByPoint = _.isNumber(scope.payByPoint) ? scope.payByPoint : 0,
+							payByCash = _.isNumber(scope.payByCash) ? scope.payByCash : 0;
+						var prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName('vipCardPay'));
+						var delta = HCMath.sub(prePayAmount, payByCash, payByPoint);
+						var debitAmount = amount < delta ? amount : delta;
+						var payRemark = '代金券总金额￥' + amount + ';实际使用￥' + debitAmount;
+						return amount <= 0 ? null : {
+							payRemark : payRemark,
+							debitAmount : debitAmount,
+							giftItemNoLst : voucherIDs
+						};
+					};
+					// 积分抵扣
+					var mapPointPay = function () {
+						var payByPoint = _.isNumber(scope.payByPoint) ? scope.payByPoint : 0;
+						return payByPoint <= 0 ? null : {
+							debitAmount : payByPoint,
+							giftItemNoLst : '',
+							payRemark : '会员卡积分抵扣￥' + payByPoint
+						};
+					};
+					// 会员卡现金卡值抵扣
+					var mapCashPay = function () {
+						var payByCash = _.isNumber(scope.payByCash) ? scope.payByCash : 0;
+						return payByCash <= 0 ? null : {
+							debitAmount : payByCash,
+							giftItemNoLst : '',
+							payRemark : '会员卡现金抵扣￥' + payByCash
+						};
+					};
+
+					// 提交支付科目表单
 					scope.$on('pay.submit', function (d, targetPaySubjectGrp) {
 						var curName = scope.paySubjectGrp.name,
 							tarName = targetPaySubjectGrp.name;
 						if (curName != tarName) return;	
+						if (_.isEmpty(scope.vipInfo)) {
+							alert('请使用会员卡消费');
+							return;
+						}
+						var items = targetPaySubjectGrp.items;
+						var ret = {};
+						_.each(items, function (el) {
+							var subjectCode = _.result(el, 'subjectCode');
+							switch (subjectCode) {
+								// 代金券抵扣
+								case '51010615':
+									ret[subjectCode] = mapCashVouchers(targetPaySubjectGrp);
+									break;
+								// 会员积分抵扣
+								case '51010613':
+									ret[subjectCode] = mapPointPay();
+									break;
+								// 会员现金抵扣
+								case '51010609':
+									ret[subjectCode] = mapCashPay();
+									break;
+							}
+						});
+						// 更新会员卡支付相关参数
+						OrderPayService.updateVIPCardPayParams({
+							cardKey : _.result(scope.vipInfo, 'cardKey', ''),
+							cardNo : _.result(scope.vipInfo, 'cardNo', '') || _.result(scope.vipInfo, 'userMobile', ''),
+							cardTransPWD : scope.cardTransPWD
+						});
+						// 更新会员卡支付科目数据
+						OrderPayService.updatePaySubjectItem(curName, ret);
 						
-						console.info(data);
+						scope.$emit('pay.detailUpdate');
+						d.preventDefault();
 						return ;
-					})
+					});
+
+					el.on('click', '.btn[name=search]', function (e) {
+						var txtEl = el.find('input[name=card_id]'),
+							searchStr = txtEl.val(),
+							callServer = null;
+						if (_.isEmpty(searchStr)) {
+							alert("请输入手机号或卡号");
+							return;
+						}
+						callServer = scope.getVIPCardInfo(searchStr);
+					});
+					el.on('keyup', 'input[name=card_id]', function (e) {
+						var txtEl = $(this),
+							val = txtEl.val(),
+							callServer;
+						if (e.keyCode == 13 && !_.isEmpty(val)) {
+							callServer = scope.getVIPCardInfo(val);
+						}
+					});
 				}
 			}
 		}
@@ -1454,7 +1755,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 										windowClass : "pay-modal",
 										controller : controller,
 										templateUrl : templateUrl,
-										resolve : resolve
+										resolve : resolve,
+										backdrop : "static"
 									});
 								});
 							};
