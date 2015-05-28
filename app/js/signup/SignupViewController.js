@@ -16,7 +16,7 @@ define(['app'], function (app) {
         };
 
         $scope.submitForm = function () {
-            CommonCallServer.shopRegister($scope.login)
+            CommonCallServer.shopRegister($scope.signup)
                 .success(function (data, status) {
                     HC.TopTip.addTopTips($scope, data);
                     $location.path('/').replace();

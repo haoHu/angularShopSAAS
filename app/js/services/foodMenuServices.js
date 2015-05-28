@@ -354,4 +354,139 @@ define(['app'], function (app) {
 
 		}]
 	);
+
+	app.service('SetFoodService', [
+		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, storage, CommonCallServer) {
+			var self = this;
+			var SetFoodData = null,
+				setFoodDetailJson = null;
+			var SetFoodDetailHT = new IX.IListManager();
+
+			// 格式化套餐搭配数据结构
+			var mapSetFoodCateItems = function (cate) {
+				var items = _.result(cate, 'items'),
+					selectedFoods = [];
+				items = _.map(items, function (food) {
+					var foodName =  _.result(food, 'foodName', ''),
+						unit = _.result(food, 'unit', ''),
+						addPrice = _.result(food, 'addPrice', 0),
+						selected = _.result(food, 'selected', 0),
+						unitKey = _.result(food, 'unitKey');
+					// selected == 1 && selectedFoods.push(unitKey);
+					
+					var txt = '<p>' + foodName + '/' + unit + '</p>';
+					if (parseFloat(addPrice) > 0) {
+						txt += '<p>加价￥' + addPrice + '</p>';
+					}
+					selected == 1 && selectedFoods.push({
+						unitKey : unitKey,
+						foodName : foodName,
+						addPrice : addPrice,
+						label : txt,
+						value : unitKey
+					});
+					return _.extend(food, {
+						label :  txt,
+						value : unitKey
+					});
+				});
+				return _.extend(cate, {
+					items : items,
+					selectedFoods : selectedFoods
+				});
+			};
+
+			// 初始化套餐搭配菜品分类字典数据
+			var initFoodHT = function (foodLst) {
+				_.each(foodLst, function (cate) {
+					var name = _.result(cate, 'foodCategoryName'),
+						data = mapSetFoodCateItems(cate);
+					SetFoodDetailHT.register(name, data);
+				});
+			};
+			// 初始化套餐菜品数据
+			this.initSetFoodData = function (data) {
+				SetFoodData = data;
+				setFoodDetailJson = _.result(data, 'setFoodDetailJson');
+				initFoodHT(_.result(setFoodDetailJson, 'foodLst'));
+			};
+			// 获取套餐菜品数据
+			this.getSetFoodLstData = function () {
+				return SetFoodDetailHT.getAll();
+			};
+			// 根据套餐类别名获取指定类别已选中菜品
+			this.getSelectedFoodsByCateName = function (cateName) {
+				var cate = SetFoodDetailHT.get(cateName),
+					items = _.result(cate, 'items', []);
+				var selectedFoods = _.result(cate, 'selectedFoods');
+				var ret = _.map(selectedFoods, function (unitKey, idx) {
+					var food = _.find(items, function (el) {return el.unitKey == unitKey; });
+					return _.extend(food, {
+						_id : unitKey + '_' + idx
+					});
+				});
+				return ret;
+				// return _.filter(items, function (el) {
+				// 	var unitKey = _.result(el, 'unitKey');
+				// 	return _.indexOf(selectedFoods, unitKey) > -1;
+				// });
+			};
+			// 根据套餐类别名称获取指定类别菜品条目
+			this.getFoodsByCateName = function (cateName) {
+				var cate = SetFoodDetailHT.get(cateName),
+					items = _.result(cate, 'items', []);
+				return items;
+			};
+			// 更新指定套餐类别的搭配菜品
+			this.updateFoodByCateName = function (cateName, srcUnitKey, idx, dstUnitKey) {
+				var cate = SetFoodDetailHT.get(cateName),
+					items = _.result(cate, 'items', []),
+					selectedFoods = _.result(cate, 'selectedFoods', []);
+				var idx = _.findIndex(selectedFoods, function (el, i) {return el.unitKey == srcUnitKey && i == idx;});
+				if (idx == -1) return;
+				var dstFood = _.find(items, function (food) {
+					return food.unitKey == dstUnitKey;
+				});
+				dstFood = _.pick(dstFood, 'unitKey,foodName,addPrice,label,value'.split(','));
+				_.extend(selectedFoods[idx], dstFood, {remark : null});
+				// selectedFoods = selectedFoods.slice(0, idx).concat(dstUnitKey).concat(selectedFoods.slice(idx + 1));
+				_.extend(cate, {
+					selectedFoods : selectedFoods
+				});
+				SetFoodDetailHT.register(cateName, cate);
+			};
+			// 更新套餐配菜的口味
+			this.updateFoodRemark = function (cateName, unitKey, idx, remark) {
+				var cate = SetFoodDetailHT.get(cateName),
+					selectedFoods = _.result(cate, 'selectedFoods', []);
+					var idx = _.findIndex(selectedFoods, function (el, i) {return el.unitKey == unitKey && i == idx;});
+				if (idx == -1) return;
+				_.extend(selectedFoods[idx], {
+					remark : remark
+				});
+				_.extend(cate, {
+					selectedFoods : selectedFoods
+				});
+				SetFoodDetailHT.register(cateName, cate);
+			};
+			// 获取套餐搭配数据
+			this.getSetFoodSetting = function () {
+				var cates = SetFoodDetailHT.getAll();
+				_.each(cates, function (cate) {
+					var items = _.result(cate, 'items');
+					_.each(items, function (food) {
+						var unitKey = _.result(food, 'unitKey'),
+							selectedFoods = _.result(cate, 'selectedFoods');
+						var selectedFood = _.find(selectedFoods, function (el) {return el.unitKey == unitKey;});
+						food.selected = _.isEmpty(selectedFood) ? 0 : 1;
+						_.extend(food, {
+							remark : _.result(selectedFood, 'remark', null)
+						});
+					});
+				});
+				return SetFoodData;
+			};
+		}
+	]);
 });

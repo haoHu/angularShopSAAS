@@ -536,6 +536,9 @@ define(['app', 'uuid'], function (app, uuid) {
 						var selected = _.result(f, 'selected');
 						if (selected == 1) {
 							self.insertSetFoodDetailItem(f, item);
+							// if (!_.isEmpty(_.result(f, 'remark'))) {
+							// 	self.updateOrderFoodRemark(f.unitKey, f.remark.notesName);
+							// }
 						}
 					});
 				});
@@ -558,6 +561,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				var item = mapSetFoodDetailItemData(itemKey, detail, pItemKey);
 				self.OrderFoodHT.register(itemKey, item);
 				self.OrderFoodHT.insertAfter(itemKey, pItemKey);
+				if (!_.isEmpty(_.result(detail, 'remark'))) {
+					self.updateOrderFoodRemark(itemKey, detail.remark.notesName);
+				}
 			};
 
 			/**
@@ -2202,7 +2208,19 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]} [description]
 			 */
 			this.getFoodRemarkNotes = function () {
-				return self.getOrderNotesByNotesType(30);
+				var ret = self.getOrderNotesByNotesType(30);
+				var items = _.result(ret, 'items', []);
+				if (!_.isEmpty(items[0].notesName)) {
+					ret.items.unshift({
+						label : '清空',
+						value : '',
+						addPriceType : 0,
+						addPriceValue : 0,
+						notesName : '',
+						notesType : '30'
+					});
+				}
+				return ret;
 			};
 
 			/**

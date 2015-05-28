@@ -102,7 +102,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					foodSendNumber = _.result(item, 'foodSendNumber', 0),
 					foodCancelNumber = _.result(item, 'foodCancelNumber', 0);
 				var v = math.multi(foodPayPrice, math.sub(foodNumber, foodSendNumber, foodCancelNumber));
-				return math.standardPrice(v);
+				var str = parseFloat(v) == 0 ? '' : math.standardPrice(v);
+				return str;
 			};
 
 			// 计算订单金额总计
@@ -209,7 +210,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			 * 如果被选中的订单条目是未落单套餐详情菜品的作法，可以操作：['delete','addOne','subOne','count']
 			 * 如果被选中的订单条目是已落单套餐详情菜品的作法，可以操作：['cancel']
 			 * 
-			 * @return {[type]}         [description]
+			 * @return {[type]}		 [description]
 			 */
 			$scope.selectOrderItem = function (itemKey) {
 				var orderItemType = OrderService.orderFoodItemType(itemKey),
@@ -312,19 +313,42 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 打开套餐配置窗口
 			$scope.openSetFoodCfg = function () {
+				// Old set food config version
+				// var modalSize = "lg",
+				// 	windowClass = "setfood-modal",
+				// 	backdrop = "static",
+				// 	controller = "SetFoodCfgController",
+				// 	templateUrl = "js/diandan/setFoodCfg.html",
+				// 	resolve = {
+				// 		_scope : function () {
+				// 			return $scope;
+				// 		}
+				// 	};
+				// $modal.open({
+				// 	size : modalSize,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve
+				// });
+
 				var modalSize = "lg",
-					controller = "SetFoodCfgController",
-					templateUrl = "js/diandan/setFoodCfg.html",
+					windowClass = "setfood-modal",
+					backdrop = "static",
+					controller = "SetFoodSettingController",
+					templateUrl = "js/diandan/setFoodSetting.html",
 					resolve = {
 						_scope : function () {
 							return $scope;
 						}
 					};
+
 				$modal.open({
 					size : modalSize,
+					windowClass : windowClass,
 					controller : controller,
 					templateUrl : templateUrl,
-					resolve : resolve
+					resolve : resolve,
+					backdrop : backdrop
 				});
 			};
 
@@ -704,7 +728,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					}
 					return _.extend(food, {
 						selected : selected
-					})
+					});
 				});
 				
 				var curSetFoodDetail = curSetFoodData.setFoodDetailJson;
@@ -730,6 +754,88 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					}
 				});
 				return valid;
+			};
+
+		}
+	]);
+
+	// 新版套餐搭配操作控制器
+	app.controller('SetFoodSettingController', [
+		'$scope', '$modalInstance', '$filter', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'SetFoodService',
+		function ($scope, $modalInstance, $filter, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, SetFoodService) {
+			IX.ns("Hualala");
+			var curUnitKey = _scope.curSetFoodUnitKey;
+			var setFoodData = FoodMenuService.getFoodByUnitKey(curUnitKey);
+			SetFoodService.initSetFoodData(setFoodData);
+			$scope.curMenuType = 'food';
+			$scope.curFoodCategory = '';
+			$scope.curFoodUnitKey = '';
+			$scope.curFoodBtnID = '';
+			$scope.curSetFoodLst = SetFoodService.getSetFoodLstData();
+			// 获取指定类别选中菜品
+			// $scope.getChosenFoods = function (cateName) {
+			// 	var foods = SetFoodService.getSelectedFoodsByCateName(cateName);
+			// 	return foods;
+			// };
+			// 格式化选中菜品数据
+			$scope.mapSelectedFoods = function (selectedFoods) {
+				_.each(selectedFoods, function (food, idx) {
+					_.extend(food, {
+						_id : _.result(food, 'unitKey') + '_' + idx
+					})
+				});
+				return selectedFoods;
+			};
+			// 获取指定类别菜品选项
+			$scope.getFoodOpts = function (cateName) {
+				if (_.isEmpty(cateName)) return null;
+				var foods = SetFoodService.getFoodsByCateName(cateName);
+				return foods;
+			};
+			// 获取口味字典
+			$scope.getFoodRemarks = function () {
+				var data = OrderNoteService.getFoodRemarkNotes();
+				return _.result(data, 'items', []);
+			};
+			// html解析
+			$scope.parseSnippet = function (v) {
+				return $sce.trustAsHtml(v);
+			};
+			// 捕获当前操作菜品条目
+			$scope.captureCurFoodItem = function (cateName, unitKey, idx) {
+				$scope.curFoodCategory = cateName;
+				$scope.curFoodUnitKey = unitKey;
+				$scope.curFoodBtnID = unitKey + '_' + idx;
+
+			};
+			// 选择套餐配菜
+			$scope.replaceFoodItem = function (unitKey) {
+				var cateName = $scope.curFoodCategory;
+				var idx = $scope.curFoodBtnID.split('_')[1];
+				SetFoodService.updateFoodByCateName(cateName, $scope.curFoodUnitKey, idx, unitKey);
+				$scope.curFoodUnitKey = unitKey;
+				$scope.curFoodBtnID = $scope.curFoodUnitKey + '_' + idx;
+				$scope.curSetFoodLst = SetFoodService.getSetFoodLstData();
+			};
+			// 设置选中菜品的口味
+			$scope.setFoodRemark = function (remark) {
+				var cateName = $scope.curFoodCategory;
+				var idx = $scope.curFoodBtnID.split('_')[1];
+				var unitKey = $scope.curFoodUnitKey;
+				console.info(remark);
+				SetFoodService.updateFoodRemark(cateName, unitKey, idx, remark);
+			};
+
+			// 关闭窗口
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+			// 提交并关闭窗口
+			$scope.save = function () {
+				// 向订单插入套餐配置信息
+				OrderService.insertSetFoodItem(SetFoodService.getSetFoodSetting());
+				_scope.refreshOrderList();
+				$modalInstance.close();
 			};
 
 		}
@@ -1244,9 +1350,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 					/**
 					 * 现金券选项改变操作
-					 * @param  {[type]} v            [description]
+					 * @param  {[type]} v			[description]
 					 * @param  {[type]} checkboxName [description]
-					 * @return {[type]}              [description]
+					 * @return {[type]}			  [description]
 					 */
 					scope.onCashVoucherChange = function (v, checkboxName, tarScope, curVal) {
 						console.info(curVal);
@@ -1592,6 +1698,86 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		}
 	]);
 
+	// 套餐搭配按钮组分页
+	app.directive('setfoodPager', [
+		"$rootScope", "$filter", "OrderService", "SetFoodService",
+		function ($rootScope, $filter, OrderService, SetFoodService) {
+			return {
+				restrict : 'A',
+				link : function (scope, el, attr) {
+					// 获取下一页开始条目
+					var getNextPageStartItem = function (jItems, jList) {
+						var jBox = jList.parent();
+						var boxRect = jBox[0].getBoundingClientRect();
+						var jNextItem = null;
+						jItems.each(function () {
+							var jItem = $(this);
+							var itemRect = jItem[0].getBoundingClientRect();
+							if (boxRect.bottom - itemRect.bottom < 0) {
+								jNextItem = jItem;
+								return false;
+							}
+						});
+						return jNextItem;
+					};
+					// 获取上一页开始条目
+					var getPrevPageStartItem = function (jItems, jList) {
+						var jBox = jList.parent();
+						var boxRect = jBox[0].getBoundingClientRect();
+						var jNextItem = null;
+						var l = jItems.length;
+						for (var i = l-1; i >= 0; i--) {
+							var jItem = jItems.eq(i);
+							var itemRect = jItem[0].getBoundingClientRect();
+							if (boxRect.top - itemRect.top >= boxRect.height) {
+								jNextItem = jItem;
+								break;
+							}
+						}
+						if (_.isEmpty(jNextItem)) {
+							jNextItem = jItems.eq(0);
+						}
+						return jNextItem;
+					};
+					el.on('click', '.btn-prev, .btn-next', function (e) {
+						IX.ns("Hualala.Common");
+						var jBtn = $(this), HC = Hualala.Common;
+						var direct = jBtn.attr('pager-act');
+						var jItems = el.find(attr['setfoodPager']);
+						var jList = jItems.parent();
+						var jBox = jList.parent();
+						var jNextItem = null;
+						if (direct == 'next') {
+							jNextItem = getNextPageStartItem(jItems, jList);
+						} else {
+							jNextItem = getPrevPageStartItem(jItems, jList);
+						}
+						if (!jNextItem) {
+							jBtn.attr('disabled', false);
+							return;
+						}
+
+						jBox.animate(
+							{scrollTop : jNextItem.offset().top - jList.find(attr['setfoodPager'] + ':first').offset().top},
+							400, 'swing',
+							function () {
+								jBtn.attr('disabled', false);
+							}
+						);
+
+						// jOrderList.animate(
+						// 	{scrollTop : jNextItem.offset().top - jOrderList.find('.grid-row:first').offset().top}, 
+						// 	400, 'swing', 
+						// 	function () {
+						// 		jBtn.attr('disabled', false);
+
+						// 	}
+						// );
+					});
+				}
+			};
+		}
+	]);
 
 	// 订单菜品翻页
 	app.directive('orderPager', [

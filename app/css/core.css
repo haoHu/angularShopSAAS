@@ -120,6 +120,7 @@ body {
 }
 .section-diandan .btn {
   border-radius: 0;
+  white-space: normal;
 }
 .section-diandan .order-plain {
   position: absolute;
@@ -560,7 +561,6 @@ body {
 .pay-modal .pay-ctrl .pay-schema > section {
   -webkit-box-flex: 1;
   -webkit-box-flex-group: 1;
-  outline: #123;
 }
 .pay-modal .pay-ctrl .pay-schema > section .list-group-item {
   padding: 0;
@@ -633,4 +633,101 @@ body {
 }
 .pay-modal .pay-ctrl .pay-subject .vip-pay .user-voucher {
   margin-bottom: 15px;
+}
+.setfood-modal .modal-dialog {
+  position: absolute;
+  left: 372px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  width: auto!important;
+}
+.setfood-modal .modal-dialog > .modal-content,
+.setfood-modal .modal-dialog .modal-body,
+.setfood-modal .modal-dialog .setfood-ctrl {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.setfood-modal .setfood-ctrl {
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -ms-box-orient: horizontal;
+  -o-box-orient: horizontal;
+  box-orient: horizontal;
+}
+.setfood-modal .setfood-ctrl .ctrl-schema,
+.setfood-modal .setfood-ctrl .ctrl-opt {
+  padding: 0;
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-box;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -ms-box-orient: vertical;
+  -o-box-orient: vertical;
+  box-orient: vertical;
+  border-right: 1px solid #e6e6e6;
+}
+.setfood-modal .setfood-ctrl .ctrl-schema > header,
+.setfood-modal .setfood-ctrl .ctrl-opt > header {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 2;
+}
+.setfood-modal .setfood-ctrl .ctrl-schema > header .btn-close,
+.setfood-modal .setfood-ctrl .ctrl-opt > header .btn-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.setfood-modal .setfood-ctrl .ctrl-schema > section,
+.setfood-modal .setfood-ctrl .ctrl-opt > section {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 1;
+  position: relative;
+}
+.setfood-modal .setfood-ctrl .ctrl-schema > footer,
+.setfood-modal .setfood-ctrl .ctrl-opt > footer {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 2;
+}
+.setfood-modal .setfood-ctrl .ctrl-schema .btn,
+.setfood-modal .setfood-ctrl .ctrl-opt .btn {
+  border-radius: 0;
+  height: 4rem;
+}
+.setfood-modal .setfood-ctrl .ctrl-opt {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -ms-box-flex: 1;
+  -o-box-flex: 1;
+  -box-flex: 1;
+}
+.setfood-modal .setfood-ctrl .opt-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+.setfood-modal .setfood-ctrl .btn-list {
+  height: auto;
+  width: 100%;
+}
+.setfood-modal .setfood-ctrl .btn-list .btn-cell {
+  height: 75px;
+  white-space: normal;
+  padding: .5rem;
+}
+.setfood-modal .setfood-ctrl .btn-list .btn-cell p {
+  margin-bottom: 0;
 }

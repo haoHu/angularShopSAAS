@@ -13,7 +13,7 @@
 	@orderHeaderBG : #ffc;
 	// 页面框架
 	position : relative; height : 100%;
-	.btn {border-radius: 0;}
+	.btn {border-radius: 0; white-space: normal;}
 	.order-plain {
 		position : absolute; left : 0; top : 0; bottom : 0; padding : 0; margin : 0;
 		width : @orderPlainWidth; border-right : 1px solid @xBaseBorderColor;
@@ -365,7 +365,7 @@
 			> section {
 				-webkit-box-flex : 1;
 				-webkit-box-flex-group : 1;
-				outline: #123;
+				// outline: #123;
 				.list-group-item {
 					padding : 0; position : relative; min-height: 3rem; cursor : pointer;
 					.btn-default {position : absolute; right : 0; }
@@ -415,4 +415,58 @@
 		}	
 	}
 
+}
+
+// 套餐配置窗口
+.setfood-modal {
+	.modal-dialog {
+		position : absolute; left : 372px; right : 0; top : 0; bottom : 0;
+		margin : 0; padding : 0; width : auto!important;
+		> .modal-content, .modal-body, .setfood-ctrl {height : 100%; width : 100%; padding : 0; margin : 0;}
+	}
+	.setfood-ctrl {
+		position : relative; display: -webkit-box; display: -moz-box; display: -ms-flexbox;
+		-webkit-box-orient : horizontal; -moz-box-orient : horizontal; -ms-box-orient : horizontal; -o-box-orient : horizontal; box-orient : horizontal;
+		.ctrl-schema, .ctrl-opt {
+			// width : 50%;
+			// -webkit-box-flex : 1; -moz-box-flex : 1; -ms-box-flex : 1; -o-box-flex : 1; -box-flex : 1;
+			// outline: 1px solid blue;
+			padding : 0;
+			position : relative; display: -webkit-box; display: -moz-box; display: -ms-box;
+			-webkit-box-orient : vertical; -moz-box-orient : vertical; -ms-box-orient : vertical; -o-box-orient : vertical; box-orient : vertical;
+			border-right : 1px solid @xBaseBorderColor;
+			> header {
+				-webkit-box-flex : 1;
+				-webkit-box-flex-group : 2;
+				// margin-bottomargin-bottom : .5rem;
+				.btn-close {position : absolute; right : 0; top : 0;}
+			}
+			> section {
+				-webkit-box-flex : 1;
+				-webkit-box-flex-group : 1;
+				position : relative;
+			}
+			> footer {
+				-webkit-box-flex : 1;
+				-webkit-box-flex-group : 2;
+			}
+			.btn {
+				border-radius: 0; height : 4rem;
+			}
+		}
+		.ctrl-opt {
+			-webkit-box-flex : 1; -moz-box-flex : 1; -ms-box-flex : 1; -o-box-flex : 1; -box-flex : 1;
+			// outline: 1px solid red;
+		}
+		.opt-box {
+			position : absolute; top : 0; left : 0; right : 0; bottom : 0; overflow: hidden;
+		}
+		.btn-list {
+			height : auto; width : 100%;
+			.btn-cell {
+				height : 75px; white-space : normal; padding : .5rem;
+				p {margin-bottom : 0;}
+			}
+		}
+	}
 }
