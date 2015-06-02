@@ -51,9 +51,10 @@ define(['app'], function (app) {
 		var filterFn = function (v, format) {
 			// IX.Debug.info(v);
 			// IX.Debug.info(format);
-			var dateStr = Hualala.Common.formatDateTimeValue(v);
+			var dateStr = Hualala.Common.formatDateTimeValue(v),
+				f = format || 'yyyy/MM/dd HH:mm:ss';
 
-			return _.isEmpty(dateStr) ? '' : IX.Date.getDateByFormat(dateStr, 'yyyy/MM/dd HH:mm:ss');
+			return _.isEmpty(dateStr) ? '' : IX.Date.getDateByFormat(dateStr, f);
 
 		};
 		return filterFn;
@@ -64,7 +65,7 @@ define(['app'], function (app) {
 		var filterFn = function (v, format) {
 			// IX.Debug.info(v);
 			// IX.Debug.info(format);
-			var dataStr = Hualala.Common.Math.standardPrice(v),
+			var dataStr = Hualala.Common.Math.prettyPrice(v),
 				currencyPrefix = format || '$';
 
 			return _.isEmpty(dataStr) ? '' : currencyPrefix + dataStr;

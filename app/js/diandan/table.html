@@ -1,3 +1,99 @@
-<section class="section section-diandan" ng-controller="TableViewController">
-	
+<section class="section section-diandan section-table" ng-controller="TableViewController">
+	<div class="order-plain">
+		<div class="order-box">
+			
+			<div class="order-body grid-box">
+				<!-- 单头信息 -->
+				<header class="order-header" >
+					<orderheader fmels="orderHeader" channels="OrderChannels" class="clearfix" ></orderheader>
+				</header>
+				<!-- 订单条目头 -->
+				<div class="row grid-header">
+					<span class="col-xs-1 grid-cell txt"></span>
+					<span class="col-xs-4 grid-cell txt">品名</span>
+					<span class="col-xs-2 grid-cell num">数量</span>
+					<span class="col-xs-2 grid-cell unit">规格</span>
+					<span class="col-xs-3 grid-cell price">小计</span>
+				</div>
+				<!-- <div>{{curOrderItems.length}}</div> -->
+				<div class="order-list">
+					<orderlist></orderlist>
+				</div>
+				
+				
+			</div>
+			
+			<footer class="order-footer">
+				<!-- 订单操作按钮组 -->
+				<div class="btn-grp clearfix" order-pager="{{curOrderItems.length}}">
+					<div class="col-xs-4"><button class="btn btn-default btn-block btn-print" type="button">打印</button></div>
+					<div class="col-xs-4"><button class="btn btn-default btn-block btn-prev" type="button" pager-act="prev">上页</button></div>
+					<div class="col-xs-4"><button class="btn btn-default btn-block btn-next" type="button" pager-act="next">下页</button></div>
+				</div>
+				<!-- 订单单注 -->
+				<div class="order-remark clearfix">
+					<div class="col-xs-7">
+						<label for="">账单合计</label>
+						<span class="dollar">￥</span>
+						<!-- <span class="cash">58888</span> -->
+						<span class="cash">{{calcOrderAmount()}}</span>
+					</div>
+					<div class="col-xs-5">
+						<button class="btn btn-default btn-block" type="button" ng-click="openOrderRemark()">{{curOrderRemark}}</button>
+					</div>
+				</div>
+			</footer>
+		</div>
+		<div class="order-btngrp">
+			<orderitemhandle></orderitemhandle>
+		</div>
+	</div>
+	<div class="menu-plain">
+		<div class="cates">
+			<div class="row filter-bar">
+				<div class="col-xs-6">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="桌台名称" ng-model="qTblName">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button">搜索</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="btn-group center-block clearfix">
+						<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio="'-1'" ng-click="queryTablesByStatus(-1)">全部</label>
+						<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio="'0'" ng-click="queryTablesByStatus(0)">空闲</label>
+						<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio="'1'" ng-click="queryTablesByStatus(1)">占用</label>
+					</div>
+				</div>
+				<!-- <div class="col-xs-2">
+					<button type="button" class="btn btn-default btn-block">全部</button>
+				</div>
+				<div class="col-xs-2">
+					<button type="button" class="btn btn-default btn-block">空闲</button>
+				</div>
+				<div class="col-xs-2">
+					<button type="button" class="btn btn-default btn-block">占用</button>
+				</div> -->
+			</div>
+			<div class="area-bar row" pager-list="loop" pager-data="{{TableAreas.length}}" page-size="4" item-selector=".btn-area[area-name]" btn-selector=".btn-pager" page-num="0">
+				<div class="col-xs-2 cell-btn btn btn-all" ng-class="{active: curAreaName == ''}" ng-click="selectTableArea('')" area-name="" ><p>全部</p></div>
+				<div class="col-xs-2 btn cell-btn btn-area" ng-repeat="area in TableAreas" ng-class="{active : curAreaName == area.value}" ng-click="selectTableArea(area.areaName)" area-name="{{area.areaName}}">
+					<p>{{area.label}}</p>
+				</div>
+
+				<div class="col-xs-2 cell-btn btn btn-pager" pager-direction="+1"><span>翻页</span></div>
+			</div>
+		</div>
+		<div class="table-menu" pager-list="common" pager-data="{{curTables.length}}" page-size="34" item-selector=".cell-btn[id]" btn-selector=".btn-prev,.btn-next" page-num="0">
+			<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}">
+				<p class="name">{{table.tableName}}</p>
+				<p class="time" ng-if="table.tableStatus == 1">{{table.orderCreateTime | formatDateTimeStr:"HH:mm"}}</p>
+				<p class="amount" ng-if="table.tableStatus == 1">{{table.orderTotalAmount | mycurrency:"￥"}}</p>
+			</div>
+			<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><p class="name">上页</p></div>
+			<div class="col-xs-2 btn cell-btn btn-next" pager-direction="+1"><p class="name">下页</p></div>
+		</div>
+
+	</div>
 </section>

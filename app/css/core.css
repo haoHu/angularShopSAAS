@@ -731,3 +731,91 @@ body {
 .setfood-modal .setfood-ctrl .btn-list .btn-cell p {
   margin-bottom: 0;
 }
+.section-table .menu-plain {
+  padding-bottom: 0;
+}
+.section-table .menu-plain .cates {
+  position: relative;
+  height: 12.5%;
+  background-color: #fff;
+}
+.section-table .filter-bar .btn {
+  white-space: nowrap;
+}
+.section-table .area-bar {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  background-color: #99ccff;
+}
+.section-table .area-bar .cell-btn {
+  height: 100%;
+}
+.section-table .area-bar .cell-btn.active,
+.section-table .area-bar .cell-btn:active {
+  background-color: #004c99;
+  color: #fff;
+}
+.section-table .area-bar .btn-pager {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.section-table .table-menu {
+  position: relative;
+  height: 87.5%;
+  background-color: #fff;
+}
+.section-table .table-menu .cell-btn {
+  position: relative;
+  height: 16.66666667%;
+  background-color: #fff;
+}
+.section-table .table-menu .cell-btn.btn-prev,
+.section-table .table-menu .cell-btn.btn-next {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.section-table .table-menu .cell-btn.btn-prev {
+  right: 16.66666667%;
+}
+.section-table .table-menu .cell-btn.active,
+.section-table .table-menu .cell-btn:active {
+  background-color: #99ccff;
+}
+.section-table .table-menu .cell-btn.occupy {
+  color: #ffffff;
+  background-color: #d9534f;
+  border-color: #ddd;
+}
+.section-table .table-menu .cell-btn.idle {
+  color: #ffffff;
+  background-color: #5cb85c;
+  border-color: #ddd;
+}
+.section-table .table-menu .cell-btn p {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.section-table .table-menu .cell-btn p.name {
+  top: 50%;
+  margin-top: -1.5rem;
+  font-size: 1.5rem;
+}
+.section-table .table-menu .cell-btn p.time,
+.section-table .table-menu .cell-btn p.amount {
+  position: absolute;
+  width: 50%;
+  bottom: 0;
+  font-weight: normal;
+}
+.section-table .table-menu .cell-btn p.time {
+  left: 0;
+}
+.section-table .table-menu .cell-btn p.amount {
+  right: 0;
+}

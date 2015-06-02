@@ -19,9 +19,10 @@ define([], function () {
 			},
 			// 快餐点单
 			'/snack' : {
-				templateUrl : 'js/diandan/snack.html',
+				templateUrl : 'js/diandan/dinner.html',
 				dependencies : [
-					'diandan/SnackViewController',
+					// 'diandan/SnackViewController',
+					'diandan/DinnerViewController',
 					'directives/appDirectives',
 					'services/appServices',
 					'services/orderServices',
@@ -34,7 +35,10 @@ define([], function () {
 				templateUrl : 'js/diandan/table.html',
 				dependencies : [
 					'diandan/TableViewController',
-					'directives/appDirectives'
+					'directives/appDirectives',
+					'services/orderServices',
+					'services/tableServices',
+					'filters/appFilters'
 				]
 			},
 			// 正餐点菜
@@ -42,7 +46,11 @@ define([], function () {
 				templateUrl : 'js/diandan/dinner.html',
 				dependencies : [
 					'diandan/DinnerViewController',
-					'directives/appDirectives'
+					'directives/appDirectives',
+					'services/appServices',
+					'services/orderServices',
+					'services/foodMenuServices',
+					'filters/appFilters'
 				]
 			},
 			'/dingdan' : {

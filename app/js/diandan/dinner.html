@@ -1,506 +1,84 @@
-<section class="section section-diandan" ng-controller="DinnerViewController">
+<section class="section section-diandan" ng-controller="SnackViewController">
 	<div class="order-plain">
-		<!-- <p app-color="blue">{{page.heading}}页面的订单部分</p> -->
 		<div class="order-box">
-			<!-- 单头信息 -->
-			<header class="order-header">
-
-				<div class="col-xs-6"><label for="" class="col-xs-4">单号</label><span class="col-xs-8"><span class="btn btn-default btn-block">001</span></span></div>
-				<div class="col-xs-6"><label for="" class="col-xs-4">牌号</label><span class="col-xs-8"><span class="btn btn-default btn-block">18</span></span></div>
-				<div class="col-xs-6"><label for="" class="col-xs-4">渠道</label><span class="col-xs-8"><span class="btn btn-default btn-block">大众点评</span></span></div>
-				<div class="col-xs-6"><label for="" class="col-xs-4">人数</label><span class="col-xs-8"><span class="btn btn-default btn-block">12</span></span></div>
-				<div class="col-xs-6"><label for="" class="col-xs-4">类型</label><span class="col-xs-8"><span class="btn btn-default btn-block">堂食</span></span></div>
-
-				<div class="col-xs-12"><label for="" class="col-xs-4">送餐人</label><span class="col-xs-8"><span class="btn btn-default btn-block">13322222222</span></span></div>
-				<div class="col-xs-12"><label for="" class="col-xs-4">送餐地址</label><span class="col-xs-8"><span class="btn btn-default btn-block">西直门西环广场</span></span></div>
-<!-- 
-				<div class="col-xs-12">
-					<label for="" class="col-xs-2">单号</label>
-					<p class="col-xs-4">001</p>
-					<label for="" class="col-xs-2">牌号</label>
-					<span class="btn btn-default col-xs-4">18</span>
+			
+			<div class="order-body grid-box">
+				<!-- 单头信息 -->
+				<header class="order-header" >
+					<orderheader fmels="orderHeader" channels="OrderChannels" class="clearfix" ></orderheader>
+				</header>
+				<!-- 订单条目头 -->
+				<div class="row grid-header">
+					<span class="col-xs-1 grid-cell txt"></span>
+					<span class="col-xs-4 grid-cell txt">品名</span>
+					<span class="col-xs-2 grid-cell num">数量</span>
+					<span class="col-xs-2 grid-cell unit">规格</span>
+					<span class="col-xs-3 grid-cell price">小计</span>
 				</div>
-				<div class="col-xs-12">
-					<label for="" class="col-xs-2">单号</label>
-					<span class="btn btn-default col-xs-4">001</span>
-					<label for="" class="col-xs-2">牌号</label>
-					<span class="btn btn-default col-xs-4">18</span>
+				<!-- <div>{{curOrderItems.length}}</div> -->
+				<div class="order-list">
+					<orderlist></orderlist>
 				</div>
-				<div class="col-xs-12">
-					<label for="" class="col-xs-2">单号</label>
-					<span class="btn btn-default col-xs-4">001</span>
-					<label for="" class="col-xs-2">牌号</label>
-					<span class="btn btn-default col-xs-4">18</span>
-				</div>
-
-				<div class="col-xs-12"><label for="" class="col-xs-4">送餐人</label><span class="btn btn-default col-xs-8">13322222222</span></div>
-				<div class="col-xs-12"><label for="" class="col-xs-4">送餐地址</label><span class="btn btn-default col-xs-8">西环广场</span></div> -->
-
-				<!-- <div class="col-xs-6"><label for="">单号</label><span class="btn btn-default">001</span></div>
-				<div class="col-xs-6"><label for="">牌号</label><span class="btn btn-default">18</span></div>
-				<div class="col-xs-6"><label for="">渠道</label><span class="btn btn-default">大众点评</span></div>
-				<div class="col-xs-6"><label for="">人数</label><span class="btn btn-default">3</span></div>
-				<div class="col-xs-6"><label for="">类型</label><span class="btn btn-default">堂食</span></div>
-				<div class="col-xs-12"><label for="">送餐人<span class="btn btn-default">13322222222</span></label></div>
-				<div class="col-xs-12"><label for="">送餐地址<span class="btn btn-default">西环广场</span></label></div> -->
-			</header>
-			<div class="order-body">
-				<!-- 订单条目 -->
-				<div class="grid-header row">
-					<span class="col-xs-2">状态</span>
-					<span class="col-xs-4">品名</span>
-					<span class="col-xs-2">数量</span>
-					<span class="col-xs-2">单价</span>
-					<span class="col-xs-2">规格</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼1</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼2</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼3</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼4</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼5</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼6</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼7</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼8</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼9</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼10</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼11</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼12</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼13</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼14</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼15</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼16</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼17</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼18</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼19</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼20</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼21</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼22</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼23</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼24</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼25</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼26</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼27</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼28</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼29</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
-				<div class="grid-row row">
-					<span class="col-xs-2">落</span>
-					<span class="col-xs-4">铁板烧汁鲈鱼30</span>
-					<span class="col-xs-2">2</span>
-					<span class="col-xs-2">128.00</span>
-					<span class="col-xs-2">半份</span>
-				</div>
+				
+				
 			</div>
+			
 			<footer class="order-footer">
 				<!-- 订单操作按钮组 -->
-				<div class="btn-grp clearfix">
+				<div class="btn-grp clearfix" order-pager="{{curOrderItems.length}}">
 					<div class="col-xs-4"><button class="btn btn-default btn-block btn-print" type="button">打印</button></div>
-					<div class="col-xs-4"><button class="btn btn-default btn-block btn-prev" type="button">上页</button></div>
-					<div class="col-xs-4"><button class="btn btn-default btn-block btn-next" type="button">下页</button></div>
+					<div class="col-xs-4"><button class="btn btn-default btn-block btn-prev" type="button" pager-act="prev">上页</button></div>
+					<div class="col-xs-4"><button class="btn btn-default btn-block btn-next" type="button" pager-act="next">下页</button></div>
 				</div>
 				<!-- 订单单注 -->
 				<div class="order-remark clearfix">
 					<div class="col-xs-7">
-						<label for="">应收总计</label>
+						<label for="">账单合计</label>
 						<span class="dollar">￥</span>
-						<span class="cash">58888</span>
+						<!-- <span class="cash">58888</span> -->
+						<span class="cash">{{calcOrderAmount()}}</span>
 					</div>
-					<div class="col-xs-5"><button class="btn btn-default btn-block" type="button">单注</button></div>
+					<div class="col-xs-5">
+						<button class="btn btn-default btn-block" type="button" ng-click="openOrderRemark()">{{curOrderRemark}}</button>
+					</div>
 				</div>
 			</footer>
 		</div>
 		<div class="order-btngrp">
-			<!-- 订单菜品操作按钮组 -->
-			<button class="btn btn-default btn-block" type="button">赠菜</button>
-			<button class="btn btn-default btn-block" type="button">退菜</button>
-			<button class="btn btn-default btn-block" type="button">取消</button>
-			<button class="btn btn-default btn-block" type="button">+</button>
-			<button class="btn btn-default btn-block" type="button">-</button>
-			<button class="btn btn-default btn-block" type="button">改价/量</button>
-			<button class="btn btn-default btn-block" type="button">口味</button>
-			<button class="btn btn-default btn-block" type="button">做法</button>
-			<button class="btn btn-default btn-block" type="button">品注</button>
+			<orderitemhandle></orderitemhandle>
 		</div>
 	</div>
 	<div class="menu-plain">
-		<div class="cates">
-			<div class="col-xs-2 cell-btn"><span>菜品分类01</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类02</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类03</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类04</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类05</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类06</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类07</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类08</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类09</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类10</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类11</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类12</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类13</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类14</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类15</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类16</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类17</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类18</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类19</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类20</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类21</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类22</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类23</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类24</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类25</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类26</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类27</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类28</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类29</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类30</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类31</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类32</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类33</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类34</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类35</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类36</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类37</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类38</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类39</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品分类40</span></div>
-			<div class="col-xs-2 cell-btn btn-search"><span>搜索</span></div>
-			<div class="col-xs-2 cell-btn btn-pager"><span>翻页</span></div>
+		<foodcategory></foodcategory>
+		<foodmenu></foodmenu>
+		<!-- <div class="tab cates"  pager-list="loop" pager-data="{{FoodCategories.length}}" page-size="10" item-selector=".cell-btn[food-category]" btn-selector=".btn-pager" page-num="0">
+			<div class="col-xs-2 btn cell-btn" ng-repeat="cate in FoodCategories" ng-class="{active : curFoodCategory == cate.foodCategoryKey}" food-category="{{cate.foodCategoryKey}}" ng-click="changeFoodCategory(cate.foodCategoryKey)">
+				<p>{{cate.foodCategoryName}}</p>
+			</div>
+			<div class="col-xs-2 cell-btn btn btn-search" food-search="{{curFoodCategory}}" ng-click="openSearch()"><span>搜索</span></div>
+			<div class="col-xs-2 cell-btn btn btn-pager" pager-direction="+1"><span>翻页</span></div>
+		</div> -->
+
+		<!-- <div class="foods" pager-list="common" pager-data="{{curFoods.length}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">
+			<div class="col-xs-2 btn cell-btn" unit-key="{{food.__foodUnit.unitKey}}" ng-repeat="food in curFoods" >
+				<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>
+				<p class="unit">
+					{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}
+				</p>
+			</div>
+			<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><span>上页</span></div>
+			<div class="col-xs-2 btn cell-btn btn-next" pager-direction="+1"><span>下页</span></div>
 		</div>
-		<div class="foods">
-			<div class="col-xs-2 cell-btn"><span>菜品名称01</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称02</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称03</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称04</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称05</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称06</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称07</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称08</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称09</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称10</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称11</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称12</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称13</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称14</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称15</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称16</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称17</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称18</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称19</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称20</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称21</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称22</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称23</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称24</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称25</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称26</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称27</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称28</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称29</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称30</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称31</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称32</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称33</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称34</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称35</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称36</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称37</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称38</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称39</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称40</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称41</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称42</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称43</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称44</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称45</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称46</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称47</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称48</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称49</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称50</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称51</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称52</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称53</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称54</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称55</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称56</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称57</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称58</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称59</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称60</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称61</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称62</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称63</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称64</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称65</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称66</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称67</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称68</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称69</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称70</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称71</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称72</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称73</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称74</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称75</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称76</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称77</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称78</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称79</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称80</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称81</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称82</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称83</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称84</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称85</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称86</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称87</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称88</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称89</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称90</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称91</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称92</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称93</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称94</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称95</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称96</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称97</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称98</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称99</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称100</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称101</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称102</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称103</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称104</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称105</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称106</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称107</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称108</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称109</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称110</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称111</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称112</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称113</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称114</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称115</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称116</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称117</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称118</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称119</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称120</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称121</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称122</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称123</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称124</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称125</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称126</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称127</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称128</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称129</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称130</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称131</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称132</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称133</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称134</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称135</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称136</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称137</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称138</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称139</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称140</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称141</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称142</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称143</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称144</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称145</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称146</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称147</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称148</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称149</span></div>
-			<div class="col-xs-2 cell-btn"><span>菜品名称150</span></div>
-			<div class="col-xs-2 cell-btn btn-prev"><span>上页</span></div>
-			<div class="col-xs-2 cell-btn btn-next"><span>下页</span></div>
-		</div>
+		 -->
+		
 	</div>
-	<div class="btns-plain">
-		<!-- 订单操作按钮组 -->
+	<orderhandlebtns></orderhandlebtns>
+	<!-- <div class="btns-plain">
+
 		<div class="col-xs-10">
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">落单</button></div>
-			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">挂单</button></div>
-			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">提单</button></div>
+			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="guadan">挂单</button></div>
+			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="tidan">提单</button></div>
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">现金</button></div>
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">其他结账</button></div>
 			<div class="col-xs-2"><button class="btn btn-warning btn-block" type="button" btn-act="luodan">开钱箱</button></div>
@@ -508,5 +86,677 @@
 		<div class="col-xs-2">
 			<button class="btn btn-default btn-block" type="button" btn-act="return">返回</button>
 		</div>
+	</div> -->
+
+	<div class="modal fade" id="search_food">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<label for="" class="col-xs-3 control-label">菜品助记码</label>
+							<div class="col-xs-9">
+								<input type="text" class="form-control" ng-model="curSearchKey" ng-change="searchFood()" >
+							</div>
+						</div>
+					</div>
+					<!-- 软键盘 -->
+					<!-- <numkeyboard></numkeyboard> -->
+					<!-- <div class="site-fullkeyboard table-responsive">
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td><div class="btn btn-default btn-block invisible">&nbsp;</div></td>
+									<td>
+										<div class="btn btn-default btn-block">1</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">2</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">3</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">4</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">5</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">6</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">7</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">8</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">9</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">10</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">退格</div>
+									</td>
+								</tr>
+								<tr>
+									<td><div class="btn btn-default btn-block">&nbsp;</div></td>
+									<td>
+										<div class="btn btn-default btn-block">Q</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">W</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">E</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">R</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">T</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">Y</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">U</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">I</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">O</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">P</div>
+									</td>
+									<td><div class="btn btn-default btn-block">&nbsp;</div></td>
+								</tr>
+								<tr>
+									<td>
+										<div class="btn btn-default btn-block">大小写</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">A</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">S</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">D</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">F</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">G</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">H</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">J</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">K</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">L</div>
+									</td>
+									<td colspan="2">
+										<div class="btn btn-default btn-block">回车</div>
+									</td>
+								</tr>
+								<tr>
+									<td><div class="btn btn-default btn-block">&nbsp;</div></td>
+									<td>
+										<div class="btn btn-default btn-block">Z</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">X</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">C</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">V</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">B</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">N</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">M</div>
+									</td>
+									<td>
+										<div class="btn btn-default btn-block">.</div>
+									</td>
+									<td colspan="3">
+										<div class="btn btn-default btn-block">空格</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div> -->
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default btn-block">关闭</button>
+				</div>
+			</div>
+		</div>
 	</div>
+	<!-- 赠送菜品操作模板 -->
+	<script type="text/ng-template" id="js/diandan/orderItemSend.html">
+		<div class="modal-header">
+			<h4 class="modal-title">赠菜({{curFoodName}})</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-horizontal clearfix">
+						<label for="" class="col-xs-3 control-label">数量</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" />
+							<span class="help-block">可以赠送数量：{{enableSendNumber}}</span>
+						</div>
+
+					</div>
+					<numkeyboard></numkeyboard>
+				</div>
+				<div class="col-xs-6">
+					<div class="" >
+						<h4>赠菜原因</h4>
+						<div class="btngrp-box" pager-list="loop" pager-data="{{SendFoodReasons}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<radiogroup group-opts="SendFoodReasons" radio-name="sendReason" cur-val="{{sendReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onSendReasonChange(val)"></radiogroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 退菜操作模板 -->
+	<script type="text/ng-template" id="js/diandan/orderItemCancel.html">
+		<div class="modal-header">
+			<h4 class="modal-title">退菜({{curFoodName}})</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-horizontal clearfix">
+						<label for="" class="col-xs-3 control-label">数量</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" />
+							<span class="help-block">可以退菜数量：{{enableCancelNumber}}</span>
+						</div>
+					</div>
+					<numkeyboard></numkeyboard>
+				</div>
+				<div class="col-xs-6">
+					<div class="" >
+						<h4>退菜原因</h4>
+						<div class="btngrp-box" pager-list="loop" pager-data="{{CancelFoodReasons}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<radiogroup group-opts="CancelFoodReasons" radio-name="cancelReason" cur-val="{{cancelReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onCancelReasonChange(val)"></radiogroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 改量操作模板 -->
+	<script type="text/ng-template" id="js/diandan/orderItemModifyCount.html">
+		<div class="modal-header">
+			<h4 class="modal-title">改量({{curFoodName}})</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-offset-1 col-xs-10">
+					<div class="form-horizontal clearfix">
+						<label for="" class="col-xs-3 control-label">数量</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" name="foodCount" ng-model="foodCount" />
+							<span class="help-block">当前菜品数量：{{curFoodCount}}</span>
+						</div>
+					</div>
+					<numkeyboard></numkeyboard>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()">取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 改价操作模板 -->
+	<script type="text/ng-template" id="js/diandan/orderItemModifyPrice.html">
+		<div class="modal-header">
+			<h4 class="modal-title">改价({{curFoodName}})</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-horizontal clearfix">
+						<label for="" class="col-xs-3 control-label">价格</label>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" />
+							<span class="help-block">菜品当前价格：{{curFoodPrice}}</span>
+						</div>
+					</div>
+					<numkeyboard></numkeyboard>
+				</div>
+				<div class="col-xs-6">
+					<div class="" >
+						<h4>改价原因</h4>
+						<div class="btngrp-box" pager-list="loop" pager-data="{{ModifyPriceNotes}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<radiogroup group-opts="ModifyPriceNotes" radio-name="priceReason" cur-val="" class="btn-group" role="group" data-toggle="buttons" on-change="onFoodPriceNoteChange(val)"></radiogroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()">取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 作法操作模板 -->
+	<script type="text/ng-template" id="js/diandan/orderItemModifyMethod.html">
+		<div class="modal-header">
+			<h4 class="modal-title">作法设置({{curFoodName}})</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="" >
+						<h4>作法选择</h4>
+						<div class="btngrp-box" pager-list="loop" pager-data="{{FoodMethods}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<radiogroup group-opts="FoodMethods" radio-name="foodMethod" cur-val="{{foodMethod}}" class="btn-group" role="group" data-toggle="buttons" on-change="onFoodRemarkChange(val)"></radiogroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default"  ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default"  ng-click="close()">取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 口味操作模板 -->
+	<script type="text/ng-template" id="js/diandan/orderItemModifyRemark.html">
+		<div class="modal-header">
+			<h4 class="modal-title">口味设置({{curFoodName}})</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="" >
+						<h4>口味选择</h4>
+						<div class="btngrp-box" pager-list="loop" pager-data="{{FoodRemarks}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<radiogroup group-opts="FoodRemarks" radio-name="foodRemark" cur-val="{{foodRemark}}" class="btn-group" role="group" data-toggle="buttons" on-change="onFoodRemarkChange(val)"></radiogroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 单注 -->
+	<script type="text/ng-template" id="js/diandan/orderRemark.html">
+		<div class="modal-header">
+			<h4 class="modal-title">单注设置</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="" >
+						<h4>单注选择</h4>
+						<div class="btngrp-box" pager-list="loop" pager-data="{{OrderRemarks}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<radiogroup group-opts="OrderRemarks" radio-name="orderRemark" cur-val="{{orderRemark}}" class="btn-group" role="group" data-toggle="buttons" on-change="onOrderRemarkChange(val)"></radiogroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 套餐配置窗口 -->
+	<script type="text/ng-template" id="js/diandan/setFoodCfg.html">
+		<div class="modal-header">
+			<h4 class="modal-title">套餐搭配</h4>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-6" ng-repeat="el in curSetFoodLst">
+					<div class="" >
+						<h4>{{el.foodCategoryName}}({{el.items.length}}选<span class="text-danger">{{el.chooseCount}}</span>)</h4>
+						<div class="btngrp-box " pager-list="loop" pager-data="{{el.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<checkboxgroup group-opts="el.items" checkbox-name="cate_{{$index}}" cur-val="el.selectedFoods" class="btn-group" role="group" data-toggle="buttons" on-change="onSetFoodChange(val, checkboxName)" ></checkboxgroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="save()" >保存</button>
+				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 新版套餐配置窗口 -->
+	<script type="text/ng-template" id="js/diandan/setFoodSetting.html">
+		<div class="modal-body">
+			<div class="setfood-ctrl" >
+				<section class="ctrl-schema col-xs-8" setfood-pager=".cate-item">
+					<header class="schema-header">
+						<h4>套餐搭配</h4>
+						<button class="btn btn-default btn-close" ng-click="close()">返回</button>
+					</header>
+					<section class="schema-body">
+						<div id="food_list" class="opt-box">
+							<div class="cate-items">
+								<div class="cate-item" ng-repeat="el in curSetFoodLst">
+									<h5>{{el.foodCategoryName}}({{el.items.length}}选<span class="text-danger">{{el.chooseCount}}</span>)</h5>
+									<ul class="row list-unstyled btn-list">
+										<!--<li class="col-xs-3 btn btn-default btn-cell" ng-class="{active : curFoodBtnID == food._id}" ng-click="captureCurFoodItem(el.foodCategoryName, food.unitKey, $index)" ng-repeat="food in getChosenFoods(el.foodCategoryName)" id="{{food._id}}">
+											<div ng-bind-html="parseSnippet(food.label)"></div>
+										</li>-->
+										<li class="col-xs-3 btn btn-default btn-cell" ng-class="{active : curFoodBtnID == food._id}" ng-click="captureCurFoodItem(el.foodCategoryName, food.unitKey, $index)" ng-repeat="food in mapSelectedFoods(el.selectedFoods)" id="{{food._id}}">
+											<div ng-bind-html="parseSnippet(food.label)"></div>
+											<div ng-if="!_.isEmpty(food.remark)">
+												{{food.remark.notesName}}
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+
+						</div>
+					</section>
+					<footer class="schema-footer">
+						<div class="btn-group center-block clearfix">
+							<button type="button" class="btn btn-default col-xs-6 btn-prev"  pager-act="prev">上页</button>
+							<button type="button" class="btn btn-default col-xs-6 btn-next"  pager-act="next">下页</button>
+						</div>
+						<button type="button" class="btn btn-default btn-block" ng-click="save()">完成套餐搭配</button>
+					</footer>
+				</section>
+				<section class="ctrl-opt" setfood-pager=".btn-cell">
+					<header class="opt-header">
+						<div class="btn-group center-block clearfix">
+							<label class="btn btn-default col-xs-6" ng-model="curMenuType" btn-radio="'food'">菜品</label>
+							<label class="btn btn-default col-xs-6" ng-model="curMenuType" btn-radio="'remark'">口味</label>
+						</div>
+					</header>
+					<section class="opt-body">
+						<div class="opt-box">
+							<ul class="row list-unstyled btn-list" ng-if="curMenuType == 'food'">
+								<li class="col-xs-6 btn btn-default btn-cell" ng-repeat="food in getFoodOpts(curFoodCategory)" ng-click="replaceFoodItem(food.unitKey)">
+									<div ng-bind-html="parseSnippet(food.label)"></div>
+								</li>
+							</ul>
+							<ul class="row list-unstyled btn-list" ng-if="curMenuType == 'remark'">
+								<li class="col-xs-6 btn btn-default btn-cell" ng-repeat="remark in getFoodRemarks()" ng-click="setFoodRemark(remark)">
+									<div ng-bind-html="parseSnippet(remark.label)"></div>
+								</li>
+							</ul>
+						</div>
+					</section>
+					<footer class="schema-footer">
+						<div class="btn-group center-block clearfix">
+							<button type="button" class="btn btn-default col-xs-6 btn-prev"  pager-act="prev">上页</button>
+							<button type="button" class="btn btn-default col-xs-6 btn-next"  pager-act="next">下页</button>
+						</div>
+					</footer>
+				</section>
+			</div>
+		</div>
+	</script>
+	<!-- 提单操作窗口 -->
+	<script type="text/ng-template" id="js/diandan/pickOrder.html">
+		<div class="modal-header">
+			<h4 class="modal-title">提单操作</h4>
+		</div>
+		<div class="modal-body">
+			<ul class="row list-unstyled">
+				<li class="col-xs-4" ng-repeat="el in OrdersCatch" id="el.__catchID" ng-click="onOrderCatchClick(el.__catchID)">
+					<p>订单号:{{el.saasOrderKey}}</p>
+					<p>时间:{{el.startTime | formatDateTimeStr:"yyyy-MM-dd HH:mm:ss"}}</p>
+					<p ng-repeat="food in el.foodLst" ng-if="$index < 4">
+						{{food.foodName}}
+					</p>
+				</li>
+			</ul>
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-lg" role="group">
+				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 订单支付操作窗口 -->
+	<script type="text/ng-template" id="js/diandan/payOrder.html">
+		<div class="modal-body">
+			<div class="pay-ctrl">
+				<section class="pay-schema">
+					<header class="schema-header">
+						<h4>结账</h4>
+						<button class="btn btn-default btn-close" ng-click="close()">返回</button>
+						<div class="row disabeld">
+							<label class="col-xs-5 control-label">菜品金额</label>
+							<p class="col-xs-7 sum">{{orderPayDetail.foodAmount | currency:"￥"}}</p>
+						</div>
+					</header>
+					<section class="schema-body">
+						<ul class="list-group">
+							<li ng-repeat="paySubjectGrp in orderPayDetail.payGrps" class="list-group-item clearfix" name="{{paySubjectGrp.name}}" ng-class="{disabled : isDisabledPaySubjectGrp(paySubjectGrp), active : isCurPaySubjectGrpName(paySubjectGrp.name), hidden : isHiddenPaySubjectGrp(paySubjectGrp)}" ng-click="changeCurrentPaySubjectGrp(paySubjectGrp)">
+								<label class="col-xs-5">{{paySubjectGrp.label}}</label>
+								<p class="col-xs-7 sum" ng-class="{hidden : isHiddenPrice(paySubjectGrp.amount)}">{{paySubjectGrp.amount | mycurrency:"￥"}}</p>
+								<p class="col-xs-12" ng-if="isNotEmptyStr(paySubjectGrp.detail)">{{paySubjectGrp.detail}}</p>
+								<button class="btn btn-default" ng-if="isNotZeroAmount(paySubjectGrp)" ng-click="resetPaySubject(paySubjectGrp)">撤销</button>
+							</li>
+						</ul>
+					</section>
+					<footer class="schema-footer">
+						<div class="row">
+							<label class="col-xs-5 control-label">未付</label>
+							<p class="col-xs-7 sum">{{orderPayDetail.unPayAmount | mycurrency: "￥"}}</p>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<button type="button" class="btn btn-default btn-block">开钱箱</button>
+							</div>
+							<div class="col-xs-6">
+								<button type="button" class="btn btn-default btn-block">打印结账清单</button>
+							</div>
+						</div>
+						<button type="button" class="btn btn-default btn-block" ng-class="{disabled : !isCanbeSubmit(orderPayDetail)}" ng-click="submitOrderPay()">完成结账</button>
+					</footer>
+				</section>
+				
+				<section class="pay-subject">
+					<div class="panel panel-default animate-repeat" ng-repeat="paySubjectGrp in orderPayDetail.payGrps | filter:curPaySubjectGrpName" id="{{paySubjectGrp.name}}">
+						<div class="panel-heading">
+							{{paySubjectGrp.label}}
+						</div>
+						<div class="panel-body">
+							<commonpayform ng-if="getPayFormType(paySubjectGrp) == 'common'" pay-subject-grp="paySubjectGrp" form-cfg="payFormCfg[paySubjectGrp.name]" ></commonpayform>
+							<vippayform ng-if="getPayFormType(paySubjectGrp) == 'vip'" pay-subject-grp="paySubjectGrp"></vippayform>
+						</div>
+						<div class="panel-footer">
+							<button  class="btn btn-default btn-block" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)">
+								确认收款
+							</button>
+							<button  class="btn btn-default btn-block" ng-if="getPayFormType(paySubjectGrp) == 'vip'" ng-click="submitPayForm(paySubjectGrp)">
+								会员消费确认
+							</button>
+						</div>
+					</div>
+					
+				</section>
+			</div>
+			<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
+		</div>
+	</script>
+	<!-- 通用支付表单部件 -->
+	<script type="text/ng-template" id="js/diandan/commonpayform.html">
+		<div class="row">
+			<div class="" ng-class="{'col-xs-12' : paySubjectGrp.name == 'discountPay', 'col-xs-4' : paySubjectGrp.name != 'discountPay'}" ng-if="needLeftBar(paySubjectGrp.name)">
+				<div class="btngrp-box" ng-if="paySubjectGrp.name == 'discountPay'" pager-list="loop" pager-data="{{discountRuleLst}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<radiogroup group-opts="discountRuleLst" radio-name="discountRule" cur-val="{{curDiscountRule}}" class="btn-group" role="group" data-toggle="buttons" on-change="onDiscountChange(val)"></radiogroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+				
+				<div class="btngrp-box btngrp-vertical" ng-if="paySubjectGrp.name != 'discountPay'" pager-list="loop" pager-data="{{optCfg.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<radiogroup group-opts="optCfg.items" radio-name="pay_subject" cur-val="optCfg.selectedSubjects" class="btn-group" role="group" data-toggle="buttons" on-change="onPaySubjectChange(val)"></radiogroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+			</div>
+			<div class="col-xs-8" ng-if="paySubjectGrp.name != 'discountPay'">
+				<div class="form-horizontal">
+					<div class="form-group" ng-repeat="el in formCfg">
+						<label class="col-xs-4 control-label">{{el.label}}</label>
+						<div class="col-xs-8">
+							<input type="number" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} />
+						</div>
+					</div>
+				</div>
+				<div>
+				<numkeyboard></numkeyboard>
+				</div>
+
+				
+			</div>
+		</div>
+	</script>
+	<!-- 会员卡支付表单部件 -->
+	<script type="text/ng-template" id="js/diandan/vippayform.html">
+		<div class="row vip-pay">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-3 control-label">卡号</label>
+					<div class="col-xs-7">
+						<div class="input-group">
+							<input type="text" class="form-control" name="card_id" value="18910021580" placeholder="卡号/手机号"/>
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="button" name="search" data-loading-text="查询中..." autocomplete="off" >查询</button>
+							</span>
+						</div>
+					</div>
+					<div class="col-xs-2">
+						<span class="label label-success" ng-if="hasVIPInfo() && vipInfo.cardIsCanUsing == 1">
+							正常
+						</span>
+						<span class="label label-danger" ng-if="hasVIPInfo() && vipInfo.cardIsCanUsing != 1">
+							{{vipInfo.cardNotCanUsingNotes}}
+						</span>
+						
+					</div>
+					<p class="help-block info col-xs-offset-2 col-xs-10" >
+						<span class="">姓名:{{vipInfo.userName || '哗啦啦'}}</span>
+						<span class="">手机:{{vipInfo.userMobile || '13322222222'}}</span>
+						<span class="" ng-class="{hidden : vipInfo.customerBirthday.length == 0}">生日:{{vipInfo.customerBirthday || ''}}</span>
+						<span class="">{{vipInfo.cardTypeName || 'VIP1'}}</span>
+					</p>
+				</div>
+				
+			</div>
+			<div class="form-horizontal" >
+				<div class="form-group">
+					<label class="col-xs-3 control-label">使用积分</label>
+					<div class="col-xs-5">
+						<input type="number" class="form-control" name="point_amount" ng-model="payByPoint" />
+					</div>
+					<div class="col-xs-4">
+						<p class="help-block info">使用积分:{{vipInfo.cardPointBalance}}</p>
+						<p class="help-block info">可抵金额:{{vipInfo.cardPointAsMoney | mycurrency:"￥"}}</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">使用卡值</label>
+					<div class="col-xs-5">
+						<input type="number" class="form-control" name="money_amount" ng-model="payByCash" />
+					</div>
+					<div class="col-xs-4">
+						<p class="help-block info">使用余额:{{vipInfo.cardCashBalance | mycurrency:"￥"}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="user-voucher">
+				<div class="voucher-info">
+					<label class="">用券:</label>
+					<span>{{curCashVoucherStr}}</span>
+				</div>
+				<div class="btngrp-box " pager-list="loop" pager-data="{{cashVoucherOpts}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+					<checkboxgroup group-opts="cashVoucherOpts" checkbox-name="cash_voucher" cur-val="curCashVouchers" class="btn-group" role="group" data-toggle="buttons" on-change="onCashVoucherChange(val, checkboxName, tarScope, curVal)" ></checkboxgroup>
+					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+				</div>
+			</div>
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-3 control-label">支付确认码</label>
+					<div class="col-xs-7">
+						<input type="password" class="form-control" name="auth_code" value="{{cardTransPWD}}"/>
+					</div>
+					
+				</div>
+			</div>
+			<numkeyboard></numkeyboard>
+
+		</div>
+	</script>
 </section>

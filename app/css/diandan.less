@@ -470,3 +470,80 @@
 		}
 	}
 }
+
+// 桌台界面
+.section-table {
+	.menu-plain {padding-bottom : 0;}
+	.menu-plain .cates {
+		position : relative;
+		height : percentage(1 / 8); background-color: #fff;
+	}
+	.filter-bar {
+		.btn {white-space: nowrap;}
+	}
+	.area-bar {
+		position : relative; overflow: hidden; height : 100%; background-color: @xDarkBtnBG;
+		.cell-btn {
+			height : 100%;
+			&.active, &:active {
+				background-color: darken(@xDarkBtnBG, 50%);
+				color : #fff;
+			}
+		}
+		.btn-pager {
+			position : absolute; right : 0; top : 0;
+		}
+		.btn-all {
+			// position : absolute; left : 0; top : 0;
+		}
+
+	}
+	.table-menu {
+		position : relative; height : percentage(7 / 8); background-color: #fff;
+		.cell-btn {
+			@rows : 6; @cols : 6; @height : percentage(1 / @rows);
+			@occupyColor : #fff; @occupyBG : #D9534F; @occupyBorder : #D43F3A;
+			@idleColor : #fff; @idleBG : #5CB85C; @idelBorder : #4CAE4C;
+			position : relative; height : @height; background-color: #fff;
+
+			&.btn-prev, &.btn-next {
+				position : absolute; bottom : 0; right : 0;
+			}
+			&.btn-prev {
+				right : percentage(1 / @cols);
+			}
+			&.active, &:active {
+				background-color: @xDarkBtnBG;
+			}
+			// 桌台占用 
+			&.occupy {
+				color: @occupyColor;
+				background-color: @occupyBG;
+				border-color: #ddd;
+			}
+			// 桌台空闲
+			&.idle {
+				color: @idleColor;
+				background-color: @idleBG;
+				border-color: #ddd;
+			}
+			// 桌台禁用
+			&.disabled {
+
+			}
+			p {
+				position : absolute; width : 100%; text-align: center;
+				font-weight: bold; font-size: 1rem;
+			}
+			p.name {
+				top : 50%; margin-top : -1.5rem; font-size: 1.5rem;
+			}
+			p.time, p.amount {
+				position : absolute; width : 50%; bottom : 0; font-weight: normal;
+			}
+			p.time {left : 0;}
+			p.amount {right : 0;}
+		}
+	}
+
+}

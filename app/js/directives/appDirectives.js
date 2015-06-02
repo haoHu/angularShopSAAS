@@ -389,6 +389,7 @@ define(['app'], function (app) {
                         noPager = pageSize >= count;
                     var items = el.find(itemSelector);
                     scope.pageNum = 0;
+                    items.removeClass('hidden');
                     items.filter(function (i) {
                         return i >= pageSize;
                     }).addClass('hidden');

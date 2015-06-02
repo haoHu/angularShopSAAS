@@ -44,7 +44,12 @@ define(['IX'], function () {
 		// 会员卡扣款操作
 		["cardDeductMoney", "/crm/card/deductMoney.ajax", "", "POST"],
 		// 会员卡交易撤销
-		["cardTransRevoke", "/crm/card/transRevoke.ajax", "", "POST"]
+		["cardTransRevoke", "/crm/card/transRevoke.ajax", "", "POST"],
+
+		// 获取桌台及状态列表
+		["getTableStatusLst", "/saas/order/getTableStatusLst.ajax", "", "POST"],
+		// 桌台操作
+		["tableOperation", "/saas/order/tableOperation.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;
