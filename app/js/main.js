@@ -8,6 +8,7 @@ require.config({
 		'angular-sanitize' : 'vendor/angular-sanitize/angular-sanitize',
 		'ui.bootstrap' : 'vendor/angular-bootstrap/ui-bootstrap-tpls',
 		'bootstrap' : 'vendor/bootstrap/bootstrap',
+        'bootstrap-datetimepicker' : 'vendor/bootstrap-datetimepicker/bootstrap-datetimepicker',
 		'jquery' : 'vendor/jquery/jquery',
 		'underscore' : 'vendor/underscore/underscore',
 		'api' : 'api/api',
@@ -27,7 +28,7 @@ require.config({
 			deps : ['jquery']
 		},
 		'app' : {
-			deps : ['angular', 'angular-route', 'angular-resource', 'bootstrap', 'ui.bootstrap', 'angularLocalStorage', 'angular-cookies', 'angular-sanitize']
+			deps : ['angular', 'angular-route', 'angular-resource', 'bootstrap', 'bootstrap-datetimepicker','ui.bootstrap', 'angularLocalStorage', 'angular-cookies', 'angular-sanitize']
 		},
 		'angular-route' : {
 			deps : ['angular']
@@ -41,6 +42,9 @@ require.config({
 		'bootstrap' : {
 			deps : ['jquery']
 		},
+        'bootstrap-datetimepicker' : {
+            deps : ['jquery', 'bootstrap']
+        },
 		'underscore' : {
 			exports : '_'
 		},
