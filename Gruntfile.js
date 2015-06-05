@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 		pkg : grunt.file.readJSON("package.json"),
 		connect : {
 			port : 9000,
-			hostname : 'localhost'
+			hostname : '*'
 		},
 		banner : '/*!' + banner + '\n' +
 			'* <%= config.pkg.name %> -v <%= config.pkg.version %>-\n' + 
