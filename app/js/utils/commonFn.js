@@ -331,6 +331,7 @@
 		inputEl.value = cnt;
 		inputEl.select();
 		document.execCommand('cut');
+		$(inputEl).remove();
 		IX.Debug.info("Execute Device Communication Command: ");
 		IX.Debug.info(cnt);
 	};

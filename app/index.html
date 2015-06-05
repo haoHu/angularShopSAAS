@@ -32,9 +32,11 @@
 					</nav>
 				</div>
 			</header>
-			<div id="site_body" class="" ng-view></div>
+			<div id="site_body" class="" ng-view>
+			</div>
+
 		</div>
-		<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
+		
 		
 		<script type="text/javascript">
 			window.count = 0;

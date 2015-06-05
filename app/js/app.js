@@ -51,6 +51,12 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             $scope.isWelcomPage = $scope.curNav == '/' ? true : false;
 
         });
+        IX.ns("Hualala");
+        var HC = Hualala.Common;
+        HC.TopTip.reset($rootScope);
+        $scope.closeTopTip = function (index) {
+            HC.TopTip.closeTopTip($rootScope, index);
+        };
     }]);
 
 

@@ -26,7 +26,7 @@
 			<footer class="order-footer">
 				<!-- 订单操作按钮组 -->
 				<div class="btn-grp clearfix" order-pager="{{curOrderItems.length}}">
-					<div class="col-xs-4"><button class="btn btn-default btn-block btn-print" type="button">打印</button></div>
+					<div class="col-xs-4"><button class="btn btn-default btn-block btn-print" type="button" ng-click="printOrderDetailBill()">打印</button></div>
 					<div class="col-xs-4"><button class="btn btn-default btn-block btn-prev" type="button" pager-act="prev">上页</button></div>
 					<div class="col-xs-4"><button class="btn btn-default btn-block btn-next" type="button" pager-act="next">下页</button></div>
 				</div>
@@ -250,6 +250,7 @@
 			</div>
 		</div>
 	</div>
+	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 	<!-- 赠送菜品操作模板 -->
 	<script type="text/ng-template" id="js/diandan/orderItemSend.html">
 		<div class="modal-header">
@@ -618,10 +619,10 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-6">
-								<button type="button" class="btn btn-default btn-block">开钱箱</button>
+								<button type="button" class="btn btn-default btn-block" ng-click="openCashBox()">开钱箱</button>
 							</div>
 							<div class="col-xs-6">
-								<button type="button" class="btn btn-default btn-block">打印结账清单</button>
+								<button type="button" class="btn btn-default btn-block" ng-click="printCheckoutPreBill()">打印预结账单</button>
 							</div>
 						</div>
 						<button type="button" class="btn btn-default btn-block" ng-class="{disabled : !isCanbeSubmit(orderPayDetail)}" ng-click="submitOrderPay()">完成结账</button>
@@ -649,7 +650,7 @@
 					
 				</section>
 			</div>
-			<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
+			
 		</div>
 	</script>
 	<!-- 通用支付表单部件 -->

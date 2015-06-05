@@ -196,7 +196,7 @@ body {
   position: relative;
 }
 .section-diandan .menu-plain .cell-btn {
-  padding: 0;
+  padding: 10px 0 0;
   border: 1px solid #e6e6e6;
   color: #333333;
   cursor: pointer;

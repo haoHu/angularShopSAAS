@@ -374,6 +374,17 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				return !_.isEmpty(bookOrderNo);	
 			};
 
+			/**
+			 * 打印账单消费明细
+			 * @return {[type]} [description]
+			 */
+			$scope.printOrderDetailBill = function () {
+				var orderData = OrderService.getOrderData();
+				if (orderData) {
+					Hualala.DevCom.exeCmd("PrintOrderDetailBill", JSON.stringify(orderData));
+				}
+			};
+
 
 		}
 	]);

@@ -407,6 +407,29 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				$location.path('/dinner/table');
 			};
 
+			// 开钱箱操作
+			$scope.openCashBox = function () {
+				Hualala.DevCom.exeCmd("OpenCashbox");
+			};
+
+			// 打印结账消费明细
+			$scope.printOrderDetailBill = function () {
+				// TODO  
+				// 1. 判断订单菜品是否全部落单
+				// 2. 如果有菜品没有落单弹出提示消息，不进行账单打印
+				// 3. 否则直接打印账单信息
+				var orderData = OrderService.getOrderData();
+				var unorderedItems = OrderService.getUnorderedItems();
+				if (unorderedItems.length > 0) {
+					HC.TopTip.addTopTips($rootScope, {
+						code : '111',
+						msg : '还有未落单菜品,无法打印,请先将所有菜品落单!'
+					});
+				} else {
+					Hualala.DevCom.exeCmd("PrintOrderDetailBill", JSON.stringify(orderData));
+				}
+			};
+
 		}
 	]);
 
@@ -1081,6 +1104,27 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					$scope.$broadcast('pay.setVIPCard', $scope.curVIPCard);
 				}
 			});
+
+			// 开钱箱
+			$scope.openCashBox = function () {
+				Hualala.DevCom.exeCmd("OpenCashbox");
+			};
+			// 打印预结账清单
+			$scope.printCheckoutPreBill = function () {
+				// TODO 
+				// 1. 提交订单（actionType=YJZ）
+				// 2. 提交成功后发送硬件指令
+				var callServer = OrderService.submitOrder('YJZ');
+				callServer.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						var msg = _.pick(_.result(data, 'data'), ['discountRate', 'discountRange', 'isVipPrice', 'moneyWipeZeroType', 'payLst'])
+						Hualala.DevCom.exeCmd("PrintCheckoutPreBill", JSON.stringify(msg));
+					} else {
+						HC.TopTIp.addTopTips($rootScope, data);
+					}
+				});
+			};
 		}
 	]);
 
@@ -1943,6 +1987,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							case "cashPayOrder":
 								controller = "PayOrderController";
 								templateUrl = "js/diandan/payOrder.html";
+								break;
+							case "openCashBox":
+								scope.$apply("openCashBox()");
 								break;
 							case "return":
 								scope.$apply("jumpToTablePage()");

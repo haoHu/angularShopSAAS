@@ -1121,6 +1121,18 @@ define(['app', 'uuid'], function (app, uuid) {
 
 			};
 
+			/**
+			 * 获取未落单订单条目
+			 * @return {[type]} [description]
+			 */
+			this.getUnorderedItems = function () {
+				var items = self.OrderFoodHT.getAll();
+				items = _.filter(items, function (item) {
+					return _.result(item, 'printStatus') != '2';
+				});
+				return items;
+			};
+
 		}]
 	);
 
