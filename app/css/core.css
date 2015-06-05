@@ -621,6 +621,9 @@ body {
   -webkit-box-flex: 1;
   -webkit-box-flex-group: 1;
 }
+.pay-modal .pay-ctrl .pay-subject > .panel .form-horizontal .form-group {
+  margin-bottom: .5rem;
+}
 .pay-modal .pay-ctrl .pay-subject .vip-pay .help-block.info {
   margin-top: 5px;
   margin-bottom: 3px;

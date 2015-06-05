@@ -1074,9 +1074,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					// 会员卡扣款提交
 					vipCardDeductMoneyCallServer = OrderPayService.vipCardDeductMoney();
 				}
-				vipCardDeductMoneyCallServer.success(function (data) {
+				vipCardDeductMoneyCallServer && vipCardDeductMoneyCallServer.success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
+						// 1. 发送打印会员卡交易凭证
+						Hualala.DevCom.exeCmd('PrintCRMTransBill', JSON.stringify(_.result(data, 'data')));
+						// 2. 提交订单
 						submitOrderCallServer = OrderService.submitOrder('JZ', OrderPayService.getOrderPayParams());
 						!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
 							var code = _.result(data, 'code');
@@ -1086,7 +1089,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								_scope.resetOrderInfo();
 								$scope.close();
 							} else {
-								alert(_.result(data, 'msg', ''));
+								HC.TopTip.addTopTips($rootScope, data);
+								// alert(_.result(data, 'msg', ''));
 							}
 							
 						});
