@@ -25,7 +25,8 @@
     "requirejs-text": "~2.0.14",
     "requirejs-domready": "*",
     "angularLocalStorage": "*",
-    "node-uuid": "1.4.2"
+    "node-uuid": "1.4.2",
+    "bootstrap-datetimepicker" : "*"
   },
   "resolutions": {
     "angular": "#1.2.28"

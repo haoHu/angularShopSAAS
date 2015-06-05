@@ -36,6 +36,7 @@ define([], function () {
 				dependencies : [
 					'diandan/TableViewController',
 					'directives/appDirectives',
+					'services/appServices',
 					'services/orderServices',
 					'services/tableServices',
 					'filters/appFilters'

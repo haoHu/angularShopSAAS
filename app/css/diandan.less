@@ -166,15 +166,15 @@
 			@urgentBG : #c12e2a; @urgentColor : #fff;
 			@upBG : #419641; @upColor : #fff;
 			display: inline-block; font-size: 1rem; width: 1.5rem; height: 1.5rem; line-height: 1.5rem; text-align: center; vertical-align: middle;
-			// 即起 -- 1
-			&[title="1"] {
-				background-color: @immediateBG; color : @immediateColor;
-				&:after {content : "即";}
-			}
 			// 等叫 -- 0
 			&[title="0"] {
 				background-color: @waitBG; color : @waitColor;
 				&:after {content : "等";}
+			}
+			// 即起 -- 1
+			&[title="1"] {
+				background-color: @immediateBG; color : @immediateColor;
+				&:after {content : "即";}
 			}
 			// 加急 -- 2
 			&[title="2"] {
@@ -471,8 +471,10 @@
 	}
 }
 
+
+
 // 桌台界面
-.section-table {
+.section-table, .table-ctrl {
 	.menu-plain {padding-bottom : 0;}
 	.menu-plain .cates {
 		position : relative;
@@ -484,7 +486,7 @@
 	.area-bar {
 		position : relative; overflow: hidden; height : 100%; background-color: @xDarkBtnBG;
 		.cell-btn {
-			height : 100%;
+			height : 100%; border-color : #e6e6e6;
 			&.active, &:active {
 				background-color: darken(@xDarkBtnBG, 50%);
 				color : #fff;
@@ -504,32 +506,37 @@
 			@rows : 6; @cols : 6; @height : percentage(1 / @rows);
 			@occupyColor : #fff; @occupyBG : #D9534F; @occupyBorder : #D43F3A;
 			@idleColor : #fff; @idleBG : #5CB85C; @idelBorder : #4CAE4C;
+			@disabledColor : #fff; @disabledBG : #bdbcbb; @disabledBorder : #e6e6e6;
 			position : relative; height : @height; background-color: #fff;
-
+			padding : 0;
 			&.btn-prev, &.btn-next {
-				position : absolute; bottom : 0; right : 0;
+				position : absolute; bottom : 0; right : 0; opacity: 1;
+				border : 1px solid #e6e6e6;
 			}
 			&.btn-prev {
 				right : percentage(1 / @cols);
 			}
-			&.active, &:active {
-				background-color: @xDarkBtnBG;
-			}
+			
 			// 桌台占用 
 			&.occupy {
 				color: @occupyColor;
 				background-color: @occupyBG;
-				border-color: #ddd;
+				border-color: #e6e6e6;
 			}
 			// 桌台空闲
 			&.idle {
 				color: @idleColor;
 				background-color: @idleBG;
-				border-color: #ddd;
+				border-color: #e6e6e6;
 			}
 			// 桌台禁用
 			&.disabled {
-
+				color: @idleColor;
+				background-color: @disabledBG;
+				border-color: @disabledBorder;
+			}
+			&.active, &:active {
+				background-color: darken(@xDarkBtnBG, 50%);
 			}
 			p {
 				position : absolute; width : 100%; text-align: center;
@@ -543,7 +550,51 @@
 			}
 			p.time {left : 0;}
 			p.amount {right : 0;}
+			.table-lock {
+				@size : 32px; @bg : #837997;
+				position : absolute; left : 0; top : 0;
+				display: block; width : @size; height : @size; line-height: @size / 2;text-align: left;
+				background-color : transparent; background-size : @size @size; background-position : 0 100%;
+				background-repeat : no-repeat;
+				background-image : -webkit-gradient(linear, 0 0, 100% 100%,from(@bg),color-stop(0.5, @bg),color-stop(0.5, transparent),to(transparent));
+				&:after {
+					padding-left : @size / 8;
+					font-size: 1rem;content : "锁";
+				}
+			}
+			.table-union {
+				@size : 24px;
+				position : absolute; left : 50%; top : 0; margin-left : -(@size / 2);
+				display: block; width : @size; height : @size; line-height: @size; text-align: center;
+				// border-radius: 50%; -webkit-border-radius : 50%; background-color : #f60;
+				font-size : 1rem;
+			}
+			.table-book {
+				@size : 32px; @bg : #f60;
+				position : absolute; right : 0; top : 0;
+				display: block; width : @size; height : @size; line-height: @size / 2;text-align: right;
+				background-color : transparent; background-size : @size @size; background-position : 0 100%;
+				background-repeat : no-repeat;
+				background-image : -webkit-gradient(linear, 100% 0, 0 100%,from(@bg),color-stop(0.5, @bg),color-stop(0.5, transparent),to(transparent));
+				&:after {
+					padding-right : @size / 8;
+					font-size: 1rem;content : "订";
+				}
+			}
 		}
 	}
 
+}
+
+// 换台选择窗口
+.table-modal {
+	.modal-dialog {
+		position : absolute; left : 372px; right : 0; top : 0; bottom : 0;
+		margin : 0; padding : 0; width : auto!important;
+		> .modal-content, .table-ctrl{height : 100%; width : 100%; padding : 0; margin : 0;}
+		.modal-body {position : absolute; top : 56px; bottom : 0; left : 0; right : 0; margin : 0; padding : 0;}
+		.menu-plain {
+			position : absolute; left : 0; right : 0; top : 0; bottom : 0;
+		}
+	}
 }

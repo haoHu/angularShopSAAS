@@ -124,6 +124,28 @@ define(['app', 'uuid'], function (app, uuid) {
 				var areas = AreaTableHT.getAll();
 				return areas;
 			};
+
+			/**
+			 * 根据itemID获取table数据
+			 * 
+			 * @param  {[type]} tableKey [description]
+			 * @return {[type]}          [description]
+			 */
+			this.getTableByItemID = function (itemID) {
+				return TableHT.get(itemID);
+			};
+
+			/**
+			 * 根据桌台名称获取桌台数据
+			 * @param  {[type]} tableName [description]
+			 * @return {[type]}           [description]
+			 */
+			this.getTablesByTableName = function (tableName) {
+				var tables = TableHT.getAll();
+				return _.filter(tables, function (table) {
+					return _.result(table, 'tableName') == tableName;
+				});
+			};
 		}
 	]);
 });

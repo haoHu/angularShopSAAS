@@ -1,13 +1,13 @@
 define(['app'], function (app) {
-	app.controller('SigninViewController', ['$scope', '$location', 'storage', 'CommonCallServer', function ($scope, $location, storage, CommonCallServer) {
+	app.controller('SigninViewController', ['$rootScope', '$scope', '$location', 'storage', 'CommonCallServer', function ($rootScope, $scope, $location, storage, CommonCallServer) {
 		IX.ns("Hualala.Common");
 		var HC = Hualala.Common;
 		
 		var shopInfo = storage.get('SHOPINFO');
 		
-		HC.TopTip.reset($scope);
+		HC.TopTip.reset($rootScope);
 		$scope.closeTopTip = function (index) {
-			HC.TopTip.closeTopTip($scope, index);
+			HC.TopTip.closeTopTip($rootScope, index);
 		};
 
 		// 登陆成功后，保存登录用户的配置信息到localStorage中
@@ -31,13 +31,13 @@ define(['app'], function (app) {
 					if ($XP(data, 'code') == '000') {
 						afterLogin(data);
 					} else {
-						HC.TopTip.addTopTips($scope, data);
+						HC.TopTip.addTopTips($rootScope, data);
 					}
 
 					
 				})
 				.error(function (data, status) {
-					HC.TopTip.addTopTips($scope, data);
+					HC.TopTip.addTopTips($rootScope, data);
 				});
 		};
 		

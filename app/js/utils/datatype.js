@@ -31,6 +31,48 @@
 		"connect_faild" : "通信失败，请稍后再试"
 	};
 
+	// 与硬件交互通用指令集
+	// 需要向剪切板中写入特定标签的数据
+	Hualala.TypeDef.DeviceComCmds = {
+		// 打印账单消费明细
+		"PrintOrderDetailBill" : {
+			tagName : "HLL_SAAS_PRINT_ORDER_DETAIL_BILL_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
+		},
+		// 打印预结账账单
+		"PrintCheckoutPreBill" : {
+			tagName : "HLL_SAAS_PRINT_CHECKOUT_PRE_BILL_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
+		},
+		// 打印结账清单
+		"PrintCheckoutBill" : {
+			tagName : "HLL_SAAS_PRINT_CHECKOUT_BILL_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
+		},
+		// 打印会员卡交易凭证 
+		"PrintCRMTransBill" : {
+			tagName : "HLL_SAAS_PRINT_CRM_TRANS_BILL_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
+		},
+		// 打印其他小票内容
+		"PrintOther" : {
+			tagName : "HLL_SAAS_PRINT_OTHER_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
+		},
+		// 打开钱箱
+		"OpenCashbox" : {
+			tagName : "HLL_SAAS_OPEN_CASHBOX_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : true
+		},
+		// 接口调试
+		"AppDebug" : {
+			tagName : "HLL_SAAS_APP_DEBUG_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : true
+		},
+		// 站点设置
+		"AppSiteSet" : {
+			tagName : "HLL_SAAS_APP_SITESET_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : true
+		},
+		// 退出程序
+		"AppExit" : {
+			tagName : "HLL_SAAS_EXIT_APP_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : true
+		}
+
+	};
+
 	// 营业模式
 	Hualala.TypeDef.ShopOperationMode = [
 		{value : 0, name : 'dinner', label : '正餐'},

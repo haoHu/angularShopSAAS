@@ -1,21 +1,27 @@
 <div class="modal-header" >
 	<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
-	<h4 class="modal-title">单头信息（单号：{{fmels.saasOrderNo}}）</h4>
+	<h4 class="modal-title">单头信息（单号：{{fmels.saasOrderNo.slice(-4)}}）</h4>
 </div>
 <div class="modal-body">
 	<div class="row order-header">
 		<div class="col-xs-6">
 			<div class="form-horizontal">
 				<div class="form-group">
-					<label for="" class="col-xs-3 control-label">人数</label>
+					<label for="" class="col-xs-2 control-label">人数</label>
 					<div class="col-xs-9">
 						<input type="text" class="form-control" ng-model="fmels.person">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-xs-3 control-label">台/牌号</label>
+					<label for="" class="col-xs-2 control-label">台/牌号</label>
 					<div class="col-xs-9">
-						<input type="text" class="form-control" ng-model="fmels.tableName">
+						<input type="text" class="form-control" ng-readonly="{{tableNameIsReadOnly()}}" ng-model="fmels.tableName">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-2 control-label">备注</label>
+					<div class="col-xs-9">
+						<input type="text" class="form-control" ng-model="fmels.saasOrderRemark">
 					</div>
 				</div>
 			</div>

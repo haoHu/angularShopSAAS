@@ -310,19 +310,19 @@ body {
   text-align: center;
   vertical-align: middle;
 }
-.section-diandan .order-body .make-status[title="1"] {
-  background-color: #2aabd2;
-  color: #ffffff;
-}
-.section-diandan .order-body .make-status[title="1"]:after {
-  content: "即";
-}
 .section-diandan .order-body .make-status[title="0"] {
   background-color: #eb9316;
   color: #ffffff;
 }
 .section-diandan .order-body .make-status[title="0"]:after {
   content: "等";
+}
+.section-diandan .order-body .make-status[title="1"] {
+  background-color: #2aabd2;
+  color: #ffffff;
+}
+.section-diandan .order-body .make-status[title="1"]:after {
+  content: "即";
 }
 .section-diandan .order-body .make-status[title="2"] {
   background-color: #c12e2a;
@@ -731,91 +731,214 @@ body {
 .setfood-modal .setfood-ctrl .btn-list .btn-cell p {
   margin-bottom: 0;
 }
-.section-table .menu-plain {
+.section-table .menu-plain,
+.table-ctrl .menu-plain {
   padding-bottom: 0;
 }
-.section-table .menu-plain .cates {
+.section-table .menu-plain .cates,
+.table-ctrl .menu-plain .cates {
   position: relative;
   height: 12.5%;
   background-color: #fff;
 }
-.section-table .filter-bar .btn {
+.section-table .filter-bar .btn,
+.table-ctrl .filter-bar .btn {
   white-space: nowrap;
 }
-.section-table .area-bar {
+.section-table .area-bar,
+.table-ctrl .area-bar {
   position: relative;
   overflow: hidden;
   height: 100%;
   background-color: #99ccff;
 }
-.section-table .area-bar .cell-btn {
+.section-table .area-bar .cell-btn,
+.table-ctrl .area-bar .cell-btn {
   height: 100%;
+  border-color: #e6e6e6;
 }
 .section-table .area-bar .cell-btn.active,
-.section-table .area-bar .cell-btn:active {
+.table-ctrl .area-bar .cell-btn.active,
+.section-table .area-bar .cell-btn:active,
+.table-ctrl .area-bar .cell-btn:active {
   background-color: #004c99;
   color: #fff;
 }
-.section-table .area-bar .btn-pager {
+.section-table .area-bar .btn-pager,
+.table-ctrl .area-bar .btn-pager {
   position: absolute;
   right: 0;
   top: 0;
 }
-.section-table .table-menu {
+.section-table .table-menu,
+.table-ctrl .table-menu {
   position: relative;
   height: 87.5%;
   background-color: #fff;
 }
-.section-table .table-menu .cell-btn {
+.section-table .table-menu .cell-btn,
+.table-ctrl .table-menu .cell-btn {
   position: relative;
   height: 16.66666667%;
   background-color: #fff;
+  padding: 0;
 }
 .section-table .table-menu .cell-btn.btn-prev,
-.section-table .table-menu .cell-btn.btn-next {
+.table-ctrl .table-menu .cell-btn.btn-prev,
+.section-table .table-menu .cell-btn.btn-next,
+.table-ctrl .table-menu .cell-btn.btn-next {
   position: absolute;
   bottom: 0;
   right: 0;
+  opacity: 1;
+  border: 1px solid #e6e6e6;
 }
-.section-table .table-menu .cell-btn.btn-prev {
+.section-table .table-menu .cell-btn.btn-prev,
+.table-ctrl .table-menu .cell-btn.btn-prev {
   right: 16.66666667%;
 }
-.section-table .table-menu .cell-btn.active,
-.section-table .table-menu .cell-btn:active {
-  background-color: #99ccff;
-}
-.section-table .table-menu .cell-btn.occupy {
+.section-table .table-menu .cell-btn.occupy,
+.table-ctrl .table-menu .cell-btn.occupy {
   color: #ffffff;
   background-color: #d9534f;
-  border-color: #ddd;
+  border-color: #e6e6e6;
 }
-.section-table .table-menu .cell-btn.idle {
+.section-table .table-menu .cell-btn.idle,
+.table-ctrl .table-menu .cell-btn.idle {
   color: #ffffff;
   background-color: #5cb85c;
-  border-color: #ddd;
+  border-color: #e6e6e6;
 }
-.section-table .table-menu .cell-btn p {
+.section-table .table-menu .cell-btn.disabled,
+.table-ctrl .table-menu .cell-btn.disabled {
+  color: #ffffff;
+  background-color: #bdbcbb;
+  border-color: #e6e6e6;
+}
+.section-table .table-menu .cell-btn.active,
+.table-ctrl .table-menu .cell-btn.active,
+.section-table .table-menu .cell-btn:active,
+.table-ctrl .table-menu .cell-btn:active {
+  background-color: #004c99;
+}
+.section-table .table-menu .cell-btn p,
+.table-ctrl .table-menu .cell-btn p {
   position: absolute;
   width: 100%;
   text-align: center;
   font-weight: bold;
   font-size: 1rem;
 }
-.section-table .table-menu .cell-btn p.name {
+.section-table .table-menu .cell-btn p.name,
+.table-ctrl .table-menu .cell-btn p.name {
   top: 50%;
   margin-top: -1.5rem;
   font-size: 1.5rem;
 }
 .section-table .table-menu .cell-btn p.time,
-.section-table .table-menu .cell-btn p.amount {
+.table-ctrl .table-menu .cell-btn p.time,
+.section-table .table-menu .cell-btn p.amount,
+.table-ctrl .table-menu .cell-btn p.amount {
   position: absolute;
   width: 50%;
   bottom: 0;
   font-weight: normal;
 }
-.section-table .table-menu .cell-btn p.time {
+.section-table .table-menu .cell-btn p.time,
+.table-ctrl .table-menu .cell-btn p.time {
   left: 0;
 }
-.section-table .table-menu .cell-btn p.amount {
+.section-table .table-menu .cell-btn p.amount,
+.table-ctrl .table-menu .cell-btn p.amount {
   right: 0;
+}
+.section-table .table-menu .cell-btn .table-lock,
+.table-ctrl .table-menu .cell-btn .table-lock {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 16px;
+  text-align: left;
+  background-color: transparent;
+  background-size: 32px 32px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 0 0, 100% 100%, from(#837997), color-stop(0.5, #837997), color-stop(0.5, transparent), to(transparent));
+}
+.section-table .table-menu .cell-btn .table-lock:after,
+.table-ctrl .table-menu .cell-btn .table-lock:after {
+  padding-left: 4px;
+  font-size: 1rem;
+  content: "锁";
+}
+.section-table .table-menu .cell-btn .table-union,
+.table-ctrl .table-menu .cell-btn .table-union {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin-left: -12px;
+  display: block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 1rem;
+}
+.section-table .table-menu .cell-btn .table-book,
+.table-ctrl .table-menu .cell-btn .table-book {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 16px;
+  text-align: right;
+  background-color: transparent;
+  background-size: 32px 32px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 100% 0, 0 100%, from(#ff6600), color-stop(0.5, #ff6600), color-stop(0.5, transparent), to(transparent));
+}
+.section-table .table-menu .cell-btn .table-book:after,
+.table-ctrl .table-menu .cell-btn .table-book:after {
+  padding-right: 4px;
+  font-size: 1rem;
+  content: "订";
+}
+.table-modal .modal-dialog {
+  position: absolute;
+  left: 372px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  width: auto!important;
+}
+.table-modal .modal-dialog > .modal-content,
+.table-modal .modal-dialog .table-ctrl {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.table-modal .modal-dialog .modal-body {
+  position: absolute;
+  top: 56px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+}
+.table-modal .modal-dialog .menu-plain {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }

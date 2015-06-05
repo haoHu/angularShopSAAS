@@ -5,9 +5,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-			HC.TopTip.reset($scope);
+			HC.TopTip.reset($rootScope);
 			$scope.closeTopTip = function (index) {
-				HC.TopTip.closeTopTip($scope, index);
+				HC.TopTip.closeTopTip($rootScope, index);
 			};
 			// 解析链接参数获取订单Key (saasOrderKey)
 			var urlParams = $location.search(),
@@ -26,7 +26,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "count", active : false, label : "改量"},
 				{name : "price", active : false, label : "改价"},
 				{name : "method", active : false, label : "作法"},
-				{name : "remark", active : false, label : "口味"}
+				{name : "remark", active : false, label : "口味"},
+				{name : "waiting", active : false, label : "等叫"},
+				{name : "urgent", active : false, label : "加急"}
 			];
 			$scope.OrderHandleBtns = [
 				{name : "submitOrder", active : true, label : "落单"},
@@ -62,7 +64,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			OrderService.getOrderByOrderKey(urlParams, function (data) {
 				$scope.resetOrderInfo();
 			}, function (data) {
-				HC.TopTip.addTopTips($scope, data);
+				HC.TopTip.addTopTips($rootScope, data);
 			});
 			
 			// 加载渠道数据
@@ -71,7 +73,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				IX.Debug.info("Order Channels: ");
 				IX.Debug.info($scope.OrderChannels);
 			}, function (data) {
-				HC.TopTip.addTopTips($scope, data);
+				HC.TopTip.addTopTips($rootScope, data);
 			});
 			// 加载菜单数据
 			FoodMenuService.initFoodMenuData(function (data) {
@@ -83,14 +85,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				IX.Debug.info($scope.FoodCategories);
 				
 			}, function (data) {
-				HC.TopTip.addTopTips($scope, data);
+				HC.TopTip.addTopTips($rootScope, data);
 			});
 			// 加载订单字典数据
 			OrderNoteService.getOrderNotesLst({}, function (data) {
 				IX.Debug.info("Order Notes: ");
 				IX.Debug.info(OrderNoteService.OrderNoteDict);
 			}, function (data) {
-				HC.TopTip.addTopTips($scope, data);
+				HC.TopTip.addTopTips($rootScope, data);
 			});
 
 			// 计算订单列表中的菜品小计金额
@@ -226,7 +228,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				});
 				if (orderItemType.isCommonFood || orderItemType.isSetFood) {
 					activeBtns = itemStatus == 0 
-						? ['send','delete','addOne','subOne', 'count','price','method','remark']
+						? ['send','delete','addOne','subOne', 'count','price','method','remark', 'waiting', 'urgent']
 						: (isNeedConfirmFoodNumber != 0 ? ['send','cancel', 'count', 'price'] : ['send','cancel','price']);
 				} else if (orderItemType.isFoodMethod) {
 					activeBtns = itemStatus == 0
@@ -291,6 +293,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					var firstItem = $scope.curOrderItems[0];
 					$scope.selectOrderItem(_.result(firstItem, 'itemKey'));
 				}
+			};
+
+			// 设置菜品等叫
+			$scope.setFoodWaiting = function () {
+				var curItemKey = $scope.curFocusOrderItemKey;
+				if (_.isEmpty(curItemKey)) return;
+				var item = OrderService.updateOrderItemMakeStatus(curItemKey, 0);
+				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
+			};
+
+			// 设置菜品加急
+			$scope.setFoodUrgent = function () {
+				var curItemKey = $scope.curFocusOrderItemKey;
+				if (_.isEmpty(curItemKey)) return;
+				var item = OrderService.updateOrderItemMakeStatus(curItemKey, 2);
+				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
 			};
 
 			// 打开订单备注配置窗口
@@ -382,6 +400,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.pickOrder = function (catchID) {
 				OrderService.pickOrder(catchID);
 				$scope.resetOrderInfo();
+			};
+
+			// 跳转选择桌台页面
+			$scope.jumpToTablePage = function () {
+				$location.path('/dinner/table');
 			};
 
 		}
@@ -862,13 +885,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService',
-		function ($scope, $modalInstance, $filter, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService',
+		function ($scope, $rootScope, $modalInstance, $filter, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-			HC.TopTip.reset($scope);
+			HC.TopTip.reset($rootScope);
 			$scope.closeTopTip = function (index) {
-				HC.TopTip.closeTopTip($scope, index);
+				HC.TopTip.closeTopTip($rootScope, index);
 			};
 			$scope.orderPayDetail = OrderPayService.mapOrderPayDetail();
 			IX.Debug.info("OrderPayDetail:")
@@ -985,10 +1008,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								// $scope.curVIPCard = null;
 								$scope.$broadcast('pay.upVIPCard', null);
 							} else {
-								HC.TopTip.addTopTips($scope, data);
+								HC.TopTip.addTopTips($rootScope, data);
 							}
 						}).error(function (data) {
-							HC.TopTip.addTopTips($scope, {
+							HC.TopTip.addTopTips($rootScope, {
 								code : '111', msg : '通信失败'
 							});
 						});
@@ -1045,7 +1068,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							
 						});
 					} else {
-						HC.TopTip.addTopTips($scope, data);
+						HC.TopTip.addTopTips($rootScope, data);
 					}
 				});
 				
@@ -1521,132 +1544,132 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	]);
 	
 
-	// 订单列表
-	app.directive('orderlist', [
-		"$rootScope", "$filter", "OrderService", 
-		function ($rootScope, $filter, OrderService) {
-			return {
-				restrict : 'E',
-				template : [
-					'<ul class="list-unstyled grid-body" >',
-						'<li class="row grid-row" ng-repeat="el in curOrderItems" ng-class="{\'food-item\' : (el.__nodeType == 0), \'food-child-item\' : (el.__nodeType != 0), ordered : el.printStatus == 2, setfood : (el.isSetFood == 1 && el.isSFDetail == 0), \'check-count\' : (el.isNeedConfirmFoodNumber > 0), active : (curFocusOrderItemKey == el.itemKey)}" item-key="{{el.itemKey}}" ng-click="selectOrderItem(el.itemKey)" >',
-							'<span class="col-xs-1 grid-cell txt" ng-if="el.__nodeType == 0"><span class="make-status" title="{{el.makeStatus}}"></span></span>',
-							'<span class="col-xs-4 grid-cell txt" ng-class="{\'col-xs-offset-1\' : el.__nodeType != 0}">{{el.foodName}}</span>',
-							'<span class="col-xs-2 grid-cell num">{{el.foodNumber}}</span>',
-							'<span class="col-xs-2 grid-cell unit">{{el.unit}}</span>',
-							// '<span class="col-xs-3 grid-cell price">{{el.foodPayPrice}}</span>',
-							'<span class="col-xs-3 grid-cell price">{{calcFoodAmount(el)}}</span>',
-							'<div class="col-xs-12 grid-cell clearfix modifyprice" ng-class="{hidden : (!el.modifyReason || el.modifyReason.length == 0)}">',
-								'<span class="col-xs-offset-1 col-xs-11 grid-cell txt">{{el.modifyReason}}</span>',
-							'</div>',
-							'<div class="col-xs-12 grid-cell clearfix cancelreason" ng-class="{hidden : (!el.foodCancelNumber || el.foodCancelNumber == 0) }">',
-								'<span class="col-xs-offset-1 col-xs-4 grid-cell txt">{{el.cancelReason}}</span>',
-								'<span class="col-xs-2 grid-cell num">{{el.foodCancelNumber}}</span>',
-								'<span class="col-xs-3 grid-cell price"></span>',
-								'<span class="col-xs-2 grid-cell unit"></span>',
-							'</div>',
-							'<div class="col-xs-12 grid-cell clearfix sendreason" ng-class="{hidden : (!el.foodSendNumber || el.foodSendNumber == 0)}">',
-								'<span class="col-xs-offset-1 col-xs-4 grid-cell txt">{{el.sendReason}}</span>',
-								'<span class="col-xs-2 grid-cell num">{{el.foodSendNumber}}</span>',
-								'<span class="col-xs-3 grid-cell price"></span>',
-								'<span class="col-xs-2 grid-cell unit"></span>',
-							'</div>',
-							'<div class="col-xs-12 grid-cell clearfix foodremark" ng-class="{hidden : (!el.foodRemark || el.foodRemark.length == 0)}">',
-								'<span class="col-xs-offset-1 col-xs-11 grid-cell txt">{{el.foodRemark}}</span>',
-							'</div>',
-						'</li>',
-					'</ul>'
-				].join(''),
-				replace : true,
-				link : function (scope, el, attr) {
-					el.on('click', '.food-item, .food-child-item', function (e) {
-						var itemEl = $(this);
-						el.find('.food-item, .food-child-item').removeClass('active');
-						itemEl.addClass('active');
-					});
-				}
-			};
+	// // 订单列表
+	// app.directive('orderlist', [
+	// 	"$rootScope", "$filter", "OrderService", 
+	// 	function ($rootScope, $filter, OrderService) {
+	// 		return {
+	// 			restrict : 'E',
+	// 			template : [
+	// 				'<ul class="list-unstyled grid-body" >',
+	// 					'<li class="row grid-row" ng-repeat="el in curOrderItems" ng-class="{\'food-item\' : (el.__nodeType == 0), \'food-child-item\' : (el.__nodeType != 0), ordered : el.printStatus == 2, setfood : (el.isSetFood == 1 && el.isSFDetail == 0), \'check-count\' : (el.isNeedConfirmFoodNumber > 0), active : (curFocusOrderItemKey == el.itemKey)}" item-key="{{el.itemKey}}" ng-click="selectOrderItem(el.itemKey)" >',
+	// 						'<span class="col-xs-1 grid-cell txt" ng-if="el.__nodeType == 0"><span class="make-status" title="{{el.makeStatus}}"></span></span>',
+	// 						'<span class="col-xs-4 grid-cell txt" ng-class="{\'col-xs-offset-1\' : el.__nodeType != 0}">{{el.foodName}}</span>',
+	// 						'<span class="col-xs-2 grid-cell num">{{el.foodNumber}}</span>',
+	// 						'<span class="col-xs-2 grid-cell unit">{{el.unit}}</span>',
+	// 						// '<span class="col-xs-3 grid-cell price">{{el.foodPayPrice}}</span>',
+	// 						'<span class="col-xs-3 grid-cell price">{{calcFoodAmount(el)}}</span>',
+	// 						'<div class="col-xs-12 grid-cell clearfix modifyprice" ng-class="{hidden : (!el.modifyReason || el.modifyReason.length == 0)}">',
+	// 							'<span class="col-xs-offset-1 col-xs-11 grid-cell txt">{{el.modifyReason}}</span>',
+	// 						'</div>',
+	// 						'<div class="col-xs-12 grid-cell clearfix cancelreason" ng-class="{hidden : (!el.foodCancelNumber || el.foodCancelNumber == 0) }">',
+	// 							'<span class="col-xs-offset-1 col-xs-4 grid-cell txt">{{el.cancelReason}}</span>',
+	// 							'<span class="col-xs-2 grid-cell num">{{el.foodCancelNumber}}</span>',
+	// 							'<span class="col-xs-3 grid-cell price"></span>',
+	// 							'<span class="col-xs-2 grid-cell unit"></span>',
+	// 						'</div>',
+	// 						'<div class="col-xs-12 grid-cell clearfix sendreason" ng-class="{hidden : (!el.foodSendNumber || el.foodSendNumber == 0)}">',
+	// 							'<span class="col-xs-offset-1 col-xs-4 grid-cell txt">{{el.sendReason}}</span>',
+	// 							'<span class="col-xs-2 grid-cell num">{{el.foodSendNumber}}</span>',
+	// 							'<span class="col-xs-3 grid-cell price"></span>',
+	// 							'<span class="col-xs-2 grid-cell unit"></span>',
+	// 						'</div>',
+	// 						'<div class="col-xs-12 grid-cell clearfix foodremark" ng-class="{hidden : (!el.foodRemark || el.foodRemark.length == 0)}">',
+	// 							'<span class="col-xs-offset-1 col-xs-11 grid-cell txt">{{el.foodRemark}}</span>',
+	// 						'</div>',
+	// 					'</li>',
+	// 				'</ul>'
+	// 			].join(''),
+	// 			replace : true,
+	// 			link : function (scope, el, attr) {
+	// 				el.on('click', '.food-item, .food-child-item', function (e) {
+	// 					var itemEl = $(this);
+	// 					el.find('.food-item, .food-child-item').removeClass('active');
+	// 					itemEl.addClass('active');
+	// 				});
+	// 			}
+	// 		};
 
-		}
-	]);
+	// 	}
+	// ]);
 
-	// 订单条目操作按钮组
-	app.directive('orderitemhandle', [
-		"$modal", "$rootScope", "$filter", "OrderService",
-		function ($modal, $rootScope, $filter, OrderService) {
-			return {
-				restrict : 'E',
-				template : [
-					'<div class="order-btngrp">',
-						'<button class="btn btn-default btn-block" type="button" ng-disabled="!btn.active" ng-repeat="btn in OrderItemHandle" name="{{btn.name}}">',
-							'{{btn.label}}',
-						'</button>',
-					'</div>'
-				].join(''),
-				replace : true,
-				link : function (scope, el, attr) {
-					el.on('click', '.btn-block', function () {
-						var btn = $(this), act = btn.attr('name');
-						var modalSize = "lg",
-							controller = "",
-							templateUrl = "",
-							resolve = {
-								_scope : function () {
-									return scope;
-								}
-							};
-						switch(act) {
-							case "send":
-								controller = "OrderItemSendController";
-								templateUrl = "js/diandan/orderItemSend.html";
-								break;
-							case "cancel":
-								controller = "OrderItemCancelController";
-								templateUrl = "js/diandan/orderItemCancel.html";
-								break;
-							case "delete":
-								// TODO delete order item by itemtype
-								scope.$apply("deleteSelectedOrderItem()");
-								break;
-							case "addOne":
-								// TODO +1 handle
-								scope.$apply("addSelectedOrderItem()");
-								break;
-							case "subOne":
-								// TODO -1 handle
-								scope.$apply("subSelectedOrderItem()");
-								break;
-							case "count":
-								controller = "OrderItemModifyCountController";
-								templateUrl = "js/diandan/orderItemModifyCount.html";
-								break;
-							case "price":
-								controller = "OrderItemModifyPriceController";
-								templateUrl = "js/diandan/orderItemModifyPrice.html";
-								break;
-							case "method":
-								controller = "OrderItemModifyMethodController";
-								templateUrl = "js/diandan/orderItemModifyMethod.html";
-								break;
-							case "remark":
-								controller = "OrderItemModifyRemarkController";
-								templateUrl = "js/diandan/orderItemModifyRemark.html";
-								break;
+	// // 订单条目操作按钮组
+	// app.directive('orderitemhandle', [
+	// 	"$modal", "$rootScope", "$filter", "OrderService",
+	// 	function ($modal, $rootScope, $filter, OrderService) {
+	// 		return {
+	// 			restrict : 'E',
+	// 			template : [
+	// 				'<div class="order-btngrp">',
+	// 					'<button class="btn btn-default btn-block" type="button" ng-disabled="!btn.active" ng-repeat="btn in OrderItemHandle" name="{{btn.name}}">',
+	// 						'{{btn.label}}',
+	// 					'</button>',
+	// 				'</div>'
+	// 			].join(''),
+	// 			replace : true,
+	// 			link : function (scope, el, attr) {
+	// 				el.on('click', '.btn-block', function () {
+	// 					var btn = $(this), act = btn.attr('name');
+	// 					var modalSize = "lg",
+	// 						controller = "",
+	// 						templateUrl = "",
+	// 						resolve = {
+	// 							_scope : function () {
+	// 								return scope;
+	// 							}
+	// 						};
+	// 					switch(act) {
+	// 						case "send":
+	// 							controller = "OrderItemSendController";
+	// 							templateUrl = "js/diandan/orderItemSend.html";
+	// 							break;
+	// 						case "cancel":
+	// 							controller = "OrderItemCancelController";
+	// 							templateUrl = "js/diandan/orderItemCancel.html";
+	// 							break;
+	// 						case "delete":
+	// 							// TODO delete order item by itemtype
+	// 							scope.$apply("deleteSelectedOrderItem()");
+	// 							break;
+	// 						case "addOne":
+	// 							// TODO +1 handle
+	// 							scope.$apply("addSelectedOrderItem()");
+	// 							break;
+	// 						case "subOne":
+	// 							// TODO -1 handle
+	// 							scope.$apply("subSelectedOrderItem()");
+	// 							break;
+	// 						case "count":
+	// 							controller = "OrderItemModifyCountController";
+	// 							templateUrl = "js/diandan/orderItemModifyCount.html";
+	// 							break;
+	// 						case "price":
+	// 							controller = "OrderItemModifyPriceController";
+	// 							templateUrl = "js/diandan/orderItemModifyPrice.html";
+	// 							break;
+	// 						case "method":
+	// 							controller = "OrderItemModifyMethodController";
+	// 							templateUrl = "js/diandan/orderItemModifyMethod.html";
+	// 							break;
+	// 						case "remark":
+	// 							controller = "OrderItemModifyRemarkController";
+	// 							templateUrl = "js/diandan/orderItemModifyRemark.html";
+	// 							break;
 
-						}
-						if (act != 'delete' && act != 'addOne' && act != 'subOne') {
-							$modal.open({
-								size : modalSize,
-								controller : controller,
-								templateUrl : templateUrl,
-								resolve : resolve
-							});
-						}
-					});
-				}
-			}
-		}
-	]);
+	// 					}
+	// 					if (act != 'delete' && act != 'addOne' && act != 'subOne') {
+	// 						$modal.open({
+	// 							size : modalSize,
+	// 							controller : controller,
+	// 							templateUrl : templateUrl,
+	// 							resolve : resolve
+	// 						});
+	// 					}
+	// 				});
+	// 			}
+	// 		}
+	// 	}
+	// ]);
 	
 
 	// 菜单菜品分类
@@ -1779,100 +1802,100 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		}
 	]);
 
-	// 订单菜品翻页
-	app.directive('orderPager', [
-		"$rootScope", "$filter", "OrderService",
-		function ($rootScope, $filter, OrderService) {
-			return {
-				restrict : 'A',
-				link : function (scope, el, attr) {
-					// 获取下一页开始条目
-					var getNextPageStartItem = function () {
-						var orderItems = OrderService.getOrderFoodItemsHT().getAll();
-						var jOrderList = $('.order-list'), jGridBody = $('.grid-body', jOrderList);
-						var orderListRect = jOrderList[0].getBoundingClientRect();
-						var nextItem = _.find(orderItems, function (item) {
-							var itemKey = _.result(item, 'itemKey'),
-								itemSelector = '.food-item[item-key=' + itemKey + '], .food-child-item[item-key=' + itemKey + ']',
-								jItem = $(itemSelector),
-								itemRect = jItem[0].getBoundingClientRect();
-							var ret = null;
-							if (orderListRect.bottom - parseFloat(jOrderList.css('paddingBottom')) - itemRect.top >= 0 
-								&& orderListRect.bottom - parseFloat(jOrderList.css('paddingBottom')) - itemRect.bottom < 0) {
-								// 当前条目一部分在显示范围内，一部分在显示范围外
-								ret = jItem;
-							} else if (orderListRect.bottom - parseFloat(jOrderList.css('paddingBottom')) - itemRect.bottom < 0) {
-								// 当前条目在显示范围外
-								ret = jItem;
-							} 
-							return ret;
-						});
-						if (!_.isEmpty(nextItem)) {
-							nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
-						}
-						return nextItem;
-					};
-					// 获取上一页开始条目
-					var getPrevPageStartItem = function () {
-						var orderItems = OrderService.getOrderFoodItemsHT().getAll();
-						var jOrderList = $('.order-list'), jGridBody = $('.grid-body', jOrderList);
-						var orderListRect = jOrderList[0].getBoundingClientRect();
-						var nextItem = _.find(_.clone(orderItems).reverse(), function (item) {
-							var itemKey = _.result(item, 'itemKey'),
-								itemSelector = '.food-item[item-key=' + itemKey + '], .food-child-item[item-key=' + itemKey + ']',
-								jItem = $(itemSelector),
-								itemRect = jItem[0].getBoundingClientRect();
-							var ret = null;
-							if (orderListRect.top - itemRect.top > orderListRect.height - parseFloat(jOrderList.css('paddingBottom'))) {
-								// 当前条目不全在可视区域内
-								ret = jItem;
-							}
-							return ret;
-						});
-						if (!_.isEmpty(nextItem)) {
-							nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
-						}
-						if (!nextItem) {
-							nextItem = orderItems[0];
-						}
-						return nextItem;
-					};
-					el.on('click', '.btn-prev, .btn-next', function (e) {
-						IX.ns("Hualala.Common");
-						var jBtn = $(this),
-							HC = Hualala.Common;
-						var direct = jBtn.attr('pager-act');
-						var nextItem = null, jNextItem = null;
-						var jOrderList = $('.order-list');
-						if (direct == "next") {
-							nextItem = getNextPageStartItem();
-						} else {
-							nextItem = getPrevPageStartItem();
-						}
+	// // 订单菜品翻页
+	// app.directive('orderPager', [
+	// 	"$rootScope", "$filter", "OrderService",
+	// 	function ($rootScope, $filter, OrderService) {
+	// 		return {
+	// 			restrict : 'A',
+	// 			link : function (scope, el, attr) {
+	// 				// 获取下一页开始条目
+	// 				var getNextPageStartItem = function () {
+	// 					var orderItems = OrderService.getOrderFoodItemsHT().getAll();
+	// 					var jOrderList = $('.order-list'), jGridBody = $('.grid-body', jOrderList);
+	// 					var orderListRect = jOrderList[0].getBoundingClientRect();
+	// 					var nextItem = _.find(orderItems, function (item) {
+	// 						var itemKey = _.result(item, 'itemKey'),
+	// 							itemSelector = '.food-item[item-key=' + itemKey + '], .food-child-item[item-key=' + itemKey + ']',
+	// 							jItem = $(itemSelector),
+	// 							itemRect = jItem[0].getBoundingClientRect();
+	// 						var ret = null;
+	// 						if (orderListRect.bottom - parseFloat(jOrderList.css('paddingBottom')) - itemRect.top >= 0 
+	// 							&& orderListRect.bottom - parseFloat(jOrderList.css('paddingBottom')) - itemRect.bottom < 0) {
+	// 							// 当前条目一部分在显示范围内，一部分在显示范围外
+	// 							ret = jItem;
+	// 						} else if (orderListRect.bottom - parseFloat(jOrderList.css('paddingBottom')) - itemRect.bottom < 0) {
+	// 							// 当前条目在显示范围外
+	// 							ret = jItem;
+	// 						} 
+	// 						return ret;
+	// 					});
+	// 					if (!_.isEmpty(nextItem)) {
+	// 						nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
+	// 					}
+	// 					return nextItem;
+	// 				};
+	// 				// 获取上一页开始条目
+	// 				var getPrevPageStartItem = function () {
+	// 					var orderItems = OrderService.getOrderFoodItemsHT().getAll();
+	// 					var jOrderList = $('.order-list'), jGridBody = $('.grid-body', jOrderList);
+	// 					var orderListRect = jOrderList[0].getBoundingClientRect();
+	// 					var nextItem = _.find(_.clone(orderItems).reverse(), function (item) {
+	// 						var itemKey = _.result(item, 'itemKey'),
+	// 							itemSelector = '.food-item[item-key=' + itemKey + '], .food-child-item[item-key=' + itemKey + ']',
+	// 							jItem = $(itemSelector),
+	// 							itemRect = jItem[0].getBoundingClientRect();
+	// 						var ret = null;
+	// 						if (orderListRect.top - itemRect.top > orderListRect.height - parseFloat(jOrderList.css('paddingBottom'))) {
+	// 							// 当前条目不全在可视区域内
+	// 							ret = jItem;
+	// 						}
+	// 						return ret;
+	// 					});
+	// 					if (!_.isEmpty(nextItem)) {
+	// 						nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
+	// 					}
+	// 					if (!nextItem) {
+	// 						nextItem = orderItems[0];
+	// 					}
+	// 					return nextItem;
+	// 				};
+	// 				el.on('click', '.btn-prev, .btn-next', function (e) {
+	// 					IX.ns("Hualala.Common");
+	// 					var jBtn = $(this),
+	// 						HC = Hualala.Common;
+	// 					var direct = jBtn.attr('pager-act');
+	// 					var nextItem = null, jNextItem = null;
+	// 					var jOrderList = $('.order-list');
+	// 					if (direct == "next") {
+	// 						nextItem = getNextPageStartItem();
+	// 					} else {
+	// 						nextItem = getPrevPageStartItem();
+	// 					}
 
-						if (!nextItem) {
-							jBtn.attr('disabled', false);
-							return;
-						}
-						jNextItem = jOrderList.find('.food-item, .food-child-item').filter('[item-key=' + _.result(nextItem, 'itemKey') + ']');
+	// 					if (!nextItem) {
+	// 						jBtn.attr('disabled', false);
+	// 						return;
+	// 					}
+	// 					jNextItem = jOrderList.find('.food-item, .food-child-item').filter('[item-key=' + _.result(nextItem, 'itemKey') + ']');
 						
-						jOrderList.animate(
-							{scrollTop : jNextItem.offset().top - jOrderList.find('.grid-row:first').offset().top}, 
-							400, 'swing', 
-							function () {
-								jBtn.attr('disabled', false);
+	// 					jOrderList.animate(
+	// 						{scrollTop : jNextItem.offset().top - jOrderList.find('.grid-row:first').offset().top}, 
+	// 						400, 'swing', 
+	// 						function () {
+	// 							jBtn.attr('disabled', false);
 
-							}
-						);
+	// 						}
+	// 					);
 
 
 						
 
-					});
-				}
-			};
-		}
-	]);
+	// 				});
+	// 			}
+	// 		};
+	// 	}
+	// ]);
 	
 	// 订单操作按钮组
 	app.directive('orderhandlebtns', [
@@ -1920,6 +1943,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							case "cashPayOrder":
 								controller = "PayOrderController";
 								templateUrl = "js/diandan/payOrder.html";
+								break;
+							case "return":
+								scope.$apply("jumpToTablePage()");
 								break;
 						}
 						if (act == "pickOrder") {

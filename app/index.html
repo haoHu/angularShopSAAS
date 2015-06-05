@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta id="site_viewport" name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 		<link rel="stylesheet" type="text/css" href="js/vendor/bootstrap/bootstrap.css">
-        <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-datetimepicker/bootstrap-datetimepicker.css">
+        <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
 		<link rel="stylesheet" type="text/css" href="css/core.css">
 		<title>Shop SAAS</title>
 	</head>
@@ -34,7 +34,7 @@
 			</header>
 			<div id="site_body" class="" ng-view></div>
 		</div>
-		
+		<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 		
 		<script type="text/javascript">
 			window.count = 0;

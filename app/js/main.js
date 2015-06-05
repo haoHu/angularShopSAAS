@@ -8,7 +8,7 @@ require.config({
 		'angular-sanitize' : 'vendor/angular-sanitize/angular-sanitize',
 		'ui.bootstrap' : 'vendor/angular-bootstrap/ui-bootstrap-tpls',
 		'bootstrap' : 'vendor/bootstrap/bootstrap',
-        'bootstrap-datetimepicker' : 'vendor/bootstrap-datetimepicker/bootstrap-datetimepicker',
+        'bootstrap-datetimepicker' : 'vendor/bootstrap-datetimepicker/bootstrap-datetimepicker.min',
 		'jquery' : 'vendor/jquery/jquery',
 		'underscore' : 'vendor/underscore/underscore',
 		'api' : 'api/api',

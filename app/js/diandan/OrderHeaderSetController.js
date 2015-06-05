@@ -1,41 +1,162 @@
 define(['app'], function (app) {
-	app.controller('OrderHeaderSetController', ['$rootScope', '$scope', '$modalInstance', '$filter', '_scope', 'CommonCallServer', function ($rootScope, $scope, $modalInstance, $filter, _scope, CommonCallServer) {
-		IX.ns("Hualala");
-		var HC = Hualala.Common;
+	app.controller('OrderHeaderSetController', [
+		'$rootScope', '$scope', '$modalInstance', '$filter', '_scope', 'storage', 'CommonCallServer', 
+		function ($rootScope, $scope, $modalInstance, $filter, _scope, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var HC = Hualala.Common;
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+			$scope.save = function () {
+				_.each($scope.fmels, function (v, k) {
+					_scope.fmels[k] = v;
+				});
+				_scope.$parent.updateOrderHeader(_scope.fmels);
+				$scope.close();
+			};
 
-		$scope.close = function () {
-			$modalInstance.close();
-		};
-		$scope.save = function () {
-			_.each($scope.fmels, function (v, k) {
-				_scope.fmels[k] = v;
+			$scope.tableNameIsReadOnly = function () {
+				var mode = _.result(storage.get('SHOPINFO'), 'operationMode');
+				return mode == 0;
+			};
+
+			// 为本作用域的orderSubType值变化时，更新其值
+			$scope.onOrderSubTypeChange = function (v) {
+				$scope.fmels.orderSubType = v;
+			};
+			// 为本作用域的channelname值变化时，更新其值
+			$scope.onChannelChange = function (v) {
+				var d = _.find($scope.OrderChannels, function(el) {
+					return _.result(el, 'channelCode') == v;
+				});
+				$scope.fmels.channelKey = v;
+				$scope.fmels.channelName = _.result(d, 'channelName', '');
+			};
+			// 加载单头表单数据
+			// _scope依赖的scope
+			CommonCallServer.getChannelLst()
+				.success(function (data, status) {
+					// HC.TopTip.addTopTips($rootScope, data);
+					$scope.fmels = _.clone(_scope.fmels);
+					$scope.OrderSubTypes = Hualala.TypeDef.OrderSubTypes;
+					$scope.OrderChannels = $filter('mapOrderChannels')($XP(data, 'data.records', []));
+				})
+				.error(function (data, status) {
+					HC.TopTip.addTopTips($rootScope, data);
+				});
+		}
+	]);
+	
+	/**
+	 * 开台时单头信息配置
+	 */
+	/*app.controller('OpenTableSetController', [
+		'$rootScope', '$scope', '$location', '$modalInstance', '$filter', '_scope', 'CommonCallServer', 'OrderService', 
+		function ($rootScope, $scope, $location, $modalInstance, $filter, _scope, CommonCallServer, OrderService) {
+			IX.ns("Hualala");
+			var HC = Hualala.Common;
+			$scope.person = '';
+			$scope.tableName = _scope.curTableName;
+			$scope.saasOrderRemark = '';
+			
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+			$scope.save = function () {
+				// 开台操作
+				OrderService.tableOperation('KT', {
+					fromTableName : _scope.curTableName,
+					toTableName : '',
+					person : $scope.person,
+					saasOrderRemark : $scope.saasOrderRemark
+				}).success(function (data) {
+					var code = _.result(data, 'code'),
+						rec = data.data.records[0],
+						saasOrderKey = _.result(rec, 'saasOrderKey');
+					_scope.updateOrderHeader({
+						person : $scope.person,
+						tableName : $scope.tableName,
+						saasOrderRemark : $scope.saasOrderRemark,
+						saasOrderKey : saasOrderKey
+					});
+					if (code == '000') {
+						_scope.jumpToDinnerPage();
+						$scope.close();
+					} else {
+						HC.TopTip.addTopTips($rootScope, data);
+					}
+				});
+				
+			};
+			
+		}
+	]);*/
+	app.controller('OpenTableSetController', [
+		'$rootScope', '$scope', '$location', '$modalInstance', '$filter', '_scope', 'CommonCallServer', 'OrderService', 
+		function ($rootScope, $scope, $location, $modalInstance, $filter, _scope, CommonCallServer, OrderService) {
+			IX.ns("Hualala");
+			var HC = Hualala.Common;
+			$scope.fmels = _.extend(_scope.fmels, {
+				orderSubType : _.result(_scope.fmels, 'orderSubType', 0)
 			});
-			_scope.$parent.updateOrderHeader(_scope.fmels);
-			$scope.close();
-		};
-		// 为本作用域的orderSubType值变化时，更新其值
-		$scope.onOrderSubTypeChange = function (v) {
-			$scope.fmels.orderSubType = v;
-		};
-		// 为本作用域的channelname值变化时，更新其值
-		$scope.onChannelChange = function (v) {
-			var d = _.find($scope.OrderChannels, function(el) {
-				return _.result(el, 'channelCode') == v;
-			});
-			$scope.fmels.channelKey = v;
-			$scope.fmels.channelName = _.result(d, 'channelName', '');
-		};
-		// 加载单头表单数据
-		// _scope依赖的scope
-		CommonCallServer.getChannelLst()
-			.success(function (data, status) {
-				HC.TopTip.addTopTips($scope, data);
-				$scope.fmels = _.clone(_scope.fmels);
-				$scope.OrderSubTypes = Hualala.TypeDef.OrderSubTypes;
-				$scope.OrderChannels = $filter('mapOrderChannels')($XP(data, 'data.records', []));
-			})
-			.error(function (data, status) {
-				HC.TopTip.addTopTips($scope, data);
-			});
-	}]);
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+			$scope.save = function () {
+				var postData = {};
+				_.each($scope.fmels, function (v, k) {
+					if (k == 'tableName') {
+						postData['fromTableName'] = v;
+					} else {
+						postData[k] = v;
+					}
+				});
+				// 开台操作
+				OrderService.tableOperation('KT', postData).success(function (data) {
+					var code = _.result(data, 'code'),
+						rec = data.data.records[0],
+						saasOrderKey = _.result(rec, 'saasOrderKey');
+					_scope.updateOrderHeader({
+						person : $scope.person,
+						tableName : $scope.tableName,
+						saasOrderRemark : $scope.saasOrderRemark,
+						saasOrderKey : saasOrderKey
+					});
+					if (code == '000') {
+						_scope.jumpToDinnerPage();
+						$scope.close();
+					} else {
+						HC.TopTip.addTopTips($rootScope, data);
+					}
+				});
+			};
+			$scope.tableNameIsReadOnly = function () {
+				return true;
+			};
+			// 为本作用域的orderSubType值变化时，更新其值
+			$scope.onOrderSubTypeChange = function (v) {
+				$scope.fmels.orderSubType = v;
+			};
+			// 为本作用域的channelname值变化时，更新其值
+			$scope.onChannelChange = function (v) {
+				var d = _.find($scope.OrderChannels, function(el) {
+					return _.result(el, 'channelCode') == v;
+				});
+				$scope.fmels.channelKey = v;
+				$scope.fmels.channelName = _.result(d, 'channelName', '');
+			};
+			// 加载单头表单数据
+			// _scope依赖的scope
+			CommonCallServer.getChannelLst()
+				.success(function (data, status) {
+					// HC.TopTip.addTopTips($rootScope, data);
+					$scope.fmels = _.clone(_scope.fmels);
+					$scope.OrderSubTypes = Hualala.TypeDef.OrderSubTypes;
+					$scope.OrderChannels = $filter('mapOrderChannels')($XP(data, 'data.records', []));
+				})
+				.error(function (data, status) {
+					HC.TopTip.addTopTips($rootScope, data);
+				});
+		}
+	]);
 });

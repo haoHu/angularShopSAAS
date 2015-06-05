@@ -316,3 +316,22 @@
 		return v.replace(/([\d]{4})([\d]{2})([\d]{2})([\d]{2})([\d]{2})([\d]{2})/g, '$1/$2/$3 $4:$5:$6');
 	};
 })(jQuery);
+
+(function () {
+	// 与硬件设备通信的方法封装
+	IX.ns("Hualala.DevCom");
+	Hualala.DevCom.exeCmd = function (cmd, msg) {
+		var cmdLib = Hualala.TypeDef.DeviceComCmds;
+		var cmdSet = _.result(cmdLib, cmd);
+		var tag = _.result(cmdSet, 'tagName'),
+			isEmptyTag = _.result(cmdSet, 'isEmptyTag');
+		var inputEl = document.createElement("input");
+		var cnt = '<' + tag + '>' + (!isEmptyTag ? msg : '') + '</' + tag + '>';
+		inputEl.type = 'text';
+		inputEl.value = cnt;
+		inputEl.select();
+		document.execCommand('cut');
+		IX.Debug.info("Execute Device Communication Command: ");
+		IX.Debug.info(cnt);
+	};
+})();

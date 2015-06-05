@@ -7,7 +7,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this._OrderData = null;
 			this.OrderFoodHT = null;
 
-			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate'.split(','),
+			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasOrderRemark,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate'.split(','),
 				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
 				FoodItemTypes = {
 					"-1" : "NotExist",
@@ -730,6 +730,21 @@ define(['app', 'uuid'], function (app, uuid) {
 				return item;
 			};
 
+			/**
+			 * 设置菜品制作状态
+			 * @param  {[type]} itemKey    [description]
+			 * @param  {[type]} makeStatus 0:等叫; 1:即起; 2:加急; 3:已上菜;
+			 * @return {[type]}            [description]
+			 */
+			this.updateOrderItemMakeStatus = function (itemKey, makeStatus) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', 0);
+				if (itemType.isFoodMethod || itemType.isNotExist || itemType.isSetFoodDetail || printStatus != 0) return;
+				item.makeStatus = makeStatus;
+				return item;
+			};
+
 
 			/**
 			 * 设置赠菜原因和数量
@@ -856,6 +871,17 @@ define(['app', 'uuid'], function (app, uuid) {
 			};
 
 			/**
+			 * 催叫菜操作
+			 * @param  {[type]} itemKeys [description]
+			 * @return {[type]}          [description]
+			 */
+			this.urgeOrderFood = function (itemKeys) {
+				var callServer = null;
+				callServer = self.foodOperation('CJC', itemKeys);
+				return callServer;
+			};
+
+			/**
 			 * 获取订单备注信息
 			 * @return {[type]} [description]
 			 */
@@ -970,6 +996,11 @@ define(['app', 'uuid'], function (app, uuid) {
 							foodNumber = _.result(item, 'foodSendNumber', "0");
 							remark = _.result(item, 'sendReason', "");
 							break;
+						case "CJC":
+							modifyFoodPrice = 0;
+							foodNumber = 0;
+							remark = "";
+							break;
 					}
 					params = _.extend(params, {
 						itemKey : itemKey,
@@ -988,6 +1019,22 @@ define(['app', 'uuid'], function (app, uuid) {
 				IX.Debug.info("Current Food Operation Post Data:");
 				IX.Debug.info(postData);
 				return CommonCallServer.foodOperation(postData);
+			};
+
+			/**
+			 * 订单桌台操作
+			 * @param  {[type]} actionType [description]
+			 * @param  {[type]} params     {fromTableName,toTableName,person,saasOrderRemark,foodItemKeyLst}
+			 * @return {[type]}            [description]
+			 */
+			this.tableOperation = function (actionType, params) {
+				var orderHeader = self.getOrderHeaderData();
+				var postData = _.extend({
+					actionType : actionType,
+					person : _.result(orderHeader, 'person', 1),
+					saasOrderRemark : _.result(orderHeader, 'saasOrderRemark', '')
+				}, params);
+				return CommonCallServer.tableOperation(postData);
 			};
 			
 			/**
@@ -1058,6 +1105,20 @@ define(['app', 'uuid'], function (app, uuid) {
 				self.suspendOrder();
 				self.initOrderFoodDB(curOrderCatch);
 				self.removeCurrentSuspendedOrder();
+			};
+
+			/**
+			 * 清空订单数据
+			 * @return {[type]} [description]
+			 */
+			this.clear = function () {
+				self._OrderData = null;
+				if (self.OrderFoodHT) {
+					self.OrderFoodHT.clear();
+				} else {
+					self.OrderFoodHT = new IX.IListManager();
+				}
+
 			};
 
 		}]
