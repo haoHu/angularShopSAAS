@@ -945,7 +945,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				}, orderHeader, {
 					foodLst : foodLst
 				});
-				if (actionType == 'JZ') {
+				if (actionType == 'JZ' || actionType == 'YJZ') {
 					orderJson = _.extend(orderJson, payParams);
 				}
 				orderJson = Hualala.Common.formatPostData(orderJson);
@@ -1178,9 +1178,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				_.each(OrderPaySettingKeys, function (k) {
 					self[k] = _.result(self._OrderData, k);
 					// for test set moneyWipeZeroType = 4
-					if (k == 'moneyWipeZeroType') {
-						self[k] = 4;
-					}
+					// if (k == 'moneyWipeZeroType') {
+					// 	self[k] = 4;
+					// }
 				});
 				IX.Debug.info("初始化订单支付相关全局参数:");
 				IX.Debug.info(OrderPaySettingKeys.join('\t'));

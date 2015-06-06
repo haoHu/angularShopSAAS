@@ -88,6 +88,13 @@ define([], function () {
 					'signup/SignupViewController',
 					'directives/appDirectives'
 				]
+			},
+			'/more' : {
+				templateUrl : 'js/profile/more.html',
+				dependencies : [
+					'profile/moreViewController',
+					'directives/appDirectives'
+				]
 			}
 		}
 	};

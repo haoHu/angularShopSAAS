@@ -1073,31 +1073,47 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				if (!_.isEmpty(cardNo) && _.isEmpty(cardTransID)) {
 					// 会员卡扣款提交
 					vipCardDeductMoneyCallServer = OrderPayService.vipCardDeductMoney();
+					vipCardDeductMoneyCallServer && vipCardDeductMoneyCallServer.success(function (data) {
+						var code = _.result(data, 'code');
+						if (code == '000') {
+							// 1. 发送打印会员卡交易凭证
+							Hualala.DevCom.exeCmd('PrintCRMTransBill', JSON.stringify(_.result(data, 'data')));
+							// 2. 提交订单
+							submitOrderCallServer = OrderService.submitOrder('JZ', OrderPayService.getOrderPayParams());
+							!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
+								var code = _.result(data, 'code');
+								if (code == "000") {
+									$scope.$broadcast('pay.upVIPCard', null);
+									OrderService.initOrderFoodDB({});
+									_scope.resetOrderInfo();
+									$scope.close();
+								} else {
+									HC.TopTip.addTopTips($rootScope, data);
+									// alert(_.result(data, 'msg', ''));
+								}
+								
+							});
+						} else {
+							HC.TopTip.addTopTips($rootScope, data);
+						}
+					});
+				} else {
+					submitOrderCallServer = OrderService.submitOrder('JZ', OrderPayService.getOrderPayParams());
+					!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
+						var code = _.result(data, 'code');
+						if (code == "000") {
+							$scope.$broadcast('pay.upVIPCard', null);
+							OrderService.initOrderFoodDB({});
+							_scope.resetOrderInfo();
+							$scope.close();
+						} else {
+							HC.TopTip.addTopTips($rootScope, data);
+							// alert(_.result(data, 'msg', ''));
+						}
+						
+					});
 				}
-				vipCardDeductMoneyCallServer && vipCardDeductMoneyCallServer.success(function (data) {
-					var code = _.result(data, 'code');
-					if (code == '000') {
-						// 1. 发送打印会员卡交易凭证
-						Hualala.DevCom.exeCmd('PrintCRMTransBill', JSON.stringify(_.result(data, 'data')));
-						// 2. 提交订单
-						submitOrderCallServer = OrderService.submitOrder('JZ', OrderPayService.getOrderPayParams());
-						!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
-							var code = _.result(data, 'code');
-							if (code == "000") {
-								$scope.$broadcast('pay.upVIPCard', null);
-								OrderService.initOrderFoodDB({});
-								_scope.resetOrderInfo();
-								$scope.close();
-							} else {
-								HC.TopTip.addTopTips($rootScope, data);
-								// alert(_.result(data, 'msg', ''));
-							}
-							
-						});
-					} else {
-						HC.TopTip.addTopTips($rootScope, data);
-					}
-				});
+				
 				
 			};
 
@@ -1118,11 +1134,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				// TODO 
 				// 1. 提交订单（actionType=YJZ）
 				// 2. 提交成功后发送硬件指令
-				var callServer = OrderService.submitOrder('YJZ');
+				var callServer = OrderService.submitOrder('YJZ', OrderPayService.getOrderPayParams());
 				callServer.success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
-						var msg = _.pick(_.result(data, 'data'), ['discountRate', 'discountRange', 'isVipPrice', 'moneyWipeZeroType', 'payLst'])
+						var msg = _.result(data, 'data');
+						// var msg = _.pick(_.result(data, 'data'), ['discountRate', 'discountRange', 'isVipPrice', 'moneyWipeZeroType', 'payLst'])
 						Hualala.DevCom.exeCmd("PrintCheckoutPreBill", JSON.stringify(msg));
 					} else {
 						HC.TopTIp.addTopTips($rootScope, data);

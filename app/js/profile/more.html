@@ -1,0 +1,10 @@
+<section class="section section-profile" ng-controller="MoreViewController">
+	<div class="row site-btngrp">
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appModifyPWD($event)">修改密码</button>
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appSetting($event)">站点设置</button>
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appDebug($event)">调试</button>
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appLogout()">注销</button>
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appExit($event)">退出</button>
+	</div>
+	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
+</section>

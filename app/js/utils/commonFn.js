@@ -325,14 +325,40 @@
 		var cmdSet = _.result(cmdLib, cmd);
 		var tag = _.result(cmdSet, 'tagName'),
 			isEmptyTag = _.result(cmdSet, 'isEmptyTag');
-		var inputEl = document.createElement("input");
+		var $inputEl = $('<input type="text" id="site_clipboard"/>').appendTo('body');
 		var cnt = '<' + tag + '>' + (!isEmptyTag ? msg : '') + '</' + tag + '>';
-		inputEl.type = 'text';
-		inputEl.value = cnt;
-		inputEl.select();
-		document.execCommand('cut');
-		$(inputEl).remove();
-		IX.Debug.info("Execute Device Communication Command: ");
-		IX.Debug.info(cnt);
+		$inputEl.bind('click', function (e) {
+			$inputEl.val(cnt);
+			$inputEl.select();
+			document.execCommand('cut');
+			IX.Debug.info("Execute Device Communication Command: ");
+			IX.Debug.info(cnt);
+			$inputEl.remove();
+	
+		});
+		$inputEl.trigger('click');
+		// $inputEl.val(cnt);
+		// var range = document.createRange();
+		// range.selectNode($inputEl[0]);
+		// window.getSelection().addRange(range);
+		// try {
+		// 	var successful = document.execCommand('cut');
+		// 	var ifo = successful ? 'successful' : 'unsuccessful';
+		// 	IX.Debug.info("command " + ifo);
+		// 	IX.Debug.info("Execute Device Communication Command: ");
+		// 	IX.Debug.info(cnt);
+		// } catch(err) {
+		// 	IX.Debug.info("Oops, unable to cut");
+		// }
+		// window.getSelection().removeAllRanges();
+
+		// var inputEl = document.createElement("input");
+		// var cnt = '<' + tag + '>' + (!isEmptyTag ? msg : '') + '</' + tag + '>';
+		// inputEl.type = 'text';
+		// inputEl.value = cnt;
+		// inputEl.select();
+		// document.execCommand('cut');
+		// $(inputEl).remove();
+		
 	};
 })();

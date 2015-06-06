@@ -56,6 +56,23 @@ body {
 	}
 }
 
+// 顶部提示框
 .site-toptip {
 	position : fixed; top : 3rem; left : 50%; margin-left : -20rem; z-index: 9999; width: 40rem; text-align: center;
 }
+
+// 更多站点功能页面
+.section-profile {
+	position : relative; height : 100%;
+	.site-btngrp {
+		@rows : 4;
+		position : absolute; 
+		top : 20%; bottom : 20%; left : 20%; right : 20%;
+		border : 1px solid @xBaseBorderColor;
+		> .btn {
+			height : percentage(1 / @rows);
+		}
+
+	}
+}
+

@@ -67,6 +67,21 @@ body {
   width: 40rem;
   text-align: center;
 }
+.section-profile {
+  position: relative;
+  height: 100%;
+}
+.section-profile .site-btngrp {
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  left: 20%;
+  right: 20%;
+  border: 1px solid #e6e6e6;
+}
+.section-profile .site-btngrp > .btn {
+  height: 25%;
+}
 .site-numkeyboard {
   display: block;
   width: 240px;
