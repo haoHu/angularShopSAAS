@@ -1101,7 +1101,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					});
 				} else {
 					submitOrderCallServer = OrderService.submitOrder('JZ', 
-						_.extend(OrderPayService.getOrderPayParams(), OrderServer.getOrderHeaderData())
+						_.extend(OrderPayService.getOrderPayParams(), OrderService.getOrderHeaderData())
 					);
 					!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
 						var code = _.result(data, 'code');
