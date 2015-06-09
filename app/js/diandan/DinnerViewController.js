@@ -1054,9 +1054,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 				$scope.$broadcast('pay.detailUpdate');
 			};		
+			// 跳转选择桌台页面
+			$scope.jumpToTablePage = function () {
+				$location.path('/dinner/table');
+			};
 			// 订单支付提交
 			$scope.submitOrderPay = function () {
 				var isOK = $scope.isCanbeSubmit($scope.orderPayDetail);
+				var shopInfo = storage.get("SHOPINFO"),
+				operationMode = _.result(shopInfo, 'operationMode');
 				if (!isOK) return;
 				// 1. 获取会员卡支付科目数据
 				// 2. 如果存在会员卡的cardNo，并且cardTransID为空
@@ -1088,6 +1094,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									$scope.$broadcast('pay.upVIPCard', null);
 									OrderService.initOrderFoodDB({});
 									_scope.resetOrderInfo();
+									if (operationMode == 0) {
+										$scope.jumpToTablePage();
+									}
 									$scope.close();
 								} else {
 									HC.TopTip.addTopTips($rootScope, data);
@@ -1109,6 +1118,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							$scope.$broadcast('pay.upVIPCard', null);
 							OrderService.initOrderFoodDB({});
 							_scope.resetOrderInfo();
+							if (operationMode == 0) {
+								$scope.jumpToTablePage();
+							}
 							$scope.close();
 						} else {
 							HC.TopTip.addTopTips($rootScope, data);
