@@ -58,7 +58,10 @@ define([], function () {
 				templateUrl : 'js/dingdan/dingdan.html',
 				dependencies : [
 					'dingdan/DingDanViewController',
-					'directives/appDirectives'
+					'directives/appDirectives',
+					'services/appServices',
+					'services/orderServices',
+					'filters/appFilters'
 				]
 			},
 			'/huiyuan' : {

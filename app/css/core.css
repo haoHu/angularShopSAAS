@@ -988,6 +988,15 @@ body {
   -webkit-box-flex-group: 2;
   border-top: 1px solid #e6e6e6;
 }
+.section-orderlst .orderlst-footer .pagination {
+  margin: 0;
+}
+.section-orderlst .orderlst-footer .pager-info {
+  margin: 10px;
+  font-size: 18px;
+  line-height: 1.5rem;
+  vertical-align: bottom;
+}
 .section-orderlst .orderlst-body {
   -webkit-box-flex: 1;
   -webkit-box-flex-group: 1;

@@ -2592,5 +2592,65 @@ define(['app', 'uuid'], function (app, uuid) {
 			};
 		}
 	]);
+
+	// 本地订单列表服务
+	app.service('LocalOrderLstService', [
+		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			var orderHT = new IX.IListManager(),
+				totalSize = 0,
+				pageNo = 1,
+				pageSize = 15;
+
+			// 初始化列表数据
+			var initListData = function (records) {
+				orderHT.clear();
+				_.each(records, function (order) {
+					var saasOrderKey = _.result(order, 'saasOrderKey');
+					orderHT.register(saasOrderKey, order);
+				});
+			};
+
+			var updatePageParams = function (_pageNo, _pageSize, _totalSize) {
+				pageNo = _pageNo;
+				pageSize = _pageSize;
+				totalSize = _totalSize;
+			};
+
+			// 获取本地订单列表数据
+			this.loadLocalOrderLstData = function (params) {
+				var callServer = CommonCallServer.getLocalOrderLst(params);
+				callServer.success(function (data) {
+					var _d = _.result(data, 'data'),
+						records = _.result(_d, 'records'),
+						recordCount = _.result(_d, 'recordCount', 0);
+					updatePageParams(_.result(params, 'pageNo', 1), _.result(params, 'pageSize', 15), recordCount);
+					initListData(records);
+				});
+				return callServer;
+			};
+
+			// 获取当前页搜索订单结果
+			this.getOrderLst = function () {
+				return orderHT.getAll();
+			};
+
+			// 根据saasOrderKey获取订单数据
+			this.getOrderBySaasOrderKey = function (saasOrderKey) {
+				return orderHT.get(saasOrderKey);
+			};
+
+			// 获取分页信息
+			this.getPaginationParams = function () {
+				return {
+					pageNo : pageNo,
+					pageSize : pageSize,
+					totalSize : totalSize
+				};
+			};
+		}
+	]);
 	
 });
