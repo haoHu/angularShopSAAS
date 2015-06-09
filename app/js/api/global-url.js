@@ -49,7 +49,10 @@ define(['IX'], function () {
 		// 获取桌台及状态列表
 		["getTableStatusLst", "/saas/order/getTableStatusLst.ajax", "", "POST"],
 		// 桌台操作
-		["tableOperation", "/saas/order/tableOperation.ajax", "", "POST"]
+		["tableOperation", "/saas/order/tableOperation.ajax", "", "POST"],
+
+		// 获取订单列表
+		["getLocalOrderLst", "/saas/order/getLocalOrderLst.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

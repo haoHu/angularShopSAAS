@@ -9,6 +9,11 @@ body {
   font-family: Microsoft Yahei, Tahoma, Verdana, sans-serif, simsun, Arial;
   font-size: 14px;
 }
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('../js/vendor/bootstrap/glyphicons-halflings-regular.eot');
+  src: url('../js/vendor/bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../js/vendor/bootstrap/glyphicons-halflings-regular.woff') format('woff'), url('../js/vendor/bootstrap/glyphicons-halflings-regular.ttf') format('truetype'), url('../js/vendor/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
 .row {
   margin: 0;
 }
@@ -961,4 +966,46 @@ body {
   right: 0;
   top: 0;
   bottom: 0;
+}
+.section-orderlst {
+  position: relative;
+  height: 100%;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -ms-box-orient: vertical;
+  -o-box-orient: vertical;
+  box-orient: vertical;
+}
+.section-orderlst .orderlst-header {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 2;
+}
+.section-orderlst .orderlst-footer {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 2;
+  border-top: 1px solid #e6e6e6;
+}
+.section-orderlst .orderlst-body {
+  -webkit-box-flex: 1;
+  -webkit-box-flex-group: 1;
+  position: relative;
+}
+.section-orderlst .orderlst-body > .table-responsive {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.section-orderlst .orderlst-body table.table {
+  height: 100%;
+  margin-bottom: 0;
+}
+.section-orderlst .orderlst-body table.table td,
+.section-orderlst .orderlst-body table.table th {
+  height: 6.25%;
+  vertical-align: bottom;
 }

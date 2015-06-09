@@ -1,4 +1,293 @@
-<section class="section" ng-controller="DingDanViewController">
-    <p app-color="blue">{{page.heading}}</p>
-    <p>This is the '订单' page</p>
+<section class="section section-orderlst" ng-controller="DingDanViewController">
+	<header class="orderlst-header row">
+		<div class="row filter-bar">
+			<div class="col-xs-2 clearfix">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="日期" />
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</button>
+					</span>
+				</div>
+			</div>
+			<div class="btn-group col-xs-3 clearfix">
+				<label class="btn btn-default col-xs-3" ng-model="qOrderSubtype" btn-radio="'-1'" ng-click="queryOrderSubType(-1)">全部</label>
+				<label class="btn btn-default col-xs-3" ng-model="qOrderSubtype" btn-radio="'0'" ng-click="queryOrderSubType(0)">堂食</label>
+				<label class="btn btn-default col-xs-3" ng-model="qOrderSubtype" btn-radio="'1'" ng-click="queryOrderSubType(1)">外卖</label>
+				<label class="btn btn-default col-xs-3" ng-model="qOrderSubtype" btn-radio="'2'" ng-click="queryOrderSubType(2)">自提</label>
+			</div>
+			<div class="btn-group col-xs-3 clearfix">
+				<label for="" class="btn btn-default col-xs-4" ng-model="qOrderStatus" btn-radio="'1'" ng-click="queryOrderStatus(-1)">未结账</label>
+				<label for="" class="btn btn-default col-xs-4" ng-model="qOrderStatus" btn-radio="'2'" ng-click="queryOrderStatus(-1)">已结账</label>
+				<label for="" class="btn btn-default col-xs-4" ng-model="qOrderStatus" btn-radio="'2'" ng-click="queryOrderStatus(-1)">已作废</label>
+			</div>
+			<div class="col-xs-4 clearfix">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="订单号、手机、桌台、凭证" />
+					<span class="input-group-btn"><button class="btn btn-default" type="button">搜索</button></span>
+				</div>
+			</div>
+			
+		</div>
+		
+	</header>
+	<div class="orderlst-body">
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>类型</th>
+						<th>订单号</th>
+						<th>渠道</th>
+						<th>台牌</th>
+						<th>人数</th>
+						<th>订单金额</th>
+						<th>实收金额</th>
+						<th>状态</th>
+						<th>收银员</th>
+						<th>点餐时间</th>
+						<th>就餐时间</th>
+						<th>结账时间</th>
+						<th>会员</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+					<tr>
+						<td>外卖</td>
+						<td>201503250001</td>
+						<td>店内</td>
+						<td>2711</td>
+						<td>4</td>
+						<td>127.5</td>
+						<td>1000.5</td>
+						<td>待下单</td>
+						<td>张晓丹</td>
+						<td>11:30</td>
+						<td>12:30</td>
+						<td>12:30</td>
+						<td>是</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<footer class="orderlst-footer">
+		<div class="btn-group center-block clearfix">
+			<button type="button" class="btn btn-default col-xs-3 btn-first"  pager-act="prev">首页</button>
+			<button type="button" class="btn btn-default col-xs-3 btn-prev"  pager-act="prev">上一页</button>
+			<button type="button" class="btn btn-default col-xs-3 btn-next"  pager-act="prev">下一页</button>
+			<button type="button" class="btn btn-default col-xs-3 btn-end"  pager-act="prev">末页</button>
+		</div>
+	</footer>
 </section>

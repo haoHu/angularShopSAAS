@@ -1,0 +1,25 @@
+.section-orderlst {
+	position: relative; height : 100%;
+	display: -webkit-box; display: -moz-box; display: -ms-flexbox;
+	-webkit-box-orient : vertical; -moz-box-orient : vertical; -ms-box-orient : vertical; -o-box-orient : vertical; box-orient : vertical;
+	.orderlst-header {
+		-webkit-box-flex : 1; -webkit-box-flex-group : 2;
+	}
+	.orderlst-footer {
+		-webkit-box-flex : 1; -webkit-box-flex-group : 2;
+		border-top: 1px solid @xBaseBorderColor;
+	}
+	.orderlst-body {
+		-webkit-box-flex : 1; -webkit-box-flex-group : 1;
+		position:  relative;
+		> .table-responsive {
+			position: absolute; top : 0; bottom : 0; left : 0; right : 0;
+		}
+		table.table {
+			height : 100%; margin-bottom : 0;
+			td, th {
+				height : percentage(1 / 16); vertical-align: bottom;
+			}
+		}
+	}
+}

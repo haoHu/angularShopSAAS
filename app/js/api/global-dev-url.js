@@ -37,7 +37,10 @@ define(['IX'], function () {
 		// 已落单菜品操作服务
 		["foodOperation", "/test/commonSuccess.json", "", "GET"],
 		// 获取支付科目列表字典信息
-		["getPaySubjectLst", "/test/order/getPaySubjectLst.json", "", "GET"]
+		["getPaySubjectLst", "/test/order/getPaySubjectLst.json", "", "GET"],
+
+		// 获取订单列表
+		["getLocalOrderLst", "/test/order/getLocalOrderLst.json", "", "GET"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;
