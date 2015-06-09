@@ -87,6 +87,12 @@ body {
 .section-profile .site-btngrp > .btn {
   height: 25%;
 }
+[class^="icon-"],
+[class*=" icon-"],
+.icon {
+  background: url("../img/ixicon.png") no-repeat;
+  display: inline-block;
+}
 .site-numkeyboard {
   display: block;
   width: 240px;
@@ -1002,7 +1008,7 @@ body {
   -webkit-box-flex-group: 1;
   position: relative;
 }
-.section-orderlst .orderlst-body > .table-responsive {
+.section-orderlst .orderlst-body > .grid-box {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -1015,6 +1021,65 @@ body {
 }
 .section-orderlst .orderlst-body table.table td,
 .section-orderlst .orderlst-body table.table th {
+  position: relative;
   height: 6.25%;
-  vertical-align: bottom;
+  vertical-align: top;
+  line-height: 2rem;
+}
+.section-orderlst .orderlst-body table.table td.subtype,
+.section-orderlst .orderlst-body table.table th.subtype {
+  overflow: hidden;
+  padding-left: 2rem;
+}
+.section-orderlst .orderlst-body table.table td.num,
+.section-orderlst .orderlst-body table.table th.num,
+.section-orderlst .orderlst-body table.table td.date,
+.section-orderlst .orderlst-body table.table th.date {
+  text-align: right;
+}
+.section-orderlst .orderlst-body table.table td.txt,
+.section-orderlst .orderlst-body table.table th.txt {
+  text-align: left;
+}
+.section-orderlst .icon-waimai,
+.section-orderlst .icon-ziti,
+.section-orderlst .icon-tangshi {
+  width: 32px;
+  height: 32px;
+  -webkit-transform: scale(0.6);
+  position: absolute;
+  left: 2rem;
+  top: 4px;
+}
+.section-orderlst .icon-waimai {
+  /*width: 32px; height:32px;*/
+  background-position: -200px -120px;
+}
+.section-orderlst .icon-ziti {
+  /*width: 32px; height:32px;*/
+  background-position: -240px 0px;
+}
+.section-orderlst .icon-tangshi {
+  /*width: 32px; height:32px;*/
+  background-position: -120px -40px;
+}
+.section-orderlst .zizhu {
+  position: absolute;
+  left: -24px;
+  top: -24px;
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #99ccff;
+}
+.section-orderlst .zizhu > .icon-zizhu {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  /*width: 16px; height:16px;*/
+  background-position: -72px -48px;
+  -webkit-transform: scale(0.8);
 }

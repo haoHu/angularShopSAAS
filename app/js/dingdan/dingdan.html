@@ -33,55 +33,62 @@
 		
 	</header>
 	<div class="orderlst-body">
-		<div class="table-responsive">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>类型</th>
-						<th>订单号</th>
-						<th>渠道</th>
-						<th>台牌</th>
-						<th>人数</th>
-						<th>订单金额</th>
-						<th>实收金额</th>
-						<th>状态</th>
-						<th>收银员</th>
-						<th>点餐时间</th>
-						<th>就餐时间</th>
-						<th>结账时间</th>
-						<th>会员</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="order in orderLstData" id="{{order.saasOrderKey}}">
-						<td>{{order.orderSubType}}</td>
-						<td>{{order.saasOrderNo}}</td>
-						<td>{{order.channelName}}</td>
-						<td>{{order.tableName}}</td>
-						<td>{{order.person}}</td>
-						<td>{{order.foodAmount | mycurrency:"￥"}}</td>
-						<td>{{order.paidAmount | mycurrency:"￥"}}</td>
-						<td>{{order.orderStatus == 20 ? '已落单' : order.orderStatus == 40 ? '已结账' : '废单'}}</td>
-						<td>{{order.checkoutBy}}</td>
-						<td>{{order.startTime | formatDateTimeStr:"HH:mm"}}</td>
-						<td>{{order.createTime | formatDateTimeStr:"HH:mm"}}</td>
-						<td>{{order.checkoutTime | formatDateTimeStr:"HH:mm"}}</td>
-						<td>{{_.isEmpty(order.cardNo) ? '否' : '是'}}</td>
-
-					</tr>
-					
-					
-				</tbody>
-			</table>
+		<div class="grid-box">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th class="subtype">类型</th>
+							<th class="txt">订单号</th>
+							<th class="txt">渠道</th>
+							<th class="txt">台牌</th>
+							<th class="num">人数</th>
+							<th class="num">订单金额</th>
+							<th class="num">实收金额</th>
+							<th class="txt">状态</th>
+							<th class="txt">收银员</th>
+							<th class="date">点餐时间</th>
+							<th class="date">就餐时间</th>
+							<th class="date">结账时间</th>
+							<th class="txt">会员</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="order in orderLstData" id="{{order.saasOrderKey}}">
+							<td class="subtype">
+								<div class="zizhu" ng-if="order.netOrderTypeCode.slice(0, 2).toLowerCase() == 'ws'">
+									<span class="icon-zizhu" ></span>
+								</div>
+								<span class="icon-waimai" ng-if="order.orderSubType == 1"></span>
+								<span class="icon-ziti" ng-if="order.orderSubType == 2"></span>
+								<span class="icon-tangshi" ng-if="order.orderSubType == 0"></span>
+								&nbsp;
+							</td>
+							<td class="txt">{{order.saasOrderNo}}</td>
+							<td class="txt">{{order.channelName}}</td>
+							<td class="txt">{{order.tableName}}</td>
+							<td class="num">{{order.person}}</td>
+							<td class="num">{{order.foodAmount | mycurrency:"￥"}}</td>
+							<td class="num">{{order.paidAmount | mycurrency:"￥"}}</td>
+							<td class="txt">{{order.orderStatus == 20 ? '未结账' : order.orderStatus == 40 ? '已结账' : '废单'}}</td>
+							<td class="txt">{{order.checkoutBy}}</td>
+							<td class="date">{{order.startTime | formatDateTimeStr:"HH:mm"}}</td>
+							<td class="date">{{order.createTime | formatDateTimeStr:"HH:mm"}}</td>
+							<td class="date">{{order.checkoutTime | formatDateTimeStr:"HH:mm"}}</td>
+							<td class="txt">{{order.cardNo.length > 0 ? '是' : ''}}</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
 		</div>
+		
 	</div>
 	<footer class="orderlst-footer">
-		<div class="col-xs-2">
-			<p class="pager-info">页码:{{curPageNo}} / {{numPages}}</p>
-		</div>
-		<div class="col-xs-10">
-			<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg" boundary-links="true" rotate="false" num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
-		</div>
+		
+		<p class="pager-info pull-left">页码:{{curPageNo}} / {{numPages}}</p>
+		<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
 		<!-- <div class="btn-group center-block clearfix">
 			<button type="button" class="btn btn-default col-xs-3 btn-first"  pager-act="prev">首页</button>
 			<button type="button" class="btn btn-default col-xs-3 btn-prev"  pager-act="prev">上一页</button>

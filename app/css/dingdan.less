@@ -18,14 +18,49 @@
 	.orderlst-body {
 		-webkit-box-flex : 1; -webkit-box-flex-group : 1;
 		position:  relative;
-		> .table-responsive {
+		> .grid-box {
 			position: absolute; top : 0; bottom : 0; left : 0; right : 0;
+		}
+		.table-responsive {
+			// 
 		}
 		table.table {
 			height : 100%; margin-bottom : 0;
 			td, th {
-				height : percentage(1 / 16); vertical-align: bottom;
+				position : relative; height : percentage(1 / 16); vertical-align: top; line-height: 2rem;
+				&.subtype {overflow: hidden; padding-left: 2rem;}
+				&.num, &.date {
+					text-align: right;
+				}
+				&.txt {
+					text-align: left;
+				}
 			}
+
+		}
+
+	}
+	.icon-waimai, .icon-ziti, .icon-tangshi {
+		width : 32px; height : 32px; -webkit-transform: scale(0.6);
+		position: absolute; left : 2rem; top : 4px;
+	}
+	.icon-waimai {
+		.x-icon-32_waimai();
+	}
+	.icon-ziti {
+		.x-icon-32_ziti();
+	}
+	.icon-tangshi {
+		.x-icon-32_dingzuo();
+	}
+	.zizhu {
+		position : absolute;  left : -24px; top : -24px;
+		display: inline-block; width : 48px; height : 48px;
+		border-radius: 50%; background-color: @xDarkBtnBG;
+		> .icon-zizhu {
+			position : absolute; bottom : 8px; right : 8px; width : 16px; height : 16px;
+			.x-icon-16_mobile(); -webkit-transform : scale(0.8);
 		}
 	}
+	
 }
