@@ -23,7 +23,7 @@ define(['app'], function(app)
                 var pageParams = LocalOrderLstService.getPaginationParams();
                 $scope.curPageNo = _.result(pageParams, 'pageNo');
                 $scope.totalSize = _.result(pageParams, 'totalSize');
-                $scope.numPages = Math.ceil(totalSize / _.result(pageParams, 'pageSize'));
+                $scope.numPages = Math.ceil($scope.totalSize / _.result(pageParams, 'pageSize'));
 			};
 			$scope.openDatePicker = function ($event) {
 				$event.preventDefault();
