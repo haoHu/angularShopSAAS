@@ -908,8 +908,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService',
-		function ($scope, $rootScope, $modalInstance, $filter, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			HC.TopTip.reset($rootScope);
