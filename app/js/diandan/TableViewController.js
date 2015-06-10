@@ -1,16 +1,16 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	// 桌台控制器
 	app.controller('TableViewController', [
-		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderService', 'TableService', 'OrderChannel', 'OrderNoteService',
-		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, OrderService, TableService, OrderChannel, OrderNoteService) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderService', 'TableService', 'OrderChannel', 'OrderNoteService', 'AppAlert',
+		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, OrderService, TableService, OrderChannel, OrderNoteService, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-			HC.TopTip.reset($rootScope);
+			// HC.TopTip.reset($rootScope);
 			var shopInfo = storage.get("SHOPINFO"),
 				operationMode = _.result(shopInfo, 'operationMode');
-			$scope.closeTopTip = function (index) {
-				HC.TopTip.closeTopTip($rootScope, index);
-			};
+			// $scope.closeTopTip = function (index) {
+			// 	HC.TopTip.closeTopTip($rootScope, index);
+			// };
 			var allTableLstPromise = TableService.loadTableStatusLst();
 			// 加载渠道数据
 			OrderChannel.loadOrderChannels({}, function (data) {
@@ -18,7 +18,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				IX.Debug.info("Order Channels: ");
 				IX.Debug.info($scope.OrderChannels);
 			}, function (data) {
-				HC.TopTip.addTopTips($rootScope, data);
+				// HC.TopTip.addTopTips($rootScope, data);
+				AppAlert.add('danger', _.result(data, 'msg', ''));
 			});
 
 			$scope.OrderItemHandle = [
@@ -125,7 +126,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}, function (data) {
 							$scope.resetOrderInfo();
 						}, function (data) {
-							HC.TopTip.addTopTips($rootScope, data);
+							// HC.TopTip.addTopTips($rootScope, data);
+							AppAlert.add('danger', _.result(data, 'msg', ''));
 						});
 					}
 				});
@@ -201,7 +203,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}, function (data) {
 							$scope.resetOrderInfo();
 						}, function (data) {
-							HC.TopTip.addTopTips($rootScope, data);
+							// HC.TopTip.addTopTips($rootScope, data);
+							AppAlert.add('danger', _.result(data, 'msg', ''));
 						});
 					} else if (tableStatus == 0) {
 						// 弹出单头配置窗口，确认后发送开台请求，待成功开台后跳转点菜页面
@@ -230,10 +233,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var table = TableService.getTablesByTableName(tableName);
 				table = table[0];
 				if (_.isEmpty(table)) {
-					HC.TopTip.addTopTips($rootScope, {
-						code : '111',
-						msg : "桌台不存在"
-					});
+					// HC.TopTip.addTopTips($rootScope, {
+					// 	code : '111',
+					// 	msg : "桌台不存在"
+					// });
+					AppAlert.add('danger', '桌台不存在');
 					return;
 				}
 				var tableKey = _.result(table, 'itemID');
@@ -259,7 +263,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								$scope.resetOrderInfo();
 								$scope.jumpToDinnerPage();
 							}, function (data) {
-								HC.TopTip.addTopTips($rootScope, data);
+								// HC.TopTip.addTopTips($rootScope, data);
+								AppAlert.add('danger', _.result(data, 'msg', ''));
 							});
 						}
 				});
@@ -291,9 +296,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				callServer.success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
-						HC.TopTip.addTopTips($rootScope, _.extend(data, {msg : "催叫成功"}));
+						// HC.TopTip.addTopTips($rootScope, _.extend(data, {msg : "催叫成功"}));
+						AppAlert.add('success', '催叫成功');
 					} else {
-						HC.TopTip.addTopTips($rootScope, data);
+						// HC.TopTip.addTopTips($rootScope, data);
+						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
 					
 				});
@@ -391,14 +398,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 换台操作控制器
 	app.controller('ChangeTableController', [
-		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 
-		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService) {
+		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'AppAlert', 
+		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-			HC.TopTip.reset($rootScope);
-			$scope.closeTopTip = function (index) {
-				HC.TopTip.closeTopTip($rootScope, index);
-			};
+			// HC.TopTip.reset($rootScope);
+			// $scope.closeTopTip = function (index) {
+			// 	HC.TopTip.closeTopTip($rootScope, index);
+			// };
 			var allTableLstPromise = TableService.loadTableStatusLst();
 			var action = _scope.curOrderAction;
 			IX.Debug.info("Current Order Action: ");
@@ -496,11 +503,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						callServer.success(function (data) {
 							var code = _.result(data, 'code');
 							if (code == '000') {
-								HC.TopTip.addTopTips($rootScope, data);
+								// HC.TopTip.addTopTips($rootScope, data);
+								AppAlert.add('success', _.result(data, 'msg', ''));
 								_scope.refresh(table, actionType);
 								$modalInstance.close();
 							} else {
-								HC.TopTip.addTopTips($rootScope, data);
+								// HC.TopTip.addTopTips($rootScope, data);
+								AppAlert.add('danger', _.result(data, 'msg', ''));
 							}
 						});
 					} else {
@@ -520,10 +529,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var table = TableService.getTablesByTableName(tableName);
 				table = table[0];
 				if (_.isEmpty(table)) {
-					HC.TopTip.addTopTips($rootScope, {
-						code : '111',
-						msg : "桌台不存在"
-					});
+					// HC.TopTip.addTopTips($rootScope, {
+					// 	code : '111',
+					// 	msg : "桌台不存在"
+					// });
+					AppAlert.add('danger', '桌台不存在');
 					return;
 				}
 				var tableKey = _.result(table, 'itemID');
@@ -549,11 +559,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						callServer.success(function (data) {
 							var code = _.result(data, 'code');
 							if (code == '000') {
-								HC.TopTip.addTopTips($rootScope, data);
+								// HC.TopTip.addTopTips($rootScope, data);
+								AppAlert.add('success', _.result(data, 'msg', ''));
 								_scope.refresh(table, actionType);
 								$modalInstance.close();
 							} else {
-								HC.TopTip.addTopTips($rootScope, data);
+								// HC.TopTip.addTopTips($rootScope, data);
+								AppAlert.add('danger', _.result(data, 'msg', ''));
 							}
 						});
 					} else {

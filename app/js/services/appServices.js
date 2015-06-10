@@ -59,4 +59,39 @@ define(['app'], function (app) {
 		}]
 	);
 
+	// Alert service新版实现，代替旧的toptip用于顶部消息提示
+	// 不用在每个controller都去绑定
+	app.factory('AppAlert', [
+		'$rootScope', '$timeout', '$sce',
+		function ($rootScope, $timeout, $sce) {
+			var alertService;
+			$rootScope.alerts = [];
+			return alertService = {
+				add : function (type, msg, timeout) {
+					timeout = timeout || 1500;
+					$rootScope.alerts.push({
+						type : type,
+						msg : $sce.trustAsHtml(msg),
+						close : function () {
+							return alertService.closeAlert(this);
+						}
+					});
+					if (timeout) {
+						$timeout(function () {
+							alertService.closeAlert(this);
+						}, timeout);
+					}
+				},
+				closeAlert : function (alert) {
+					return this.closeAlertIdx($rootScope.alerts.indexOf(alert));
+				},
+				closeAlertIdx : function (index) {
+					return $rootScope.alerts.splice(index, 1);
+				},
+				clear : function () {
+					$rootScope.alerts = [];
+				}
+			};
+		}
+	]);
 });

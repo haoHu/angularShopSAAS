@@ -51,6 +51,7 @@ define(['app'], function (app) {
 		var filterFn = function (v, format) {
 			// IX.Debug.info(v);
 			// IX.Debug.info(format);
+			if (v == '0' || _.isEmpty(v)) return '';
 			var dateStr = Hualala.Common.formatDateTimeValue(v),
 				f = format || 'yyyy/MM/dd HH:mm:ss';
 

@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	app.controller('OrderHeaderSetController', [
-		'$rootScope', '$scope', '$modalInstance', '$filter', '_scope', 'storage', 'CommonCallServer', 
-		function ($rootScope, $scope, $modalInstance, $filter, _scope, storage, CommonCallServer) {
+		'$rootScope', '$scope', '$modalInstance', '$filter', '_scope', 'storage', 'CommonCallServer', 'AppAlert',
+		function ($rootScope, $scope, $modalInstance, $filter, _scope, storage, CommonCallServer, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			$scope.close = function () {
@@ -42,7 +42,8 @@ define(['app'], function (app) {
 					$scope.OrderChannels = $filter('mapOrderChannels')($XP(data, 'data.records', []));
 				})
 				.error(function (data, status) {
-					HC.TopTip.addTopTips($rootScope, data);
+					// HC.TopTip.addTopTips($rootScope, data);
+					AppAlert.add('danger', _.result(data, 'msg', ''));
 				});
 		}
 	]);
@@ -126,7 +127,8 @@ define(['app'], function (app) {
 						_scope.jumpToDinnerPage();
 						$scope.close();
 					} else {
-						HC.TopTip.addTopTips($rootScope, data);
+						// HC.TopTip.addTopTips($rootScope, data);
+						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
 				});
 			};
@@ -155,7 +157,8 @@ define(['app'], function (app) {
 					$scope.OrderChannels = $filter('mapOrderChannels')($XP(data, 'data.records', []));
 				})
 				.error(function (data, status) {
-					HC.TopTip.addTopTips($rootScope, data);
+					// HC.TopTip.addTopTips($rootScope, data);
+					AppAlert.add('danger', _.result(data, 'msg', ''));
 				});
 		}
 	]);

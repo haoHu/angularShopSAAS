@@ -1,14 +1,14 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	app.controller('SnackViewController', 
 	[
-		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService',
-		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert',
+		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-			HC.TopTip.reset($rootScope);
-			$scope.closeTopTip = function (index) {
-				HC.TopTip.closeTopTip($rootScope, index);
-			};
+			// HC.TopTip.reset($rootScope);
+			// $scope.closeTopTip = function (index) {
+			// 	HC.TopTip.closeTopTip($rootScope, index);
+			// };
 			// 解析链接参数获取订单Key (saasOrderKey)
 			var urlParams = $location.search(),
 				saasOrderKey = _.result(urlParams, 'saasOrderKey', null);
@@ -64,7 +64,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			OrderService.getOrderByOrderKey(urlParams, function (data) {
 				$scope.resetOrderInfo();
 			}, function (data) {
-				HC.TopTip.addTopTips($rootScope, data);
+				// HC.TopTip.addTopTips($rootScope, data);
+				AppAlert.add('danger', _.result(data, 'msg', ''));
 			});
 			
 			// 加载渠道数据
@@ -73,7 +74,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				IX.Debug.info("Order Channels: ");
 				IX.Debug.info($scope.OrderChannels);
 			}, function (data) {
-				HC.TopTip.addTopTips($rootScope, data);
+				// HC.TopTip.addTopTips($rootScope, data);
+				AppAlert.add('danger', _.result(data, 'msg', ''));
 			});
 			// 加载菜单数据
 			FoodMenuService.initFoodMenuData(function (data) {
@@ -85,14 +87,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				IX.Debug.info($scope.FoodCategories);
 				
 			}, function (data) {
-				HC.TopTip.addTopTips($rootScope, data);
+				// HC.TopTip.addTopTips($rootScope, data);
+				AppAlert.add('danger', _.result(data, 'msg', ''));
 			});
 			// 加载订单字典数据
 			OrderNoteService.getOrderNotesLst({}, function (data) {
 				IX.Debug.info("Order Notes: ");
 				IX.Debug.info(OrderNoteService.OrderNoteDict);
 			}, function (data) {
-				HC.TopTip.addTopTips($rootScope, data);
+				// HC.TopTip.addTopTips($rootScope, data);
+				AppAlert.add('danger', _.result(data, 'msg', ''));
 			});
 
 			// 计算订单列表中的菜品小计金额
@@ -404,7 +408,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 跳转选择桌台页面
 			$scope.jumpToTablePage = function () {
-				$location.path('/dinner/table');
+				var search = $location.search(),
+					path = _.result(search, 'path');
+				if (_.isEmpty(path)) {
+					$location.path('/dinner/table');
+				} else {
+					$location.path(path).search(search);
+				}
+				
 			};
 
 			// 开钱箱操作
@@ -421,10 +432,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var orderData = OrderService.getOrderData();
 				var unorderedItems = OrderService.getUnorderedItems();
 				if (unorderedItems.length > 0) {
-					HC.TopTip.addTopTips($rootScope, {
-						code : '111',
-						msg : '还有未落单菜品,无法打印,请先将所有菜品落单!'
-					});
+					// HC.TopTip.addTopTips($rootScope, {
+					// 	code : '111',
+					// 	msg : '还有未落单菜品,无法打印,请先将所有菜品落单!'
+					// });
+					AppAlert.add('danger', '还有未落单菜品,无法打印,请先将所有菜品落单!');
 				} else {
 					Hualala.DevCom.exeCmd("PrintOrderDetailBill", JSON.stringify(orderData));
 				}
@@ -436,8 +448,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 赠菜操作控制器
 	app.controller('OrderItemSendController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
 			IX.ns("Hualala");
 			var sendReasonData = OrderNoteService.getSendFoodReasonNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
@@ -476,8 +488,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 退菜操作控制器
 	app.controller('OrderItemCancelController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
 			IX.ns("Hualala");
 			var cancelReasonData = OrderNoteService.getCancelFoodReasonNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
@@ -514,8 +526,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 改量操作控制器
 	app.controller('OrderItemModifyCountController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
 			IX.ns("Hualala");
 			var curItemKey = _scope.curFocusOrderItemKey,
 				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey);
@@ -549,8 +561,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 改价操作控制器
 	app.controller('OrderItemModifyPriceController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
 			IX.ns("Hualala");
 			var modifyPriceData = OrderNoteService.getModifyPriceNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
@@ -593,8 +605,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 作法操作控制器
 	app.controller('OrderItemModifyMethodController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
 			IX.ns("Hualala");
 			var methodData = OrderNoteService.getFoodMethodNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
@@ -630,8 +642,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 口味操作控制器
 	app.controller('OrderItemModifyRemarkController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
 			IX.ns("Hualala");
 			var remarkData = OrderNoteService.getFoodRemarkNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
@@ -664,8 +676,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 单注操作控制器
 	app.controller('OrderRemarkController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
 			IX.ns("Hualala");
 			var remarkData = OrderNoteService.getOrderRemarkNotes();
 			$scope.OrderRemarks = _.result(remarkData, 'items', []);
@@ -695,8 +707,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 套餐搭配操作控制器
 	app.controller('SetFoodCfgController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'FoodMenuService',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, FoodMenuService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'FoodMenuService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, FoodMenuService, AppAlert) {
 			IX.ns("Hualala");
 			var curUnitKey = _scope.curSetFoodUnitKey;
 			var setFoodData = FoodMenuService.getFoodByUnitKey(curUnitKey),
@@ -744,7 +756,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.save = function () {
 				// TODO submit Modify result
 				if (_.isEmpty(curSetFoodData) || !$scope.isValid()) {
-					alert("菜品搭配有误")
+					// alert("菜品搭配有误");
+					// HC.TopTip.addTopTips($rootScope, {
+					// 	msg : '菜品搭配有误'
+					// })
+					AppAlert.add('danger', '菜品搭配有误');
 					return ;
 				}
 				IX.Debug.info("Current SetFood Settings is:");
@@ -807,8 +823,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 新版套餐搭配操作控制器
 	app.controller('SetFoodSettingController', [
-		'$scope', '$modalInstance', '$filter', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'SetFoodService',
-		function ($scope, $modalInstance, $filter, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, SetFoodService) {
+		'$scope', '$modalInstance', '$filter', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'SetFoodService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, SetFoodService, AppAlert) {
 			IX.ns("Hualala");
 			var curUnitKey = _scope.curSetFoodUnitKey;
 			var setFoodData = FoodMenuService.getFoodByUnitKey(curUnitKey);
@@ -889,8 +905,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 提单操作控制器
 	app.controller('PickOrderController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderNoteService', 'OrderService', 'FoodMenuService',
-		function ($scope, $modalInstance, $filter, _scope, storage, OrderNoteService, OrderService, FoodMenuService) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'storage', 'OrderNoteService', 'OrderService', 'FoodMenuService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, storage, OrderNoteService, OrderService, FoodMenuService, AppAlert) {
 			IX.ns("Hualala");
 			$scope.OrdersCatch = storage.get('OrderCatch');
 			// 关闭窗口
@@ -908,14 +924,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService',
-		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-			HC.TopTip.reset($rootScope);
-			$scope.closeTopTip = function (index) {
-				HC.TopTip.closeTopTip($rootScope, index);
-			};
+			// HC.TopTip.reset($rootScope);
+			// $scope.closeTopTip = function (index) {
+			// 	HC.TopTip.closeTopTip($rootScope, index);
+			// };
 			$scope.orderPayDetail = OrderPayService.mapOrderPayDetail();
 			IX.Debug.info("OrderPayDetail:")
 			IX.Debug.info($scope.orderPayDetail);
@@ -1031,12 +1047,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								// $scope.curVIPCard = null;
 								$scope.$broadcast('pay.upVIPCard', null);
 							} else {
-								HC.TopTip.addTopTips($rootScope, data);
+								// HC.TopTip.addTopTips($rootScope, data);
+								AppAlert.add('danger', _.result(data, 'msg', ''));
 							}
 						}).error(function (data) {
-							HC.TopTip.addTopTips($rootScope, {
-								code : '111', msg : '通信失败'
-							});
+							// HC.TopTip.addTopTips($rootScope, {
+							// 	code : '111', msg : '通信失败'
+							// });
+							AppAlert.add('danger', '请求服务失败');
 						});
 					} else {
 						OrderPayService.deletePaySubjectItem(subjectCodes, name);
@@ -1056,7 +1074,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};		
 			// 跳转选择桌台页面
 			$scope.jumpToTablePage = function () {
-				$location.path('/dinner/table');
+				// $location.path('/dinner/table');
+				var search = $location.search(),
+					path = _.result(search, 'path');
+				if (_.isEmpty(path)) {
+					$location.path('/dinner/table');
+				} else {
+					$location.path(path).search(search);
+				}
 			};
 			// 订单支付提交
 			$scope.submitOrderPay = function () {
@@ -1086,7 +1111,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							Hualala.DevCom.exeCmd('PrintCRMTransBill', JSON.stringify(_.result(data, 'data')));
 							// 2. 提交订单
 							submitOrderCallServer = OrderService.submitOrder('JZ', 
-								_.extend(OrderPayService.getOrderPayParams(), OrderService.getOrderHeaderData())
+								_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams())
 							);
 							!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
 								var code = _.result(data, 'code');
@@ -1099,18 +1124,20 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									}
 									$scope.close();
 								} else {
-									HC.TopTip.addTopTips($rootScope, data);
+									// HC.TopTip.addTopTips($rootScope, data);
 									// alert(_.result(data, 'msg', ''));
+									AppAlert.add('danger', _.result(data, 'msg', ''));
 								}
 								
 							});
 						} else {
-							HC.TopTip.addTopTips($rootScope, data);
+							// HC.TopTip.addTopTips($rootScope, data);
+							AppAlert.add('danger', _.result(data, 'msg', ''));
 						}
 					});
 				} else {
 					submitOrderCallServer = OrderService.submitOrder('JZ', 
-						_.extend(OrderPayService.getOrderPayParams(), OrderService.getOrderHeaderData())
+						_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams())
 					);
 					!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
 						var code = _.result(data, 'code');
@@ -1123,7 +1150,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							}
 							$scope.close();
 						} else {
-							HC.TopTip.addTopTips($rootScope, data);
+							// HC.TopTip.addTopTips($rootScope, data);
+							AppAlert.add('danger', _.result(data, 'msg', ''));
 							// alert(_.result(data, 'msg', ''));
 						}
 						
@@ -1158,7 +1186,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						// var msg = _.pick(_.result(data, 'data'), ['discountRate', 'discountRange', 'isVipPrice', 'moneyWipeZeroType', 'payLst'])
 						Hualala.DevCom.exeCmd("PrintCheckoutPreBill", JSON.stringify(msg));
 					} else {
-						HC.TopTIp.addTopTips($rootScope, data);
+						// HC.TopTIp.addTopTips($rootScope, data);
+						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
 				});
 			};
@@ -1167,8 +1196,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 通用支付科目表单
 	app.directive('commonpayform', [
-		"$rootScope", "$filter", "OrderService", "OrderPayService",
-		function ($rootScope, $filter, OrderService, OrderPayService) {
+		"$rootScope", "$filter", "OrderService", "OrderPayService", "AppAlert",
+		function ($rootScope, $filter, OrderService, OrderPayService, AppAlert) {
 			return {
 				restrict : 'E',
 				templateUrl : 'js/diandan/commonpayform.html',
@@ -1381,8 +1410,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 会员卡支付科目表单
 	app.directive('vippayform', [
-		"$rootScope", "$filter", "OrderService", "OrderPayService", "VIPCardService",
-		function ($rootScope, $filter, OrderService, OrderPayService, VIPCardService) {
+		"$rootScope", "$filter", "OrderService", "OrderPayService", "VIPCardService", "AppAlert",
+		function ($rootScope, $filter, OrderService, OrderPayService, VIPCardService, AppAlert) {
 			return {
 				restrict : 'E',
 				templateUrl : 'js/diandan/vippayform.html',
@@ -1392,7 +1421,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				replace : true,
 				link : function (scope, el, attr) {
 					IX.ns("Hualala");
+					var HC = Hualala.Common;
 					var HCMath = Hualala.Common.Math;
+					// HC.TopTip.reset($rootScope);
+					// scope.closeTopTip = function (index) {
+					// 	HC.TopTip.closeTopTip($rootScope, index);
+					// };
 					// 初始化表单数据
 					var initPayForm = function () {
 						var discountRate = _.result(scope.vipInfo, 'shopDiscountRate'),
@@ -1565,7 +1599,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							tarName = targetPaySubjectGrp.name;
 						if (curName != tarName) return;	
 						if (_.isEmpty(scope.vipInfo)) {
-							alert('请使用会员卡消费');
+							// alert('请使用会员卡消费');
+							// HC.TopTip.addTopTips($rootScope, {
+							// 	msg : '请使用会员卡消费'
+							// })
+							AppAlert.add('danger', '请使用会员卡消费');
 							return;
 						}
 						var items = targetPaySubjectGrp.items;
@@ -1590,7 +1628,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						// 更新会员卡支付相关参数
 						OrderPayService.updateVIPCardPayParams({
 							cardKey : _.result(scope.vipInfo, 'cardKey', ''),
-							cardNo : _.result(scope.vipInfo, 'cardNo', '') || _.result(scope.vipInfo, 'userMobile', ''),
+							cardNo : _.result(scope.vipInfo, 'mobileIsCardID') == 1 ? _.result(scope.vipInfo, 'userMobile', '') : _.result(scope.vipInfo, 'cardNo', ''),
 							cardTransPWD : scope.cardTransPWD
 						});
 						// 更新会员卡支付科目数据
@@ -1606,7 +1644,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							searchStr = txtEl.val(),
 							callServer = null;
 						if (_.isEmpty(searchStr)) {
-							alert("请输入手机号或卡号");
+							// HC.TopTip.addTopTips($rootScope, {
+							// 	msg : '请输入手机号或卡号'
+							// })
+							AppAlert.add('danger', '请输入手机号或卡号');
+							// alert("请输入手机号或卡号");
 							return;
 						}
 						callServer = scope.getVIPCardInfo(searchStr);

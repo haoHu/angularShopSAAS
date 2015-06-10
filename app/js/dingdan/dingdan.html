@@ -1,7 +1,7 @@
 <section class="section section-orderlst" ng-controller="DingDanViewController">
 	<header class="orderlst-header row">
 		<div class="row filter-bar">
-			<div class="col-xs-2 clearfix">
+			<div class="col-xs-3 clearfix">
 				<div class="input-group">
 					<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)"/>
 					<span class="input-group-btn">
@@ -22,7 +22,7 @@
 				<label for="" class="btn btn-default btn-lg col-xs-4" ng-model="qOrderStatus" btn-radio="'40'" ng-click="queryByOrderStatus('40')">已结账</label>
 				<label for="" class="btn btn-default btn-lg col-xs-4" ng-model="qOrderStatus" btn-radio="'30'" ng-click="queryByOrderStatus('30')">已作废</label>
 			</div>
-			<div class="col-xs-4 clearfix">
+			<div class="col-xs-3 clearfix">
 				<div class="input-group">
 					<input type="text" class="form-control input-lg" placeholder="订单号、手机、桌台、凭证" ng-model="qKeyword" ng-keyup="queryByKeyword($event)" />
 					<span class="input-group-btn" ng-click="queryByKeyword($event)"><button class="btn btn-default btn-lg" type="button">搜索</button></span>
@@ -35,7 +35,7 @@
 	<div class="orderlst-body">
 		<div class="grid-box">
 			<div class="table-responsive">
-				<table class="table table-striped">
+				<table class="table table-striped table-hover">
 					<thead>
 						<tr>
 							<th class="subtype">类型</th>
@@ -54,7 +54,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="order in orderLstData" id="{{order.saasOrderKey}}">
+						<tr ng-repeat="order in orderLstData" id="{{order.saasOrderKey}}" ng-click="selectOrder(order)">
 							<td class="subtype">
 								<div class="zizhu" ng-if="order.netOrderTypeCode.slice(0, 2).toLowerCase() == 'ws'">
 									<span class="icon-zizhu" ></span>
@@ -77,7 +77,9 @@
 							<td class="date">{{order.checkoutTime | formatDateTimeStr:"HH:mm"}}</td>
 							<td class="txt">{{order.cardNo.length > 0 ? '是' : ''}}</td>
 						</tr>
-						
+						<tr ng-if="orderLstData.length == 0 || !orderLstData">
+							<td colspan="13" class="text-center">无数据</td>
+						</tr>
 						
 					</tbody>
 				</table>
@@ -88,7 +90,7 @@
 	<footer class="orderlst-footer">
 		
 		<p class="pager-info pull-left">页码:{{curPageNo}} / {{numPages}}</p>
-		<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+		<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
 		<!-- <div class="btn-group center-block clearfix">
 			<button type="button" class="btn btn-default col-xs-3 btn-first"  pager-act="prev">首页</button>
 			<button type="button" class="btn btn-default col-xs-3 btn-prev"  pager-act="prev">上一页</button>
@@ -97,4 +99,67 @@
 		</div> -->
 	</footer>
 	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
+	<script type="text/ng-template" id="js/dingdan/orderDetail.html">
+		<div class="modal-body">
+			<section class="section section-diandan">
+				<div class="order-plain">
+					<div class="order-box">
+						<div class="order-body grid-box">
+							<!-- 单头信息 -->
+							<header class="order-header" >
+								<orderheader fmels="orderHeader" channels="OrderChannels" class="clearfix " ></orderheader>
+							</header>
+							<!-- 订单条目头 -->
+							<div class="row grid-header">
+								<span class="col-xs-1 grid-cell txt"></span>
+								<span class="col-xs-4 grid-cell txt">品名</span>
+								<span class="col-xs-2 grid-cell num">数量</span>
+								<span class="col-xs-2 grid-cell unit">规格</span>
+								<span class="col-xs-3 grid-cell price">小计</span>
+							</div>
+							<!-- <div>{{curOrderItems.length}}</div> -->
+							<div class="order-list">
+								<orderlist type="multiple"></orderlist>
+							</div>
+							
+							
+						</div>
+						
+						<footer class="order-footer">
+							<!-- 订单操作按钮组 -->
+							<div class="btn-grp btn-group-justified " order-pager="{{curOrderItems.length}}">
+								<div class="btn-group" role="group"><button class="btn btn-default btn-block btn-prev" type="button" pager-act="prev">上页</button></div>
+								<div class="btn-group" role="group"><button class="btn btn-default btn-block btn-next" type="button" pager-act="next">下页</button></div>
+							</div>
+							<!-- 订单单注 -->
+							<div class="order-remark clearfix">
+								<div class="col-xs-7">
+									<label for="">账单合计</label>
+									<span class="dollar">￥</span>
+									<!-- <span class="cash">58888</span> -->
+									<span class="cash">{{calcOrderAmount()}}</span>
+								</div>
+								<div class="col-xs-5">
+									<button class="btn btn-default btn-block hidden" type="button" ng-click="openOrderRemark()">{{curOrderRemark}}</button>
+								</div>
+							</div>
+						</footer>
+					</div>
+				</div>
+			</section>
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="printOrderCheckoutBill()">打印</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="counterSettlingAccount()">反结账</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="close()" >取消</button>
+				</div>
+			</div>
+		</div>
+	</script>
 </section>

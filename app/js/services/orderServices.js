@@ -1177,6 +1177,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				// self.isVipPrice;self.discountRate;self.discountRange;self.moneyWipeZeroType,self.foodAmount
 				_.each(OrderPaySettingKeys, function (k) {
 					self[k] = _.result(self._OrderData, k);
+					if (k == 'moneyWipeZeroType') {
+						self[k] = _.isEmpty(self._OrderData[k]) ? 0 : _.result(self._OrderData, k, 0);
+					}
 					// for test set moneyWipeZeroType = 4
 					// if (k == 'moneyWipeZeroType') {
 					// 	self[k] = 4;
@@ -2013,7 +2016,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.getOrderPayParams = function () {
 				var payLst = self.getPaySubjectRecord();
-				var checkoutKeys = 'discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,invoiceTitle,invoiceAmount,payLst'.split(',');
+				var checkoutKeys = 'cardNo,cardKey,discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,invoiceTitle,invoiceAmount,payLst'.split(',');
 				var pdata = _.pick(self, checkoutKeys);
 				pdata = _.extend(pdata, {
 					payLst : payLst

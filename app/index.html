@@ -36,7 +36,9 @@
 			</div>
 
 		</div>
-		
+		<alert class="site-toptip" ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">
+			<span ng-bind-html="alert.msg"></span>
+		</alert>
 		
 		<script type="text/javascript">
 			window.count = 0;

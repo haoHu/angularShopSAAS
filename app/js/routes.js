@@ -6,7 +6,8 @@ define([], function () {
 			'/' : {
 				templateUrl : 'js/home/home.html',
 				dependencies : [
-					'home/HomeViewController'
+					'home/HomeViewController',
+					'services/appServices'
 				]
 			},
 			// 接单
@@ -82,6 +83,7 @@ define([], function () {
 				templateUrl : 'js/signin/signin.html',
 				dependencies : [
 					'signin/SigninViewController',
+					'services/appServices',
 					'directives/appDirectives'
 				]
 			},
@@ -89,6 +91,7 @@ define([], function () {
 				templateUrl : 'js/signup/signup.html',
 				dependencies : [
 					'signup/SignupViewController',
+					'services/appServices',
 					'directives/appDirectives'
 				]
 			},
@@ -96,6 +99,7 @@ define([], function () {
 				templateUrl : 'js/profile/more.html',
 				dependencies : [
 					'profile/moreViewController',
+					'services/appServices',
 					'directives/appDirectives'
 				]
 			}

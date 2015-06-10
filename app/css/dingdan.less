@@ -28,6 +28,7 @@
 			height : 100%; margin-bottom : 0;
 			td, th {
 				position : relative; height : percentage(1 / 16); vertical-align: top; line-height: 2rem;
+				cursor : pointer;
 				&.subtype {overflow: hidden; padding-left: 2rem;}
 				&.num, &.date {
 					text-align: right;
@@ -63,4 +64,18 @@
 		}
 	}
 	
+}
+
+.orderdetail-modal {
+	.modal-dialog {
+		position : absolute; left : 6rem; right : 0; top : 0; bottom : 0; padding : 0; margin : 0; width : auto!important;
+		.modal-content, .modal-body {width : 100%; height : 100%; margin : 0; padding : 0;}
+		.modal-footer {position : absolute; width : 100%; margin : 0; padding : 0;}
+		.modal-footer {left : 0; bottom : 0; border-top : 1px solid @xBaseBorderColor; padding : 1px;}
+		.modal-body {position : relative; padding-bottom : 47px;}
+		.section-diandan .order-box {
+			width : 100%;
+			// .order-footer {bottom : 2px;}
+		}
+	}
 }
