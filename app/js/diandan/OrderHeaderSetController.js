@@ -93,8 +93,8 @@ define(['app'], function (app) {
 		}
 	]);*/
 	app.controller('OpenTableSetController', [
-		'$rootScope', '$scope', '$location', '$modalInstance', '$filter', '_scope', 'CommonCallServer', 'OrderService', 
-		function ($rootScope, $scope, $location, $modalInstance, $filter, _scope, CommonCallServer, OrderService) {
+		'$rootScope', '$scope', '$location', '$modalInstance', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'OrderChannel', 'AppAlert',
+		function ($rootScope, $scope, $location, $modalInstance, $filter, _scope, CommonCallServer, OrderService, OrderChannel, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			$scope.fmels = _.extend(_scope.fmels, {
@@ -149,16 +149,34 @@ define(['app'], function (app) {
 			};
 			// 加载单头表单数据
 			// _scope依赖的scope
-			CommonCallServer.getChannelLst()
+			// CommonCallServer.getChannelLst()
+			// 	.success(function (data, status) {
+			// 		// HC.TopTip.addTopTips($rootScope, data);
+			// 		$scope.fmels = _.clone(_scope.fmels);
+			// 		$scope.OrderSubTypes = Hualala.TypeDef.OrderSubTypes;
+			// 		$scope.OrderChannels = $filter('mapOrderChannels')($XP(data, 'data.records', []));
+			// 	})
+			// 	.error(function (data, status) {
+			// 		// HC.TopTip.addTopTips($rootScope, data);
+			// 		AppAlert.add('danger', _.result(data, 'msg', ''));
+			// 	});
+			OrderChannel.loadOrderChannels()
 				.success(function (data, status) {
-					// HC.TopTip.addTopTips($rootScope, data);
-					$scope.fmels = _.clone(_scope.fmels);
+					var code = _.result(data, 'code');
+					if (code !== '000') {
+						AppAlert.add('danger', _.result(data, 'msg', ''));
+					}
+					var defaultChannel = OrderChannel.getAll()[0];
+					$scope.fmels = _.extend(_scope.fmels, {
+						orderSubType : _.result(_scope.fmels, 'orderSubType', 0),
+						channelKey : _.result(defaultChannel, 'channelKey'),
+						channelName : _.result(defaultChannel, 'channelName')
+					});
 					$scope.OrderSubTypes = Hualala.TypeDef.OrderSubTypes;
 					$scope.OrderChannels = $filter('mapOrderChannels')($XP(data, 'data.records', []));
 				})
 				.error(function (data, status) {
-					// HC.TopTip.addTopTips($rootScope, data);
-					AppAlert.add('danger', _.result(data, 'msg', ''));
+					AppAlert.add('danger', '请求服务失败');
 				});
 		}
 	]);

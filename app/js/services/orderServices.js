@@ -195,7 +195,7 @@ define(['app', 'uuid'], function (app, uuid) {
 							case "channelKey":
 							case "channelName":
 								var defaultChannel = OrderChannel.getAll()[0];
-								v = _.result(defaultChannel, (k == 'channelKey' ? 'channelCode' : 'channelName'), '');
+								v = _.result(defaultChannel, k, '');
 								break;
 							case "orderSubType":
 								v = "0";
@@ -1661,8 +1661,8 @@ define(['app', 'uuid'], function (app, uuid) {
 				var mapDiscountPaySchema = function (items) {
 					var amount = 0, detail = '',
 						isEmpty = _.isEmpty(items);
-					var discountRate = self.discountRate,
-						discountRange = self.discountRange;
+					var discountRate = _.result(self, 'discountRate', 1),
+						discountRange = _.result(self, 'discountRange', 1);
 					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
 					detail = discountRate == 1 ? '不打折' : (parseFloat(discountRate.toString().movePointRight(1)) + '折, ' + (discountRange == 0 ? '部分菜品打折' : '全部菜品打折'));
 					return {

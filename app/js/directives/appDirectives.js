@@ -182,8 +182,8 @@ define(['app'], function (app) {
                         '</div>',
                         
                         '<div class="clearfix">',
-                            '<div class="item col-xs-4"><label for="" class="col-xs-7">台/牌号</label><span class="col-xs-5">{{fmels.tableName}}</span></div>',
-                            '<div class="item col-xs-8"><label for="" class="col-xs-3">渠道</label><span class="col-xs-9">{{fmels.channelKey | getOrderChannelLabel:channels}}</span></div>',
+                            '<div class="item col-xs-6"><label for="" class="col-xs-5">台/牌号</label><span class="col-xs-7">{{fmels.tableName}}</span></div>',
+                            '<div class="item col-xs-6"><label for="" class="col-xs-4">渠道</label><span class="col-xs-8">{{fmels.channelKey | getOrderChannelLabel:channels}}</span></div>',
                         '</div>',
                         '<div class="item col-xs-12" ng-class="{hidden : !fmels.userName || fmels.userName.length == 0}">',
                             '<label for="" class="col-xs-2">姓名</label>',
