@@ -398,8 +398,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 换台操作控制器
 	app.controller('ChangeTableController', [
-		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'AppAlert', 
-		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, AppAlert) {
+		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'AppAlert', 'AppConfirm',
+		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, AppAlert, AppConfirm) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -492,30 +492,57 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						fromTableName = _.result(orderHeader, 'tableName', ''),
 						foodItemKeyLst = _scope.curSelectedOrderItems || [];
 					var actionType = action == 'changeFood' ? 'CPHT' : (action == 'changeOrder' ? 'HT' : 'BT');
-					var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
-					if (con) {
-						var callServer = OrderService.tableOperation(actionType, {
-							fromTableName : fromTableName,
-							toTableName : $scope.curTableName,
-							foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
+					// var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
+					// if (con) {
+					// 	var callServer = OrderService.tableOperation(actionType, {
+					// 		fromTableName : fromTableName,
+					// 		toTableName : $scope.curTableName,
+					// 		foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
 
-						});
-						callServer.success(function (data) {
-							var code = _.result(data, 'code');
-							if (code == '000') {
-								// HC.TopTip.addTopTips($rootScope, data);
-								AppAlert.add('success', _.result(data, 'msg', ''));
-								_scope.refresh(table, actionType);
-								$modalInstance.close();
-							} else {
-								// HC.TopTip.addTopTips($rootScope, data);
-								AppAlert.add('danger', _.result(data, 'msg', ''));
-							}
-						});
-					} else {
-						$modalInstance.close();
-					}
-					
+					// 	});
+					// 	callServer.success(function (data) {
+					// 		var code = _.result(data, 'code');
+					// 		if (code == '000') {
+					// 			// HC.TopTip.addTopTips($rootScope, data);
+					// 			AppAlert.add('success', _.result(data, 'msg', ''));
+					// 			_scope.refresh(table, actionType);
+					// 			$modalInstance.close();
+					// 		} else {
+					// 			// HC.TopTip.addTopTips($rootScope, data);
+					// 			AppAlert.add('danger', _.result(data, 'msg', ''));
+					// 		}
+					// 	});
+					// } else {
+					// 	$modalInstance.close();
+					// }
+
+					AppConfirm.add({
+						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作',
+						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？',
+						yesFn : function () {
+							var callServer = OrderService.tableOperation(actionType, {
+								fromTableName : fromTableName,
+								toTableName : $scope.curTableName,
+								foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
+
+							});
+							callServer.success(function (data) {
+								var code = _.result(data, 'code');
+								if (code == '000') {
+									// HC.TopTip.addTopTips($rootScope, data);
+									AppAlert.add('success', _.result(data, 'msg', ''));
+									_scope.refresh(table, actionType);
+									$modalInstance.close();
+								} else {
+									// HC.TopTip.addTopTips($rootScope, data);
+									AppAlert.add('danger', _.result(data, 'msg', ''));
+								}
+							});
+						},
+						noFn : function () {
+							$modalInstance.close();
+						}
+					});
 					
 				});
 			};
@@ -549,28 +576,54 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						fromTableName = _.result(orderHeader, 'tableName', ''),
 						foodItemKeyLst = _scope.curSelectedOrderItems || [];
 					var actionType = action == 'changeFood' ? 'CPHT' : (action == 'changeOrder' ? 'HT' : 'BT');
-					var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
-					if (con) {
-						var callServer = OrderService.tableOperation(actionType, {
-							fromTableName : fromTableName,
-							toTableName : $scope.curTableName,
-							foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
-						});
-						callServer.success(function (data) {
-							var code = _.result(data, 'code');
-							if (code == '000') {
-								// HC.TopTip.addTopTips($rootScope, data);
-								AppAlert.add('success', _.result(data, 'msg', ''));
-								_scope.refresh(table, actionType);
-								$modalInstance.close();
-							} else {
-								// HC.TopTip.addTopTips($rootScope, data);
-								AppAlert.add('danger', _.result(data, 'msg', ''));
-							}
-						});
-					} else {
-						$modalInstance.close();
-					}
+					// var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
+					// if (con) {
+					// 	var callServer = OrderService.tableOperation(actionType, {
+					// 		fromTableName : fromTableName,
+					// 		toTableName : $scope.curTableName,
+					// 		foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
+					// 	});
+					// 	callServer.success(function (data) {
+					// 		var code = _.result(data, 'code');
+					// 		if (code == '000') {
+					// 			// HC.TopTip.addTopTips($rootScope, data);
+					// 			AppAlert.add('success', _.result(data, 'msg', ''));
+					// 			_scope.refresh(table, actionType);
+					// 			$modalInstance.close();
+					// 		} else {
+					// 			// HC.TopTip.addTopTips($rootScope, data);
+					// 			AppAlert.add('danger', _.result(data, 'msg', ''));
+					// 		}
+					// 	});
+					// } else {
+					// 	$modalInstance.close();
+					// }
+					AppConfirm.add({
+						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作',
+						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？',
+						yesFn : function () {
+							var callServer = OrderService.tableOperation(actionType, {
+								fromTableName : fromTableName,
+								toTableName : $scope.curTableName,
+								foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
+							});
+							callServer.success(function (data) {
+								var code = _.result(data, 'code');
+								if (code == '000') {
+									// HC.TopTip.addTopTips($rootScope, data);
+									AppAlert.add('success', _.result(data, 'msg', ''));
+									_scope.refresh(table, actionType);
+									$modalInstance.close();
+								} else {
+									// HC.TopTip.addTopTips($rootScope, data);
+									AppAlert.add('danger', _.result(data, 'msg', ''));
+								}
+							});
+						},
+						noFn : function () {
+							$modalInstance.close();
+						}
+					});
 				});
 			};
 

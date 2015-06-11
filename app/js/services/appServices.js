@@ -94,4 +94,106 @@ define(['app'], function (app) {
 			};
 		}
 	]);
+
+	// Confirm实现，代替浏览器默认confirm组件
+	app.factory('AppConfirm', [
+		'$rootScope', '$timeout', '$sce', '$modal', 
+		function ($rootScope, $timeout, $sce, $modal) {
+			var confirmService;
+			$rootScope.confirmSets = [];
+			app.controller('AppConfirmController', [
+				'$scope', '$rootScope', '$modalInstance', '_scope',
+				function ($scope, $rootScope, $modalInstance, _scope) {
+					var curConfirmSet = _.result(_scope, 'curConfirmSet');
+					$scope.confirmSet = curConfirmSet;
+					var closeConfirm = function () {
+						$modalInstance.close();
+						curConfirmSet.confirmObj.closeConfirm(curConfirmSet);
+					};
+					$scope.yesFn = function () {
+						$scope.confirmSet.yesFn();
+						closeConfirm();
+					};
+					$scope.noFn = function () {
+						$scope.confirmSet.noFn();
+						closeConfirm();
+					};
+				}
+			]);
+			return confirmService = {
+				add : function (cfg) {
+					// if ($rootScope.confirmSet.isOpen) return;
+					var defSetting = {
+						title : "确认窗口",
+						msg : "",
+						yesText : "确认",
+						noText : "取消",
+						yesFn : function () {},
+						noFn : function () {}
+					};
+					// $rootScope.confirmSet = _.extend(defSetting, cfg, {isOpen : true});
+					var curConfirmSet = _.extend(defSetting, cfg, {
+						confirmObj : this
+					});
+					$rootScope.confirmSets.push(curConfirmSet);
+					var modalSize = 'sm',
+						windowClass = 'site-confirm',
+						backdrop = 'fixed',
+						controller = 'AppConfirmController',
+						templateUrl = 'js/services/confirm.html',
+						template = [
+							'<div class="modal-body">',
+								'<div class="media">',
+									'<div class="pull-left">',
+										'<span class="media-object">',
+											'<span class="glyphicon glyphicon-exclamation-sign"></span>',
+										'</span>',
+									'</div>',
+									'<div class="media-body">',
+										'<h4 class="media-heading">{{confirmSet.title}}</h4>',
+										'<p>{{confirmSet.msg}}</p>',
+									'</div>',
+								'</div>',
+							'</div>',
+							'<div class="modal-footer">',
+								'<div class="btn-group btn-group-justified" role="group">',
+									'<div class="btn-group" role="group">',
+										'<button type="button" class="btn btn-default" ng-click="yesFn()">{{confirmSet.yesText}}</button>',
+									'</div>',
+									'<div class="btn-group" role="group">',
+										'<button type="button" class="btn btn-default" ng-click="noFn()">{{confirmSet.noText}}</button>',
+									'</div>',
+								'</div>',
+							'</div>'
+						].join(''),
+						resolve = {
+							_scope : function () {
+								return {
+									curConfirmSet : curConfirmSet
+								}
+							}
+						};
+					$modal.open({
+						size : modalSize,
+						windowClass : windowClass,
+						// scope : $rootScope,
+						controller : controller,
+						// templateUrl : templateUrl,
+						template : template,
+						resolve : resolve,
+						backdrop : backdrop
+					});
+				},
+				closeConfirm : function (confirmSet) {
+					return this.closeConfirmIdx($rootScope.confirmSets.indexOf(confirmSet));
+				},
+				closeConfirmIdx : function (index) {
+					return $rootScope.confirmSets.splice(index, 1);
+				},
+				clear : function () {
+					$rootScope.confirmSets = [];
+				}
+			};
+		}
+	]);
 });

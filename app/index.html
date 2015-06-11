@@ -34,11 +34,12 @@
 			</header>
 			<div id="site_body" class="" ng-view>
 			</div>
-
 		</div>
+		<!-- 站点全局顶部alert提示UI组件 -->
 		<alert class="site-toptip" ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">
 			<span ng-bind-html="alert.msg"></span>
 		</alert>
+		
 		
 		<script type="text/javascript">
 			window.count = 0;

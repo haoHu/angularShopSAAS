@@ -1417,8 +1417,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 会员卡支付科目表单
 	app.directive('vippayform', [
-		"$rootScope", "$filter", "OrderService", "OrderPayService", "VIPCardService", "AppAlert",
-		function ($rootScope, $filter, OrderService, OrderPayService, VIPCardService, AppAlert) {
+		"$rootScope", "$filter", "OrderService", "OrderPayService", "VIPCardService", "AppAlert", "AppConfirm",
+		function ($rootScope, $filter, OrderService, OrderPayService, VIPCardService, AppAlert, AppConfirm) {
 			return {
 				restrict : 'E',
 				templateUrl : 'js/diandan/vippayform.html',
@@ -1516,11 +1516,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var checked = chkbox.is(':checked');
 						var curVoucher = _.find(scope.cashVoucherOpts, function (el) {return el.value == val});
 						if (!checked) {
-							var a = confirm(curVoucher.voucherUsingNotes + '\n' + '是否使用?');
-							if (!a) {
-								e.stopPropagation();
-								return;
-							}
+							// var a = confirm(curVoucher.voucherUsingNotes + '\n' + '是否使用?');
+							// if (!a) {
+							// 	e.stopPropagation();
+							// 	return;
+							// }
+							AppConfirm.add({
+								title : "使用券",
+								msg : curVoucher.voucherUsingNotes + '<br/>' + '是否使用?',
+								yesFn : function () {
+									
+								},
+								noFn : function () {
+									e.stopPropagation();
+									return;
+								}
+							});
 						}
 						
 					});
