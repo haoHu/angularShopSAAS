@@ -33,7 +33,7 @@ define(['app'], function(app){
 	function initServiceRoutes() {
 		var ajaxAPICfgs = ajaxEngine.getAll();
 		
-		app.factory('CommonCallServer', ['$http', function ($http) {
+		app.factory('CommonCallServer', ['$http', '$location', function ($http, $location) {
 			var ret = {};
 			var doRequest = function (pdata, apiCfg) {
 				var AjaxDomain = Hualala.Global.AJAX_DOMAIN;
@@ -60,6 +60,11 @@ define(['app'], function(app){
 					},
 					transformRequest : transFn,
 					withCredentials : true
+				}).success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == 'CS002') {
+						$location.path('/signin');
+					}
 				});
 			};
 			_.each(ajaxAPICfgs, function (apiCfg) {
