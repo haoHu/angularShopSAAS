@@ -72,6 +72,14 @@ body {
   width: 40rem;
   text-align: center;
 }
+.site-confirm .media .media-object > .glyphicon {
+  font-size: 4rem;
+}
+.site-confirm .modal-footer {
+  padding: 0px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
 .section-profile {
   position: relative;
   height: 100%;

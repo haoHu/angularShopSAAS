@@ -757,6 +757,18 @@ define(['app', 'uuid'], function (app, uuid) {
 			};
 
 			/**
+			 * 获取待确认数量订单条目
+			 * @return {[type]} [description]
+			 */
+			this.getNeedConfirmFoodNumberItems = function () {
+				var items = self.OrderFoodHT.getAll();
+				items = _.filter(items, function (food) {
+					return _.result(food, 'isNeedConfirmFoodNumber') != 0;
+				});
+				return items;
+			};
+
+			/**
 			 * 设置菜品制作状态
 			 * @param  {[type]} itemKey    [description]
 			 * @param  {[type]} makeStatus 0:等叫; 1:即起; 2:加急; 3:已上菜;

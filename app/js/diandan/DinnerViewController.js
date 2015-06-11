@@ -2060,8 +2060,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	
 	// 订单操作按钮组
 	app.directive('orderhandlebtns', [
-		"$modal", "$rootScope", "$filter", "OrderService", "OrderPayService",
-		function ($modal, $rootScope, $filter, OrderService, OrderPayService) {
+		"$modal", "$rootScope", "$filter", "OrderService", "OrderPayService", "AppAlert",
+		function ($modal, $rootScope, $filter, OrderService, OrderPayService, AppAlert) {
 			return {
 				restrict : 'E',
 				template : [
@@ -2125,16 +2125,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							// 结账操作，需要先提交一次订单，待服务返回结账数据后进行结账
 							submitOrder = OrderService.submitOrder('LD');
 							var openOrderPayModal = function () {
-								OrderPayService.initOrderPay(function () {
-									$modal.open({
-										size : modalSize,
-										windowClass : "pay-modal",
-										controller : controller,
-										templateUrl : templateUrl,
-										resolve : resolve,
-										backdrop : "static"
+								var needConfirmFoodNumberItems = OrderService.getNeedConfirmFoodNumberItems();
+								if (needConfirmFoodNumberItems.length > 0) {
+									AppAlert.add('danger', '有菜品未确认数量,请先对菜品确认数量!');
+									scope.$apply();
+								} else {
+									OrderPayService.initOrderPay(function () {
+										$modal.open({
+											size : modalSize,
+											windowClass : "pay-modal",
+											controller : controller,
+											templateUrl : templateUrl,
+											resolve : resolve,
+											backdrop : "static"
+										});
 									});
-								});
+								}
 							};
 							if (_.isEmpty(submitOrder)) {
 								openOrderPayModal();
