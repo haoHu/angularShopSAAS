@@ -480,6 +480,11 @@ body {
   display: block;
   background-color: #e6f2fd;
   border: 1px solid #e6e6e6;
+  white-space: normal;
+}
+.btngrp-box > .btn-group .btn-radio p,
+.btngrp-box > .btn-group .btn-checkbox p {
+  margin: 0 0 5px;
 }
 .btngrp-box > .btn-group .btn-radio.active,
 .btngrp-box > .btn-group .btn-checkbox.active {
@@ -514,11 +519,18 @@ body {
   width: 16.66666667%;
   height: 5rem;
 }
+#search_food {
+  left: 37rem;
+  bottom: 75%;
+}
 #search_food > .modal-dialog {
   position: absolute;
+  margin: 0;
+  width: auto;
+  left: 0;
   right: 0;
   top: 0;
-  margin: 0;
+  bottom: 0;
 }
 .pay-modal .modal-dialog {
   position: absolute;
