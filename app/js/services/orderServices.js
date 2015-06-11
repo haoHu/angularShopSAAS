@@ -674,6 +674,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', "0"),
 					isNeedConfirmFoodNumber = _.result(item, 'isNeedConfirmFoodNumber', "0");
+				var callServer = null;
 				step = parseFloat(step);
 				count = parseFloat(count);
 				if (printStatus != 0 && isNeedConfirmFoodNumber == 0) return;
@@ -690,6 +691,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					// 删除记录
 					self.deleteOrderItem(itemKey);
 					return null;
+				}
+				if (printStatus != 0 && isNeedConfirmFoodNumber != 0) {
+					// 已落单并且需要确认数量的菜品，需要进行确认数量的菜品操作服务
+					callServer = self.foodOperation('QRSL', [itemKey]);
 				}
 				// 1. 如果当前条目为普通菜品主条目
 				// 	改变主条目的数量
@@ -733,7 +738,22 @@ define(['app', 'uuid'], function (app, uuid) {
 				});
 				
 				
-				return item;
+				return _.isEmpty(callServer) ? item : {
+					callServer : callServer,
+					item : item
+				};
+			};
+
+			/**
+			 * 跟新订单条目确认数量标记
+			 * @return {[type]} [description]
+			 */
+			this.updateOrderItemNeedConfirmFoodNumberFlag = function (itemKey, flag) {
+				var item = self.OrderFoodHT.get(itemKey),
+					itemType = self.orderFoodItemType(itemKey),
+					printStatus = _.result(item, 'printStatus', "0"),
+					isNeedConfirmFoodNumber = _.result(item, 'isNeedConfirmFoodNumber', "0");
+				item.isNeedConfirmFoodNumber = flag || 0;
 			};
 
 			/**
@@ -1007,6 +1027,10 @@ define(['app', 'uuid'], function (app, uuid) {
 							foodNumber = 0;
 							remark = "";
 							break;
+						case "QRSL":
+							foodNumber = _.result(item, 'foodNumber', "0");
+							remark = "";
+							break;
 					}
 					params = _.extend(params, {
 						itemKey : itemKey,
@@ -1029,7 +1053,16 @@ define(['app', 'uuid'], function (app, uuid) {
 				}
 				IX.Debug.info("Current Food Operation Post Data:");
 				IX.Debug.info(postData);
-				return CommonCallServer.foodOperation(postData);
+				return CommonCallServer.foodOperation(postData)
+					.success(function (data) {
+						var _data = _.result(data, 'data'),
+							foodLst = _.result(_data, 'foodLst');
+						_.each(foodLst, function (food) {
+							var isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', '0'),
+								itemKey = _.result(food, 'itemKey');
+							self.updateOrderItemNeedConfirmFoodNumberFlag(itemKey, isNeedConfirmFoodNumber);
+						});
+					});
 			};
 
 			/**

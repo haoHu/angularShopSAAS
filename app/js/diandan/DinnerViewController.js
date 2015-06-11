@@ -549,14 +549,34 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 				IX.Debug.info("Food Modify Count Setting:");
 				IX.Debug.info("foodCount:" + $scope.foodCount);
-				var item = OrderService.updateOrderItemCount(curItemKey, 0, $scope.foodCount);
-				_scope.refreshOrderList();
-				if (_.isEmpty(item)) {
-					// 默认选中订单列表中第一个条目
-					var firstItem = _scope.curOrderItems[0];
-					_scope.selectOrderItem(_.result(firstItem, 'itemKey'));
+				var obj = OrderService.updateOrderItemCount(curItemKey, 0, $scope.foodCount),
+					item = null, callServer = null;
+
+				if (_.isEmpty(obj.callServer)) {
+					item = obj;
+					_scope.refreshOrderList();
+					if (_.isEmpty(item)) {
+						// 默认选中订单列表中第一个条目
+						var firstItem = _scope.curOrderItems[0];
+						_scope.selectOrderItem(_.result(firstItem, 'itemKey'));
+					}
+					$modalInstance.close();
+				} else {
+					callServer = obj.callServer;
+					item = obj.item;
+					callServer.success(function (data) {
+						_scope.refreshOrderList();
+						if (_.isEmpty(item)) {
+							// 默认选中订单列表中第一个条目
+							var firstItem = _scope.curOrderItems[0];
+							_scope.selectOrderItem(_.result(firstItem, 'itemKey'));
+						}
+						$modalInstance.close();
+					});
 				}
-				$modalInstance.close();
+				
+				
+				
 			};
 		}
 	]);
