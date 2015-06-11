@@ -1107,10 +1107,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					// 会员卡扣款提交
 					vipCardDeductMoneyCallServer = OrderPayService.vipCardDeductMoney();
 					vipCardDeductMoneyCallServer && vipCardDeductMoneyCallServer.success(function (data) {
-						var code = _.result(data, 'code');
+						var code = _.result(data, 'code'),
+							_data = _.result(data, 'data');
 						if (code == '000') {
 							// 1. 发送打印会员卡交易凭证
-							Hualala.DevCom.exeCmd('PrintCRMTransBill', JSON.stringify(_.result(data, 'data')));
+							Hualala.DevCom.exeCmd('PrintCRMTransBill', _.result(_data, 'transReceiptsTxt', ''));
 							// 2. 提交订单
 							submitOrderCallServer = OrderService.submitOrder('JZ', 
 								_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams())
