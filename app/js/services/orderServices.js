@@ -1,7 +1,7 @@
 define(['app', 'uuid'], function (app, uuid) {
 	// 订单数据服务
 	app.service('OrderService', 
-		['$rootScope', '$location', '$filter', 'storage', 'CommonCallServer', function ($rootScope, $location, $filter, storage, CommonCallServer) {
+		['$rootScope', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderChannel', function ($rootScope, $location, $filter, storage, CommonCallServer, OrderChannel) {
 			IX.ns('Hualala');
 			var self = this;
 			this._OrderData = null;
@@ -192,6 +192,11 @@ define(['app', 'uuid'], function (app, uuid) {
 					_.each(OrderHeaderKeys, function (k) {
 						var v = '';
 						switch (k) {
+							case "channelKey":
+							case "channelName":
+								var defaultChannel = OrderChannel.getAll()[0];
+								v = _.result(defaultChannel, (k == 'channelKey' ? 'channelCode' : 'channelName'), '');
+								break;
 							case "orderSubType":
 								v = "0";
 								break;
@@ -2039,7 +2044,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.getOrderPayParams = function () {
 				var payLst = self.getPaySubjectRecord();
-				var checkoutKeys = 'cardNo,cardKey,discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,invoiceTitle,invoiceAmount,payLst'.split(',');
+				var checkoutKeys = 'cardNo,cardKey,cardTransID,discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,invoiceTitle,invoiceAmount,payLst'.split(',');
 				var pdata = _.pick(self, checkoutKeys);
 				pdata = _.extend(pdata, {
 					payLst : payLst
