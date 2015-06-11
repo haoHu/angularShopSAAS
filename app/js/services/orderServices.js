@@ -1210,6 +1210,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				self.calcOrderItemsSubTotal();
 				// 计算并更新订单菜品金额合计
 				self.updateFoodAmount();
+				if (_.isEmpty(_.result(self._OrderData, 'payLst'))) return;
 				// 计算并更新账单赠送菜品金额合计
 				self.updatePaySubjectItem("sendFoodPromotionPay");
 				// 计算并更新会员价优惠金额合计
@@ -1230,6 +1231,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]} [description]
 			 */
 			this.initOrderPaySubjectGrpHT = function () {
+				var _payLst = _.result(self._OrderData, 'payLst', []);
 				self.OrderPaySubjectGrpHT.clear();
 				self.OrderPaySubjectHT.clear();
 				self.OrderItemSubTotalHT.clear();
@@ -1237,6 +1239,11 @@ define(['app', 'uuid'], function (app, uuid) {
 					var name = _.result(payGrp, 'name');
 					self.OrderPaySubjectGrpHT.register(name, payGrp);
 				});
+				if (!_.isEmpty(_payLst)) {
+					_.each(_payLst, function (paySubject) {
+						self.OrderPaySubjectHT.register(_.result(paySubject, 'paySubjectCode'), paySubject);
+					});
+				}
 			};
 
 			/**
