@@ -28,7 +28,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			$scope.qKeyword = _.result(searchParams, 'qKeyword', '');
 			$scope.curPageNo = _.result(searchParams, 'curPageNo', 1);
 			$scope.totalSize = _.result(searchParams, 'totalSize', 0);
-			$scope.pageSize = _.result(searchParams, 'pageSize', 1);
+			$scope.pageSize = _.result(searchParams, 'pageSize', 10);
 			var updateOrderLstData = function () {
                 $scope.orderLstData = LocalOrderLstService.getOrderLst();
                 var pageParams = LocalOrderLstService.getPaginationParams();
@@ -119,7 +119,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					reportDate : _.isDate($scope.qReportDate) ? IX.Date.getDateByFormat($scope.qReportDate, 'yyyyMMdd') : '',
 					keyword : $scope.qKeyword || '',
 					pageNo : _.result(pager, 'pageNo', 1),
-					pageSize : _.result(pager, 'pageSize', 1)
+					pageSize : _.result(pager, 'pageSize', 10)
 				};
 				var callServer = LocalOrderLstService.loadLocalOrderLstData(params);
 				callServer.success(function (data) {
