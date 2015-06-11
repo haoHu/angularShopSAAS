@@ -63,6 +63,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 获取订单数据
 			OrderService.getOrderByOrderKey(urlParams, function (data) {
 				$scope.resetOrderInfo();
+				var _FJZFlag = _.result(urlParams, 'FJZFlag', '');
+				OrderService.updateFJZFlag(_FJZFlag);
 			}, function (data) {
 				// HC.TopTip.addTopTips($rootScope, data);
 				AppAlert.add('danger', _.result(data, 'msg', ''));

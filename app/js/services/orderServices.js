@@ -6,6 +6,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			var self = this;
 			this._OrderData = null;
 			this.OrderFoodHT = null;
+			this.FJZFlag = '';
 
 			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasOrderRemark,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate'.split(','),
 				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
@@ -944,7 +945,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					allFoodRemark : allFoodRemark
 				}, orderHeader, {
 					foodLst : foodLst
-				});
+				}, (_.isEmpty(self.FJZFlag) ? {} : {FJZFlag : self.FJZFlag}));
 				if (actionType == 'JZ' || actionType == 'YJZ') {
 					orderJson = _.extend(orderJson, payParams);
 				}
@@ -1016,6 +1017,11 @@ define(['app', 'uuid'], function (app, uuid) {
 					// foodLst : foodLst
 					foodLst : JSON.stringify(Hualala.Common.formatPostData({foodLst : foodLst}))
 				};
+				if (!_.isEmpty(self.FJZFlag)) {
+					_.extend(postData, {
+						FJZFlag : self.FJZFlag
+					});
+				}
 				IX.Debug.info("Current Food Operation Post Data:");
 				IX.Debug.info(postData);
 				return CommonCallServer.foodOperation(postData);
@@ -1113,6 +1119,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.clear = function () {
 				self._OrderData = null;
+				self.FJZFlag = '';
 				if (self.OrderFoodHT) {
 					self.OrderFoodHT.clear();
 				} else {
@@ -1131,6 +1138,15 @@ define(['app', 'uuid'], function (app, uuid) {
 					return _.result(item, 'printStatus') != '2';
 				});
 				return items;
+			};
+
+			/**
+			 * 更新反结账标志
+			 * @param  {[type]} flag [description]
+			 * @return {[type]}      [description]
+			 */
+			this.updateFJZFlag = function (flag) {
+				self.FJZFlag = flag || '';
 			};
 
 		}]
