@@ -220,6 +220,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
 				$scope.curOrderRemark = OrderService.getOrderRemark();
 				$scope.curOrderRemark = _.isEmpty($scope.curOrderRemark) ? '单注' : $scope.curOrderRemark;
+				$scope.curOrderPayLst = _.result(OrderService.getOrderData(), 'payLst', []);
 				// 重置当前选中订单条目
 				$scope.curSelectedOrderItems = [];
 				IX.Debug.info("Order List Info:");
@@ -252,6 +253,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				$scope.orderHeader = data;
 				OrderService.updateOrderHeader($scope.orderHeader);
 			};
+			// 计算菜品总金额
+			$scope.getOrderFoodAmount = function () {
+				var orderData = OrderService.getOrderData();
+				return _.result(orderData, 'foodAmount', 0);
+			};
 			// 关闭窗口
 			$scope.close = function () {
 				_scope.modalIsOpen(false);
@@ -267,7 +273,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			// 反结账
 			$scope.counterSettlingAccount = function () {
 				var orderData = OrderService.getOrderData();
-				jumpToDinnerPage(_.result(orderData, 'saasOrderkey'), _.result(orderData, 'tableName'));
+				jumpToDinnerPage(_.result(orderData, 'saasOrderKey'), _.result(orderData, 'tableName'));
 				$scope.close();
 			};
 			$scope.resetOrderInfo();

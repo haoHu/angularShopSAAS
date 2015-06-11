@@ -146,6 +146,25 @@
 						</footer>
 					</div>
 				</div>
+				<div class="paylst-plain">
+					<header>
+						<h4>支付科目明细</h4>
+					</header>
+					<div class="paylst-grid">
+						<div class="row" ng-repeat="pay in curOrderPayLst">
+							<label class="col-xs-4 text-right">{{pay.paySubjectName}}:</label>
+							<p class="col-xs-8 text-left">
+								{{pay.debitAmount | mycurrency:"￥"}}
+							</p>
+						</div>
+						<div class="row">
+							<label class="col-xs-4 text-right">菜品金额:</label>
+							<p class="col-xs-8 text-left cash">
+								{{getOrderFoodAmount() | mycurrency:"￥"}}
+							</p>
+						</div>
+					</div>
+				</div>
 			</section>
 		</div>
 		<div class="modal-footer">
