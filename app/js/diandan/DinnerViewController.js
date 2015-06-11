@@ -1121,6 +1121,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									$scope.$broadcast('pay.upVIPCard', null);
 									OrderService.initOrderFoodDB({});
 									_scope.resetOrderInfo();
+									// 3. 打印结账清单
+									Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
 									if (operationMode == 0) {
 										$scope.jumpToTablePage();
 									}
@@ -1147,6 +1149,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							$scope.$broadcast('pay.upVIPCard', null);
 							OrderService.initOrderFoodDB({});
 							_scope.resetOrderInfo();
+							// 3. 打印结账清单
+							Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
 							if (operationMode == 0) {
 								$scope.jumpToTablePage();
 							}
