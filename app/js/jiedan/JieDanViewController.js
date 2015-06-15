@@ -12,6 +12,7 @@ define(['app'], function(app) {
 			$scope.OrderSubTypes = Hualala.TypeDef.OrderTypes;
 			$scope.orderLstData = null;
 			$scope.curOrderSchema = null;
+			$scope.curOrderDetail = null;
 			var updateOrderLstData = function () {
 				$scope.orderLstData = CloudOrderLstService.getOrderLst();
 				var pageParams = CloudOrderLstService.getPaginationParams();
@@ -74,6 +75,14 @@ define(['app'], function(app) {
 				});
 				return _.result(item, 'icon', '');
 			};
+			// 获取订单类型title
+			$scope.getOrderSubTypeTitle = function (order) {
+				var orderSubType = _.result(order, 'orderSubtype');
+				var item = _.find($scope.OrderSubTypes, function (item) {
+					return item.value == orderSubType;
+				});
+				return _.result(item, 'label', '') +  "订单";
+			};
 			// 获取订单状态文字
 			$scope.getOrderStatusLabel = function (order) {
 				var orderStatus = _.result(order, 'orderStatus');
@@ -105,6 +114,10 @@ define(['app'], function(app) {
 				return (orderStatus == 20 && curTime > (orderTimeInSec * 1000)) ? IX.Date.getDateText(orderTimeInSec, (curTime / 1000)) : '';
 			};
 
+			// 判断订单有详情
+			$scope.hasOrderDetail = function (order) {
+				return !_.isEmpty(_.result(order, 'orderKey'));
+			};
 			// 选择当前操作的订单
 			$scope.selectCurOrder = function (order) {
 				$scope.curOrderSchema = order;
@@ -116,11 +129,11 @@ define(['app'], function(app) {
 				// 4. 获取订单详情信息
 				if (acceptTime == 0) {
 					callServer = CloudOrderService.acceptCloudOrder({
-						saasOrderKey : _.result(order, 'orderKey', '')
+						orderKey : _.result(order, 'orderKey', '')
 					});
 				} else {
 					callServer = CloudOrderService.getOrderByOrderKey({
-						saasOrderKey : _.result(order, 'orderKey', '')
+						orderKey : _.result(order, 'orderKey', '')
 					});
 				}
 				callServer.success(function (data) {
@@ -128,6 +141,7 @@ define(['app'], function(app) {
 					if (code == '000') {
 						// 构建订单详情渲染数据
 						AppAlert.add('success', '订单数据加载成功');
+						$scope.curOrderDetail = CloudOrderService.getOrderDetail();
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}

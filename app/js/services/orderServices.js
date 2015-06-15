@@ -2799,6 +2799,43 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.PaySubjectHT = new IX.IListManager();
 
 			/**
+			 * 初始化订单菜品数据字典
+			 * @return {NULL} 
+			 */
+			this.initOrderFoodDB = function (data) {
+				self._OrderData = data;
+				var _HT = self.OrderFoodHT,
+					foods = _.result(self._OrderData, 'foodLst', []);
+				_HT.clear();
+				_.each(foods, function (food) {
+					var itemKey = _.result(food, 'unitCode') + '_' + IX.id();
+					food = _.extend(food, {
+						itemKey : itemKey
+					});
+					// 为字典注册菜品条目数据
+					_HT.register(itemKey, food);
+				});
+			};
+
+			/**
+			 * 初始化支付科目数据
+			 * @param  {[type]} data [description]
+			 * @return {[type]}      [description]
+			 */
+			this.initOrderPaySubjectDB = function (data) {
+				var _HT = self.PaySubjectHT,
+					paySubjects = _.result(self._OrderData, 'payLst', []);
+				_HT.clear();
+				_.each(paySubjects, function (pay) {
+					var itemKey = _.result(pay, 'payName') + '_' + IX.id();
+					_.extend(pay, {
+						itemKey : itemKey
+					});
+					_HT.register(itemKey, pay);
+				});
+			};
+
+			/**
 			 * 确认网上订单
 			 * @param  {[type]} params {saasOrderKey}
 			 * @return {[type]}        [description]
@@ -2809,10 +2846,11 @@ define(['app', 'uuid'], function (app, uuid) {
 				self.OrderFoodHT.clear();
 				self.PaySubjectHT.clear();
 				return CommonCallServer.acceptCloudOrder({
-					orderKey : _.result(params, 'saasOrderKey')
+					orderKey : orderKey
 				}).success(function (data, status, headers, config) {
 					var ret = _.result(data, 'data', {});
 					self.initOrderFoodDB(ret);
+					self.initOrderPaySubjectDB(ret);
 				});
 			};
 
@@ -2822,7 +2860,21 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]}        [description]
 			 */
 			this.getOrderByOrderKey = function (params) {
-
+				self._OrderData = {};
+				var orderKey = _.result(params, 'orderKey');
+				self.OrderFoodHT.clear();
+				self.PaySubjectHT.clear();
+				return CommonCallServer.getCloudOrderDetail({
+					orderKey : orderKey
+				}).success(function (data, status, headers, config) {
+					var ret = _.result(data, 'data', {});
+					self.initOrderFoodDB(ret);
+					self.initOrderPaySubjectDB(ret);
+				});
+			};
+			// 获取网上订单详情
+			this.getOrderDetail = function () {
+				return self._OrderData;
 			}
 		}
 	]);

@@ -85,27 +85,27 @@
 			</footer>
 		</div>
 	</div>
-	<div class="detail-plain">
+	<div class="detail-plain" ng-model="curOrderDetail">
 		<div class="order-info ">
 			<header class="order-header media">
 				<div class="pull-left">
-					<span class="serv-type icon-shanchi"></span>
+					<span class="serv-type {{getOrderSubTypeIcon(curOrderDetail)}}"></span>
 				</div>
 				<div class="media-body">
-					<h4 class="media-heading">闪吃订单<small>待下单</small></h4>
+					<h4 class="media-heading" >{{getOrderSubTypeTitle(curOrderDetail)}}<small ng-if="hasOrderDetail(curOrderDetail)">{{getOrderStatusLabel(curOrderDetail)}}</small></h4>
 					<div class="row">
-						<p class="col-xs-6">订单:
-							<span class="num">No.1254375</span>
-							<span class="date">2016/06/14 20:00</span>
+						<p class="col-xs-6" ng-if="hasOrderDetail(curOrderDetail)">订单:
+							<span class="num">No.{{curOrderDetail.orderID}}</span>
+							<span class="date">{{curOrderDetail.orderTime | formatDateTimeStr: 'yyyy/MM/dd HH:mm'}}</span>
 						</p>
-						<p class="col-xs-6">顾客:
-							<span class="name">胡皓</span>
-							<span class="sex">先生</span>
-							<span class="mobile">13322222222</span>
-							<span class="num">2人</span>
+						<p class="col-xs-6" ng-if="hasOrderDetail(curOrderDetail)">顾客:
+							<span class="name">{{curOrderDetail.userName}}</span>
+							<span class="sex">{{curOrderDetail.userSex | gender}}</span>
+							<span class="mobile">{{curOrderDetail.userMobile}}</span>
+							<span class="num">{{curOrderDetail.person || 0}}人</span>
 						</p>
-						<address class="col-xs-12 bg-primary"><strong>配送地址:</strong>西直门西环广场，T1 2202</address>
-						<p class="col-xs-12">订单备注信息，订单备注信息，订单备注信息，</p>
+						<address class="col-xs-12 bg-primary" ng-if="curOrderDetail.takeoutAddress.length > 0"><strong>配送地址:</strong>{{curOrderDetail.takeoutAddress}}</address>
+						<p class="col-xs-12" ng-if="curOrderDetail.orderRemark">{{curOrderDetail.orderRemark}}</p>
 					</div>
 				</div>
 			</header>
@@ -122,83 +122,20 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
+							<tr ng-repeat="food in curOrderDetail.foodLst" id="food.unitCode">
+								<th>{{food.foodName || ''}}</th>
+								<th>{{parseFloat(food.number) || ''}}</th>
+								<th>{{food.unit || ''}}</th>
+								<th>{{food.payPrice | mycurrency:"￥"}}</th>
+								<th>{{food.foodRemark || ''}}</th>
+							</tr>
+							<!-- <tr>
 								<th>小成光麦乳精</th>
 								<th>1</th>
 								<th>杯</th>
 								<th>8</th>
 								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
-							<tr>
-								<th>小成光麦乳精</th>
-								<th>1</th>
-								<th>杯</th>
-								<th>8</th>
-								<th>加热</th>
-							</tr>
+							</tr> -->
 
 						</tbody>
 					</table>
@@ -208,40 +145,23 @@
 						<h4>支付科目明细</h4>
 					</header>
 					<div class="paylst-grid">
-						<div class="row" >
+						<div class="row" ng-repeat="pay in curOrderDetail.payLst">
+							<label class="col-xs-5 text-right">{{pay.payName}}:</label>
+							<p class="col-xs-7 text-left">
+								{{pay.payAmount | mycurrency:"￥"}}
+							</p>
+						</div>
+						<!-- <div class="row" >
 							<label class="col-xs-5 text-right">科目1:</label>
 							<p class="col-xs-7 text-left">
 								{{pay.debitAmount | mycurrency:"￥"}}
 							</p>
 						</div>
-						<div class="row" >
-							<label class="col-xs-5 text-right">科目2:</label>
-							<p class="col-xs-7 text-left">
-								{{pay.debitAmount | mycurrency:"￥"}}
-							</p>
-						</div>
-						<div class="row" >
-							<label class="col-xs-5 text-right">科目3:</label>
-							<p class="col-xs-7 text-left">
-								{{pay.debitAmount | mycurrency:"￥"}}
-							</p>
-						</div>
-						<div class="row" >
-							<label class="col-xs-5 text-right">科目4:</label>
-							<p class="col-xs-7 text-left">
-								{{pay.debitAmount | mycurrency:"￥"}}
-							</p>
-						</div>
-						<div class="row" >
-							<label class="col-xs-5 text-right">科目5:</label>
-							<p class="col-xs-7 text-left">
-								{{pay.debitAmount | mycurrency:"￥"}}
-							</p>
-						</div>
+						 -->
 						<div class="row">
 							<label class="col-xs-5 text-right">菜品金额:</label>
 							<p class="col-xs-7 text-left cash">
-								{{getOrderFoodAmount() | mycurrency:"￥"}}
+								{{(curOrderDetail.orderTotalAmount || 0) | mycurrency:"￥"}}
 							</p>
 						</div>
 					</div>

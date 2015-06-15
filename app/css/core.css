@@ -1325,3 +1325,18 @@ body {
   background-color: #336699 !important;
   color: #ffffff;
 }
+.section-jiedan .order-info .num,
+.section-jiedan .orderlst-body .num,
+.section-jiedan .order-info .date,
+.section-jiedan .orderlst-body .date,
+.section-jiedan .order-info .name,
+.section-jiedan .orderlst-body .name,
+.section-jiedan .order-info .sex,
+.section-jiedan .orderlst-body .sex,
+.section-jiedan .order-info .mobile,
+.section-jiedan .orderlst-body .mobile,
+.section-jiedan .order-info .num,
+.section-jiedan .orderlst-body .num {
+  display: inline-block;
+  margin-right: 1rem;
+}

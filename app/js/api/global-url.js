@@ -56,7 +56,9 @@ define(['IX'], function () {
 		// 获取云端订单列表
 		["getCloudOrderLst", "/saas/order/getCloudOrderLst.ajax", "", "POST"],
 		// 确认网上订单服务
-		["acceptCloudOrder", "/saas/order/accept.ajax", "", "POST"]
+		["acceptCloudOrder", "/saas/order/accept.ajax", "", "POST"],
+		// 根据制定订单key获取网上订单详情
+		["getCloudOrderDetail", "/saas/order/getCloudOrderDetail.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;
