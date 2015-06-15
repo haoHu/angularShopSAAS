@@ -182,6 +182,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					});
 			};
 
+
 			/**
 			 * 获取单头信息数据
 			 * @return {[type]} [description]
@@ -2726,6 +2727,103 @@ define(['app', 'uuid'], function (app, uuid) {
 					totalSize : totalSize
 				};
 			};
+		}
+	]);
+
+	// 网上订单列表服务
+	app.service('CloudOrderLstService', [
+		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			var orderHT = new IX.IListManager(),
+				totalSize = 0,
+				pageNo = 1,
+				pageSize = 6;
+
+			// 初始化列表数据
+			var initListData = function (records) {
+				orderHT.clear();
+				_.each(records, function (order) {
+					var saasOrderKey = _.result(order, 'orderKey');
+					orderHT.register(saasOrderKey, order);
+				});
+			};
+
+			var updatePageParams = function (_pageNo, _pageSize, _totalSize) {
+				pageNo = _pageNo;
+				pageSize = _pageSize;
+				totalSize = _totalSize;
+			};
+			// 获取云端订单列表数据
+			this.loadCloudOrderLstData = function (params) {
+				var callServer = CommonCallServer.getCloudOrderLst(params);
+				callServer.success(function (data) {
+					var _d = _.result(data, 'data'),
+						records = _.result(_d, 'orderLst'),
+						recordCount = _.result(_d, 'orderCount', 0);
+					updatePageParams(_.result(params, 'pageNo', 1), _.result(params, 'pageSize', 6), recordCount);
+					initListData(records);
+				});
+				return callServer;
+			};
+			// 获取当前页搜索订单结果
+			this.getOrderLst = function () {
+				return orderHT.getAll();
+			};
+
+			// 根据saasOrderKey获取订单数据
+			this.getOrderBySaasOrderKey = function (saasOrderKey) {
+				return orderHT.get(saasOrderKey);
+			};
+
+			// 获取分页信息
+			this.getPaginationParams = function () {
+				return {
+					pageNo : pageNo,
+					pageSize : pageSize,
+					totalSize : totalSize
+				};
+			};
+		}
+	]);
+
+	// 网上订单数据服务
+	app.service('CloudOrderService', [
+		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
+			IX.ns('Hualala');
+			var self = this;
+			this._OrderData = null;
+			this.OrderFoodHT = new IX.IListManager();
+			this.PaySubjectHT = new IX.IListManager();
+
+			/**
+			 * 确认网上订单
+			 * @param  {[type]} params {saasOrderKey}
+			 * @return {[type]}        [description]
+			 */
+			this.acceptCloudOrder = function (params) {
+				self._OrderData = {};
+				var orderKey = _.result(params, 'orderKey');
+				self.OrderFoodHT.clear();
+				self.PaySubjectHT.clear();
+				return CommonCallServer.acceptCloudOrder({
+					orderKey : _.result(params, 'saasOrderKey')
+				}).success(function (data, status, headers, config) {
+					var ret = _.result(data, 'data', {});
+					self.initOrderFoodDB(ret);
+				});
+			};
+
+			/**
+			 * 根据订单号获取网上订单数据
+			 * @param  {[type]} params [description]
+			 * @return {[type]}        [description]
+			 */
+			this.getOrderByOrderKey = function (params) {
+
+			}
 		}
 	]);
 	

@@ -1,4 +1,286 @@
-<section ng-controller="JieDanViewController">
-    <p app-color="blue">{{page.heading}}</p>
-    <p>This is the '接单' page</p>
+<section  class="section section-jiedan" ng-controller="JieDanViewController">
+	<div class="schame-plain">
+		<div class="orderlst">
+			<header class="orderlst-header row">
+				<div class="input-group">
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{getFilterLabel(qOrderSubType, OrderSubTypes)}}<span class="caret"></span></button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="item in OrderSubTypes" ng-class="{active : item.value == qOrderSubType}" ng-click="filterByOrderSubType(item)">
+								<a>{{item.label}}</a>
+							</li>
+						</ul>
+					</div>
+					<input type="text" class="form-control input-lg" placeholder="订单号、手机、桌台、凭证" ng-keyup="queryByKeyword($event)" ng-model="qKeyword"/>
+					<span class="input-group-btn" ng-click="queryByKeyword($event)"><button class="btn btn-default btn-lg" type="button">搜索</button></span>
+				</div>
+				
+			</header>
+			<div class="orderlst-body">
+				<div class="table-responsive">
+					<table class="table table-striped table-hover orderlst-grid">
+						<tbody>
+							<tr ng-repeat="order in orderLstData" class="{{getRefundClz(order)}} {{getUnreadedClz(order)}} {{getActiveClz(order)}}" ng-click="selectCurOrder(order)">
+								<td>
+									<span class="serv-type {{getOrderSubTypeIcon(order)}}"></span>
+								</td>
+								<td>
+									<p>
+										<span class="name">{{order.userName}}</span>
+										<span class="sex">{{order.userSex | gender}}</span>
+										<span class="mobile">{{order.userMobile}}</span>
+										<span class="num">No.{{order.orderID}}</span>
+									</p>
+									<p>
+										<span class="num">{{order.orderTotal | mycurrency:'￥'}}</span>
+										<span class="date">{{order.orderTime | formatDateTimeStr: 'yyyy/MM/dd HH:mm'}}</span>
+										<span class="num">{{order.person || 0}}人</span>
+									</p>
+									<address ng-if="order.takeoutAddress.length > 0"><strong>配送地址:</strong>{{order.takeoutAddress}}</address>
+									<p ng-if="order.orderRemark.length > 0">{{order.orderRemark}}</p>
+								</td>
+								<td>
+									<div class="status" ng-class="{hidden : order.acceptTime == 0}">{{getOrderStatusLabel(order)}}</div>
+									<div class="date" ng-class="{hidden : order.acceptTime == 0}">{{getTimeoutStr(order)}}</div>
+								</td>
+							</tr>
+
+							<!-- <tr class="active">
+								<td>
+									<span class="serv-type icon-shanchi"></span>
+								</td>
+								<td>
+									<p>
+										<span class="name">胡皓</span>
+										<span class="sex">先生</span>
+										<span class="mobile">1332222222</span>
+										<span class="num">No.12300</span>
+									</p>
+									<p>
+										<span class="num">￥1111.2</span>
+										<span class="date">2015-06-09 20:00</span>
+										<span class="num">2人</span>
+									</p>
+									<address><strong>配送地址:</strong>西直门西环广场，T1 2202</address>
+									<p>订单备注信息，订单备注信息，订单备注信息，</p>
+								</td>
+								<td>
+									<div class="status">待下单</div>
+									<div class="date">2分钟</div>
+								</td>
+							</tr> -->
+							
+
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<footer class="orderlst-footer">
+				<div class="pager-info">
+					<p>共:{{totalSize}}条记录</p>
+					<p>页码:{{curPageNo}} / {{numPages}}<p>
+				</div>
+				<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
+			</footer>
+		</div>
+	</div>
+	<div class="detail-plain">
+		<div class="order-info ">
+			<header class="order-header media">
+				<div class="pull-left">
+					<span class="serv-type icon-shanchi"></span>
+				</div>
+				<div class="media-body">
+					<h4 class="media-heading">闪吃订单<small>待下单</small></h4>
+					<div class="row">
+						<p class="col-xs-6">订单:
+							<span class="num">No.1254375</span>
+							<span class="date">2016/06/14 20:00</span>
+						</p>
+						<p class="col-xs-6">顾客:
+							<span class="name">胡皓</span>
+							<span class="sex">先生</span>
+							<span class="mobile">13322222222</span>
+							<span class="num">2人</span>
+						</p>
+						<address class="col-xs-12 bg-primary"><strong>配送地址:</strong>西直门西环广场，T1 2202</address>
+						<p class="col-xs-12">订单备注信息，订单备注信息，订单备注信息，</p>
+					</div>
+				</div>
+			</header>
+			<div class="order-body">
+				<div class="foodlst-box table-responsive">
+					<table class="table table-bordered table-striped table-condensed">
+						<thead>
+							<tr>
+								<th>品名</th>
+								<th>数量</th>
+								<th>规格</th>
+								<th>价格</th>
+								<th>要求</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+							<tr>
+								<th>小成光麦乳精</th>
+								<th>1</th>
+								<th>杯</th>
+								<th>8</th>
+								<th>加热</th>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+				<div class="paylst-box">
+					<header>
+						<h4>支付科目明细</h4>
+					</header>
+					<div class="paylst-grid">
+						<div class="row" >
+							<label class="col-xs-5 text-right">科目1:</label>
+							<p class="col-xs-7 text-left">
+								{{pay.debitAmount | mycurrency:"￥"}}
+							</p>
+						</div>
+						<div class="row" >
+							<label class="col-xs-5 text-right">科目2:</label>
+							<p class="col-xs-7 text-left">
+								{{pay.debitAmount | mycurrency:"￥"}}
+							</p>
+						</div>
+						<div class="row" >
+							<label class="col-xs-5 text-right">科目3:</label>
+							<p class="col-xs-7 text-left">
+								{{pay.debitAmount | mycurrency:"￥"}}
+							</p>
+						</div>
+						<div class="row" >
+							<label class="col-xs-5 text-right">科目4:</label>
+							<p class="col-xs-7 text-left">
+								{{pay.debitAmount | mycurrency:"￥"}}
+							</p>
+						</div>
+						<div class="row" >
+							<label class="col-xs-5 text-right">科目5:</label>
+							<p class="col-xs-7 text-left">
+								{{pay.debitAmount | mycurrency:"￥"}}
+							</p>
+						</div>
+						<div class="row">
+							<label class="col-xs-5 text-right">菜品金额:</label>
+							<p class="col-xs-7 text-left cash">
+								{{getOrderFoodAmount() | mycurrency:"￥"}}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="order-footer">
+				<div class="btn-group btn-group-justified" role="group">
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">下单</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">退单</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">退款</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">打印退款凭证</button></div>
+				</div>
+				<div class="btn-group btn-group-justified" role="group">
+					
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">确认送出</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">确认送达</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">上一条</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">下一条</button></div>
+				</div>
+				
+			</footer>
+			<!-- <footer class="order-footer">
+				<div class="btn-group btn-group-justified" role="group">
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">下单</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">退单</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">退款</button></div>
+				</div>
+				<div class="btn-group btn-group-justified" role="group">
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">打印退款凭证</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">确认送出</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">确认送达</button></div>
+					
+				</div>
+				<div class="btn-group btn-group-justified" role="group">
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">上一条</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">下一条</button></div>
+					<div class="btn-group" role="group"><button type="button" class="btn btn-default btn-lg">返回</button></div>
+				</div>
+			</footer> -->
+		</div>
+	</div>
 </section>

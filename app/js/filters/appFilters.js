@@ -87,4 +87,17 @@ define(['app'], function (app) {
 		};
 		return filterFn;
 	});
+
+	// 用户性别显示
+	app.filter("gender", function() {
+		IX.ns("Hualala");
+		var filterFn = function (v) {
+			var items = Hualala.TypeDef.GENDER;
+			var gender = _.find(items, function (item) {
+				return _.result(item, 'value') == v;
+			});
+			return _.result(gender, 'label', '');
+		};
+		return filterFn;
+	});
 });

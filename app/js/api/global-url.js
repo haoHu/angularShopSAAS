@@ -52,7 +52,11 @@ define(['IX'], function () {
 		["tableOperation", "/saas/order/tableOperation.ajax", "", "POST"],
 
 		// 获取订单列表
-		["getLocalOrderLst", "/saas/order/getLocalOrderLst.ajax", "", "POST"]
+		["getLocalOrderLst", "/saas/order/getLocalOrderLst.ajax", "", "POST"],
+		// 获取云端订单列表
+		["getCloudOrderLst", "/saas/order/getCloudOrderLst.ajax", "", "POST"],
+		// 确认网上订单服务
+		["acceptCloudOrder", "/saas/order/accept.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

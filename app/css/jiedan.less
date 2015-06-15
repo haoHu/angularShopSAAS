@@ -1,0 +1,100 @@
+.section-jiedan {
+	display: -webkit-box; -webkit-box-orient : horizontal; -webkit-box-pack : justify; -webkit-box-align : stretch;
+	position : absolute; top : 0; left : 0; right : 0; bottom : 0;
+	.schame-plain, .detail-plain, .orderlst {
+		position : relative; height : 100%; height : 100%;
+	}
+	.schame-plain {
+		-webkit-box-flex : 382; border-right : 1px solid @xBaseBorderColor;
+		// outline: 1px solid #f00; background : #fff;
+	}
+	.detail-plain {
+		-webkit-box-flex : 618; 
+		// outline : 1px solid #0f0; background : #fff;
+	}
+	.orderlst {
+		display: -webkit-box; position : absolute; top : 0; bottom : 0; left : 0; right : 0;
+		-webkit-box-orient : vertical; -webkit-box-pack : justify; -webkit-box-align : stretch;
+		background-color: #eee;
+		.orderlst-header {
+			// -webkit-box-flex : 1;
+			max-height: 135px;
+		}
+		.orderlst-body {
+			-webkit-box-flex : 1; overflow: auto;
+			// -webkit-box-ordinal-group : 1;
+		}
+		.orderlst-footer {
+			max-height: 6rem;
+			// -webkit-box-flex : 1;
+			// -webkit-box-ordinal-group : 2;
+		}
+	}
+	.orderlst-header .dropdown-menu > li > a {
+		display : block; cursor : pointer; line-height: 3rem; padding : .5rem 2rem; white-space: nowrap; color : #333;
+		&:active, &.active {
+			background-color: @xDarkBtnBG;
+		}
+	}
+	.icon-shanchi,.icon-waimai, .icon-ziti, .icon-dingzuo, .icon-zizhu {
+		width : 32px; height : 32px;
+		
+	}
+	.icon-waimai {
+		.x-icon-32_waimai();
+	}
+	.icon-ziti {
+		.x-icon-32_ziti();
+	}
+	.icon-shanchi {
+		.x-icon-32_shanchi();
+	}
+	.icon-dingzuo {
+		.x-icon-32_dingzuo();
+	}
+	.icon-zizhu {
+		.x-icon-32_helpself();
+	}
+	.serv-type {font-size: 3rem;}
+	p, address {margin: 0 0 3px; padding : 0; max-width : 20rem; white-space: nowrap; overflow: hidden; text-overflow : ellipsis;}
+	.orderlst .table {
+		td {vertical-align: middle;}
+	}
+	.orderlst-footer {
+		padding-left : 8rem; position: relative;
+		.pager-info {
+			position : absolute; height : 4rem; top : 50%; left : 0; margin-top : -2rem;
+		}
+	}
+	.order-info {
+		display: -webkit-box; position : absolute; top : 0; bottom : 0; left : 0; right : 0;
+		-webkit-box-orient : vertical; -webkit-box-pack : justify; -webkit-box-align : stretch;
+		.order-header {
+			max-height: 10rem;
+		}
+		.order-body {
+			-webkit-box-flex : 1; position: relative;
+			.foodlst-box, .paylst-box {
+				position : absolute; left : 0; right : 0; top : 0; bottom : 0;
+				overflow: hidden; border : 1px solid @xBaseBorderColor;
+			}
+			.paylst-box {left : 60%;}
+			.foodlst-box {width : 60%;}
+		}
+		.order-footer {
+			max-height: 11.25rem;
+		}
+		p, address {max-width: inherit;}
+		> .media {padding : .5rem;}
+
+	}
+
+	.orderlst-grid {
+		.unreaded {font-weight: bold;}
+		.refunded {color : #3C763D!important;}
+		tr.active > td {
+			background-color: @xDarkBtnActiveBG!important; color : @xDarkBtnActiveColor;
+		}
+	}
+	
+}

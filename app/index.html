@@ -18,13 +18,16 @@
 					<nav>
 						<ul class="nav nav-pills nav-stacked">
 							<li ng-class="{active: curNav=='/jiedan'}"><a href="#/jiedan">接单</a></li>
-							<li ng-class="{active: curNav=='/dinner/table'}" ng-show="ShopOperationMode == '0'">
+							<!-- <li ng-class="{active: curNav=='/dinner/table'}" ng-if="ShopOperationMode == '0'">
 								<a href="#/dinner/table">点单</a>
 							</li>
-							<li ng-class="{active: curNav=='/snack'}" ng-show="ShopOperationMode == '1'">
+							<li ng-class="{active: curNav=='/snack'}" ng-if="ShopOperationMode == '1'">
 								<a href="#/snack">点单</a>
+							</li> -->
+							<li ng-class="{active: curNav == (ShopOperationMode == '0' ? '/dinner/table' : '/snack')}">
+								<a href="{{ShopOperationMode == '0' ? '#/dinner/table' : '#/snack'}}">点单</a>
 							</li>
-							<li ng-class="{active: curNav=='/dingdan'}"><a href="#/dingdan">订单</a></li>
+							<li ng-class="{active: curNav=='/dingdan'}"><a href="#/dingdan">账单</a></li>
 							<li ng-class="{active: curNav=='/huiyuan'}"><a href="#/huiyuan">会员</a></li>
 							<li ng-class="{active: curNav=='/baobiao'}"><a href="#/baobiao">报表</a></li>
 							<li ng-class="{active: curNav=='/more'}"><a href="#/more">更多</a></li>

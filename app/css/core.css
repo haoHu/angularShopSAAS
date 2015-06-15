@@ -37,6 +37,7 @@ body {
 #site_body {
   height: 100%;
   margin-left: 6rem;
+  position: relative;
 }
 .site-nav .logo {
   display: block;
@@ -1157,4 +1158,170 @@ body {
 .orderdetail-modal .modal-dialog .section-diandan .paylst-plain .paylst-grid .row:last-child > .cash {
   color: #f00;
   font-weight: bold;
+}
+.section-jiedan {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: justify;
+  -webkit-box-align: stretch;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.section-jiedan .schame-plain,
+.section-jiedan .detail-plain,
+.section-jiedan .orderlst {
+  position: relative;
+  height: 100%;
+}
+.section-jiedan .schame-plain {
+  -webkit-box-flex: 382;
+  border-right: 1px solid #e6e6e6;
+}
+.section-jiedan .detail-plain {
+  -webkit-box-flex: 618;
+}
+.section-jiedan .orderlst {
+  display: -webkit-box;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  -webkit-box-orient: vertical;
+  -webkit-box-pack: justify;
+  -webkit-box-align: stretch;
+  background-color: #eee;
+}
+.section-jiedan .orderlst .orderlst-header {
+  max-height: 135px;
+}
+.section-jiedan .orderlst .orderlst-body {
+  -webkit-box-flex: 1;
+  overflow: auto;
+}
+.section-jiedan .orderlst .orderlst-footer {
+  max-height: 6rem;
+}
+.section-jiedan .orderlst-header .dropdown-menu > li > a {
+  display: block;
+  cursor: pointer;
+  line-height: 3rem;
+  padding: .5rem 2rem;
+  white-space: nowrap;
+  color: #333;
+}
+.section-jiedan .orderlst-header .dropdown-menu > li > a:active,
+.section-jiedan .orderlst-header .dropdown-menu > li > a.active {
+  background-color: #99ccff;
+}
+.section-jiedan .icon-shanchi,
+.section-jiedan .icon-waimai,
+.section-jiedan .icon-ziti,
+.section-jiedan .icon-dingzuo,
+.section-jiedan .icon-zizhu {
+  width: 32px;
+  height: 32px;
+}
+.section-jiedan .icon-waimai {
+  /*width: 32px; height:32px;*/
+  background-position: -200px -120px;
+}
+.section-jiedan .icon-ziti {
+  /*width: 32px; height:32px;*/
+  background-position: -240px 0px;
+}
+.section-jiedan .icon-shanchi {
+  /*width: 32px; height:32px;*/
+  background-position: -200px -40px;
+}
+.section-jiedan .icon-dingzuo {
+  /*width: 32px; height:32px;*/
+  background-position: -120px -40px;
+}
+.section-jiedan .icon-zizhu {
+  /*width: 32px; height:32px;*/
+  background-position: -120px -120px;
+}
+.section-jiedan .serv-type {
+  font-size: 3rem;
+}
+.section-jiedan p,
+.section-jiedan address {
+  margin: 0 0 3px;
+  padding: 0;
+  max-width: 20rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.section-jiedan .orderlst .table td {
+  vertical-align: middle;
+}
+.section-jiedan .orderlst-footer {
+  padding-left: 8rem;
+  position: relative;
+}
+.section-jiedan .orderlst-footer .pager-info {
+  position: absolute;
+  height: 4rem;
+  top: 50%;
+  left: 0;
+  margin-top: -2rem;
+}
+.section-jiedan .order-info {
+  display: -webkit-box;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  -webkit-box-orient: vertical;
+  -webkit-box-pack: justify;
+  -webkit-box-align: stretch;
+}
+.section-jiedan .order-info .order-header {
+  max-height: 10rem;
+}
+.section-jiedan .order-info .order-body {
+  -webkit-box-flex: 1;
+  position: relative;
+}
+.section-jiedan .order-info .order-body .foodlst-box,
+.section-jiedan .order-info .order-body .paylst-box {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  border: 1px solid #e6e6e6;
+}
+.section-jiedan .order-info .order-body .paylst-box {
+  left: 60%;
+}
+.section-jiedan .order-info .order-body .foodlst-box {
+  width: 60%;
+}
+.section-jiedan .order-info .order-footer {
+  max-height: 11.25rem;
+}
+.section-jiedan .order-info p,
+.section-jiedan .order-info address {
+  max-width: inherit;
+}
+.section-jiedan .order-info > .media {
+  padding: .5rem;
+}
+.section-jiedan .orderlst-grid .unreaded {
+  font-weight: bold;
+}
+.section-jiedan .orderlst-grid .refunded {
+  color: #3C763D!important;
+}
+.section-jiedan .orderlst-grid tr.active > td {
+  background-color: #336699 !important;
+  color: #ffffff;
 }

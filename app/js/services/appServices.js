@@ -142,7 +142,7 @@ define(['app'], function (app) {
 						controller = 'AppConfirmController',
 						templateUrl = 'js/services/confirm.html',
 						template = [
-							'<div class="modal-body bg-warning text-warning">',
+							'<div class="modal-body text-warning">',
 								'<div class="media">',
 									'<div class="pull-left">',
 										'<span class="media-object">',

@@ -15,7 +15,10 @@ define([], function () {
 				templateUrl : 'js/jiedan/jiedan.html',
 				dependencies : [
 					'jiedan/JieDanViewController',
-					'directives/appDirectives'
+					'directives/appDirectives',
+					'services/appServices',
+					'services/orderServices',
+					'filters/appFilters'
 				]
 			},
 			// 快餐点单

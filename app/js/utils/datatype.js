@@ -15,6 +15,26 @@
 })();
 (function () {
 	IX.ns("Hualala.TypeDef");
+
+	/**
+	 * 性别数据类型
+	 * @type {Array}
+	 */
+	Hualala.TypeDef.GENDER = [
+		{value : '0', valueStr : 'female', label : '女士'},
+		{value : '1', valueStr : 'male', label : '先生'},
+		{value : '2', valueStr : 'unkonwn', label : '未知'}
+	];
+
+	Hualala.TypeDef.OrderTypes = [
+		{value : '0', name : "all", label : "全部", icon : ""},
+		{value : '10', name : "dingzuo", label : "订座点菜", icon : "icon-dingzuo"},
+		{value : '11', name : "shanchi", label : "闪吃", icon : "icon-shanchi"},
+		{value : '20', name : "waimai", label : "外卖", icon : "icon-waimai"},
+		{value : '21', name : "ziti", label : "自提", icon : "icon-ziti"},
+		{value : '41', name : "zizhu", label : "店内自助", icon : "icon-zizhu"}
+	];
+
 	Hualala.TypeDef.ResponseCodes = {
 		"000" : '服务成功',
 		"404" : '没有找到文件或目录',
