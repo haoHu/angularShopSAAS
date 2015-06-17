@@ -240,16 +240,16 @@ define(['app'], function(app) {
 			// 获取上一条、下一条订单记录
 			var getNextOrder = function (act) {
 				var step = act == 'prev' ? -1 : 1;
-				var _pageNo = $scope.curPageNo,
-					_totalSize = $scope.totalSize,
-					_pageSize = $scope.pageSize,
+				var _pageNo = parseInt($scope.curPageNo),
+					_totalSize = parseInt($scope.totalSize),
+					_pageSize = parseInt($scope.pageSize),
 					_pageCount = Math.ceil(_totalSize / _pageSize);
 				var curOrder = $scope.curOrderDetail;
 				var idx = CloudOrderLstService.indexOfLst(_.result(curOrder, 'orderKey'));
 				if (idx == -1) return;
-				var nextPageNo = Math.ceil((((_pageNo - 1) * _pageSize + idx + 1) + step) / _pageSize);
-				if (nextPageNo > _pageCount || nextPageNo == 0 || 
-					(nextPageNo == _pageCount && CloudOrderLstService.getOrderLstCount() == (idx + step))) {
+				var nextIdx = (_pageNo - 1) * _pageSize + idx + 1 + step,
+					nextPageNo = Math.ceil(nextIdx / _pageSize);
+				if (nextPageNo > _pageCount || nextPageNo == 0 || nextIdx > _totalSize) {
 					AppAlert.add('danger', act == 'prev' ? '这是第一条!' : '这是最后一条!');
 				} else if (nextPageNo != _pageNo) {
 					var _i = nextPageNo > _pageNo ? 0 : (_pageSize - 1);
