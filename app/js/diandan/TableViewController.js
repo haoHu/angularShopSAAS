@@ -657,19 +657,6 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	]);
 
 
-	// 桌台选择菜单
-    app.directive('tablemenu', [
-        "$rootScope", "$filter", "OrderService",
-        function ($rootScope, $filter, OrderService) {
-            return {
-                restrict : 'E',
-                templateUrl : 'js/diandan/tablemenu.html',
-                replace : true,
-                link : function (scope, el, attr) {
-                    
-                }
-            }
-        }
-    ]);
+	
     
 });

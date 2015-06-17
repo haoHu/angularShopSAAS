@@ -276,7 +276,7 @@ define(['app'], function(app) {
 							});
 						} else {
 							controller = "SubmitCloudOrderController";
-	                        templateUrl = "js/diandan/changeTable.html";
+	                        templateUrl = "js/jiedan/chooseTable.html";
 	                        windowClass = "table-modal";
 						}
 						
@@ -364,17 +364,7 @@ define(['app'], function(app) {
 		}
 	]);
 
-	// 下单选台操作控制器
-	app.controller('SubmitCloudOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'CloudOrderService', 'AppAlert', 'AppConfirm',
-		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, CloudOrderService, AppAlert, AppConfirm) {
-			// 关闭窗口
-			$scope.close = function () {
-				$modalInstance.close();
-			};
 
-		}
-	]);
 	// 退单原因选择控制器
 	app.controller('RejectCloudOrderCauseController', [
 		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'CloudOrderService', 'OrderNoteService', 'AppAlert', 'AppConfirm',
@@ -466,10 +456,263 @@ define(['app'], function(app) {
 	app.controller('ConfirmTakeoutController', [
 		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'CloudOrderService', 'AppAlert', 'AppConfirm',
 		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, CloudOrderService, AppAlert, AppConfirm) {
+			var callServer = null;
+			$scope.takeoutRemark = '';
+
 			// 关闭窗口
 			$scope.close = function () {
 				$modalInstance.close();
 			};
+			$scope.save = function () {
+				IX.Debug.info("Order Takeout Remark:");
+				IX.Debug.info($scope.takeoutRemark);
+				callServer = CloudOrderService.confirmTakeout($scope.takeoutRemark);
+				callServer.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						AppAlert.add('success', '确认送出成功!');
+						_scope.refreshPage(function () {
+							$modalInstance.close();
+						});
+					} else {
+						AppAlert.add('danger', _.result(data, 'msg', ''));
+					}
+				}).error(function (data) {
+					AppAlert.add('danger', '确认送出服务失败!');
+				});
+			};
+		}
+	]);
+
+	// 下单选台操作控制器
+	app.controller('SubmitCloudOrderController', [
+		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'CloudOrderService', 'AppAlert', 'AppConfirm',
+		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, CloudOrderService, AppAlert, AppConfirm) {
+			IX.ns("Hualala");
+			var HC = Hualala.Common;
+			// HC.TopTip.reset($rootScope);
+			// $scope.closeTopTip = function (index) {
+			// 	HC.TopTip.closeTopTip($rootScope, index);
+			// };
+			var allTableLstPromise = TableService.loadTableStatusLst();
+			
+			// 桌台名称搜索关键字
+			$scope.qTblName = '';
+			// 桌台状态过滤字段
+			$scope.qTblStatus = 0;
+			
+			// 当前选中桌台区域名
+			$scope.curAreaName = '';
+			// 桌台区域数据
+			$scope.TableAreas = [];
+			// 格式化区域选项的渲染数据
+			var mapTableAreaRenderData = function (areas) {
+				var ret = _.map(areas, function (area) {
+					return _.extend(area, {
+						value : _.result(area, 'areaName'),
+						label : _.result(area, '__ID__') == 'all_tables' ? '全部' : _.result(area, 'areaName')
+					});
+				});
+				return ret;
+			};
+			// 获取当前的桌台信息
+			var getCurTables = function () {
+				// 获取所有桌台数据
+				var tables = TableService.filterTableLst($scope.qTblStatus, $scope.curAreaName);
+				$scope.curTables = tables;
+			};
+			allTableLstPromise.success(function (data) {
+				var areas = TableService.getTableAreas();
+				getCurTables();
+				$scope.TableAreas = mapTableAreaRenderData(areas);
+				
+			});
+			/**
+			 * 选择桌台区域
+			 * @param  {[type]} v areaName
+			 * @return {[type]}   [description]
+			 */
+			$scope.selectTableArea = function (v) {
+				$scope.curAreaName = v;
+				// 获取指定区域桌台状态数据
+				var callServer = TableService.loadTableStatusLst({
+					areaName : $scope.curAreaName
+				});
+				callServer.success(function (data) {
+					// var areas = TableService.getTableAreas();
+					getCurTables();
+					// $scope.TableAreas = mapTableAreaRenderData(areas);
+				});
+				
+			};
+			/**
+			 * 根据桌台状态过滤桌台
+			 * @param  {[type]} s [description]
+			 * @return {[type]}   [description]
+			 */
+			$scope.queryTablesByStatus = function (s) {
+				var callServer = TableService.loadTableStatusLst({
+					areaName : $scope.curAreaName
+				});
+				callServer.success(function (data) {
+					getCurTables();
+				});
+			};
+			/**
+			 * 选择桌台动作
+			 * @param  {[type]} v [description]
+			 * @return {[type]}   [description]
+			 */
+			$scope.selectTableName = function (table) {
+				var tableKey = _.result(table, 'itemID');
+				$scope.curTableID = tableKey;
+				$scope.curTableName = _.result(table, 'tableName', '');
+				// 获取当前选中桌台状态数据
+				var callServer = TableService.loadTableStatusLst({
+					areaName : $scope.curAreaName,
+					tableName : $scope.curTableName
+				});
+				callServer.success(function (data) {
+					getCurTables();
+					AppConfirm.add({
+						title : '下单操作',
+						msg : "是否下单到此桌台?",
+						yesFn : function () {
+							var callServer = CloudOrderService.submit($scope.curTableName);
+							callServer.success(function (data) {
+								var code = _.result(data, 'code');
+								if (code == '000') {
+									AppAlert.add('success', '下单成功');
+									$scope.queryOrderLst({
+										pageNo : $scope.curPageNo,
+										pageSize : $scope.pageSize
+									});
+									$modalInstance.close();
+								} else {
+									AppAlert.add('danger', _.result(data, 'msg', ''));
+								}
+							}).error(function (data) {
+								AppAlert.add('danger', '请求失败');
+							});
+						},
+						noFn : function () {
+							$modalInstance.close();
+						}
+					});
+				});
+			};
+			/**
+			 * 快捷选择桌台
+			 * @return {[type]} [description]
+			 */
+			$scope.quickSelectTable = function ($event, tableName) {
+				var evtType = $event.type, keyCode = $event.keyCode;
+				if (evtType == 'keyup' && keyCode != 13) {return false;}
+				var table = TableService.getTablesByTableName(tableName);
+				table = table[0];
+				if (_.isEmpty(table)) {
+					// HC.TopTip.addTopTips($rootScope, {
+					// 	code : '111',
+					// 	msg : "桌台不存在"
+					// });
+					AppAlert.add('danger', '桌台不存在');
+					return;
+				}
+				var tableKey = _.result(table, 'itemID');
+				$scope.curTableID = _.result(table, 'itemID');
+				$scope.curTableName = _.result(table, 'tableName', '');
+				var callServer = TableService.loadTableStatusLst({
+					areaName : $scope.curAreaName,
+					tableName : $scope.curTableName
+				});
+				callServer.success(function (data) {
+					getCurTables();
+					var orderHeader = _scope.orderHeader,
+						fromTableName = _.result(orderHeader, 'tableName', ''),
+						foodItemKeyLst = _scope.curSelectedOrderItems || [];
+					var actionType = action == 'changeFood' ? 'CPHT' : (action == 'changeOrder' ? 'HT' : 'BT');
+					// var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
+					// if (con) {
+					// 	var callServer = OrderService.tableOperation(actionType, {
+					// 		fromTableName : fromTableName,
+					// 		toTableName : $scope.curTableName,
+					// 		foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
+					// 	});
+					// 	callServer.success(function (data) {
+					// 		var code = _.result(data, 'code');
+					// 		if (code == '000') {
+					// 			// HC.TopTip.addTopTips($rootScope, data);
+					// 			AppAlert.add('success', _.result(data, 'msg', ''));
+					// 			_scope.refresh(table, actionType);
+					// 			$modalInstance.close();
+					// 		} else {
+					// 			// HC.TopTip.addTopTips($rootScope, data);
+					// 			AppAlert.add('danger', _.result(data, 'msg', ''));
+					// 		}
+					// 	});
+					// } else {
+					// 	$modalInstance.close();
+					// }
+					AppConfirm.add({
+						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作',
+						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？',
+						yesFn : function () {
+							var callServer = OrderService.tableOperation(actionType, {
+								fromTableName : fromTableName,
+								toTableName : $scope.curTableName,
+								foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
+							});
+							callServer.success(function (data) {
+								var code = _.result(data, 'code');
+								if (code == '000') {
+									// HC.TopTip.addTopTips($rootScope, data);
+									AppAlert.add('success', _.result(data, 'msg', ''));
+									_scope.refresh(table, actionType);
+									$modalInstance.close();
+								} else {
+									// HC.TopTip.addTopTips($rootScope, data);
+									AppAlert.add('danger', _.result(data, 'msg', ''));
+								}
+							});
+						},
+						noFn : function () {
+							$modalInstance.close();
+						}
+					});
+				});
+			};
+
+			/**
+			 * 判断桌台被锁定
+			 * @param  {[type]} lockedBy [description]
+			 * @return {[type]}          [description]
+			 */
+			$scope.tableIsLocked = function (lockedBy) {
+				return !_.isEmpty(lockedBy);
+			};
+
+			/**
+			 * 判断桌台被并台
+			 * @param  {[type]} unionTableGroupName [description]
+			 * @return {[type]}                     [description]
+			 */
+			$scope.tableIsUnion = function (unionTableGroupName) {
+				return !_.isEmpty(unionTableGroupName);
+			};
+
+			/**
+			 * 判断桌台被预定
+			 * @param  {[type]} bookOrderNo [description]
+			 * @return {[type]}             [description]
+			 */
+			$scope.tableIsBooked = function (bookOrderNo) {
+				return !_.isEmpty(bookOrderNo);	
+			};
+			// 关闭窗口
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+
 		}
 	]);
 });

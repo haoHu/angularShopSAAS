@@ -2915,6 +2915,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.submit = function (tableName) {
 				return CommonCallServer.submitCloudOrder({
 					tableName : tableName || '',
+					orderKey : _.result(self._OrderData, 'orderKey', ''),
 					orderJson : JSON.stringify(self._OrderData)
 				});
 			};

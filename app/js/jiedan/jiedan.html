@@ -284,13 +284,24 @@
 		<div class="modal-body">
 			<div class="form-group col-xs-offset-1 col-xs-10">
 				<label for="takeoutRemark" >外送备注</label>
-				<input type="text" class="form-control" id="takeoutRemark" placeholder="送餐备注" />
+				<input type="text" class="form-control" id="takeoutRemark" placeholder="送餐备注" ng-model="takeoutRemark" />
 			</div>
 		</div>
 		<div class="modal-footer">
 			<div class="btn-group btn-group-lg" role="group">
 				<button type="button" class="btn btn-default" ng-click="save()">保存</button>
 				<button type="button" class="btn btn-default" ng-click="close()" >取消</button>
+			</div>
+		</div>
+	</script>
+	<!-- 选择桌台 -->
+	<script type="text/ng-template" id="js/jiedan/chooseTable.html">
+		<div class="modal-header">
+			<h4 class="modal-title">选择桌台</h4>
+		</div>
+		<div class="modal-body">
+			<div class="table-ctrl">
+				<tablemenu></tablemenu>
 			</div>
 		</div>
 	</script>

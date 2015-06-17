@@ -732,6 +732,65 @@ define(['app'], function (app) {
         };
     });
 
+    // 桌台选择菜单
+    app.directive('tablemenu', [
+        "$rootScope", "$filter", "OrderService",
+        function ($rootScope, $filter, OrderService) {
+            return {
+                restrict : 'E',
+                // templateUrl : 'js/diandan/tablemenu.html',
+                template : [
+                    '<div class="menu-plain">',
+                        '<div class="cates">',
+                            '<div class="row filter-bar">',
+                                '<div class="col-xs-6">',
+                                    '<div class="input-group">',
+                                        '<input type="text" class="form-control" placeholder="桌台名称" ng-model="qTblName" ng-keyup="quickSelectTable($event, qTblName)">',
+                                        '<span class="input-group-btn">',
+                                            '<button class="btn btn-default" type="button" ng-click="quickSelectTable($event, qTblName)">进入桌台</button>',
+                                        '</span>',
+                                    '</div>',
+                                '</div>',
+                                '<div class="col-xs-6">',
+                                    '<div class="btn-group center-block clearfix">',
+                                        '<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio=\"\'-1\'\" ng-click="queryTablesByStatus(-1)">全部</label>',
+                                        '<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio=\"\'0\'\" ng-click="queryTablesByStatus(0)">空闲</label>',
+                                        '<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio=\"\'1\'\" ng-click="queryTablesByStatus(1)">占用</label>',
+                                    '</div>',
+                                '</div>',
+                            '</div>',
+                            '<div class="area-bar row" pager-list="loop" pager-data="{{TableAreas}}" page-size="4" item-selector=".btn-area[area-name]" btn-selector=".btn-pager" page-num="0">',
+                                '<div class="col-xs-2 cell-btn btn btn-all" ng-class="{active: curAreaName == \'\'}" ng-click="selectTableArea(\'\')" area-name="" ><p>全部</p></div>',
+                                '<div class="col-xs-2 btn cell-btn btn-area" ng-repeat="area in TableAreas" ng-class="{active : curAreaName == area.value}" ng-click="selectTableArea(area.areaName)" area-name="{{area.areaName}}">',
+                                    '<p>{{area.label}}</p>',
+                                '</div>',
 
+                                '<div class="col-xs-2 cell-btn btn btn-pager" pager-direction="+1"><span>翻页</span></div>',
+                            '</div>',
+                        '</div>',
+                        '<div class="table-menu" pager-list="common" pager-data="{{curTables}}" page-size="34" item-selector=".cell-btn[id]" btn-selector=".btn-prev,.btn-next" page-num="0">',
+                            '<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1, active : table.tableName == curTableName}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}" ng-click="selectTableName(table)">',
+                                '<span class="table-lock" ng-if="tableIsLocked(table.lockedBy)"></span>',
+                                '<span class="table-union" ng-if="tableIsUnion(table.unionTableGroupName)">{{table.unionTableGroupName || 1}}</span>',
+                                '<span class="table-book" ng-if="tableIsBooked(table.bookOrderNo)"></span>',
+
+                                '<p class="name">{{table.tableName}}</p>',
+                                '<!--<p class="time" ng-if="table.tableStatus == 1">{{table.orderCreateTime | formatDateTimeStr:"HH:mm"}}</p>-->',
+                                '<p class="time" ng-if="table.tableStatus == 1">{{table.orderCreateTime | formatTimeInterval}}</p>',
+                                '<p class="amount" ng-if="table.tableStatus == 1">{{table.orderTotalAmount | mycurrency:"￥"}}</p>',
+                            '</div>',
+                            '<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><p class="name">上页</p></div>',
+                            '<div class="col-xs-2 btn cell-btn btn-next" pager-direction="+1"><p class="name">下页</p></div>',
+                        '</div>',
+
+                    '</div>'
+                ].join(''),
+                replace : true,
+                link : function (scope, el, attr) {
+                    
+                }
+            }
+        }
+    ]);
 
 });
