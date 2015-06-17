@@ -1,4 +1,51 @@
-<section ng-controller="HuiYuanViewController">
-    <p app-color="blue">{{page.heading}}</p>
-    <p>This is the '会员' page</p>
+
+<link rel="stylesheet" type="text/css" href="js/vendor/bootstrap-datetimepicker/bootstrap-datetimepicker.css">
+<section class="section-huiyuan" ng-controller="HuiYuanViewController">
+
+    <huiyuantabs></huiyuantabs>
+
+    <div style="padding:20px;width:700px;">
+        <jointab></jointab>
+        <rechargetab></rechargetab>
+        <consumetab></consumetab>
+        <cardhandletab></cardhandletab>
+        <reporttab></reporttab>
+    </div>
+
+    <div class="userinfo" style="display:none;">
+        <div class="header">会员信息</div>
+        <div class="body">
+            <div>
+                <div><span class="label">等级：</span><span>{{user.level}}</span></div>
+                <div><span class="label">状态：</span><span>{{user.status}}</span></div>
+                <div><span class="label">卡号：</span><span>{{user.cardnumber}}</span></div>
+                <div><span class="label">手机：</span><span>{{user.phone}}</span></div>
+                <div><span class="label">姓名：</span><span>{{user.name}}</span></div>
+                <div><span class="label">生日：</span><span>{{user.birthday}}</span></div>
+                <div><span class="label">入会时间：</span><span>{{user.joindate}}</span></div>
+                <div><span class="label">入会店铺：</span><span>{{user.joinplace}}</span></div>
+            </div>
+            <div>
+                -----------------------------------
+            </div>
+            <div>
+                <div><span class="label">储值余额：</span><span>{{user.cashaccount}}</span></div>
+                <div><span class="label">积分余额：</span><span>{{user.pointaccount}}</span></div>
+            </div>
+            <div>
+                -----------------------------------
+            </div>
+            <div>
+                <div><span class="label">当前等级：</span><span>{{user.level}}</span></div>
+                <div><span class="label">享会员价：</span><span>√</span></div>
+                <div><span class="label">积分系数：</span><span>{{user.pointrate}}</span></div>
+            </div>
+            <div>
+                -----------------------------------
+            </div>
+            <div>
+                <div><span class="label">查询时间：</span><span></span></div>
+            </div>
+        </div>
+    </div>
 </section>

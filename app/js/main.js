@@ -9,6 +9,7 @@ require.config({
 		'ui.bootstrap' : 'vendor/angular-bootstrap/ui-bootstrap-tpls',
 		'bootstrap' : 'vendor/bootstrap/bootstrap',
         'bootstrap-datetimepicker' : 'vendor/bootstrap-datetimepicker/bootstrap-datetimepicker.min',
+        'bootstrap-datetimepicker.zh-CN': 'vendor/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN',
 		'jquery' : 'vendor/jquery/jquery',
 		'underscore' : 'vendor/underscore/underscore',
 		'api' : 'api/api',
@@ -28,7 +29,7 @@ require.config({
 			deps : ['jquery']
 		},
 		'app' : {
-			deps : ['angular', 'angular-route', 'angular-resource', 'bootstrap', 'bootstrap-datetimepicker','ui.bootstrap', 'angularLocalStorage', 'angular-cookies', 'angular-sanitize']
+			deps : ['angular', 'angular-route', 'angular-resource', 'bootstrap', 'bootstrap-datetimepicker', 'bootstrap-datetimepicker.zh-CN','ui.bootstrap', 'angularLocalStorage', 'angular-cookies', 'angular-sanitize']
 		},
 		'angular-route' : {
 			deps : ['angular']
@@ -44,6 +45,9 @@ require.config({
 		},
         'bootstrap-datetimepicker' : {
             deps : ['jquery', 'bootstrap']
+        },
+        'bootstrap-datetimepicker.zh-CN' : {
+            deps : ['jquery', 'bootstrap', 'bootstrap-datetimepicker']
         },
 		'underscore' : {
 			exports : '_'
@@ -81,7 +85,7 @@ require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'mat
 		// });
 		require(['global-url', 'api'], function () {
 			// 测试服务器
-			Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.15:8080';
+			Hualala.Global.AJAX_DOMAIN = 'http://hualalasaas.oicp.net:15220';
 			// 丁工机器
 			// Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.140:8080';
 			// 朱敏机器

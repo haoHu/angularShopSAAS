@@ -1340,3 +1340,173 @@ body {
   display: inline-block;
   margin-right: 1rem;
 }
+.section-huiyuan .form-inline label {
+  width: 100px;
+}
+.section-huiyuan input {
+  border-radius: 0px !important;
+}
+.section-huiyuan label {
+  text-align: right;
+  margin-right: 10px;
+}
+.section-huiyuan .nav {
+  border: none !important;
+}
+.section-huiyuan .nav li {
+  background: #fde9c9;
+  cursor: pointer;
+}
+.section-huiyuan .nav li a {
+  color: #6f3e26 !important;
+  font-weight: bolder;
+  background: none;
+  border: none;
+}
+.section-huiyuan .nav li a:hover {
+  background: inherit !important;
+  border: none;
+}
+.section-huiyuan .nav .active {
+  background: #e6b073;
+}
+.section-huiyuan .panel-heading {
+  background: none;
+}
+.section-huiyuan .panel {
+  border-radius: 0px;
+}
+.section-huiyuan .tab {
+  position: relative;
+}
+.section-huiyuan .tab .btn-submit {
+  background: #f7d66b !important;
+  padding: 20px 50px;
+  color: #6f3e26 !important;
+  font-weight: bolder;
+  border-radius: 0px !important;
+  border: none !important;
+  font-size: 18px;
+}
+.section-huiyuan .tab-join .panel-viplevel {
+  position: absolute;
+  right: -20px;
+  top: 0px;
+}
+.section-huiyuan .tab-join .panel-viplevel ul {
+  width: 280px;
+  padding: 0px;
+}
+.section-huiyuan .tab-join .panel-viplevel ul li {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px black solid;
+  background: #fbe4d5;
+  padding: 10px;
+  margin: -1px;
+}
+.section-huiyuan .tab-join .panel-viplevel ul .true {
+  background: #88cd50;
+}
+.section-huiyuan .tab-recharge .panel-rechargeplan {
+  position: absolute;
+  right: 10px;
+  top: -59px;
+}
+.section-huiyuan .tab-recharge .panel-rechargeplan .header {
+  font-size: 18px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #c1c1c1;
+  margin-bottom: -1px;
+}
+.section-huiyuan .tab-recharge .panel-rechargeplan ul {
+  width: 300px;
+  padding: 0px;
+  margin: 0px;
+}
+.section-huiyuan .tab-recharge .panel-rechargeplan ul li {
+  display: block;
+  height: 80px;
+  padding: 10px;
+  margin: -1px 0px;
+  border: 1px solid #c1c1c1;
+  cursor: pointer;
+}
+.section-huiyuan .tab-recharge .panel-rechargeplan ul .active {
+  background: #ddecff;
+}
+.section-huiyuan .tab-consume .panel-vouchers {
+  position: absolute;
+  right: 10px;
+  top: -59px;
+}
+.section-huiyuan .tab-consume .panel-vouchers .header {
+  font-size: 18px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #c1c1c1;
+  margin-bottom: -1px;
+}
+.section-huiyuan .tab-consume .panel-vouchers ul {
+  width: 300px;
+  padding: 0px;
+  margin: 0px;
+  overflow-y: auto;
+}
+.section-huiyuan .tab-consume .panel-vouchers ul li {
+  display: block;
+  height: 80px;
+  padding: 10px;
+  margin: -1px 0px;
+  border: 1px solid #c1c1c1;
+  cursor: pointer;
+  position: relative;
+}
+.section-huiyuan .tab-consume .panel-vouchers ul li .left {
+  position: absolute;
+  display: inline-block;
+  width: 80px;
+  padding: 10px;
+  height: 80px;
+  left: 0px;
+  top: 0px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.section-huiyuan .tab-consume .panel-vouchers ul li .right {
+  margin-left: 80px;
+}
+.section-huiyuan .tab-consume .panel-vouchers ul .active {
+  background: #ddecff;
+}
+.section-huiyuan .userinfo {
+  position: absolute;
+  left: 741px;
+  top: 0px;
+  border-left: 1px solid #c1c1c1;
+  border-right: 1px solid #c1c1c1;
+  height: 100%;
+  width: 300px;
+}
+.section-huiyuan .userinfo .header {
+  font-size: 18px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #c1c1c1;
+}
+.section-huiyuan .userinfo .label {
+  display: inline-block;
+  color: #000000;
+  font-size: 16px;
+  padding: 0px;
+  margin: 0px 10px 0 0;
+  width: 85px;
+  text-align: right;
+  font-weight: normal;
+}
+.section-huiyuan .btn-disable {
+  background: #c1c1c1;
+  cursor: not-allowed;
+}
+.section-huiyuan .btn-disable :hover {
+  background: #c1c1c1;
+  cursor: not-allowed;
+}
