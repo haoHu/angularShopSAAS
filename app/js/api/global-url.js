@@ -58,7 +58,17 @@ define(['IX'], function () {
 		// 确认网上订单服务
 		["acceptCloudOrder", "/saas/order/accept.ajax", "", "POST"],
 		// 根据制定订单key获取网上订单详情
-		["getCloudOrderDetail", "/saas/order/getCloudOrderDetail.ajax", "", "POST"]
+		["getCloudOrderDetail", "/saas/order/getCloudOrderDetail.ajax", "", "POST"],
+		// 退单
+		["rejectCloudOrder", "/saas/order/reject.ajax", "", "POST"],
+		// 验单（下单）
+		["submitCloudOrder", "/saas/order/submit.ajax", "", "POST"],
+		// 退款
+		["refundCloudOrder", "/saas/order/refund.ajax", "", "POST"],
+		// 确认送出
+		["confirmCloudOrderTakeout", "/saas/order/confirmTakeout.ajax", "", "POST"],
+		// 确认送达
+		["confirmCloudOrderDelivery", "/saas/order/takeoutConfirm.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

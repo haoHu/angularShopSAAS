@@ -948,7 +948,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					orderKeys = 'saasOrderKey,empCode,empName,bizModel,allFoodRemark,foodLst'.split(','),
 					checkoutKeys = 'discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,invoiceTitle,invoiceAmount,payLst'.split(','),
 					payKeys = 'paySubjectKey,paySubjectCode,paySubjectName,debitAmount,giftItemNoLst,payRemark,payTransNo'.split(','),
-					orderHeaderKeys = 'tablename,channelKey,channelName,orderSubType,person,userName,userSex,userMobile,userAddress,saasOrderRemark'.split(',');
+					orderHeaderKeys = 'tableName,channelKey,channelName,orderSubType,person,userName,userSex,userMobile,userAddress,saasOrderRemark'.split(',');
 				var empInfo = storage.get("EMPINFO"),
 					empName = _.result(empInfo, 'empName'),
 					empCode = _.result(empInfo, 'empCode');
@@ -2416,6 +2416,21 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.getOrderRemarkNotes = function () {
 				return self.getOrderNotesByNotesType(10);
 			};
+
+			/**
+			 * 获取订单预定退订原因字典
+			 * @return {[type]} [description]
+			 */
+			this.getOrderRejectNotes = function () {
+				return self.getOrderNotesByNotesType(80);
+			};
+			/**
+			 * 获取外卖类订单退订原因字典
+			 * @return {[type]} [description]
+			 */
+			this.getTakeoutOrderRejectNotes = function () {
+				return self.getOrderNotesByNotesType(90);
+			};
 		}
 	]);
 
@@ -2773,8 +2788,13 @@ define(['app', 'uuid'], function (app, uuid) {
 			};
 
 			// 根据saasOrderKey获取订单数据
-			this.getOrderBySaasOrderKey = function (saasOrderKey) {
-				return orderHT.get(saasOrderKey);
+			this.getOrderByOrderKey = function (orderKey) {
+				return orderHT.get(orderKey);
+			};
+			// 更新订单数据
+			this.updateOrder = function (order) {
+				var orderKey = _.result(order, 'orderKey');
+				orderHT.register(orderKey, order);
 			};
 
 			// 获取分页信息
@@ -2875,7 +2895,65 @@ define(['app', 'uuid'], function (app, uuid) {
 			// 获取网上订单详情
 			this.getOrderDetail = function () {
 				return self._OrderData;
-			}
+			};
+			/**
+			 * 退单操作
+			 * @param 	{String} rejectOrderCause 退单原因
+			 * @return {[type]} [description]
+			 */
+			this.reject = function (rejectOrderCause) {
+				return CommonCallServer.rejectCloudOrder({
+					orderKey : _.result(self._OrderData, 'orderKey'),
+					rejectOrderCause : rejectOrderCause
+				});
+			};
+			/**
+			 * 验单（下单）
+			 * @param {String} tableName 桌台名称
+			 * @return {[type]} [description]
+			 */
+			this.submit = function (tableName) {
+				return CommonCallServer.submitCloudOrder({
+					tableName : tableName || '',
+					orderJson : JSON.stringify(self._OrderData)
+				});
+			};
+			/**
+			 * 退款操作
+			 * @param {String} refundCause 退款原因
+			 * @return {[type]} [description]
+			 */
+			this.refund = function (refundCause) {
+				var orderTotalAmount = _.result(self._OrderData, 'orderTotalAmount', 0),
+					receivableAmount = _.result(self._OrderData, 'receivableAmount', 0);
+				return CommonCallServer.refundCloudOrder({
+					orderKey : _.result(self._OrderData, 'orderKey'),
+					orderTotal : Hualala.Common.Math.sub(orderTotalAmount, receivableAmount),
+					refundCause : refundCause
+				});
+			};
+			/**
+			 * 确认送出操作
+			 * @param {String} takeoutRemark 送餐备注
+			 * @return {[type]} [description]
+			 */
+			this.confirmTakeout = function (takeoutRemark) {
+				return CommonCallServer.confirmCloudOrderTakeout({
+					orderKey : _.result(self._OrderData, 'orderKey'),
+					takeoutRemark : takeoutRemark
+				});
+			};
+			/**
+			 * 确认送达操作
+			 * @param {Object} params {orderKey}
+			 * @return {[type]} [description]
+			 */
+			this.confirmDelivery = function () {
+				return CommonCallServer.confirmCloudOrderDelivery({
+					orderKey : _.result(self._OrderData, 'orderKey')
+				});
+			};
+
 		}
 	]);
 	

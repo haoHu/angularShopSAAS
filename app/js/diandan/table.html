@@ -125,7 +125,8 @@
 					<span class="table-book" ng-if="tableIsBooked(table.bookOrderNo)"></span>
 
 					<p class="name">{{table.tableName}}</p>
-					<p class="time" ng-if="table.tableStatus == 1">{{table.orderCreateTime | formatDateTimeStr:"HH:mm"}}</p>
+					<!--<p class="time" ng-if="table.tableStatus == 1">{{table.orderCreateTime | formatDateTimeStr:"HH:mm"}}</p>-->
+					<p class="time" ng-if="table.tableStatus == 1">{{table.orderCreateTime | formatTimeInterval}}</p>
 					<p class="amount" ng-if="table.tableStatus == 1">{{table.orderTotalAmount | mycurrency:"￥"}}</p>
 				</div>
 				<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><p class="name">上页</p></div>

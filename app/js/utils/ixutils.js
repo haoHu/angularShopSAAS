@@ -1205,6 +1205,8 @@ IX.Date = (function(){
 			if (interval<60)
 				return Math.round(interval) + "分钟前";
 			interval /= 60;
+			if (interval>5 && interval < 24)
+				return Math.round(interval) + "小时前";
 			if (interval<24)
 				return Math.round(interval) + "小时前";
 			interval /= 24;	

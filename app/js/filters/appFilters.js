@@ -61,6 +61,20 @@ define(['app'], function (app) {
 		return filterFn;
 	});
 
+	// 格式化至今时间间隔显示
+	app.filter("formatTimeInterval", function () {
+		var filterFn = function (v) {
+			if (v == '0' || _.isEmpty(v)) return '';
+			var dateStr = Hualala.Common.formatDateTimeValue(v),
+				f = 'yyyy/MM/dd HH:mm:ss';
+			var timeSec = IX.Date.getTimeTickInSec(IX.Date.getDateByFormat(dateStr, f));
+			var curTime = (new Date()).getTime();
+			var ret = IX.Date.getDateText(timeSec, curTime / 1000);
+			return ret;
+		};
+		return filterFn;
+	});
+
 	// 格式化货币显示
 	app.filter("mycurrency", function () {
 		var filterFn = function (v, format) {

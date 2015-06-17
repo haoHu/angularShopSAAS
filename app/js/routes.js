@@ -18,6 +18,7 @@ define([], function () {
 					'directives/appDirectives',
 					'services/appServices',
 					'services/orderServices',
+					'services/tableServices',
 					'filters/appFilters'
 				]
 			},
