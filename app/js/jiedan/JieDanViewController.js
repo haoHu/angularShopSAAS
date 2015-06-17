@@ -57,10 +57,12 @@ define(['app'], function(app) {
 							break;
 						case "print":
 							// 20:打印清单;40:打印对账单;30:打印退款凭证;
-							btn.label = orderStatus == 20 ? '打印清单' : (orderStatus == 40 ? '打印对账单' : '打印退款凭证');
+							// btn.label = orderStatus == 20 ? '打印清单' : (orderStatus == 40 ? '打印对账单' : '打印退款凭证');
+							btn.label = (orderStatus == 20 || orderStatus == 30) ? '打印清单' : '打印对账单';
+							btn.label = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? '打印退款凭证' : btn.label;
 							break;
 						case "sendout":
-							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime == 0) ? false : true;
+							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime == 0 && isAlreadyPaid != 1) ? false : true;
 							break;
 						case "delivery":
 							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime > 0) ? false : true;
@@ -222,8 +224,16 @@ define(['app'], function(app) {
 				});
 				
 			};
-			var printAction = function (orderStatus) {
-				var cmd = orderStatus == 20 ? 'PrintOrderDetailBill' : (orderStatus == 40 ? 'PrintCheckoutBill' : 'PrintOther');
+			// 打印动作，根据订单不同状态，打印不同单据
+			var printAction = function (order) {
+				var orderStatus = _.result(order, 'orderStatus'),
+					orderSubType = _.result(order, 'orderSubtype'),
+					shopRefundAmount = _.result(order, 'shopRefundAmount', 0),
+					isAlreadyPaid = _.result(order, 'isAlreadyPaid', 0);
+				// var cmd = orderStatus == 20 ? 'PrintOrderDetailBill' : (orderStatus == 40 ? 'PrintCheckoutBill' : 'PrintOther');
+				var cmd = (orderStatus == 20 || orderStatus == 30) ? 'PrintOrderDetailBill' : 'PrintCheckoutBill';
+				cmd = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? 'PrintOther' : cmd;
+				
 				Hualala.DevCom.exeCmd(cmd, JSON.stringify(CloudOrderService.getOrderDetail()));
 			};
 			$scope.orderHandle = function (btn) {
@@ -283,7 +293,7 @@ define(['app'], function(app) {
 						break;
 					case "print":
 						// 20:打印清单;40:打印对账单;30:打印退款凭证;
-						printAction(orderStatus);
+						printAction(order);
 						break;
 					case "sendout":
 						// disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime == 0) ? false : true;
