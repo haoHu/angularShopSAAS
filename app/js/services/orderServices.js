@@ -2805,6 +2805,31 @@ define(['app', 'uuid'], function (app, uuid) {
 					totalSize : totalSize
 				};
 			};
+			//  根据orderKey判断订单条目在列表中的索引
+			this.indexOfLst = function (orderKey) {
+				var idx = orderHT.indexOf(orderKey);
+				return idx;
+			};
+			// 通过orderKey获取上一条订单条目
+			this.getPrevOrder = function (orderKey) {
+				var idx = this.indexOfLst(orderKey) - 1;
+				if (idx < 0) return null;
+				return orderHT.getAll()[idx];
+			};
+			// 通过orderKey获取下一条订单条目
+			this.getNextOrder = function (orderKey) {
+				var idx = this.indexOfLst(orderKey) + 1;
+				if (idx < 0) return null;
+				return orderHT.getAll()[idx];
+			};
+			// 根据索引获取订单条目
+			this.getOrderByIdx = function (idx) {
+				return orderHT.getAll()[idx];
+			};
+			// 获取当前列表条目数
+			this.getOrderLstCount = function () {
+				return orderHT.getAll().length;
+			};
 		}
 	]);
 

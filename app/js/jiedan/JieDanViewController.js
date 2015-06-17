@@ -94,7 +94,7 @@ define(['app'], function(app) {
 				$scope.queryOrderLst();
 			};
 			$scope.selectPage = function () {
-				$scope.queryOrderLst({
+				return $scope.queryOrderLst({
 					pageNo : $scope.curPageNo,
 					pageSize : $scope.pageSize
 				});
@@ -122,6 +122,7 @@ define(['app'], function(app) {
 				}).error(function (data) {
 					AppAlert.add('danger', '请求失败');
 				});
+				return callServer;
 			};
 			$scope.queryOrderLst();
 			// 获取订单类型的图标
@@ -236,6 +237,30 @@ define(['app'], function(app) {
 				
 				Hualala.DevCom.exeCmd(cmd, JSON.stringify(CloudOrderService.getOrderDetail()));
 			};
+			// 获取上一条、下一条订单记录
+			var getNextOrder = function (act) {
+				var step = act == 'prev' ? -1 : 1;
+				var _pageNo = $scope.curPageNo,
+					_totalSize = $scope.totalSize,
+					_pageSize = $scope.pageSize,
+					_pageCount = Math.ceil(_totalSize / _pageSize);
+				var curOrder = $scope.curOrderDetail;
+				var idx = CloudOrderLstService.indexOfLst(_.result(curOrder, 'orderKey'));
+				if (idx == -1) return;
+				var nextPageNo = Math.ceil((((_pageNo - 1) * _pageSize + idx + 1) + step) / _pageSize);
+				if (nextPageNo > _pageCount || nextPageNo == 0 || 
+					(nextPageNo == _pageCount && CloudOrderLstService.getOrderLstCount() == (idx + step))) {
+					AppAlert.add('danger', act == 'prev' ? '这是第一条!' : '这是最后一条!');
+				} else if (nextPageNo != _pageNo) {
+					var _i = nextPageNo > _pageNo ? 0 : (_pageSize - 1);
+					$scope.curPageNo = nextPageNo;
+					$scope.selectPage().success(function () {
+						$scope.selectCurOrder(CloudOrderLstService.getOrderByIdx(_i));
+					});
+				} else {
+					$scope.selectCurOrder(CloudOrderLstService.getOrderByIdx(idx + step));
+				}
+			};
 			$scope.orderHandle = function (btn) {
 				var act = btn.name;
 				var order = $scope.curOrderDetail,
@@ -257,7 +282,9 @@ define(['app'], function(app) {
 					};
 				switch(act) {
 					case "order":
-						if (orderSubType == '20' || orderSubType == '21' || orderSubType == '41') {
+						var shopInfo = storage.get("SHOPINFO"),
+						operationMode = _.result(shopInfo, 'operationMode');
+						if (operationMode == 1 && (orderSubType == '20' || orderSubType == '21' || orderSubType == '41')) {
 							// 外卖，自提，店内自助不需要选择桌台
 							callServer = CloudOrderService.submit();
 							callServer.success(function (data) {
@@ -268,6 +295,7 @@ define(['app'], function(app) {
 										pageNo : $scope.curPageNo,
 										pageSize : $scope.pageSize
 									});
+									updateOrderBtnsStatus();
 								} else {
 									AppAlert.add('danger', _.result(data, 'msg', ''));
 								}
@@ -312,6 +340,7 @@ define(['app'], function(app) {
 									pageNo : $scope.curPageNo,
 									pageSize : $scope.pageSize
 								});
+								updateOrderBtnsStatus();
 							} else {
 								AppAlert.add('danger', _.result(data, 'msg', ''));
 							}
@@ -320,8 +349,8 @@ define(['app'], function(app) {
 						});
 						break;
 					case "prev":
-						break;
 					case "next":
+						getNextOrder(act);
 						break;
 				}
 				if (!_.isEmpty(controller)) {
@@ -346,11 +375,18 @@ define(['app'], function(app) {
 				$scope.queryOrderLst({
 					pageNo : $scope.curPageNo,
 					pageSize : $scope.pageSize
-				});
-				callServer.success(function () {
-					// $scope.curOrderDetail = CloudOrderService.getOrderDetail();
-					$scope.curOrderDetail = null;
-					cbFn();
+				}).success(function () {
+					var _orderSchame = CloudOrderLstService.getOrderByOrderKey(orderKey);
+					if (_.isEmpty(_orderSchame)) {
+						$scope.curOrderDetail = null;
+						cbFn();
+					} else {
+						callServer.success(function () {
+							$scope.curOrderDetail = CloudOrderService.getOrderDetail();
+							cbFn();
+						});
+					}
+					
 				});
 			};
 			// 加载订单字典数据
@@ -499,7 +535,7 @@ define(['app'], function(app) {
 			// 桌台名称搜索关键字
 			$scope.qTblName = '';
 			// 桌台状态过滤字段
-			$scope.qTblStatus = 0;
+			$scope.qTblStatus = '0';
 			
 			// 当前选中桌台区域名
 			$scope.curAreaName = '';
@@ -583,7 +619,7 @@ define(['app'], function(app) {
 								var code = _.result(data, 'code');
 								if (code == '000') {
 									AppAlert.add('success', '下单成功');
-									$scope.queryOrderLst({
+									_scope.queryOrderLst({
 										pageNo : $scope.curPageNo,
 										pageSize : $scope.pageSize
 									});
@@ -618,68 +654,8 @@ define(['app'], function(app) {
 					AppAlert.add('danger', '桌台不存在');
 					return;
 				}
-				var tableKey = _.result(table, 'itemID');
-				$scope.curTableID = _.result(table, 'itemID');
-				$scope.curTableName = _.result(table, 'tableName', '');
-				var callServer = TableService.loadTableStatusLst({
-					areaName : $scope.curAreaName,
-					tableName : $scope.curTableName
-				});
-				callServer.success(function (data) {
-					getCurTables();
-					var orderHeader = _scope.orderHeader,
-						fromTableName = _.result(orderHeader, 'tableName', ''),
-						foodItemKeyLst = _scope.curSelectedOrderItems || [];
-					var actionType = action == 'changeFood' ? 'CPHT' : (action == 'changeOrder' ? 'HT' : 'BT');
-					// var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
-					// if (con) {
-					// 	var callServer = OrderService.tableOperation(actionType, {
-					// 		fromTableName : fromTableName,
-					// 		toTableName : $scope.curTableName,
-					// 		foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
-					// 	});
-					// 	callServer.success(function (data) {
-					// 		var code = _.result(data, 'code');
-					// 		if (code == '000') {
-					// 			// HC.TopTip.addTopTips($rootScope, data);
-					// 			AppAlert.add('success', _.result(data, 'msg', ''));
-					// 			_scope.refresh(table, actionType);
-					// 			$modalInstance.close();
-					// 		} else {
-					// 			// HC.TopTip.addTopTips($rootScope, data);
-					// 			AppAlert.add('danger', _.result(data, 'msg', ''));
-					// 		}
-					// 	});
-					// } else {
-					// 	$modalInstance.close();
-					// }
-					AppConfirm.add({
-						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作',
-						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？',
-						yesFn : function () {
-							var callServer = OrderService.tableOperation(actionType, {
-								fromTableName : fromTableName,
-								toTableName : $scope.curTableName,
-								foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
-							});
-							callServer.success(function (data) {
-								var code = _.result(data, 'code');
-								if (code == '000') {
-									// HC.TopTip.addTopTips($rootScope, data);
-									AppAlert.add('success', _.result(data, 'msg', ''));
-									_scope.refresh(table, actionType);
-									$modalInstance.close();
-								} else {
-									// HC.TopTip.addTopTips($rootScope, data);
-									AppAlert.add('danger', _.result(data, 'msg', ''));
-								}
-							});
-						},
-						noFn : function () {
-							$modalInstance.close();
-						}
-					});
-				});
+				$scope.selectTableName(table);
+
 			};
 
 			/**

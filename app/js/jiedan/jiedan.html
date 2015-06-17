@@ -297,7 +297,12 @@
 	<!-- 选择桌台 -->
 	<script type="text/ng-template" id="js/jiedan/chooseTable.html">
 		<div class="modal-header">
-			<h4 class="modal-title">选择桌台</h4>
+			<!--<button class="btn btn-default btn-lg pull-right" type="button" name="close" ng-click="close()">返回</button>-->
+			<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">
+				选择桌台
+			</h4>
+
 		</div>
 		<div class="modal-body">
 			<div class="table-ctrl">

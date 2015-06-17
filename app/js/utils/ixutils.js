@@ -1065,7 +1065,7 @@ IX.IListManager = function() {
 			_super.clear();
 			_list.clear();
 		},
-				
+		indexOf : _list.indexOf,
 		destroy : function() {
 			_super.destroy();
 			delete _super;
