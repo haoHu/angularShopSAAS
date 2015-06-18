@@ -653,6 +653,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.tableIsBooked = function (bookOrderNo) {
 				return !_.isEmpty(bookOrderNo);	
 			};
+
+			$scope.close = function () {
+				$modalInstance.close();
+			};
 		} 
 	]);
 

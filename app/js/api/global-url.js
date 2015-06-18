@@ -68,7 +68,9 @@ define(['IX'], function () {
 		// 确认送出
 		["confirmCloudOrderTakeout", "/saas/order/confirmTakeout.ajax", "", "POST"],
 		// 确认送达
-		["confirmCloudOrderDelivery", "/saas/order/takeoutConfirm.ajax", "", "POST"]
+		["confirmCloudOrderDelivery", "/saas/order/takeoutConfirm.ajax", "", "POST"],
+		// 获取门店服务器相关信息
+		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

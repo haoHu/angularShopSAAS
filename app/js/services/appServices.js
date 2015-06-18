@@ -196,4 +196,84 @@ define(['app'], function (app) {
 			};
 		}
 	]);
+
+	// 门店系统服务器相关信息服务
+	app.service('SAASLocalServerInfo',[
+		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer',
+		function ($rootScope, $location, $filter, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			var _LocalServerInfo = null;
+			var baseShopInfoKeys = 'IsShopReged,groupID,groupName,shopID,shopName,shopTel,shopCityName,'
+					+ 'shopAddress,shopBizMode,shopServiceFeatures',
+				baseCloudServerKeys = 'apiAPIHost,CloudHostConnecttionStatus',
+				baseLocalAppKeys = 'appVersionNo,appPath,DBFileName,DBFileSize,WebAppVersionNo,DebugModel',
+				baseLocalServerKeys = 'HttpServerComputerName,HttpServerSysDateTimeFormatStr,'
+					+ 'KitchenPrintBillTypeLst,moneyWipeZeroType,ConfirmationCode,LocalSitePrinterPortName,'
+					+ 'LocalSitePrinterPortType,LocalSitePrinterPageSize,LocalSitePrinterLineMaxCharCount',
+				baseLocalMonitorKeys = 'HttpServerStartTickCount,MonitorThreadLastTickCount,MsgThreadLastTickCount,'
+					+ 'PrintThreadLastTickCount,KitchenPrintActive,IsRevMsgFormAPIHost';
+			/**
+			 * 加载本地服务器信息
+			 * @return {[type]} [description]
+			 */
+			this.loadLocalServerInfo = function (checkKey) {
+				var callServer = CommonCallServer.getSaasLocalServerInfo({
+					checkKey : checkKey || 'ilovehualala'
+				});
+				callServer.success(function (data, status, headers, config) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						_LocalServerInfo = _.result(data, 'data', {});
+					}
+				});
+				return callServer;
+			};
+
+			/**
+			 * 获取店铺配置信息
+			 * @return {[type]} [description]
+			 */
+			this.getShopInfo = function () {
+				return _.pick(_LocalServerInfo, baseShopInfoKeys.split(','));
+			};
+
+			/**
+			 * 获取哗啦啦服务热线
+			 * @return {[type]} [description]
+			 */
+			this.getHLLServiceTel = function () {
+				return _.result(_.pick(_LocalServerInfo, 'HLLServiceTel'), 'HLLServiceTel', '');
+			};
+			/**
+			 * 获取云端服务器配置信息
+			 * @return {[type]} [description]
+			 */
+			this.getCloudServerInfo = function () {
+				return _.pick(_LocalServerInfo, baseCloudServerKeys.split(','));
+			};
+			/**
+			 * 获取本地APP信息
+			 * 
+			 * @return {[type]} [description]
+			 */
+			this.getLocalAppInfo = function () {
+				return _.pick(_LocalServerInfo, baseLocalAppKeys.split(','));
+			};
+			/**
+			 * 获取本地服务器信息
+			 * @return {[type]} [description]
+			 */
+			this.getLocalServerInfo = function () {
+				return _.pick(_LocalServerInfo, baseLocalServerKeys.split(','));
+			};
+			/**
+			 * 获取本地监控数据信息
+			 * @return {[type]} [description]
+			 */
+			this.getLocalMonitorInfo = function () {
+				return _.pick(_LocalServerInfo, baseLocalMonitorKeys.split(','));
+			};
+		}
+	]);
 });
