@@ -2431,6 +2431,14 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.getTakeoutOrderRejectNotes = function () {
 				return self.getOrderNotesByNotesType(90);
 			};
+
+			/**
+			 * 获取退款原因字典
+			 * @return {[type]} [description]
+			 */
+			this.getOrderRefundNotes = function () {
+				return self.getOrderNotesByNotesType(100);
+			};
 		}
 	]);
 

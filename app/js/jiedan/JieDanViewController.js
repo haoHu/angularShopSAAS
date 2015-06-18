@@ -456,7 +456,8 @@ define(['app'], function(app) {
 		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, CloudOrderService, OrderNoteService, AppAlert, AppConfirm) {
 			var order = _scope.curOrderDetail,
 				orderSubType = _.result(order, 'orderSubtype');
-			var rejectRemarkData = OrderNoteService[orderSubType == 20 ? 'getTakeoutOrderRejectNotes' : 'getOrderRejectNotes']();
+			// var rejectRemarkData = OrderNoteService[orderSubType == 20 ? 'getTakeoutOrderRejectNotes' : 'getOrderRejectNotes']();
+			var rejectRemarkData = OrderNoteService.getOrderRefundNotes();
 			$scope.RejectRemarks = _.result(rejectRemarkData, 'items', []);
 			$scope.rejectCause = '';
 			$scope.receivableAmount = _.result(order, 'receivableAmount', 0);
