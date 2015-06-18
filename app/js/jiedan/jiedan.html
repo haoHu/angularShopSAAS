@@ -78,10 +78,10 @@
 			</div>
 			<footer class="orderlst-footer">
 				<div class="pager-info">
-					<p>共:{{totalSize}}条记录</p>
-					<p>页码:{{curPageNo}} / {{numPages}}<p>
+					<span>共:{{totalSize}}条记录</span>
+					<span>页码:{{curPageNo}} / {{numPages}}<span>
 				</div>
-				<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
+				<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="3" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
 			</footer>
 		</div>
 	</div>

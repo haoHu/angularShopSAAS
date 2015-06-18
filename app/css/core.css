@@ -1261,15 +1261,15 @@ body {
   vertical-align: middle;
 }
 .section-jiedan .orderlst-footer {
-  padding-left: 8rem;
   position: relative;
 }
 .section-jiedan .orderlst-footer .pager-info {
   position: absolute;
-  height: 4rem;
-  top: 50%;
   left: 0;
-  margin-top: -2rem;
+  top: 0;
+}
+.section-jiedan .orderlst-footer .pagination {
+  margin-top: 1.5rem;
 }
 .section-jiedan .order-info {
   display: -webkit-box;
@@ -1339,6 +1339,12 @@ body {
 .section-jiedan .orderlst-body .num {
   display: inline-block;
   margin-right: 1rem;
+}
+.section-jiedan .order-info .status + .date,
+.section-jiedan .orderlst-body .status + .date {
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
 }
 .section-huiyuan .form-inline label {
   width: 100px;
