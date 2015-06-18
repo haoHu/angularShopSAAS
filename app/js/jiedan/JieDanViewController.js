@@ -227,18 +227,16 @@ define(['app'], function(app) {
 				
 			};
 			// 打印动作，根据订单不同状态，打印不同单据
-			var printAction = function (order) {
-				var orderStatus = _.result(order, 'orderStatus'),
-					orderSubType = _.result(order, 'orderSubtype'),
-					shopRefundAmount = _.result(order, 'shopRefundAmount', 0),
-					isAlreadyPaid = _.result(order, 'isAlreadyPaid', 0);
-
+			$scope.printAction = function (data) {
 				// var cmd = (orderStatus == 20 || orderStatus == 30) ? 'PrintOrderDetailBill' : 'PrintCheckoutBill';
 				// cmd = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? 'PrintOther' : cmd;
-				var cmd = 'PrintOther';
-				
-				// Hualala.DevCom.exeCmd(cmd, JSON.stringify(CloudOrderService.getOrderDetail()));
-				Hualala.DevCom.exeCmd(cmd, _.result(CloudOrderService.getOrderDetail(), 'orderPrnTxt', ''));
+				var cmd = 'PrintOther',
+					msg = _.result(CloudOrderService.getOrderDetail(), 'orderPrnTxt', '');
+				if (!_.isEmpty(data)) {
+					cmd = 'PrintCheckoutBill';
+					msg = JSON.stringify(data);
+				}
+				Hualala.DevCom.exeCmd(cmd, msg);
 			};
 			// 获取上一条、下一条订单记录
 			var getNextOrder = function (act) {
@@ -292,8 +290,11 @@ define(['app'], function(app) {
 							callServer = CloudOrderService.submit();
 							callServer.success(function (data) {
 								var code = _.result(data, 'code');
+								var _data = _.result(data, 'data'),
+									_orderStatus = _.result(_data, 'orderStatus');
 								if (code == '000') {
 									AppAlert.add('success', '下单成功');
+									_orderStatus == 40 && $scope.printAction(_.result(data, 'data'));
 									$scope.queryOrderLst({
 										pageNo : $scope.curPageNo,
 										pageSize : $scope.pageSize
@@ -324,7 +325,7 @@ define(['app'], function(app) {
 						break;
 					case "print":
 						// 20:打印清单;40:打印对账单;30:打印退款凭证;
-						printAction(order);
+						$scope.printAction();
 						break;
 					case "sendout":
 						// disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime == 0) ? false : true;
@@ -622,8 +623,11 @@ define(['app'], function(app) {
 							var callServer = CloudOrderService.submit($scope.curTableName);
 							callServer.success(function (data) {
 								var code = _.result(data, 'code');
+								var _data = _.result(data, 'data'),
+									_orderStatus = _.result(data, 'orderStatus');
 								if (code == '000') {
 									AppAlert.add('success', '下单成功');
+									_orderStatus == 40 && _scope.printAction(_.result(data, 'data'));
 									_scope.queryOrderLst({
 										pageNo : $scope.curPageNo,
 										pageSize : $scope.pageSize
