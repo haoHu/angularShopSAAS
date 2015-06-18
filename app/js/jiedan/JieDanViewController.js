@@ -232,9 +232,10 @@ define(['app'], function(app) {
 					orderSubType = _.result(order, 'orderSubtype'),
 					shopRefundAmount = _.result(order, 'shopRefundAmount', 0),
 					isAlreadyPaid = _.result(order, 'isAlreadyPaid', 0);
-				// var cmd = orderStatus == 20 ? 'PrintOrderDetailBill' : (orderStatus == 40 ? 'PrintCheckoutBill' : 'PrintOther');
-				var cmd = (orderStatus == 20 || orderStatus == 30) ? 'PrintOrderDetailBill' : 'PrintCheckoutBill';
-				cmd = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? 'PrintOther' : cmd;
+
+				// var cmd = (orderStatus == 20 || orderStatus == 30) ? 'PrintOrderDetailBill' : 'PrintCheckoutBill';
+				// cmd = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? 'PrintOther' : cmd;
+				var cmd = 'PrintOther';
 				
 				// Hualala.DevCom.exeCmd(cmd, JSON.stringify(CloudOrderService.getOrderDetail()));
 				Hualala.DevCom.exeCmd(cmd, _.result(CloudOrderService.getOrderDetail(), 'orderPrnTxt', ''));
