@@ -379,10 +379,12 @@ define(['app'], function(app) {
 					var _orderSchame = CloudOrderLstService.getOrderByOrderKey(orderKey);
 					if (_.isEmpty(_orderSchame)) {
 						$scope.curOrderDetail = null;
+						updateOrderBtnsStatus();
 						cbFn();
 					} else {
 						callServer.success(function () {
 							$scope.curOrderDetail = CloudOrderService.getOrderDetail();
+							updateOrderBtnsStatus();
 							cbFn();
 						});
 					}
@@ -623,6 +625,7 @@ define(['app'], function(app) {
 										pageNo : $scope.curPageNo,
 										pageSize : $scope.pageSize
 									});
+									_scope.selectCurOrder(_scope.curOrderDetail);
 									$modalInstance.close();
 								} else {
 									AppAlert.add('danger', _.result(data, 'msg', ''));
