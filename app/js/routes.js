@@ -73,7 +73,9 @@ define([], function () {
 				templateUrl : 'js/huiyuan/huiyuan.html',
 				dependencies : [
 					'huiyuan/HuiYuanViewController',
-					'directives/appDirectives'
+					'directives/appDirectives',
+					'services/appServices',
+					'filters/appFilters'
 				]
 			},
 			'/baobiao' : {
