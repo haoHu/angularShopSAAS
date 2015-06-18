@@ -27,7 +27,8 @@ define(['app'], function (app) {
 					jumpPath('/signup');
 				} else if (data.code == '000') {
 					// 已注册，跳转登录页面
-					storage.set('SHOPINFO', data.data.records[0]);
+					// storage.set('SHOPINFO', data.data.records[0]);
+					storage.set('SHOPINFO', _.result(data, 'data', {}));
 					jumpPath('/signin');
 				}
 			}).error(function (data, status) {

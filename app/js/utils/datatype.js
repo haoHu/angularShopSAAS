@@ -165,11 +165,43 @@
 		{name : "voucherPay", value : "51010507", isPrefix : "0", label : "代金券"},
 		{name : "hangingPay", value : "11312", isPrefix : "1", label : "挂账"}
 	];
-
+	/**
+	 * 会员卡状态
+	 * @type {Array}
+	 */
 	Hualala.TypeDef.VIPCardStatus = [
 		{value : 10, label : "正常"},
 		{value : 20, label : "挂失中"},
 		{value : 30, label : "冻结"},
 		{value : 40, label : "注销"}
+	];
+
+	/**
+	 * 店铺开通业务
+	 * @type {Array}
+	 */
+	Hualala.TypeDef.ShopServiceFeatures = [
+		{value : 'commonreserve_order', label : '预定'},
+		{value : 'justeat_order', label : '闪吃'},
+		{value : 'takeaway_order', label : '外卖'},
+		{value : 'takeout_order', label : '自提'},
+		{value : 'crm', label : '会员'},
+		{value : 'bi', label : '老板通'},
+		{value : 'spot_pay', label : '店内自助结账'},
+		{value : 'spot_order', label : '店内自助点菜'}
+	];
+
+	/**
+	 * 账单元整方式类型
+	 * @type {Array}
+	 */
+	Hualala.TypeDef.MoneyWipeZeroTypes = [
+		{value : '0', label : '不抹零'},
+		{value : '1', label : '四舍五入到角'},
+		{value : '2', label : '向上抹零到角'},
+		{value : '3', label : '向下抹零到角'},
+		{value : '4', label : '四舍五入到元'},
+		{value : '5', label : '向上抹零到元'},
+		{value : '6', label : '向下抹零到元'}
 	];
 })();

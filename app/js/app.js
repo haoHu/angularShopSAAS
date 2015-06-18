@@ -42,6 +42,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         $scope.isWelcomPage = false;
         $scope.isSignPage = false;
         $scope.ShopOperationMode = null;
+        $scope.shopLogo = '';
         $rootScope.$on('$routeChangeSuccess', function (event) {
             // IX.Debug.info("Run Count: ");
             // IX.Debug.info(window.count++);
@@ -49,7 +50,12 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             $scope.ShopOperationMode = $XP(storage.get('SHOPINFO'), 'operationMode');
             $scope.isSignPage = $scope.curNav == '/signin' || $scope.curNav == '/signup' ? true : false;
             $scope.isWelcomPage = $scope.curNav == '/' ? true : false;
-
+            $scope.shopLogo = _.result(storage.get('SHOPINFO'), 'logoUrl', '');
+            if (!_.isEmpty($scope.shopLogo)) {
+                $scope.shopLogo = Hualala.Global.AJAX_DOMAIN + '/' + $scope.shopLogo + '?t=' + (new Date()).getTime();
+            } else {
+                // $scope.shopLogo = './img/blank.png';
+            }
         });
         IX.ns("Hualala");
         var HC = Hualala.Common;

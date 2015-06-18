@@ -58,8 +58,9 @@ define(['app'], function(app) {
 						case "print":
 							// 20:打印清单;40:打印对账单;30:打印退款凭证;
 							// btn.label = orderStatus == 20 ? '打印清单' : (orderStatus == 40 ? '打印对账单' : '打印退款凭证');
-							btn.label = (orderStatus == 20 || orderStatus == 30) ? '打印清单' : '打印对账单';
-							btn.label = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? '打印退款凭证' : btn.label;
+							// btn.label = (orderStatus == 20 || orderStatus == 30) ? '打印清单' : '打印对账单';
+							// btn.label = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? '打印退款凭证' : btn.label;
+							btn.label = "打印";
 							break;
 						case "sendout":
 							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime == 0 && isAlreadyPaid != 1) ? false : true;
@@ -235,7 +236,8 @@ define(['app'], function(app) {
 				var cmd = (orderStatus == 20 || orderStatus == 30) ? 'PrintOrderDetailBill' : 'PrintCheckoutBill';
 				cmd = orderStatus == 40 && isAlreadyPaid == 1 && shopRefundAmount > 0 ? 'PrintOther' : cmd;
 				
-				Hualala.DevCom.exeCmd(cmd, JSON.stringify(CloudOrderService.getOrderDetail()));
+				// Hualala.DevCom.exeCmd(cmd, JSON.stringify(CloudOrderService.getOrderDetail()));
+				Hualala.DevCom.exeCmd(cmd, _.result(CloudOrderService.getOrderDetail(), 'orderPrnTxt', ''));
 			};
 			// 获取上一条、下一条订单记录
 			var getNextOrder = function (act) {

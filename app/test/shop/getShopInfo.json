@@ -2,16 +2,15 @@
 	"code" : "000",
 	"msg" : "店铺未注册",
 	"data" : {
-		"records" : [{
-			"grounID" : "6",
-			"groupName" : "哗啦啦体验店",
-			"shopID" : "1",
-			"shopName" : "西直门店",
-			"tel" : "010-111111111",
-			"address" : "",
-			"operationMode" : "1",
-			"serviceFeatures" : "commonreserve_order,justeat_order,takeaway_order,takeout_order,crm,bi,spot_pay,spot_order",
-			"deviceCode" : "0001"
-		}]
+		"grounID" : "6",
+		"groupName" : "哗啦啦体验店",
+		"shopID" : "1",
+		"shopName" : "西直门店",
+		"tel" : "010-111111111",
+		"address" : "",
+		"operationMode" : "1",
+		"serviceFeatures" : "commonreserve_order,justeat_order,takeaway_order,takeout_order,crm,bi,spot_pay,spot_order",
+		"deviceCode" : "0001",
+		"logoUrl" : ""
 	}
 }

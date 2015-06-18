@@ -1550,5 +1550,26 @@ body {
 }
 .server-modal .form-group {
   margin-bottom: 0;
-  overflow: hidden;
+}
+.server-modal .serv-item {
+  display: inline-block;
+  margin: .2rem .5rem;
+  padding: .2rem .6rem .3rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: .25rem;
+  line-height: 1.5rem;
+  background-color: #5CB85C;
+  opacity: .65;
+}
+.server-modal .serv-item > .glyphicon {
+  opacity: .65;
+}
+.server-modal .serv-item.active,
+.server-modal .serv-item.active > .glyphicon {
+  opacity: 1;
 }

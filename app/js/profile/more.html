@@ -20,14 +20,6 @@
 			
 		</div>
 		<div class="modal-body">
-			<!-- <div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title"></h4>
-				</div>
-				<div class="panel-body">
-					
-				</div>
-			</div> -->
 			<div class="col-xs-6 clearfix">
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -82,7 +74,13 @@
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">开通业务</label>
 								<div class="col-xs-8">
-									<p class="form-control-static" >{{shopInfo.shopServiceFeatures}}</p>
+									<p class="form-control-static" >
+										<span class="serv-item" ng-class="{active : chkServiceFeatureIsOpen(el.value)}" ng-repeat="el in ShopServiceFeatures">
+											<span class="glyphicon glyphicon-ok"></span>
+											{{el.label}}
+										</span>
+										{{mapShopServiceFeatures(shopInfo.shopServiceFeatures)}}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -99,55 +97,62 @@
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">服务器名</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.HttpServerComputerName}}</p>
+									<p class="form-control-static">{{localServer.HttpServerComputerName}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">服务器地址</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{getLocalServerLocation()}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">日期格式</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.HttpServerSysDateTimeFormatStr}}</p>
+									<p class="form-control-static">{{localServer.HttpServerSysDateTimeFormatStr}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">厨打凭证类型</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.KitchenPrintBillTypeLst}}</p>
+									<p class="form-control-static">{{localServer.KitchenPrintBillTypeLst}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">账单元整方式</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.moneyWipeZeroType}}</p>
+									<!--<p class="form-control-static">{{localServer.moneyWipeZeroType}}</p>-->
+									<p class="form-control-static">{{mapMoneyWipeZeroTypeLabel(localServer.moneyWipeZeroType)}}</p>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-xs-4 control-label">后结账自助点菜下单验证码</label>
+								<label for="" class="col-xs-4 control-label">自助下单验证码</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.ConfirmationCode}}</p>
+									<p class="form-control-static">{{localServer.ConfirmationCode}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">打印机端口名</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.LocalSitePrinterPortName}}</p>
+									<p class="form-control-static">{{localServer.LocalSitePrinterPortName}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">打印机端口类型</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.LocalSitePrinterPortType}}</p>
+									<p class="form-control-static">{{localServer.LocalSitePrinterPortType}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">打印机纸张大小</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.LocalSitePrinterPageSize}}</p>
+									<p class="form-control-static">{{localServer.LocalSitePrinterPageSize}}</p>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-xs-4 control-label">每行打印最大字符数</label>
+								<label for="" class="col-xs-4 control-label">每行打印字符数</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localApp.LocalSitePrinterLineMaxCharCount}}</p>
+									<p class="form-control-static">{{localServer.LocalSitePrinterLineMaxCharCount}}</p>
 								</div>
 							</div>
 						</div>
@@ -172,7 +177,7 @@
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">云端服务器状态</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{cloudServer.CloudHostConnecttionStatus}}</p>
+									<p class="form-control-static">{{cloudServer.CloudHostConnecttionStatus == 'ONLINE' ? '在线' : '离线'}}</p>
 								</div>
 							</div>
 						</div>
@@ -198,7 +203,7 @@
 									<p class="form-control-static">{{localApp.appPath}}</p>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group hidden">
 								<label for="" class="col-xs-4 control-label">数据库文件名</label>
 								<div class="col-xs-8">
 									<p class="form-control-static">{{localApp.DBFileName}}</p>

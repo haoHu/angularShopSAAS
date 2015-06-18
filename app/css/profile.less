@@ -10,6 +10,16 @@
 		
 	}
 	.form-group {
-		margin-bottom : 0; overflow: hidden;
+		margin-bottom : 0; 
+	}
+	.serv-item {
+		display: inline-block; margin: .2rem .5rem; padding : .2rem .6rem .3rem; font-size: 1rem; font-weight: 700; color : #fff; text-align: center; white-space: nowrap; vertical-align: middle; border-radius: .25rem; line-height: 1.5rem;
+		background-color: #5CB85C; opacity: .65;
+		& > .glyphicon {
+			opacity : .65;
+		}
+		&.active, &.active > .glyphicon {
+			opacity : 1;
+		}
 	}
 }

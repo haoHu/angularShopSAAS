@@ -81,6 +81,28 @@ define(['app'], function (app) {
 			$scope.localApp = null;
 			$scope.localServer = null;
 			$scope.localMonitor = null;
+			$scope.ShopServiceFeatures = _.map(Hualala.TypeDef.ShopServiceFeatures, function (el) {
+				return _.extend(el, {
+					active : false
+				});
+			});
+			$scope.getLocalServerLocation = function () {
+				var loc = document.location;
+				return loc.protocol + '//' + loc.host;
+			};
+			// 格式化账单元整类型名
+			$scope.mapMoneyWipeZeroTypeLabel = function (v) {
+				var moneyWipeZeroTypes = Hualala.TypeDef.MoneyWipeZeroTypes;
+				var el = _.find(moneyWipeZeroTypes, function (item) {
+					return _.result(item, 'value') == v;
+				});
+				return _.result(el, 'label', '');
+			};
+			$scope.chkServiceFeatureIsOpen = function (v) {
+				var curServiceFeatures = _.result($scope.shopInfo, 'shopServiceFeatures', '');
+				var idx = curServiceFeatures.indexOf(v + ',');
+				return idx > -1;
+			};
 			var initModalData = function () {
 				$scope.shopInfo = SAASLocalServerInfo.getShopInfo();
 				$scope.HLLServiceTel = SAASLocalServerInfo.getHLLServiceTel();
