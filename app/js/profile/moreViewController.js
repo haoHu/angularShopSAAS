@@ -4,10 +4,6 @@ define(['app'], function (app) {
 		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-			// HC.TopTip.reset($rootScope);
-			// $scope.closeTopTip = function (index) {
-			// 	HC.TopTip.closeTopTip($rootScope, index);
-			// };
 
 			var modalIsOpenning = false;
 			// 设置/获取当前是否打开了详情模态窗口
@@ -19,7 +15,26 @@ define(['app'], function (app) {
 			};
 			// 修改密码
 			$scope.appModifyPWD = function (e) {
-
+				if ($scope.modalIsOpen()) return;
+				var modalSize = 'md',
+					windowClass = '',
+					backdrop = 'static',
+					controller = 'ModifyPWDController',
+					templateUrl = 'js/profile/modifypwd.html',
+					resolve = {
+						_scope : function () {
+							return $scope;
+						}
+					};
+				$scope.modalIsOpen(true);
+				$modal.open({
+					size : modalSize,
+					windowClass : windowClass,
+					controller : controller,
+					templateUrl : templateUrl,
+					resolve : resolve,
+					backdrop : backdrop
+				});
 			};
 			// app设置
 			$scope.appSetting = function (e) {
@@ -126,6 +141,48 @@ define(['app'], function (app) {
 			$scope.close = function () {
 				_scope.modalIsOpen(false);
 				$modalInstance.close();
+			};
+		}
+	]);
+
+	app.controller('ModifyPWDController', [
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'CommonCallServer', 'AppAlert',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, CommonCallServer, AppAlert) {
+			var empInfo = storage.get('EMPINFO');
+			$scope.formData = {
+				empOldPWD : '',
+				empNewPWD : '',
+				confirmPWD : '',
+				empKey : _.result(empInfo, 'empCode', '')
+			};
+			
+			// 关闭窗口
+			$scope.close = function () {
+				_scope.modalIsOpen(false);
+				$modalInstance.close();
+			};
+			var afterSave = function (data) {
+				AppAlert.add('success', "修改密码成功,请重新登录!");
+				setTimeout(function () {
+					$scope.close();
+					_scope.appLogout();
+				}, 1500);
+				
+			};
+			// 提交表单
+			$scope.save = function () {
+				IX.Debug.info($scope.formData);
+				CommonCallServer.empModifyPWD($scope.formData)
+					.success(function (data, status) {
+						if ($XP(data, 'code') == '000') {
+							afterSave(data);
+						} else {
+							AppAlert.add('danger', _.result(data, 'msg', ''));
+						}
+					})
+					.error(function (data) {
+						AppAlert.add('danger', "修改密码服务失败");
+					});
 			};
 		}
 	]);

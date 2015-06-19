@@ -19,7 +19,7 @@
 				<div class="form-group has-feedback">
 					<label for="empCode" class="col-xs-2 control-label">员工编号</label>
 					<div class="col-xs-6" ng-class="{'has-success' : loginForm.empCode.$dirty && loginForm.empCode.$valid, 'has-error' : loginForm.empCode.$invalid}">
-						<input type="text" id="empCode" class="form-control" name="empCode" ng-model="login.empCode" placeholeder="员工编号" bv-notempty bv-strlength min="4" max="12">
+						<input type="text" id="empCode" class="form-control" name="empCode" ng-model="login.empCode" placeholder="员工编号" bv-notempty bv-strlength min="4" max="12">
 						<small class="help-block" ng-show="loginForm.empCode.$dirty && loginForm.empCode.$error.bvNotempty">请输入员工编号</small>
 						<small class="help-block" ng-show="loginForm.empCode.$dirty && loginForm.empCode.$error.bvStrlength">员工编号必须是4-12位字符</small>
 					</div>
@@ -33,13 +33,23 @@
 					</div>
 				</div>
 				
-				<div class="form-group" >
+				<!--<div class="form-group" >
 					<div class="col-xs-6 col-xs-offset-2">
 						<button class="btn btn-success" type="button" ng-disabled="loginForm.$invalid || loginForm.$pristine" fm-submit="submitForm()">登录</button>
 						<button class="btn btn-default" type="button" ng-click="reset()">取消</button>
 					</div>
-				</div>
+				</div>-->
 			</form>
+		</div>
+		<div class="panel-footer">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-success btn-lg" ng-disabled="loginForm.$invalid || loginForm.$pristine" fm-submit="submitForm()">登录</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="reset()" >取消</button>
+				</div>
+			</div>
 		</div>
 	</div>
 	

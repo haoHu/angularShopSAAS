@@ -287,4 +287,53 @@
 			</div>
 		</div>
 	</script>
+	<script type="text/ng-template" id="js/profile/modifypwd.html">
+		<div class="modal-header">
+			<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">
+				修改密码
+			</h4>
+			
+		</div>
+		<div class="modal-body">
+			<form class="form-horizontal" name="modifypwd" role="form" novalidate="novalidate">
+				<div class="form-group">
+					<label for="oldpwd" class="col-xs-3 control-label">旧密码</label>
+					<div class="col-xs-6" ng-class="{'has-success' : modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$valid, 'has-error' : modifypwd.empOldPWD.$invalid}">
+						<input id="oldpwd" type="password" name="empOldPWD" class="form-control" ng-model="formData.empOldPWD" placeholder="请输入旧登录密码" bv-notempty bv-strlength min="4" max="12">
+						<small class="help-block" ng-show="modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$error.bvNotempty">请输入旧登录密码</small>
+						<small class="help-block" ng-show="modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$error.bvStrlength">密码必须在4-12位之间</small>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="newpwd" class="col-xs-3 control-label">新密码</label>
+					<div class="col-xs-6" ng-class="{'has-success' : modifypwd.empNewPWD.$dirty && modifypwd.empNewPWD.$valid, 'has-error' : modifypwd.empNewPWD.$invalid}">
+						<input id="newpwd" type="password" name="empNewPWD" class="form-control" ng-model="formData.empNewPWD" placeholder="请输入新登录密码" bv-notempty bv-strlength min="4" max="12">
+						<small class="help-block" ng-show="modifypwd.empNewPWD.$dirty && modifypwd.empNewPWD.$error.bvNotempty">请输入新登录密码</small>
+						<small class="help-block" ng-show="modifypwd.empNewPWD.$dirty && modifypwd.empNewPWD.$error.bvStrlength">密码必须在4-12位之间</small>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="confirmpwd" class="col-xs-3 control-label">确认密码</label>
+					<div class="col-xs-6" ng-class="{'has-success' : modifypwd.confirmPWD.$dirty && modifypwd.confirmPWD.$valid, 'has-error' : modifypwd.confirmPWD.$invalid}">
+						<input id="confirmpwd" name="confirmPWD" type="password" class="form-control" ng-model="formData.confirmPWD"placeholder="再次输入新密码" bv-notempty bv-strlength min="4" max="12" bv-issame="empNewPWD">
+						<small class="help-block" ng-show="modifypwd.confirmPWD.$dirty && modifypwd.confirmPWD.$error.bvNotempty">请重复新密码</small>
+						<small class="help-block" ng-show="modifypwd.confirmPWD.$dirty && modifypwd.confirmPWD.$error.bvStrlength">密码必须在4-12位之间</small>
+						<small class="help-block" ng-show="modifypwd.confirmPWD.$dirty && modifypwd.confirmPWD.$error.bvIssame">确认密码与新密码不符</small>
+					</div>
+				</div>
+				<input type="hidden" name="empKey" ng-model="formData.empKey" />
+			</form>
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-disabled="modifypwd.$invalid || modifypwd.$pristine" fm-submit="save()" >保存</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="close()" >取消</button>
+				</div>
+			</div>
+		</div>
+	</script>
 </section>

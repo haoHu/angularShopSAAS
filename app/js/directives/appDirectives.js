@@ -152,6 +152,21 @@ define(['app'], function (app) {
         };
     });
 
+    app.directive('bvIssame', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                var tarName = attrs.bvIssame;
+                ctrl.$parsers.unshift(function (viewValue) {
+                    var tarEl = $('input[name=' + tarName + ']'),
+                        v = tarEl.val();
+                    ctrl.$setValidity('bvIssame', v == viewValue);
+                    return v == viewValue ? viewValue : undefined;
+                });
+            }
+        }
+    });
+
     /**
      * 表单提交指令fm-submit
      */

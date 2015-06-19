@@ -20,13 +20,23 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!--<div class="form-group">
 					<div class="col-xs-6 col-xs-offset-2">
 						<button class="btn btn-success" type="button" ng-disabled="signupForm.$invalid || signupForm.$pristine" fm-submit="submitForm()">注册</button>
 						<button class="btn btn-default" type="button" ng-click="reset()">取消</button>
 					</div>
-				</div>
+				</div>-->
 			</form>
+		</div>
+		<div class="panel-footer">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-success btn-lg" ng-disabled="signupForm.$invalid || signupForm.$pristine" fm-submit="submitForm()">注册</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="reset()" >取消</button>
+				</div>
+			</div>
 		</div>
 	</div>
 	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>

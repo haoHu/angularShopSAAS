@@ -33,7 +33,7 @@ define(['app'], function (app) {
 						if ($XP(data, 'code') == '000') {
 							afterLogin(data);
 						} else {
-							AppAlert.add('danger', _.reulst(data, 'msg', ''));
+							AppAlert.add('danger', _.result(data, 'msg', ''));
 							// HC.TopTip.addTopTips($rootScope, data);
 						}
 

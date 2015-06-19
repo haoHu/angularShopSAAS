@@ -20,6 +20,12 @@ body {
 .row > div[class*="col-"] {
   padding: 0;
 }
+.modal .modal-footer {
+  padding: 0;
+}
+.panel .panel-footer {
+  padding: 0;
+}
 #site_wrapper {
   position: relative;
   display: block;
@@ -156,7 +162,7 @@ body {
   height: 100%;
 }
 .section-diandan .btn {
-  border-radius: 0;
+  /*border-radius: 0;*/
   white-space: normal;
 }
 .section-diandan .order-plain {
@@ -453,7 +459,7 @@ body {
 .section-diandan .order-btngrp > .btn {
   margin: 0;
   height: 5rem;
-  border-radius: 0;
+  /*border-radius: 0;*/
   border-right: 0 none;
 }
 .section-diandan .btns-plain > div,
