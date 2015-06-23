@@ -6,7 +6,7 @@ html {
 body {
   width: 100%;
   height: 100%;
-  font-family: Microsoft Yahei, Tahoma, Verdana, sans-serif, simsun, Arial;
+
   font-size: 14px;
 }
 @font-face {
@@ -1400,25 +1400,43 @@ body {
   border: none !important;
   font-size: 18px;
 }
+.section-huiyuan .tab .btn-disable {
+  color: white !important;
+  background: #c1c1c1 !important;
+  cursor: not-allowed !important;
+}
+.section-huiyuan .tab .btn-disable :hover {
+  background: #c1c1c1 !important;
+  cursor: not-allowed !important;
+}
 .section-huiyuan .tab-join .panel-viplevel {
   position: absolute;
-  right: -20px;
-  top: 0px;
+  right: 10px;
+  top: -59px;
+}
+.section-huiyuan .tab-join .panel-viplevel .header {
+  font-size: 18px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #c1c1c1;
+  margin-bottom: -1px;
 }
 .section-huiyuan .tab-join .panel-viplevel ul {
-  width: 280px;
+  width: 300px;
   padding: 0px;
+  margin: 0px;
+  overflow-y: auto;
 }
 .section-huiyuan .tab-join .panel-viplevel ul li {
-  display: inline-block;
-  cursor: pointer;
-  border: 1px black solid;
-  background: #fbe4d5;
+  display: block;
+  height: 80px;
   padding: 10px;
-  margin: -1px;
+  margin: -1px 0px;
+  border: 1px solid #c1c1c1;
+  cursor: pointer;
+  position: relative;
 }
 .section-huiyuan .tab-join .panel-viplevel ul .true {
-  background: #88cd50;
+  background: #ddecff;
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan {
   position: absolute;
@@ -1438,7 +1456,7 @@ body {
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan ul li {
   display: block;
-  height: 80px;
+  min-height: 80px;
   padding: 10px;
   margin: -1px 0px;
   border: 1px solid #c1c1c1;
@@ -1492,7 +1510,7 @@ body {
 }
 .section-huiyuan .userinfo {
   position: absolute;
-  left: 741px;
+  left: 669px;
   top: 0px;
   border-left: 1px solid #c1c1c1;
   border-right: 1px solid #c1c1c1;
@@ -1515,12 +1533,12 @@ body {
   font-weight: normal;
 }
 .section-huiyuan .btn-disable {
-  background: #c1c1c1;
-  cursor: not-allowed;
+  background: #c1c1c1 !important;
+  cursor: not-allowed !important;
 }
 .section-huiyuan .btn-disable :hover {
-  background: #c1c1c1;
-  cursor: not-allowed;
+  background: #c1c1c1 !important;
+  cursor: not-allowed !important;
 }
 .server-modal .modal-dialog {
   position: absolute;

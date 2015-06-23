@@ -72,7 +72,18 @@ define(['IX'], function () {
 		// 获取门店服务器相关信息
 		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"],
 		// 设置沽清菜品
-		["setSoldOutFoodLst", "/saas/base/setSoldOutFoodLst.ajax", "", "POST"]
+		["setSoldOutFoodLst", "/saas/base/setSoldOutFoodLst.ajax", "", "POST"],
+
+		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"]
+
+        // 会员入会办卡
+        ,["createVIPCard", "/crm/card/create.ajax", "", "POST"]
+        //获取集团会员参数
+        ,["getShopVipInfo", "/saas/crm/params/get.ajax", "", "POST"]
+        //会员储值
+        ,["saveMoney", "/crm/card/saveMoney.ajax", "", "POST"]
+        //会员消费
+        ,["deductMoney", "/crm/card/deductMoney.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;
