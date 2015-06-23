@@ -2,11 +2,12 @@ define(['app'], function(app)
 {
 	app.controller('HuiYuanViewController',
     [
-        '$scope','CommonCallServer',
+        '$scope','CommonCallServer', 'AppAlert', 'HuiYuanTabsService',
 
-        function($scope, CommonCallServer)
+        function($scope, CommonCallServer, AppAlert, HuiYuanTabsService)
         {
             $scope.CCS = CommonCallServer;
+            $scope.AA = AppAlert;
 
             $scope.tabs =
             [
@@ -17,37 +18,7 @@ define(['app'], function(app)
                 {class: '', active: true, label: '报表', tabname: 'report'}
             ];
 
-            $scope.user = {
-                level: 'vip1',
-                status: '正常',
-                cardnumber: 'yasdh',
-                phone: '',
-                name: '习近平',
-                birthday: '1990-01-01',
-                joindate: '2015-01-01 18:11:11',
-                cashaccount: 0,
-                pointaccount: 0,
-                pointrate: 0.10,
-                joinplace: '哗啦啦体验店铺（中关村店）'
-            };
-
-            $scope.vouchers = [
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'},
-                {value: 100, name: '牛市牛（幸福三千里）100元电子代金券', date: '2015-07-14'}
-            ];
+            $scope.rechargeplans = [];
 
             $scope.panel_userinfo = {
                 show: function() {
@@ -58,25 +29,69 @@ define(['app'], function(app)
                     $('.userinfo').hide();
                     $('.panel-vouchers').hide();
                 }
-            }
+            };
 
             //点击查询按钮时打开会员信息面板
             $('.section-huiyuan').on('click', '.btn-query', function() {
                 if($scope.cardnumber) {
-                    $scope.panel_userinfo.show();
+                    CommonCallServer.getVIPCardInfo({
+                        cardNoOrMobile: $scope.cardnumber
+                    }).success(function(data) {
+                        if(data.code == '000') {
+                            var d = data.data;
+
+                            $scope.setUserInfo(d);
+
+                            $scope.vouchers = [];
+                            for(var i = 0; i < data.data.cashVoucherLst.length; i ++) {
+                                var v = data.data.cashVoucherLst[i];
+                                v.type = 1;
+                                $scope.vouchers.push(v);
+                            };
+                            for(var i = 0; i < data.data.exchangeVoucherLst.length; i ++) {
+                                var v = data.data.exchangeVoucherLst[i];
+                                v.type = 2;
+                                $scope.vouchers.push(v);
+                            };
+                        }
+                    });
                 }
             });
             $('.section-huiyuan').on('keydown', '.cardnumber', function(e) {
                 if(e.type == 'keydown' && e.keyCode == 13) {
                     $('.btn-query').click();
                 }
-            })
-
-            //获取集团会员参数
-            CommonCallServer.getVIPCardInfo({}).success(function(data) {
-                $scope.vipinfo = data;
-                $scope.$apply();
             });
+
+            $scope.$watch('user', function(n, o, scope) {
+                $('.btn-submit').each(function() {
+                    if(!$(this).hasClass('btn-submit-join')) {
+                        if(n) {
+                            $(this).removeClass('btn-disable');
+                        }else {
+                            $(this).addClass('btn-disable');
+                        }
+                    }
+                });
+            });
+
+            $scope.setUserInfo = function(d) {
+                $scope.user = {
+                    level: d.cardTypeName,
+                    status: d.cardIsCanUsing == '1' ? '正常' : d.cardNotCanUsingNotes,
+                    cardnumber: d.cardNo,
+                    phone: d.userMobile,
+                    name: d.userName,
+                    birthday: d.customerBirthday,
+                    joindate: '2015-01-01 18:11:11',
+                    cashaccount: d.cardCashBalance,
+                    pointaccount: d.cardPointBalance,
+                    pointrate: d.pointRate,
+                    joinplace: '哗啦啦体验店铺（中关村店）'
+                };
+
+                $scope.panel_userinfo.show();
+            };
         }
     ]);
 
@@ -99,7 +114,7 @@ define(['app'], function(app)
 
                         HuiYuanTabsService.changeTab($(this).attr('name'));
 
-                       scope.panel_userinfo.hide();
+                        //scope.panel_userinfo.hide();
                     });
                 }
             };
@@ -133,7 +148,7 @@ define(['app'], function(app)
                                 '<label>实体卡卡号</label>',
                                 '<input style="width: 187px;" type="number" class="form-control realcardnumber" ng-model="realcardnumber">',
                             '</div>',
-                            '<button type="button" class="btn btn-default btn-viplevel">{{level.name}}</button>',
+                            '<button type="button" class="btn btn-default btn-viplevel">{{level.cardLevelName}}</button>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
@@ -158,7 +173,7 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>生日</label>',
-                                '<input style="width:187px;" type="text" class="form-control birthday form_datetime"  value="1980-01-01" ng-model="birthday">',
+                                '<input style="width:187px;" type="text" class="form-control birthday form_datetime"  ng-model="birthday">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -170,12 +185,25 @@ define(['app'], function(app)
                                 '<input type="radio" name="cardfee" value="20" ng-model="cardfee">20元',
                             '</div>',
                         '</div>',
-                        '<div style="display:block;margin-top:10px;">',
-                            '<div class="form-group">',
-                                '<button type="button" class="btn btn-default btn-submit btn-submit-join">提交入会办卡</button>',
+                        '<div style="display:none;" class="panel-oldcard">',
+                            '<div style="display:block;margin-top:10px;">换系统原卡资金及积分转入</div>',
+                            '<div style="display:block;margin-top:10px;">',
+                                '<div class="form-group">',
+                                    '<label>原系统卡号</label>',
+                                    '<input style="width:187px;" type="text" class="form-control oldcardnumber" ng-model="oldcardnumber">',
+                                '</div>',
+                            '</div>',
+                            '<div style="display:block;margin-top:10px;">',
+                                '<div class="form-group">',
+                                    '<label>储值余额</label>',
+                                    '<input style="width: 58px;" type="number" class="form-control oldrechargeamount" ng-model="oldrechargeamount">',
+                                    '<label style="width:60px;margin-left:1px;">积分余额</label>',
+                                    '<input style="width: 58px;" type="number" class="form-control oldpointamount" ng-model="oldpointamount">',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div class="panel-viplevel" style="display:none;">',
+                            '<div class="header">会员等级</div>',
                             '<ul class="table-viplevel">',
                                 '<li role="presentation" ng-repeat="el in viplevels" name="{{el.cardLevelName}}" levelid="{{el.cardLevelID}}" class="{{el.def}}">',
                                     '<div class="name">{{el.cardLevelName}} {{el.isDefaultLevel? "（默认）" : ""}}</div>',
@@ -184,27 +212,56 @@ define(['app'], function(app)
                                 '</li>',
                             '</ul>',
                         '</div>',
+                        '<div style="display:block;margin-top:10px;">',
+                            '<div class="form-group">',
+                                '<button type="button" class="btn btn-default btn-submit btn-submit-join">提交入会办卡</button>',
+                            '</div>',
+                        '</div>',
                     '</div>'
                 ].join(''),
                 replace : true,
                 link : function (scope, el, attr) {
-                    //datepicker
+                    el.find('.panel-viplevel ul').css('height', $(window).height() - 41);
 
-                    $('.birthday').datetimepicker({
-                        format: 'yyyy-mm-dd',
-                        minView: 2,
-                        autoclose: true,
-                        language: 'zh-CN',
-                        initialDate: '1980-01-01'
+                    //初始值设定
+                    var init = function() {
+                        scope.sex = 0;
+                        scope.cardfee = 0;
+                        scope.birthday = '1980-01-01';
+                        scope.cardpassword = '888888';
+                    };
+                    init();
+
+                    //获取集团会员参数
+                    scope.CCS.getShopVipInfo({}).success(function(data) {
+                        if(data.code == '000') {
+                            scope.AA.add('success', '载入数据成功');
+
+                            scope.vipinfo = data.data;
+
+                            scope.viplevels = data.data.cardLevelList;
+
+                            var index = viplevel.defLevel(scope.viplevels);
+                            scope.level = scope.viplevels[index];
+
+                            scope.rechargeplans = data.data.saveMoneySet;
+
+                            if(data.data.isSysSwitchActive == '1') {
+                                el.find('.panel-oldcard').show();
+                            }
+
+                            scope.$apply();
+                        }else {
+                            scope.AA.add('danger', data.msg);
+                        }
                     });
-
-                    scope.viplevels = scope.vipinfo.cardLevelList;
 
                     var viplevel = {
                         defLevel: function(levels) {
                             for(var i = 0; i < levels.length; i ++) {
                                 if(levels[i].isDefaultLevel == '1') {
                                     levels[i].def = true;
+                                    scope.cardlevelid = levels[i].cardLevelID;
                                     return  i;
                                 }
                             }
@@ -215,21 +272,46 @@ define(['app'], function(app)
                         }
                     };
 
-                    var index = viplevel.defLevel(scope.viplevels);
-
-                    scope.level = scope.viplevels[index];
-
                     //点击会员等级标签时
                     el.on('click', '.panel-viplevel li', function() {
                         viplevel.changeLevel($(this).index());
                         el.find('.panel-viplevel').find('.true').removeClass('true');
                         $(this).addClass('true');
+                        scope.cardlevelid = $(this).attr('levelid');
                         el.find('.panel-viplevel').hide();
                     });
 
                     //点击会员等级按钮时
                     el.on('click', '.btn-viplevel', function() {
                         el.find('.panel-viplevel').show();
+                    });
+
+                    //点击提交按钮时
+                    el.on('click', '.btn-submit-join', function() {
+                        scope.CCS.createVIPCard({
+                            shopName: null,
+                            cardNO: scope.realcardnumber,
+                            cardLevelID: scope.cardlevelid,
+                            cardFee: scope.cardfee,
+                            cardPWD: scope.cardpassword,
+                            customerName: scope.username,
+                            customerSex: scope.sex,
+                            customerMobile: scope.phonenumber,
+                            isMobileChecked: '0',
+                            customerBirthday: scope.birthday,
+                            birthdayType: '0',
+                            oldSystemcardNO: scope.oldcardnumber,
+                            oldCardMoneyBalnace: scope.oldrechargeamount,
+                            oldCardPointBalnace: scope.oldpointamount
+                        }).success(function(data) {
+                            if(data.code == '000') {
+                                scope.AA.add('success', '办卡成功！');
+                                scope.panel_userinfo.hide();
+                                init();
+                            }else{
+                                scope.AA.add('danger', data.msg);
+                            }
+                        });
                     });
                 }
             };
@@ -264,19 +346,19 @@ define(['app'], function(app)
                                     '<div style="display:block;">',
                                         '<div class="form-group">',
                                             '<label>储值金额</label>',
-                                            '<input style="width: 187px;" type="number" class="form-control rechargeamount">',
+                                            '<input style="width: 187px;" type="number" class="form-control rechargeamount" ng-model="rechargeamount">',
                                         '</div>',
                                     '</div>',
                                     '<div style="display:block;margin-top:10px;">',
                                         '<div class="form-group">',
                                             '<label>储值返金额</label>',
-                                            '<input style="width: 187px;" type="number" class="form-control rechargereturnamount">',
+                                            '<input style="width: 187px;" type="number" class="form-control rechargereturnamount" ng-model="rechargereturnamount">',
                                         '</div>',
                                     '</div>',
                                     '<div style="display:block;margin-top:10px;">',
                                         '<div class="form-group">',
                                             '<label>储值返积分额</label>',
-                                            '<input style="width: 187px;" type="number" class="form-control rechargereturnpoint">',
+                                            '<input style="width: 187px;" type="number" class="form-control rechargereturnpoint" ng-model="rechargereturnpoint">',
                                         '</div>',
                                     '</div>',
                                 '</div>',
@@ -287,30 +369,30 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>付款方式</label>',
-                                '<input type="radio" name="payway" checked value="0">现金',
-                                '<input type="radio" name="payway" value="1">银行卡',
-                                '<input type="radio" name="payway" value="2">支票',
-                                '<input type="radio" name="payway" value="3">其他',
+                                '<input type="radio" name="payway" ng-model="payway" value="1">现金',
+                                '<input type="radio" name="payway" ng-model="payway" value="2">银行卡',
+                                '<input type="radio" name="payway" ng-model="payway" value="3">支票',
+                                '<input type="radio" name="payway" ng-model="payway" value="4">其他',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>备注</label>',
-                                '<input style="width: 187px;" type="text" class="form-control remark">',
+                                '<input style="width: 187px;" type="text" class="form-control remark" ng-model="remark">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                                '<button type="button" class="btn btn-default btn-submit btn-submit-recharge">提交储值</button>',
+                                '<button type="button" class="btn btn-default btn-submit btn-submit-recharge btn-disable">提交储值</button>',
                             '</div>',
                         '</div>',
-                        '<div class="panel-" style="display:none;">',
+                        '<div class="panel-rechargeplan" style="display:none;">',
                             '<div class="header">储值套餐</div>',
                             '<ul class="table-rechargeplan">',
-                                '<li role="presentation" ng-repeat="el in rechargeplans" name="{{el.name}}">',
-                                '<div class="name">{{el.name}}</div>',
-                                '<div class="account">会员价 部分{{el.account * 10}}折</div>',
-                                '<div class="point">消费100元积{{el.pointrate * 100}}分</div>',
+                                '<li role="presentation" ng-repeat="el in rechargeplans" setid="{{el.saveMoneySetID}}">',
+                                    '<div class="name">{{el.setName}}</div>',
+                                    '<div class="savemoney">*储值金额：{{el.setSaveMoney}}元</div>',
+                                    '<div class="returnmoney">*送返金额：{{el.returnMoney}}元</div>',
                                 '</li>',
                             '</ul>',
                         '</div>',
@@ -318,7 +400,19 @@ define(['app'], function(app)
                 ].join(''),
                 replace : true,
                 link : function (scope, el, attr) {
-                    scope.rechargeway = 0;
+                    el.find('.panel-rechargeplan ul').css('height', $(window).height() - 41);
+
+                    var init = function() {
+                        scope.rechargeway = 0;
+                        scope.rechargeamount = 0;
+                        scope.rechargereturnamount = 0;
+                        scope.rechargereturnpoint = 0;
+                        scope.payway = 1;
+                        scope.remark = '';
+
+                        scope.panel_userinfo.hide();
+                    };
+                    init();
 
                     scope.$watch('rechargeway', function(newValue, oldValue, scope) {
                         el.find('.panel-body[rechargeway="' + oldValue + '"]').hide();
@@ -331,14 +425,9 @@ define(['app'], function(app)
                         }
                     });
 
-                    scope.rechargeplans = [
-                        {name: 'lv3', def: true, account: 0.7, pointrate: 0.1},
-                        {name: 'lv4', def: false, account: 0.6, pointrate: 0.1}
-                    ];
-
                     var rechargeplans = {
                         changePlan: function(index) {
-                            scope.rechageplan = scope.rechargeplans[index];
+                            scope.rechargeplan = scope.rechargeplans[index];
                             scope.$apply();
                         }
                     };
@@ -349,6 +438,29 @@ define(['app'], function(app)
                         el.find('.panel-rechargeplan').find('.active').removeClass('active');
                         $(this).addClass('active');
                         el.find('.panel-body[rechargeway="1"]').html($(this).html());;
+                    });
+
+                    //点击提交按钮时
+                    el.on('click', '.btn-submit-recharge', function() {
+                        if(!$(this).hasClass('disable')) {
+                            scope.CCS.saveMoney({
+                                cardID: scope.user.cardnumber || scope.user.phone,
+                                payWayName: scope.payway,
+                                saveMoneySetID: scope.rechargeway == 0 ? '' : scope.rechargeplan.saveMoneySetID,
+                                transAmount: scope.rechargeway == 0 ? scope.rechargeamount : scope.rechargeplan.setSaveMoney,
+                                transRemark: scope.remark,
+                                transReturnMoneyAmount: scope.rechargeway == 0 ? scope.rechargereturnamount : scope.rechargeplan.returnMoney,
+                                transReturnPointAmount: scope.rechargeway == 0 ? scope.rechargereturnpoint : scope.rechargeplan.returnPoint
+                            }).success(function(data) {
+                                if(data.code == '000') {
+                                    scope.AA.add('success', '储值成功！');
+                                    scope.panel_userinfo.hide();
+                                    init();
+                                }else{
+                                    scope.AA.add('danger', data.msg);
+                                }
+                            });
+                        }
                     });
                 }
             };
@@ -372,27 +484,27 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>本次消费金额</label>',
-                                '<input style="width: 100px;" type="text" class="form-control consumeamount">',
+                                '<input style="width: 100px;" type="number" class="form-control consumeamount" ng-model="consumeamount">',
                                 '<label style="width:30px;margin-left:1px;">单号</label>',
-                                '<input style="width: 100px;" type="text" class="form-control ordernumber">',
+                                '<input style="width: 100px;" type="text" class="form-control ordernumber" ng-model="ordernumber">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>代金券抵扣金额</label>',
-                                '<input style="width: 70px;" type="number" disabled class="form-control voucheramount">',
+                                '<input style="width: 70px;" type="number" disabled class="form-control voucheramount" ng-model="usevoucheramount">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>积分抵扣金额</label>',
-                                '<input style="width: 70px;" type="number" class="form-control pointamount">',
+                                '<input style="width: 70px;" type="number" class="form-control pointamount" ng-model="pointamount">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>储值余额付款</label>',
-                                '<input style="width: 70px;" type="number" class="form-control balanceamount">',
+                                '<input style="width: 70px;" type="number" class="form-control balanceamount" ng-model="balanceamount">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -415,19 +527,19 @@ define(['app'], function(app)
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                                '<button type="button" class="btn btn-default btn-submit btn-submit-consume">提交储值</button>',
+                                '<button type="button" class="btn btn-default btn-submit btn-submit-consume btn-disable">提交储值</button>',
                             '</div>',
                         '</div>',
                         '<div class="panel-vouchers" style="display:none;">',
                             '<div class="header">会员代金券和兑换券 {{vouchers.length}}张</div>',
                             '<ul class="table-vouchers">',
-                                '<li role="presentation" ng-repeat="el in vouchers" name="{{el.name}}">',
+                                '<li role="presentation" ng-repeat="el in vouchers" voucherid="{{el.voucherID}}">',
                                     '<div class="left">',
-                                        '<div>代金券</div><div>￥{{el.value}}</div>',
+                                        '<div>{{el.type == 1 ? "代金券" : "兑换券"}}</div><div>￥{{el.voucherValue}}</div>',
                                     '</div>',
                                     '<div class="right">',
-                                        '<div>{{el.name}}</div>',
-                                        '<div>截止日期：{{el.date}}</div>',
+                                        '<div>{{el.voucherName}}</div>',
+                                        '<div>截止日期：{{el.voucherValidDate}}</div>',
                                     '</div>',
                                 '</li>',
                             '</ul>',
@@ -436,30 +548,70 @@ define(['app'], function(app)
                 ].join(''),
                 replace : true,
                 link : function (scope, el, attr) {
-                    el.find('.panel-vouchers ul').css('height', $(window).height() - 41)
+                    el.find('.panel-vouchers ul').css('height', $(window).height() - 41);
 
-                    scope.uservoucher = [];
+                    var init = function() {
+                        scope.consumeamount = 0;
+                        scope.usevoucher = [];
+                        scope.usevoucheramount = 0;
+                        scope.pointamount = 0;
+                        scope.balanceamount = 0;
+                    };
+                    init();
 
-                    var vouchers = {
-                        changeVoucher: function(index, type) {
-                            if(type) {
-                                scope.uservoucher.push(scope.vouchers[index]);
-                            }else {
+                    scope.$watch('usevoucher', function(newValue, oldValue, scope) {
+                        if(newValue.length > 0) {
+                            var sum = 0;
 
+                            for(var i = 0; i < newValue.length; i ++) {
+                                if(newValue[i].type == 1) {
+                                    sum += 0 + newValue[i].voucherValue;
+                                }
                             }
+
+                            scope.usevoucheramount = sum;
 
                             scope.$apply();
                         }
-                    };
+                    });
+
+                    //价格变动时的一些联动
 
                     //点击储值套餐标签时
                     el.on('click', '.panel-vouchers li', function() {
                         if($(this).hasClass('active')) {
                             $(this).removeClass('active');
-                            vouchers.changeVoucher($(this).index(), -1);
                         }else {
                             $(this).addClass('active');
-                            vouchers.changeVoucher($(this).index(), 1);
+                        }
+
+                        $('.panel-vouchers').find('.active').each(function() {
+                            scope.usevoucher.push(scope.vouchers[$(this).index()]);
+                        });
+
+                        scope.$apply();
+                    });
+
+                    //点击提交按钮时
+                    el.on('click', '.btn-submit-consume', function() {
+                        if(!$(this).hasClass('disable')) {
+                            scope.CCS.deductMoney({
+                                cardKey: scope.user.cardnumber || scope.user.phone,
+                                payWayName: scope.payway,
+                                saveMoneySetID: scope.rechargeway == 0 ? '' : scope.rechargeplan.saveMoneySetID,
+                                transAmount: scope.rechargeway == 0 ? scope.rechargeamount : scope.rechargeplan.setSaveMoney,
+                                transRemark: scope.remark,
+                                transReturnMoneyAmount: scope.rechargeway == 0 ? scope.rechargereturnamount : scope.rechargeplan.returnMoney,
+                                transReturnPointAmount: scope.rechargeway == 0 ? scope.rechargereturnpoint : scope.rechargeplan.returnPoint
+                            }).success(function(data) {
+                                if(data.code == '000') {
+                                    scope.AA.add('success', '消费成功！');
+                                    scope.panel_userinfo.hide();
+                                    init();
+                                }else{
+                                    scope.AA.add('danger', data.msg);
+                                }
+                            });
                         }
                     });
                 }
@@ -559,7 +711,7 @@ define(['app'], function(app)
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                                '<button type="button" class="btn btn-default btn-submit btn-submit-handle">提交{{handler}}操作</button>',
+                                '<button type="button" class="btn btn-default btn-submit btn-submit-handle btn-disable">提交{{handler}}操作</button>',
                             '</div>',
                         '</div>',
                     '</div>'

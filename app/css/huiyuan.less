@@ -60,29 +60,50 @@
             border: none !important;
             font-size: 18px;
         }
+
+        .btn-disable{
+            color: white !important;
+            background: #c1c1c1 !important;
+            cursor: not-allowed !important;
+
+            :hover{
+                background: #c1c1c1 !important;
+                cursor: not-allowed !important;
+            }
+        }
     }
 
     .tab-join{
         .panel-viplevel{
             position: absolute;
-            right: -20px;
-            top: 0px;
+            right: 10px;
+            top: -59px;
+
+            .header{
+                font-size: 18px;
+                padding: 7px 10px;
+                border-bottom: 1px solid #c1c1c1;
+                margin-bottom: -1px;
+            }
 
             ul{
-                width: 280px;
+                width: 300px;
                 padding: 0px;
+                margin: 0px;
+                overflow-y: auto;
 
                 li{
-                    display: inline-block;
-                    cursor: pointer;
-                    border: 1px black solid;
-                    background: #fbe4d5;
+                    display: block;
+                    height: 80px;
                     padding: 10px;
-                    margin: -1px;
+                    margin: -1px 0px;
+                    border: 1px solid #c1c1c1;
+                    cursor: pointer;
+                    position: relative;
                 }
 
                 .true{
-                    background: #88cd50;
+                    background: #ddecff;
                 }
             }
         }
@@ -108,7 +129,7 @@
 
                 li{
                     display: block;
-                    height: 80px;
+                    min-height: 80px;
                     padding: 10px;
                     margin: -1px 0px;
                     border: 1px solid #c1c1c1;
@@ -176,7 +197,7 @@
 
     .userinfo{
         position: absolute;
-        left: 741px;
+        left: 669px;
         top: 0px;
         border-left: 1px solid #c1c1c1;
         border-right: 1px solid #c1c1c1;
@@ -202,12 +223,12 @@
     }
 
     .btn-disable{
-        background: #c1c1c1;
-        cursor: not-allowed;
+        background: #c1c1c1 !important;
+        cursor: not-allowed !important;
 
         :hover{
-            background: #c1c1c1;
-            cursor: not-allowed;
+            background: #c1c1c1 !important;
+            cursor: not-allowed !important;
         }
     }
 }
