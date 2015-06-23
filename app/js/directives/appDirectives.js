@@ -156,7 +156,7 @@ define(['app'], function (app) {
         return {
             require : 'ngModel',
             link : function (scope, el, attrs, ctrl) {
-                var min = parseFloat(attrs.min) || 0, inclusive = attrs.bvGreaterThan == "true";
+                var min = parseFloat(attrs.min) || 0, inclusive = attrs.bvGreaterthan == "true";
                 ctrl.$parsers.unshift(function (viewValue) {
                     if ((inclusive && parseFloat(viewValue) >= min) || (!inclusive && parseFloat(viewValue) > min)) {
                         ctrl.$setValidity('bvGreaterthan', true);
@@ -884,7 +884,7 @@ define(['app'], function (app) {
                 restrict : 'E',
                 template : [
                     '<ul class="list-unstyled grid-body" >',
-                        '<li class="row grid-row" ng-repeat="el in curSoldoutItems" item-key="{{el.foodKey}}" ng-click="selectSoldoutItem(el.itemKey)">',
+                        '<li class="row grid-row food-item" ng-repeat="el in curSoldoutItems" item-key="{{el.unitKey}}" ng-click="selectSoldoutItem(el.unitKey)">',
                             '<span class="col-xs-4 grid-cell txt">{{el.foodName}}</span>',
                             '<span class="col-xs-2 grid-cell txt">{{el.unit}}</span>',
                             '<span class="col-xs-3 grid-cell num">{{el.qty}}</span>',

@@ -7,6 +7,7 @@ define(['app'], function (app) {
 			var modalIsOpenning = false;
 			var $searchFoodModal = $('#search_food');
 			$scope.isModified = false;
+			$scope.modalType = 'new';
 			$scope.curSoldoutItems = [];
 			// 设置/获取当前是否打开了详情模态窗口
 			$scope.modalIsOpen = function (b) {
@@ -83,12 +84,7 @@ define(['app'], function (app) {
 				IX.Debug.info(matchedFoods);
 				$('.menu-plain .foods').removeClass('hidden');
 			};
-			// 为沽清列表插入菜品条目
-			// 1. 弹出配置沽清菜品表单的模态窗
-			// 2. 提交表单数据，向沽清菜品数据模型中插入一条记录
-			// 3. 关闭模态窗口
-			// 4. 刷新沽清菜品列表
-			$scope.insertFoodItem = function (unitKey) {
+			var openSoldoutSettingModal = function (unitKey, modalType) {
 				var food = FoodMenuService.getFoodByUnitKey(unitKey),
 					unitKey = $XP(food, '_foodUnit.unitKey'),
 					isSoldoutFood = SoldoutService.isSoldoutFood(unitKey),
@@ -98,9 +94,10 @@ define(['app'], function (app) {
 					foodKey : $XP(food, 'foodKey', ''),
 					unit : $XP(food, '__foodUnit.unit', ''),
 					unitKey : $XP(food, '__foodUnit.unitKey', ''),
-					defaultQty : '',
-					qty : '',
+					defaultQty : 0,
+					qty : 0,
 				};
+				$scope.modalType = modalType;
 
 				var modalSize = 'md',
 					windowClass = '',
@@ -128,6 +125,22 @@ define(['app'], function (app) {
 					resolve : resolve,
 					backdrop : backdrop
 				});
+			};
+			// 为沽清列表插入菜品条目
+			// 1. 弹出配置沽清菜品表单的模态窗
+			// 2. 提交表单数据，向沽清菜品数据模型中插入一条记录
+			// 3. 关闭模态窗口
+			// 4. 刷新沽清菜品列表
+			$scope.insertFoodItem = function (unitKey) {
+				openSoldoutSettingModal(unitKey, 'new');
+			};
+
+			/**
+			 * [selectSoldoutItem description]
+			 * @return {[type]} [description]
+			 */
+			$scope.selectSoldoutItem = function (unitKey) {
+				openSoldoutSettingModal(unitKey, 'edit');
 			};
 
 			/**
@@ -221,9 +234,15 @@ define(['app'], function (app) {
 			var HC = Hualala.Common;
 			var curFood = _scope.curFoodItem;
 			$scope.formData = curFood;
+			$scope.modalType = _scope.modalType;
 
 			// 关闭窗口
 			$scope.close = function () {
+				_scope.modalIsOpen(false);
+				$modalInstance.close();
+			};
+			// 删除
+			$scope.delete = function () {
 				AppConfirm.add({
 					msg : '是否取消此沽清菜品?',
 					yesFn : function () {
@@ -236,7 +255,6 @@ define(['app'], function (app) {
 
 					}
 				});
-				
 			};
 			// 提交表单
 			$scope.save = function () {
@@ -253,6 +271,88 @@ define(['app'], function (app) {
 
 					}
 				});
+			};
+		}
+	]);
+
+	app.directive('soldoutPager', [
+		"$rootScope", "$filter", "SoldoutService",
+		function ($rootScope, $filter, SoldoutService) {
+			return {
+				restrict : 'A',
+				link : function (scope, el, attr) {
+					// 获取下一页开始条目
+					var getNextPageStartItem = function () {
+						var itemLst = SoldoutService.getSoldoutFoodLst(),
+							jItemLst = $('.order-list'), jGridBody = $('.grid-body', jItemLst);
+						var listRect = jItemLst[0].getBoundingClientRect();
+						var nextItem = _.find(itemLst, function (item) {
+							var itemKey = _.result(item, 'unitKey'),
+								itemSelector = '.food-item[item-key=' + itemKey + ']',
+								jItem = $(itemSelector),
+								itemRect = jItem[0].getBoundingClientRect();
+							var ret = null;
+							if (listRect.bottom - parseFloat(jItemLst.css('paddingBottom')) - itemRect.top >= 0
+								&& listRect.bottom - parseFloat(jItemLst.css('paddingBottom')) - itemRect.bottom < 0) {
+								// 当前条目一部分在显示范围内，一部分在显示范围外
+								ret = jItem;
+							} else if (listRect.bottom - parseFloat(jItemLst.css('paddingBottom')) - itemRect.bottom < 0) {
+								// 当前条目在显示范围外
+								ret = jItem;
+							}
+							return ret;
+						});
+						if (!_.isEmpty(nextItem)) {
+							nextItem = SoldoutService.getSoldoutFoodItem(_.result(nextItem, 'unitKey'));
+						}
+						return nextItem;
+					};
+					// 获取上一页开始条目
+					var getPrevPageStartItem = function () {
+						var itemLst = SoldoutService.getSoldoutFoodLst(),
+							jItemLst = $('.order-list'), jGridBody = $('.grid-body', jItemLst);
+						var listRect = jItemLst[0].getBoundingClientRect();
+						var nextItem = _.find(_.clone(itemLst).reverse(), function (item) {
+							var itemKey = _.result(item, 'unitKey'),
+								itemSelector = '.food-item[item-key=' + itemKey + ']',
+								jItem = $(itemSelector),
+								itemRect = jItem[0].getBoundingClientRect();
+							var ret = null;
+							if (listRect.top - itemRect.top > listRect.height - parseFloat(jItemLst.css('paddingBottom'))) {
+								// 当前条目不全在可视区域内
+								ret = jItem;
+							}
+							return ret;
+						});
+						if (!_.isEmpty(nextItem)) {
+							nextItem = SoldoutService.getSoldoutFoodItem(_.result(nextItem, 'unitKey'));
+						}
+						if (!nextItem) {
+							nextItem = itemLst[0];
+						}
+						return nextItem;
+					};
+					el.on('click', '.btn-prev, .btn-next', function (e) {
+						IX.ns("Hualala.Common");
+						var jBtn= $(this), HC = Hualala.Common;
+						var direct = jBtn.attr('pager-act');
+						var nextItem = null, jNextItem = null;
+						var jItemLst = $('.order-list');
+						nextItem = (direct == 'next') ? getNextPageStartItem() : getPrevPageStartItem();
+						if (!nextItem) {
+							jBtn.attr('disabled', false);
+							return;
+						}
+						jNextItem = jItemLst.find('.food-item').filter('[item-key=' + _.result(nextItem, 'unitKey') + ']');
+						jItemLst.animate(
+							{scrollTop : jNextItem.offset().top - jItemLst.find('.grid-row:first').offset().top},
+							400, 'swing',
+							function () {
+								jBtn.attr('disabled', false);
+							}
+						);
+					});
+				}
 			};
 		}
 	]);

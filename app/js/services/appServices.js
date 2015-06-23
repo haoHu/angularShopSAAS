@@ -321,6 +321,16 @@ define(['app'], function (app) {
 			this.getSoldoutFoodLst = function () {
 				return _SoldOutFoodHT.getAll();
 			};
+
+			/**
+			 * 根据unitKey获取沽清菜品
+			 * @param  {[type]} unitKey [description]
+			 * @return {[type]}         [description]
+			 */
+			this.getSoldoutFoodItem = function (unitKey) {
+				if (_.isEmpty(unitKey)) return null;
+				return _SoldOutFoodHT.get(unitKey);
+			};
 			/**
 			 * 判断菜品是否为沽清菜品
 			 * @param  {[type]}  unitKey [description]
@@ -356,14 +366,18 @@ define(['app'], function (app) {
 			this.cleanSoldoutFoods = function () {
 				_SoldOutFoodHT.clear();
 				return CommonCallServer.setSoldOutFoodLst({
-					soldOutFoodLst : ''
+					soldOutFoodLst : {
+						soldOutFoodLst : []
+					}
 				});
 			};
 
 			this.commitSoldoutFoods = function () {
 				var foods = self.getSoldoutFoodLst();
 				return CommonCallServer.setSoldOutFoodLst({
-					soldOutFoodLst : JSON.stringify(foods)
+					soldOutFoodLst : JSON.stringify({
+						soldOutFoodLst : foods
+					})
 				});
 			};
 		}
