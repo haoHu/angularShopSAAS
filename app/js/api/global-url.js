@@ -84,6 +84,12 @@ define(['IX'], function () {
         ,["saveMoney", "/crm/card/saveMoney.ajax", "", "POST"]
         //会员消费
         ,["deductMoney", "/crm/card/deductMoney.ajax", "", "POST"]
+        //会员卡操作
+        ,["cardOption", "/crm/card/option.ajax", "", "POST"]
+        //会员消费汇总
+        ,["reportTotal", "/crm/report/total.ajax", "", "POST"]
+        //会员消费汇总
+        ,["reportDetail", "/crm/report/detail.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;

@@ -18,6 +18,17 @@ define(['app'], function(app)
                 {class: '', active: true, label: '报表', tabname: 'report'}
             ];
 
+            $scope.handletype = {
+                '绑定手机号': 41,
+                '补办实体卡': 42,
+                '挂失': 10,
+                '解除挂失': 11,
+                '卡遗损补办': 40,
+                '冻结': 20,
+                '解冻': 21,
+                '注销': 30
+            };
+
             $scope.rechargeplans = [];
 
             $scope.panel_userinfo = {
@@ -53,6 +64,8 @@ define(['app'], function(app)
                                 v.type = 2;
                                 $scope.vouchers.push(v);
                             };
+                        }else {
+                            AppAlert.add('danger', data.msg)
                         }
                     });
                 }
@@ -70,6 +83,7 @@ define(['app'], function(app)
                             $(this).removeClass('btn-disable');
                         }else {
                             $(this).addClass('btn-disable');
+                            $scope.panel_userinfo.hide();
                         }
                     }
                 });
@@ -87,10 +101,43 @@ define(['app'], function(app)
                     cashaccount: d.cardCashBalance,
                     pointaccount: d.cardPointBalance,
                     pointrate: d.pointRate,
+                    pointasmoneyrate: d.pointAsMoneyRate,
                     joinplace: '哗啦啦体验店铺（中关村店）'
                 };
 
                 $scope.panel_userinfo.show();
+            };
+
+            //打开日历
+            $scope.openDatePicker = function ($event, n) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                switch(n) {
+                    case 1 : {
+                        $scope.op1 = true;
+                    }break;
+
+                    case 2 : {
+                        $scope.op2 = true;
+                    }break;
+
+                    case 3 : {
+                        $scope.op3 = true;
+                    }break;
+
+                    case 4 : {
+                        $scope.op4 = true;
+                    }break;
+                }
+            };
+            $scope.today = function () {
+                return IX.Date.getDateByFormat(new Date(), 'yyyy-MM-dd');
+                // return IX.Date.formatDate(new Date());
+            };
+            $scope.minday = function () {
+                return $scope.listdatefrom;
+                // return IX.Date.formatDate(new Date());
             };
         }
     ]);
@@ -112,7 +159,7 @@ define(['app'], function(app)
                         el.find('.active').removeClass('active');
                         $(this).addClass('active');
 
-                        HuiYuanTabsService.changeTab($(this).attr('name'));
+                        HuiYuanTabsService.changeTab($(this).attr('name'), scope);
 
                         //scope.panel_userinfo.hide();
                     });
@@ -127,11 +174,16 @@ define(['app'], function(app)
             var self = this;
 
             //切换tab时展示对应tab内容区域
-            self.changeTab = function(tabname) {
+            self.changeTab = function(tabname, scope) {
                 $('.tab').hide();
 
                 var node = $('.tab-' + tabname);
                 node.show();
+
+                if(tabname == 'join') {
+                    scope.user = null;
+                    scope.$apply();
+                };
             };
         }
     ]);
@@ -146,9 +198,11 @@ define(['app'], function(app)
                         '<div style="display:block;">',
                             '<div class="form-group">',
                                 '<label>实体卡卡号</label>',
-                                '<input style="width: 187px;" type="number" class="form-control realcardnumber" ng-model="realcardnumber">',
+                                '<div class="input-group">',
+                                    '<input style="width: 187px;" type="text" class="form-control realcardnumber" ng-model="realcardnumber">',
+                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-viplevel">{{level.cardLevelName}}</button></span>',
+                                '</div>',
                             '</div>',
-                            '<button type="button" class="btn btn-default btn-viplevel">{{level.cardLevelName}}</button>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
@@ -173,7 +227,10 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>生日</label>',
-                                '<input style="width:187px;" type="text" class="form-control birthday form_datetime"  ng-model="birthday">',
+                                '<div class="input-group">',
+                                    '<input style="width:187px;" type="text" class="form-control birthday form_datetime"  ng-model="birthday" readonly datepicker-popup="yyyy-MM-dd" placeholder="日期" is-open="op4" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event, 4)">',
+                                    '<span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="openDatePicker($event, 4)"><span class="glyphicon glyphicon-calendar"></span></button></span>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -206,7 +263,7 @@ define(['app'], function(app)
                             '<div class="header">会员等级</div>',
                             '<ul class="table-viplevel">',
                                 '<li role="presentation" ng-repeat="el in viplevels" name="{{el.cardLevelName}}" levelid="{{el.cardLevelID}}" class="{{el.def}}">',
-                                    '<div class="name">{{el.cardLevelName}} {{el.isDefaultLevel? "（默认）" : ""}}</div>',
+                                    '<div class="name">{{el.cardLevelName}} {{el.isDefaultLevel == "1" ? "（默认）" : ""}}</div>',
                                     '<div class="account">会员价 部分{{el.discountRate * 10}}折</div>',
                                     '<div class="point">消费100元积{{el.pointRate * 100}}分</div>',
                                 '</li>',
@@ -227,7 +284,7 @@ define(['app'], function(app)
                     var init = function() {
                         scope.sex = 0;
                         scope.cardfee = 0;
-                        scope.birthday = '1980-01-01';
+                        scope.birthday = null;
                         scope.cardpassword = '888888';
                     };
                     init();
@@ -235,7 +292,7 @@ define(['app'], function(app)
                     //获取集团会员参数
                     scope.CCS.getShopVipInfo({}).success(function(data) {
                         if(data.code == '000') {
-                            scope.AA.add('success', '载入数据成功');
+                            scope.AA.add('success', '获取集团会员参数成功');
 
                             scope.vipinfo = data.data;
 
@@ -288,6 +345,7 @@ define(['app'], function(app)
 
                     //点击提交按钮时
                     el.on('click', '.btn-submit-join', function() {
+                        alert(scope.realcardnumber)
                         scope.CCS.createVIPCard({
                             shopName: null,
                             cardNO: scope.realcardnumber,
@@ -298,7 +356,7 @@ define(['app'], function(app)
                             customerSex: scope.sex,
                             customerMobile: scope.phonenumber,
                             isMobileChecked: '0',
-                            customerBirthday: scope.birthday,
+                            customerBirthday: IX.Date.getDateByFormat(scope.birthday, 'yyyy-MM-dd'),
                             birthdayType: '0',
                             oldSystemcardNO: scope.oldcardnumber,
                             oldCardMoneyBalnace: scope.oldrechargeamount,
@@ -328,8 +386,10 @@ define(['app'], function(app)
                         '<div style="display:block;">',
                             '<div class="form-group">',
                                 '<label>卡号/手机号</label>',
-                                '<input style="width: 187px;" type="number" ng-model="cardnumber" class="form-control cardnumber">',
-                                '<button type="button" class="btn btn-default btn-query">查询</button>',
+                                '<div class="input-group">',
+                                    '<input style="width: 187px;" type="text" ng-model="cardnumber" class="form-control cardnumber">',
+                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:20px;">',
@@ -404,9 +464,9 @@ define(['app'], function(app)
 
                     var init = function() {
                         scope.rechargeway = 0;
-                        scope.rechargeamount = 0;
-                        scope.rechargereturnamount = 0;
-                        scope.rechargereturnpoint = 0;
+                        scope.rechargeamount = null;
+                        scope.rechargereturnamount = null;
+                        scope.rechargereturnpoint = null;
                         scope.payway = 1;
                         scope.remark = '';
 
@@ -477,8 +537,10 @@ define(['app'], function(app)
                         '<div style="display:block;">',
                             '<div class="form-group">',
                                 '<label>卡号/手机号</label>',
-                                '<input style="width: 187px;" type="number" ng-model="cardnumber" class="form-control cardnumber">',
-                                '<button type="button" class="btn btn-default btn-query">查询</button>',
+                                '<div class="input-group">',
+                                    '<input style="width: 187px;" type="text" ng-model="cardnumber" class="form-control cardnumber">',
+                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -492,25 +554,25 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>代金券抵扣金额</label>',
-                                '<input style="width: 70px;" type="number" disabled class="form-control voucheramount" ng-model="usevoucheramount">',
+                                '<input style="width: 100px;" type="number" disabled class="form-control voucheramount" ng-model="usevoucheramount">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>积分抵扣金额</label>',
-                                '<input style="width: 70px;" type="number" class="form-control pointamount" ng-model="pointamount">',
+                                '<input style="width: 100px;" type="number" class="form-control pointamount" ng-model="pointamount">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>储值余额付款</label>',
-                                '<input style="width: 70px;" type="number" class="form-control balanceamount" ng-model="balanceamount">',
+                                '<input style="width: 100px;" type="number" class="form-control balanceamount" ng-model="balanceamount">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                             '<label>消费可积分金额</label>',
-                            '<input style="width: 70px;" type="number" class="form-control pointgetamount">',
+                            '<input style="width: 100px;" type="number" class="form-control pointgetamount" ng-model="pointgetamount">',
                             '<span><-现金支付那部分金额</span>',
                             '</div>',
                         '</div>',
@@ -551,11 +613,11 @@ define(['app'], function(app)
                     el.find('.panel-vouchers ul').css('height', $(window).height() - 41);
 
                     var init = function() {
-                        scope.consumeamount = 0;
+                        scope.consumeamount = null;
                         scope.usevoucher = [];
-                        scope.usevoucheramount = 0;
-                        scope.pointamount = 0;
-                        scope.balanceamount = 0;
+                        scope.usevoucheramount = null;
+                        scope.pointamount = null;
+                        scope.balanceamount = null;
                     };
                     init();
 
@@ -571,18 +633,85 @@ define(['app'], function(app)
 
                             scope.usevoucheramount = sum;
 
+                            if(sum >= scope.consumeamount) {
+                                $('.panel-vouchers').addClass('full');
+                            }
+
                             scope.$apply();
                         }
                     });
 
                     //价格变动时的一些联动
+                    scope.$watch('consumeamount', function(n, o, s) {
+                        if(scope.user) {
+                            scope.usevoucher = [];
+                            scope.pointamount = 0;
+                            scope.balanceamount = 0;
+                            scope.pointgetamount = n;
+                        }
+                    });
+                    scope.$watch('usevoucheramount', function(n, o, s) {
+                        if(scope.user) {
+                            scope.pointamount = 0;
+                            scope.balanceamount = 0;
+                            var sum = scope.consumeamount - n;
+                            if(sum >= 0) {
+                                scope.pointgetamount = sum;
+                            }else {
+                                scope.pointgetamount = 0;
+                            }
+                        }
+                    });
+                    scope.$watch('pointamount', function(n, o, s) {
+                        if(scope.user) {
+                            scope.balanceamount = 0;
+                            var sum = scope.consumeamount - scope.usevoucheramount - n;
+                            if(sum >= 0) {
+                                scope.pointgetamount = sum;
+                            }else {
+                                scope.pointgetamount = 0;
+                                scope.pointamount = scope.consumeamount - scope.usevoucheramount;
+                            }
+
+                            if(scope.pointamount > scope.user.pointaccount * scope.user.pointasmoneyrate) {
+                                scope.pointamount = scope.user.pointaccount * scope.user.pointasmoneyrate;
+                            }
+                        }
+                    });
+                    scope.$watch('balanceamount', function(n, o, s) {
+                        if(scope.user) {
+                            var sum = scope.consumeamount - scope.usevoucheramount - scope.pointamount - n;
+                            if(sum >= 0) {
+                                scope.pointgetamount = sum;
+                            }else {
+                                scope.pointgetamount = 0;
+                                scope.balanceamount = scope.consumeamount - scope.usevoucheramount - scope.pointamount;
+                            }
+
+                            if(scope.balanceamount > scope.user.cashaccount) {
+                                scope.balanceamount = scope.user.cashaccount;
+                            }
+                        }
+                    });
+                    scope.$watch('pointgetamount', function(n, o, s) {
+                        if(scope.user) {
+                            var sum = scope.consumeamount - scope.usevoucheramount - scope.pointamount -scope.balanceamount - n;
+                            if(sum >= 0) {
+                                scope.pointgetamount = sum;
+                            }else {
+                                scope.pointgetamount = 0;
+                            }
+                        }
+                    });
 
                     //点击储值套餐标签时
                     el.on('click', '.panel-vouchers li', function() {
                         if($(this).hasClass('active')) {
                             $(this).removeClass('active');
                         }else {
-                            $(this).addClass('active');
+                            if(!$('.panel-vouchers').hasClass('full')) {
+                                $(this).addClass('active');
+                            }
                         }
 
                         $('.panel-vouchers').find('.active').each(function() {
@@ -597,12 +726,14 @@ define(['app'], function(app)
                         if(!$(this).hasClass('disable')) {
                             scope.CCS.deductMoney({
                                 cardKey: scope.user.cardnumber || scope.user.phone,
-                                payWayName: scope.payway,
-                                saveMoneySetID: scope.rechargeway == 0 ? '' : scope.rechargeplan.saveMoneySetID,
-                                transAmount: scope.rechargeway == 0 ? scope.rechargeamount : scope.rechargeplan.setSaveMoney,
-                                transRemark: scope.remark,
-                                transReturnMoneyAmount: scope.rechargeway == 0 ? scope.rechargereturnamount : scope.rechargeplan.returnMoney,
-                                transReturnPointAmount: scope.rechargeway == 0 ? scope.rechargereturnpoint : scope.rechargeplan.returnPoint
+                                consumeptionAmount: scope.pointgetamount,
+                                consumeptionPointAmount: scope.pointgetamount,
+                                deductGiftAmount: scope.usevoucheramount,
+                                deductMoneyAmount: scope.balanceamount,
+                                deductPointAmount: scope.pointamount,
+                                discountAmount: 0,
+                                posOrderNo: scope.ordernumber,
+                                remark: scope.remark
                             }).success(function(data) {
                                 if(data.code == '000') {
                                     scope.AA.add('success', '消费成功！');
@@ -629,8 +760,10 @@ define(['app'], function(app)
                         '<div style="display:block;">',
                             '<div class="form-group">',
                                 '<label>卡号/手机号</label>',
-                                '<input style="width: 187px;" type="number" ng-model="cardnumber" class="form-control cardnumber">',
-                                '<button type="button" class="btn btn-default btn-query">查询</button>',
+                                '<div class="input-group">',
+                                    '<input style="width: 187px;" type="text" ng-model="cardnumber" class="form-control cardnumber">',
+                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;width:640px;">',
@@ -691,10 +824,12 @@ define(['app'], function(app)
                         '<div class="bonus-panel" style="display:block;margin-top:10px;" for="绑定手机号">',
                             '<div class="form-group">',
                                 '<span>手机号</span>',
-                                '<input style="width: 187px;" type="number" ng-model="phonenumber" class="form-control phonenumber">',
+                                '<input style="width: 187px;" type="number" ng-model="sendcodephone" class="form-control phonenumber">',
                                 '<span>短信验证码</span>',
-                                '<input style="width: 100px;" type="number" ng-model="msgcode" class="form-control msgcode">',
-                                '<button type="button" class="btn btn-default btn-getmsgcode">获取手机验证码</button>',
+                                '<div class="input-group">',
+                                    '<input style="width: 100px;" type="number" ng-model="msgcode" class="form-control msgcode">',
+                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-getmsgcode">获取手机验证码</button></span>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div class="bonus-panel" style="display:none;margin-top:10px;" for="补办实体卡">',
@@ -706,7 +841,7 @@ define(['app'], function(app)
                         '<div class="bonus-panel" style="display:none;margin-top:10px;" for="卡遗损补办">',
                             '<div class="form-group">',
                                 '<span>新卡号</span>',
-                                '<input style="width: 187px;" type="number" ng-model="getlostcard" class="form-control getlostcard">',
+                                '<input style="width: 187px;" type="number" ng-model="getnewcard" class="form-control getnewcard">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -718,7 +853,15 @@ define(['app'], function(app)
                 ].join(''),
                 replace : true,
                 link : function (scope, el, attr) {
-                    scope.handler = '绑定手机号';
+
+                    var init = function() {
+                        scope.handler = '绑定手机号';
+                        scope.sendcodephone = '';
+                        scope.msgcode = '';
+                        scope.getrealcard = '';
+                        scope.getnewcard = '';
+                    };
+                    init();
 
                     scope.$watch('handler', function(newValue, oldValue, scope) {
                         $('.bonus-panel').hide();
@@ -729,21 +872,172 @@ define(['app'], function(app)
                     //获取验证码按钮
                     var ti;
                     el.on('click', '.btn-getmsgcode', function() {
-                        var time = 60;
-                        var self = $(this);
+                        if(scope.sendcodephone) {
+                            var time = 60;
+                            var self = $(this);
 
-                        if(!self.hasClass('btn-disable')) {
-                            self.html('60秒后重新发送').addClass('btn-disable');
+                            if(!self.hasClass('btn-disable')) {
+                                self.html('60秒后重新发送').addClass('btn-disable');
 
-                            ti = setInterval(function() {
-                                if(time > 0) {
-                                    time --;
-                                    self.html(time + '秒后重新发送')
+                                ti = setInterval(function() {
+                                    if(time > 0) {
+                                        time --;
+                                        self.html(time + '秒后重新发送')
+                                    }else{
+                                        clearInterval(ti);
+                                        self.html('获取验证码').removeClass('btn-disable');
+                                    }
+                                }, 1000);
+                            }
+                        }
+                    });
+
+                    var getval = function(type) {
+                        switch(scope.handletype[type]) {
+                            case 42 : {
+                                return scope.getrealcard;
+                            }break;
+
+                            default : {
+                                return null;
+                            }
+                        }
+                    };
+
+                    //点击提交按钮时
+                    el.on('click', '.btn-submit-handle', function() {
+                        if(!$(this).hasClass('disable')) {
+                            scope.CCS.cardOption({
+                                cardKey: scope.user.cardnumber || scope.user.phone,
+                                optionType: scope.handletype[scope.handler],
+                                remark: scope.remark,
+                                newCardNoOrMobile: getval(scope.handler),
+                                oldCardNoOrMobile: getval(scope.handler)
+                            }).success(function(data) {
+                                if(data.code == '000') {
+                                    scope.AA.add('success', '操作成功！');
+                                    scope.panel_userinfo.hide();
+                                    init();
                                 }else{
-                                    clearInterval(ti);
-                                    self.html('获取验证码').removeClass('btn-disable');
+                                    scope.AA.add('danger', data.msg);
                                 }
-                            }, 1000);
+                            });
+                        }
+                    });
+                }
+            };
+        }
+    ]);
+
+    //会员导航栏报表
+    app.directive('reporttab', [
+        function () {
+            return {
+                restrict : 'E',
+                template : [
+                    '<div class="tab tab-report" style="display:none;">',
+                        '<div class="form-inline">',
+                            '<div class="form-group">',
+                                '<input type="radio" value="1" name="reporttype" class="viporderdetail" ng-model="reporttype">会员交易明细',
+                                '<input type="radio" value="2" name="reporttype" class="viporderlist" ng-model="reporttype">会员交易汇总',
+                                '<div class="input-group date-detail" style="display:none;">',
+                                    '<input style="width:120px;" type="text" class="form-control detaildate form_datetime"  ng-model="detaildate" readonly datepicker-popup="yyyy-MM-dd" placeholder="日期" is-open="op1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event, 1)">',
+                                    '<span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="openDatePicker($event, 1)"><span class="glyphicon glyphicon-calendar"></span></button></span>',
+                                '</div>',
+                                '<div class="input-group date-list" style="display:none;">',
+                                    '<input style="width:120px;" type="text" class="form-control listdatefrom form_datetime"  ng-model="listdatefrom" readonly datepicker-popup="yyyy-MM-dd" placeholder="起始日期" is-open="op2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event, 2)">',
+                                    '<span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="openDatePicker($event, 2)"><span class="glyphicon glyphicon-calendar"></span></button></span>',
+                                '</div>',
+                                '<div class="input-group date-list" style="display:none;">',
+                                    '<input style="width:120px;" type="text" class="form-control listdateto form_datetime"  ng-model="listdateto" readonly datepicker-popup="yyyy-MM-dd" placeholder="截止日期" is-open="op3" max-date="today()" min-date="minday()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event, 3)">',
+                                    '<span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="openDatePicker($event, 3)"><span class="glyphicon glyphicon-calendar"></span></button></span>',
+                                '</div>',
+                                '<button type="button" class="btn btn-default btn-query">查询</button>',
+                            '</div>',
+                        '</div>',
+                        '<div>',
+                            '<div class="panel-report-detail" style="display:none;overflow-x:auto;">',
+                                '<table class="table" style="width:2000px;">',
+                                    '<thead><th>序</th><th>卡号</th><th>姓名</th><th>手机号</th><th>交易类型</th><th>交易时间</th><th>消费金额</th><th>储值变动</th><th>积分</th></thead>',
+                                    '<tr role="presentation" ng-repeat="el in reportlist"><td>{{el.transIDFormat}}</td><td>{{el.cardNo}}</td><td>{{el.customerName}}</td><td>{{el.customerMobile}}</td><td>{{handletype[el.transType]}}</td><td>{{el.transTimeFormat}}</td><td>{{el.cunsumptionAmount}}</td><td>{{el.pointChange}}</td></tr>',
+                                '</table>',
+                            '</div>',
+                            '<div class="panel-report-list" style="display:none;">{{reportprnstr}}',
+                            '</div>',
+                        '</div>',
+                    '</div>'
+                ].join(''),
+                replace : true,
+                link : function (scope, el, attr) {
+
+                    //初始值设定
+                    var init = function() {
+                        scope.reporttype = 1;
+                        scope.reportlist = [
+                            {
+                                "customerName": "朱敏",
+                                "transReceiptsTxt": "┏━━━━━━━━━━━━━━┓\n┃◇◇会员交易　商户对账单◇◇┃\n┗━━━━━━━━━━━━━━┛\n    等级：VIP5\n    状态：正常\n实体卡号：3333\n    手机：18513403219（绑定）\n    姓名：朱敏（男）\n…………………………………………\n交易流水：000010062844\n交易店铺：\n交易时间：2015-06-18 16:15:43\n…………………………………………\n交易前现金卡值：10404.43元\n交易前赠送卡值：9965.57元\n交易前积分余额：9066.20\n…………………………………………\n【本次消费交易】\n收银系统单号：\n消费总金额：65.00元\n现金支付金额：0.00元\n代金券支付金额：0元\n现金卡值支付：0元\n赠送卡值支付：0.00元\n积分抵扣金额：65.00元\n抵扣积分数：65.00\n…………………………………………\n交易后现金卡值：10404.43元\n交易后赠送卡值：9965.57元\n交易后积分余额：9001.20\n…………………………………………\n交易时间：2015-06-18 16:15:43\n",
+                                "cardID": "62265",
+                                "customerSex": "1",
+                                "moneyChange": "0.00",
+                                "pointChange": "-65.00",
+                                "consumptionAmount": "65.00",
+                                "transShopName": "",
+                                "cardNO": "3333",
+                                "transType": "30",
+                                "customerMobile": "18513403219",
+                                "customerSexName": "男",
+                                "transIDFormat": "000010062844",
+                                "transTimeFormat": "2015-06-18 16:15:43",
+                                "transTime": "20150618161543",
+                                "cardLevelName": "VIP5",
+                                "transRemark": "",
+                                "transTypeName": "消费"
+                            }
+                        ];
+                    };
+                    init();
+
+                    //报表类型变化时切换面板
+                    scope.$watch('reporttype', function(n, o, s) {
+                        el.find('.input-group').hide();
+                        if(n == 1) {
+                            el.find('.date-detail').show();
+                            el.find('.panel-report-detail').show();
+                            el.find('.panel-report-list').hide();
+                        }else {
+                            el.find('.date-list').show();
+                            el.find('.panel-report-detail').hide();
+                            el.find('.panel-report-list').show();
+                        }
+                    });
+
+                    scope.$watch('listdatefrom', function(n, o, s) {
+                        scope.listdateto = null;
+                    });
+
+                    el.on('click', '.btn-query', function() {
+                        if(scope.reporttype == 1) {
+                            scope.CCS.reportDetail({
+                                queryDate: IX.Date.getDateByFormat(scope.detaildate, 'yyyyMMdd')
+                            }).success(function(data) {
+                                if(data.code == '000') {
+                                    scope.reportlist = data.data;
+                                }else{
+                                    scope.AA.add('danger', data.msg);
+                                }
+                            });
+                        }else{
+                            scope.CCS.reportTotal({
+                                startDate: IX.Date.getDateByFormat(scope.listdatefrom, 'yyyyMMdd'),
+                                endDate: IX.Date.getDateByFormat(scope.listdateto, 'yyyyMMdd')
+                            }).success(function(data) {
+                                if(data.code == '000') {
+                                    scope.reportprnstr = data.data.reportPrnStr;
+                                }else{
+                                    scope.AA.add('danger', data.msg);
+                                }
+                            });
                         }
                     });
                 }
