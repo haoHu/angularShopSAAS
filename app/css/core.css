@@ -1597,3 +1597,17 @@ body {
 .server-modal .serv-item.active > .glyphicon {
   opacity: 1;
 }
+.section-soldout .order-plain .order-box {
+  width: 100%;
+  padding-bottom: 90px;
+}
+.section-soldout .order-plain .order-box .order-list {
+  padding-bottom: 0;
+  height: initial;
+}
+.section-soldout .order-plain .order-box .order-footer {
+  height: 90px;
+}
+.section-soldout .menu-plain {
+  padding-bottom: 0;
+}

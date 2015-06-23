@@ -1,0 +1,116 @@
+<section class="section section-diandan section-soldout" ng-controller="SoldOutViewController">
+	<div class="order-plain">
+		<div class="order-box">
+			<div class="order-body grid-box">
+				<!-- 订单条目头 -->
+				<div class="row grid-header">
+					<span class="col-xs-4 grid-cell txt">菜名</span>
+					<span class="col-xs-2 grid-cell txt">规格</span>
+					<span class="col-xs-3 grid-cell num">剩余数量</span>
+					<span class="col-xs-3 grid-cell num">每日限量</span>
+				</div>
+				<!-- <div>{{curOrderItems.length}}</div> -->
+				<div class="order-list">
+					<soldoutlist></soldoutlist>
+				</div>
+			</div>
+			<footer class="order-footer">
+				<div class="btn-group btn-group-justified" role="group">
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default btn-lg btn-prev" pager-act="prev">上页</button>
+					</div>
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default btn-lg btn-next" pager-act="next">下页</button>
+					</div>
+				</div>
+				<div class="btn-group btn-group-justified" role="group">
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default btn-warning btn-lg " ng-click="cleanSoldoutFoods()">清空</button>
+					</div>
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default btn-success btn-lg " ng-click="commitSoldoutFoods()" >保存</button>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+	<div class="menu-plain">
+		<foodcategory></foodcategory>
+		<foodmenu></foodmenu>
+	</div>
+	<div class="modal fade" id="search_food">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<label for="" class="col-xs-3 control-label">菜品助记码</label>
+							<div class="col-xs-9">
+								<input type="text" class="form-control" ng-model="curSearchKey" ng-change="searchFood()" >
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="btn-group btn-group-justified" role="group">
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-default btn-lg">关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/ng-template" id="js/profile/soldoutfoodset.html">
+		<div class="modal-header">
+			<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">
+				菜品沽清设置
+			</h4>
+			
+		</div>
+		<div class="modal-body">
+			<form class="form-horizontal" name="soldoutFood" role="form" novalidate="novalidate">
+				<div class="form-group">
+					<label for="foodname" class="col-xs-3 control-label">菜品名称</label>
+					<div class="col-xs-6">
+						<p class="form-control-static" >{{formData.foodName}}</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="unit" class="col-xs-3 control-label">菜品规格</label>
+					<div class="col-xs-6">
+						<p class="form-control-static" >{{formData.unit}}</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="qty" class="col-xs-3 control-label">沽清数量</label>
+					<div class="col-xs-6" ng-class="{'has-success' : soldoutFood.qty.$dirty && soldoutFood.qty.$valid, 'has-error' : soldoutFood.qty.$invalid}">
+						<input id="qty" type="number" name="qty" class="form-control" ng-model="formData.qty" placeholder="请设置沽清数量" bv-notempty bv-greaterthan="false" min="0" />
+						<small class="help-block" ng-show="soldoutFood.qty.$dirty && soldoutFood.qty.$error.bvNotempty">请输入沽清数量</small>
+						<small class="help-block" ng-show="soldoutFood.qty.$dirty && soldoutFood.qty.$error.bvGreaterthan">请输入大于0的数字</small>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="defaultQty" class="col-xs-3 control-label">默认沽清数量</label>
+					<div class="col-xs-6" ng-class="{'has-success' : soldoutFood.defaultQty.$dirty && soldoutFood.defaultQty.$valid, 'has-error' : soldoutFood.defaultQty.$invalid}">
+						<input id="defaultQty" type="number" name="defaultQty" class="form-control" ng-model="formData.defaultQty" placeholder="请设置默认沽清数量" bv-notempty bv-greaterthan="false" min="0" />
+						<small class="help-block" ng-show="soldoutFood.defaultQty.$dirty && soldoutFood.defaultQty.$error.bvNotempty">请输入默认沽清数量</small>
+						<small class="help-block" ng-show="soldoutFood.defaultQty.$dirty && soldoutFood.defaultQty.$error.bvGreaterthan">请输入大于0的数字</small>
+					</div>
+				</div>
+				<input type="hidden" name="unitKey" ng-model="formData.unitKey" />
+			</form>
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-disabled="soldoutFood.$invalid || soldoutFood.$pristine" fm-submit="save()" >设置沽清菜品</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="close()" >取消沽清菜品</button>
+				</div>
+			</div>
+		</div>
+	</script>
+</section>

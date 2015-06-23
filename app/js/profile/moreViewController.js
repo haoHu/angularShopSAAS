@@ -6,6 +6,10 @@ define(['app'], function (app) {
 			var HC = Hualala.Common;
 
 			var modalIsOpenning = false;
+			// 跳转沽清菜品设置
+			$scope.appSoldOutSetting = function (e) {
+				$location.path('/more/soldout');
+			};
 			// 设置/获取当前是否打开了详情模态窗口
 			$scope.modalIsOpen = function (b) {
 				if (_.isBoolean(b)) {

@@ -31,7 +31,8 @@
 							<li ng-class="{active: curNav=='/dingdan'}"><a href="#/dingdan">账单</a></li>
 							<li ng-class="{active: curNav=='/huiyuan'}"><a href="#/huiyuan">会员</a></li>
 							<li ng-class="{active: curNav=='/baobiao'}"><a href="#/baobiao">报表</a></li>
-							<li ng-class="{active: curNav=='/more'}"><a href="#/more">更多</a></li>
+							<!-- <li ng-class="{active: curNav=='/more'}"><a href="#/more">更多</a></li> -->
+							<li ng-class="{active: checkNavBtnActive(curNav, '/more')}"><a href="#/more">更多</a></li>
 						</ul>
 					</nav>
 				</div>

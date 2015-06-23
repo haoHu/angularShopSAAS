@@ -70,6 +70,10 @@ define(['IX'], function () {
 		// 确认送达
 		["confirmCloudOrderDelivery", "/saas/order/takeoutConfirm.ajax", "", "POST"],
 		// 获取门店服务器相关信息
+		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"],
+		// 设置沽清菜品
+		["setSoldOutFoodLst", "/saas/base/setSoldOutFoodLst.ajax", "", "POST"],
+
 		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"]
 
         // 会员入会办卡
