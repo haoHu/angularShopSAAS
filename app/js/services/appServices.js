@@ -374,11 +374,12 @@ define(['app'], function (app) {
 
 			this.commitSoldoutFoods = function () {
 				var foods = self.getSoldoutFoodLst();
-				return CommonCallServer.setSoldOutFoodLst({
-					soldOutFoodLst : JSON.stringify({
+				var params = Hualala.Common.formatPostData({
+					soldOutFoodLst : {
 						soldOutFoodLst : foods
-					})
+					}
 				});
+				return CommonCallServer.setSoldOutFoodLst(params);
 			};
 		}
 	]);
