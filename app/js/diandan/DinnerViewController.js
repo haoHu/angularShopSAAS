@@ -1833,54 +1833,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	// ]);
 	
 
-	// 菜单菜品分类
-	app.directive('foodcategory', [
-		"$rootScope", "$filter", "OrderService", "FoodMenuService",
-		function ($rootScope, $filter, OrderService, FoodMenuService) {
-			return {
-				restrict : 'E',
-				template : [
-					'<div id="food_category" class="tab cates"  pager-list="loop" pager-data="{{FoodCategories.length}}" page-size="10" item-selector=".cell-btn[food-category]" btn-selector=".btn-pager" page-num="0">',
-						'<div class="col-xs-2 btn cell-btn" ng-repeat="cate in FoodCategories" ng-class="{active : curFoodCategory == cate.foodCategoryKey}" food-category="{{cate.foodCategoryKey}}" ng-click="changeFoodCategory(cate.foodCategoryKey)">',
-							'<p>{{cate.foodCategoryName}}</p>',
-						'</div>',
-						'<div class="col-xs-2 cell-btn btn btn-search" food-search="{{curFoodCategory}}" ng-click="openSearch()"><span>搜索</span></div>',
-						'<div class="col-xs-2 cell-btn btn btn-pager" pager-direction="+1"><span>翻页</span></div>',
-					'</div>'
-				].join(''),
-				replace : true,
-				link : function (scope, el, attr) {
-					
-				}
-			};
-		}
-	]);
-
-	// 菜单菜品选择部分
-	app.directive('foodmenu', [
-		"$rootScope", "$filter", "OrderService", "FoodMenuService", 
-		function ($rootScope, $filter, OrderService, FoodMenuService) {
-			return {
-				restrict : 'E',
-				template : [
-					'<div id="food_menu" class="foods" pager-list="common" pager-data="{{curFoods.length}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">',
-						'<div class="col-xs-2 btn cell-btn" unit-key="{{food.__foodUnit.unitKey}}" ng-repeat="food in curFoods" ng-click="insertFoodItem(food.__foodUnit.unitKey)" >',
-							'<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>',
-							'<p class="unit">',
-								'{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}',
-							'</p>',
-						'</div>',
-						'<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><span>上页</span></div>',
-						'<div class="col-xs-2 btn cell-btn btn-next" pager-direction="+1"><span>下页</span></div>',
-					'</div>'
-				].join(''),
-				replace : true,
-				link : function (scope, el, attr) {
-					
-				}
-			};
-		}
-	]);
+	
 
 	// 套餐搭配按钮组分页
 	app.directive('setfoodPager', [

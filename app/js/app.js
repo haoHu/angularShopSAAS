@@ -52,11 +52,15 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             $scope.isWelcomPage = $scope.curNav == '/' ? true : false;
             $scope.shopLogo = _.result(storage.get('SHOPINFO'), 'logoUrl', '');
             if (!_.isEmpty($scope.shopLogo)) {
-                $scope.shopLogo = Hualala.Global.AJAX_DOMAIN + '/' + $scope.shopLogo + '?t=' + (new Date()).getTime();
+                $scope.shopLogo = Hualala.Global.AJAX_DOMAIN + '/' + $scope.shopLogo;
             } else {
                 // $scope.shopLogo = './img/blank.png';
             }
         });
+        $scope.checkNavBtnActive = function (_curNav, _href) {
+            var reg = new RegExp('^' + _href);
+            return reg.test(_curNav);
+        };
         IX.ns("Hualala");
         var HC = Hualala.Common;
         HC.TopTip.reset($rootScope);

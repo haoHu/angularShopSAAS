@@ -276,4 +276,96 @@ define(['app'], function (app) {
 			};
 		}
 	]);
+
+	// 沽清菜品列表服务
+	app.service('SoldoutService', [
+		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer',
+		function ($rootScope, $location, $filter, storage, CommonCallServer) {
+			var self = this,
+				_SoldOutFoods = [],
+				_SoldOutFoodHT = new IX.IListManager();
+			/**
+			 * 加载沽清菜品列表
+			 * @return {[type]} [description]
+			 */
+			this.loadSoldoutLst = function () {
+				return CommonCallServer.getSoldOutFoodLst()
+					.success(function (data, status, headers, config) {
+						var code = $XP(data, 'code'),
+							ret = $XP(data, 'data.records', []);
+						_SoldOutFoods = ret;
+					})
+					.error(function (data, status, headers, config) {
+
+					});
+			};
+			/**
+			 * 构建沽清菜品列表数据结构
+			 * @return {[type]} [description]
+			 */
+			this.initSoldoutLst = function () {
+				var c = self.loadSoldoutLst();
+				_SoldOutFoodHT.clear();
+				c.success(function (data) {
+					_.each(_SoldOutFoods, function (food) {
+						var unitKey = _.result(food, 'unitKey');
+						_SoldOutFoodHT.register(unitKey, food);
+					});
+				});
+				return c;
+			};
+			/**
+			 * 获取沽清菜品数据列表
+			 * @return {[type]} [description]
+			 */
+			this.getSoldoutFoodLst = function () {
+				return _SoldOutFoodHT.getAll();
+			};
+			/**
+			 * 判断菜品是否为沽清菜品
+			 * @param  {[type]}  unitKey [description]
+			 * @return {Boolean}         [description]
+			 */
+			this.isSoldoutFood = function (unitKey) {
+				var food = _SoldOutFoodHT.get(unitKey);
+				return !_.isEmpty(food);
+			};
+			/**
+			 * 删除沽清菜品记录
+			 * @param  {[type]} food [description]
+			 * @return {[type]}      [description]
+			 */
+			this.deleteSoldoutFoodItem = function (food) {
+				var unitKey = _.result(food, 'unitKey'),
+					isSoldoutFood = self.isSoldoutFood(unitKey);
+				isSoldoutFood && _SoldOutFoodHT.unregister(unitKey);
+			};
+			/**
+			 * 新增沽清菜品记录
+			 * @param {[type]} food [description]
+			 */
+			this.addSoldoutFoodItem = function (food) {
+				var unitKey = _.result(food, 'unitKey'),
+					isSoldoutFood = self.isSoldoutFood(unitKey);
+				_SoldOutFoodHT.register(unitKey, food);
+			};
+			/**
+			 * 取消所有沽清菜品
+			 * @return {[type]} [description]
+			 */
+			this.cleanSoldoutFoods = function () {
+				_SoldOutFoodHT.clear();
+				return CommonCallServer.setSoldOutFoodLst({
+					soldOutFoodLst : ''
+				});
+			};
+
+			this.commitSoldoutFoods = function () {
+				var foods = self.getSoldoutFoodLst();
+				return CommonCallServer.setSoldOutFoodLst({
+					soldOutFoodLst : JSON.stringify(foods)
+				});
+			};
+		}
+	]);
 });

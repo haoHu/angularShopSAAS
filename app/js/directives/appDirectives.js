@@ -152,6 +152,24 @@ define(['app'], function (app) {
         };
     });
 
+    app.directive('bvGreaterthan', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                var min = parseFloat(attrs.min) || 0, inclusive = attrs.bvGreaterThan == "true";
+                ctrl.$parsers.unshift(function (viewValue) {
+                    if ((inclusive && parseFloat(viewValue) >= min) || (!inclusive && parseFloat(viewValue) > min)) {
+                        ctrl.$setValidity('bvGreaterthan', true);
+                        return viewValue;
+                    } else {
+                        ctrl.$setValidity('bvGreaterthan', false);
+                        return undefined;
+                    }
+                });
+            }
+        };
+    });
+
     app.directive('bvIssame', function () {
         return {
             require : 'ngModel',
@@ -808,4 +826,87 @@ define(['app'], function (app) {
         }
     ]);
 
+    // 菜单菜品分类
+    app.directive('foodcategory', [
+        "$rootScope", "$filter", "FoodMenuService",
+        function ($rootScope, $filter, FoodMenuService) {
+            return {
+                restrict : 'E',
+                template : [
+                    '<div id="food_category" class="tab cates"  pager-list="loop" pager-data="{{FoodCategories.length}}" page-size="10" item-selector=".cell-btn[food-category]" btn-selector=".btn-pager" page-num="0">',
+                        '<div class="col-xs-2 btn cell-btn" ng-repeat="cate in FoodCategories" ng-class="{active : curFoodCategory == cate.foodCategoryKey}" food-category="{{cate.foodCategoryKey}}" ng-click="changeFoodCategory(cate.foodCategoryKey)">',
+                            '<p>{{cate.foodCategoryName}}</p>',
+                        '</div>',
+                        '<div class="col-xs-2 cell-btn btn btn-search" food-search="{{curFoodCategory}}" ng-click="openSearch()"><span>搜索</span></div>',
+                        '<div class="col-xs-2 cell-btn btn btn-pager" pager-direction="+1"><span>翻页</span></div>',
+                    '</div>'
+                ].join(''),
+                replace : true,
+                link : function (scope, el, attr) {
+                    
+                }
+            };
+        }
+    ]);
+
+    // 菜单菜品选择部分
+    app.directive('foodmenu', [
+        "$rootScope", "$filter", "FoodMenuService", 
+        function ($rootScope, $filter, FoodMenuService) {
+            return {
+                restrict : 'E',
+                template : [
+                    '<div id="food_menu" class="foods" pager-list="common" pager-data="{{curFoods.length}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">',
+                        '<div class="col-xs-2 btn cell-btn" unit-key="{{food.__foodUnit.unitKey}}" ng-repeat="food in curFoods" ng-click="insertFoodItem(food.__foodUnit.unitKey)" >',
+                            '<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>',
+                            '<p class="unit">',
+                                '{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}',
+                            '</p>',
+                        '</div>',
+                        '<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><span>上页</span></div>',
+                        '<div class="col-xs-2 btn cell-btn btn-next" pager-direction="+1"><span>下页</span></div>',
+                    '</div>'
+                ].join(''),
+                replace : true,
+                link : function (scope, el, attr) {
+                    
+                }
+            };
+        }
+    ]);
+
+    // 沽清菜品列表
+    // 订单列表
+    app.directive('soldoutlist', [
+        "$rootScope", "$filter", "SoldoutService", 
+        function ($rootScope, $filter, SoldoutService) {
+            return {
+                restrict : 'E',
+                template : [
+                    '<ul class="list-unstyled grid-body" >',
+                        '<li class="row grid-row" ng-repeat="el in curSoldoutItems" item-key="{{el.foodKey}}" ng-click="selectSoldoutItem(el.itemKey)">',
+                            '<span class="col-xs-4 grid-cell txt">{{el.foodName}}</span>',
+                            '<span class="col-xs-2 grid-cell txt">{{el.unit}}</span>',
+                            '<span class="col-xs-3 grid-cell num">{{el.qty}}</span>',
+                            '<span class="col-xs-3 grid-cell num">{{el.defaultQty}}</span>',
+                        '</li>',
+                    '</ul>'
+                ].join(''),
+                replace : true,
+                link : function (scope, el, attr) {
+                    el.on('click', '.food-item, .food-child-item', function (e) {
+                        var itemEl = $(this);
+                        if (attr.type == 'multiple') {
+                            itemEl[itemEl.hasClass('active') ? 'removeClass' : 'addClass']('active');
+                        } else {
+                            el.find('.food-item, .food-child-item').removeClass('active');
+                            itemEl.addClass('active');   
+                        }
+                        
+                    });
+                }
+            };
+
+        }
+    ]);
 });

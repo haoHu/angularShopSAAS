@@ -85,7 +85,8 @@ require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'mat
 		// });
 		require(['global-url', 'api'], function () {
 			// 测试服务器
-			Hualala.Global.AJAX_DOMAIN = 'http://hualalasaas.oicp.net:15220';
+			// Hualala.Global.AJAX_DOMAIN = 'http://hualalasaas.oicp.net:15220';
+			Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.15:8080';
 			// 丁工机器
 			// Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.140:8080';
 			// 朱敏机器

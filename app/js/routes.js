@@ -108,6 +108,17 @@ define([], function () {
 					'services/appServices',
 					'directives/appDirectives'
 				]
+			},
+			'/more/soldout' : {
+				templateUrl : 'js/profile/soldout.html',
+				dependencies : [
+					'profile/soldoutViewController',
+					'services/appServices',
+					'directives/appDirectives',
+					'filters/appFilters',
+					'services/orderServices',
+					'services/foodMenuServices'
+				]
 			}
 		}
 	};
