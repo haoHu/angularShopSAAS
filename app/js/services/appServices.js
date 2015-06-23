@@ -365,19 +365,20 @@ define(['app'], function (app) {
 			 */
 			this.cleanSoldoutFoods = function () {
 				_SoldOutFoodHT.clear();
-				return CommonCallServer.setSoldOutFoodLst({
-					soldOutFoodLst : {
+				var params = {
+					soldOutFoodLst : JSON.stringify({
 						soldOutFoodLst : []
-					}
-				});
+					})
+				}
+				return CommonCallServer.setSoldOutFoodLst(params);
 			};
 
 			this.commitSoldoutFoods = function () {
 				var foods = self.getSoldoutFoodLst();
 				var params = {
-					soldOutFoodLst : {
-						soldOutFoodLst : JSON.stringify(Hualala.Common.formatPostData(foods))
-					}
+					soldOutFoodLst : JSON.stringify({
+						soldOutFoodLst : Hualala.Common.formatPostData(foods)
+					})
 				};
 				return CommonCallServer.setSoldOutFoodLst(params);
 			};
