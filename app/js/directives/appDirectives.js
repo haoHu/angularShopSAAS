@@ -684,9 +684,9 @@ define(['app'], function (app) {
                             } 
                             return ret;
                         });
-                        if (!_.isEmpty(nextItem)) {
-                            nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
-                        }
+                        // if (!_.isEmpty(nextItem)) {
+                        //     nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
+                        // }
                         return nextItem;
                     };
                     // 获取上一页开始条目
@@ -706,9 +706,9 @@ define(['app'], function (app) {
                             }
                             return ret;
                         });
-                        if (!_.isEmpty(nextItem)) {
-                            nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
-                        }
+                        // if (!_.isEmpty(nextItem)) {
+                        //     nextItem = OrderService.getRootParentItem(_.result(nextItem, 'itemKey'));
+                        // }
                         if (!nextItem) {
                             nextItem = orderItems[0];
                         }
