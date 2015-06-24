@@ -338,6 +338,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					}
 				});
 			};
+
+			$scope.refreshParentLst = function () {
+				_scope.queryOrderLst({
+					pageNo : _scope.curPageNo,
+					pageSize : _scope.pageSize
+				});
+			};
 			
 			$scope.resetOrderInfo();
 		}
@@ -398,6 +405,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					var code = _.result(data, 'code');
 					if (code == '000') {
 						$scope.close();
+						_scope.refreshParentLst();
+						_scope.close();
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
