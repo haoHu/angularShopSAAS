@@ -895,7 +895,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 选择套餐配菜
 			$scope.replaceFoodItem = function (unitKey) {
 				var cateName = $scope.curFoodCategory;
-				var idx = $scope.curFoodBtnID.split('_')[1];
+				var s = $scope.curFoodBtnID.split('_'),
+					idx = s[s.length - 1];
+				// var idx = $scope.curFoodBtnID.split('_')[1];
 				SetFoodService.updateFoodByCateName(cateName, $scope.curFoodUnitKey, idx, unitKey);
 				$scope.curFoodUnitKey = unitKey;
 				$scope.curFoodBtnID = $scope.curFoodUnitKey + '_' + idx;
@@ -904,7 +906,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 设置选中菜品的口味
 			$scope.setFoodRemark = function (remark) {
 				var cateName = $scope.curFoodCategory;
-				var idx = $scope.curFoodBtnID.split('_')[1];
+				var s = $scope.curFoodBtnID.split('_'),
+					idx = s[s.length - 1];
+				// var idx = $scope.curFoodBtnID.split('_')[1];
 				var unitKey = $scope.curFoodUnitKey;
 				console.info(remark);
 				SetFoodService.updateFoodRemark(cateName, unitKey, idx, remark);
