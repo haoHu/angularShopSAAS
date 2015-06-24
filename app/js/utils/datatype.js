@@ -204,4 +204,12 @@
 		{value : '5', label : '向上抹零到元'},
 		{value : '6', label : '向下抹零到元'}
 	];
+
+	Hualala.TypeDef.NetOrderTypeCode = {
+		"WS_YD" : "网上预订",
+		"WS_SC" : "网上闪吃",
+		"WS_WM" : "网上外卖",
+		"WS_ZT" : "网上自提",
+		"WS_DN" : "网上自助"
+	};
 })();

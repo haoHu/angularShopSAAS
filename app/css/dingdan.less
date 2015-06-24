@@ -79,8 +79,22 @@
 		}
 		.section-diandan {
 			.order-plain {width : 50%;}
-			.paylst-plain {
+			.detail-plain {
 				position : absolute; right : 0; top : 0; bottom : 0; left : 50%;
+				.order-detail, .paylst-plain {
+					position : relative; padding-top: 40px;
+					> header {position: absolute; left : 0; top : 0;}
+					> .detail-grid {
+						height: 100%; overflow: auto;
+						.item > label, .item > p {padding : 0 .5rem 0 0;}
+					}
+				}
+				.order-detail {
+					height: 60%; border-bottom: 1px solid @xBaseBorderColor;
+				}
+				.paylst-plain {
+					height : 40%;
+				}
 				header > h4 {padding : 0 1.5rem;}
 				.paylst-grid .row:last-child > .cash {color : #f00; font-weight: bold;}
 			}

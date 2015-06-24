@@ -1,5 +1,49 @@
 define(['app', 'diandan/OrderHeaderSetController'], function(app)
 {
+	var OrderDetailLabels = {
+		reportDate : {label : '报表统计日期', type : 'date', format : 'yyyy/MM/dd'},
+		saasOrderKey : {label : '订单Key'},
+		saasOrderNo : {label : '日流水号'},
+		timeNameCheckout : {label : '结账餐段'},
+		areaName : {label : '所属区域'},
+		tableName : {label : '桌台名称'},
+		channelName : {label : '渠道名称'},
+		channelOrderNo : {label : '渠道订单号'},
+		orderSubType : {label : '订单类型', type : 'orderSubType'},
+		netOrderTypeCode : {label : '订单类型标识', type : 'netOrderTypeCode'},
+		startTime : {label : '开台时间', type : 'date', format : 'yyyy/MM/dd HH:mm:ss'},
+		createBy : {label : '创建人员'},
+		checkoutTime : {label : '结账时间', type : 'date', format : 'yyyy/MM/dd HH:mm:ss'},
+		checkoutBy : {label : '结账人员'},
+		orderStatus : {label : '订单状态', type : 'orderStatus'},
+		foodCount : {label : '菜品条目数'},
+		foodAmount : {label : '菜品金额合计'},
+		sendFoodAmount : {label : '赠菜金额合计'},
+		cardNo : {label : '会员卡号'},
+		cardTransID : {label : '会员卡交易ID'},
+		discountRate : {label : '折扣率'},
+		discountRange : {label : '打折范围', type : 'discountRange'},
+		isVipPrice : {label : '是否执行会员价', type : 'isVipPrice'},
+		moneyWipeZeroType : {label : '抹零规则', type : 'moneyWipeZeroType'},
+		promotionAmount : {label : '优惠金额'},
+		promotionDesc : {label : '优惠描述'},
+		paidAmount : {label : '订单实收金额'},
+		invoiceTitle : {label : '发票抬头'},
+		invoiceAmount : {label : '开票金额'},
+		userName : {label : '顾客姓名'},
+		userSex : {label : '顾客性别', type : 'userSex'},
+		userMobile : {label : '顾客电话'},
+		userAddress : {label : '顾客地址'},
+		modifyOrderLog : {label : '修改订单日志'},
+		YJZCount : {label : '预结账次数'},
+		FJZCount : {label : '反结账次数'},
+		alertFlagLst : {label : '账单异常操作标识'},
+		saasOrderRemark : {label : '账单备注'},
+		deviceCode : {label : '设备编号'},
+		deviceName : {label : '设备名称'},
+		actionTime : {label : '记录修改时间', type : 'date', format : 'yyyy/MM/dd HH:mm:ss'},
+		createTime : {label : '记录创建时间', type : 'date', format : 'yyyy/MM/dd HH:mm:ss'}
+	};
 	app.controller('DingDanViewController', [
 		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'LocalOrderLstService', 'OrderService', 'AppAlert',
 		function($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, LocalOrderLstService, OrderService, AppAlert) {
@@ -186,7 +230,59 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				operationMode = _.result(shopInfo, 'operationMode');
 			var orderData = OrderService.getOrderData(),
 				reviewBy = _.result(orderData, 'reviewBy', '');
+			// var detailKeys = 'saasOrderKey,reportDate,saasOrderNo,timeNameCheckout,areaName,tableName,channelName,channelOrderNo,orderSubType,netOrderTypeCode,person,createBy,startTime,checkoutTime,checkoutBy,orderStatus,foodCount,foodAmount,sendFoodAmount,cardNo,cardTransID,discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,paidAmount,invoiceTitle,invoiceAmount,userName,userSex,userMobile,userAddress,modifyOrderLog,YJZCount,FJZCount,alertFlagLst,saasOrderRemark,deviceCode,deviceName,actionTime,createTime'.split(',');
+			
+			var mapOrderDetailData = function () {
+				var detailLabels = OrderDetailLabels;
+				var ret = [];
+				_.each(detailLabels, function (el, k) {
+					var v = _.result(orderData, k),
+						label = el.label;
+					ret.push(_.extend(el, {
+						key : k,
+						value : v
+					}));
+				});
+				return ret;
+			};
 			$scope.reviewBy = reviewBy;
+			$scope.curOrderDetail = mapOrderDetailData();
+			
+			$scope.mapOrderDetailValue = function (el) {
+				var k = el.key, v = el.value, type = el.type || '', format = el.format;
+				var ret = '', emptyStr = '--';
+				switch(type) {
+					case 'date':
+						ret = $filter('formatDateTimeStr')(v, format);
+						break;
+					case 'orderSubType':
+						ret = v == 0 ? '堂食' : (v == 1 ? '外卖' : '自提');
+						break;
+					case 'orderStatus':
+						ret = v == 10 ? '存单' : (v == 20 ? '已落单' : (v == 30 ? '废单' : '已结账'));
+						break;
+					case 'netOrderTypeCode':
+						ret = Hualala.TypeDef.NetOrderTypeCode[v] || emptyStr;
+						break;
+					case 'discountRange':
+						ret = v == 0 ? '部分打折' : '全单打折';
+						break;
+					case 'isVipPrice':
+						ret = v == 0 ? '非会员价' : '会员价';
+						break;
+					case 'moneyWipeZeroType':
+						ret = _.result(_.find(Hualala.TypeDef.MoneyWipeZeroTypes, function (el) {return el.value == v;}), 'label', emptyStr);
+						break;
+					case 'userSex':
+						ret = _.result(_.find(_.find(Hualala.TypeDef.GENDER, function (el) {return el.value == v;})), 'label', emptyStr);
+						break;
+					default:
+						ret = v || emptyStr;
+						break;
+				}
+				return ret;
+			};
+
 			// 跳转点菜页面
 			var jumpToDinnerPage = function (saasOrderKey, tableName) {
 				var shopInfo = storage.get("SHOPINFO"),
