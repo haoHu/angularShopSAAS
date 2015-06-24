@@ -849,7 +849,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		function ($scope, $modalInstance, $filter, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, SetFoodService, AppAlert) {
 			IX.ns("Hualala");
 			var curUnitKey = _scope.curSetFoodUnitKey;
-			var setFoodData = FoodMenuService.getFoodByUnitKey(curUnitKey);
+			var setFoodData = IX.clone(FoodMenuService.getFoodByUnitKey(curUnitKey));
 			SetFoodService.initSetFoodData(setFoodData);
 			$scope.curMenuType = 'food';
 			$scope.curFoodCategory = '';
