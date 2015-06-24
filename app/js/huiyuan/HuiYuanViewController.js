@@ -952,12 +952,12 @@ define(['app'], function(app)
                                     '<input style="width:120px;" type="text" class="form-control listdateto form_datetime"  ng-model="listdateto" readonly datepicker-popup="yyyy-MM-dd" placeholder="截止日期" is-open="op3" max-date="today()" min-date="minday()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event, 3)">',
                                     '<span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="openDatePicker($event, 3)"><span class="glyphicon glyphicon-calendar"></span></button></span>',
                                 '</div>',
-                                '<button type="button" class="btn btn-default btn-query">查询</button>',
+                                '<button type="button" class="btn btn-default btn-query-report">查询</button>',
                             '</div>',
                         '</div>',
                         '<div>',
                             '<div class="panel-report-detail" style="display:none;overflow-x:auto;">',
-                                '<table class="table" style="width:2000px;">',
+                                '<table class="table" style="width:1500px;">',
                                     '<thead><th>序</th><th>卡号</th><th>姓名</th><th>手机号</th><th>交易类型</th><th>交易时间</th><th>消费金额</th><th>储值变动</th><th>积分</th></thead>',
                                     '<tr role="presentation" ng-repeat="el in reportlist"><td>{{el.transIDFormat}}</td><td>{{el.cardNo}}</td><td>{{el.customerName}}</td><td>{{el.customerMobile}}</td><td>{{handletype[el.transType]}}</td><td>{{el.transTimeFormat}}</td><td>{{el.cunsumptionAmount}}</td><td>{{el.pointChange}}</td></tr>',
                                 '</table>',
@@ -973,28 +973,7 @@ define(['app'], function(app)
                     //初始值设定
                     var init = function() {
                         scope.reporttype = 1;
-                        scope.reportlist = [
-                            {
-                                "customerName": "朱敏",
-                                "transReceiptsTxt": "┏━━━━━━━━━━━━━━┓\n┃◇◇会员交易　商户对账单◇◇┃\n┗━━━━━━━━━━━━━━┛\n    等级：VIP5\n    状态：正常\n实体卡号：3333\n    手机：18513403219（绑定）\n    姓名：朱敏（男）\n…………………………………………\n交易流水：000010062844\n交易店铺：\n交易时间：2015-06-18 16:15:43\n…………………………………………\n交易前现金卡值：10404.43元\n交易前赠送卡值：9965.57元\n交易前积分余额：9066.20\n…………………………………………\n【本次消费交易】\n收银系统单号：\n消费总金额：65.00元\n现金支付金额：0.00元\n代金券支付金额：0元\n现金卡值支付：0元\n赠送卡值支付：0.00元\n积分抵扣金额：65.00元\n抵扣积分数：65.00\n…………………………………………\n交易后现金卡值：10404.43元\n交易后赠送卡值：9965.57元\n交易后积分余额：9001.20\n…………………………………………\n交易时间：2015-06-18 16:15:43\n",
-                                "cardID": "62265",
-                                "customerSex": "1",
-                                "moneyChange": "0.00",
-                                "pointChange": "-65.00",
-                                "consumptionAmount": "65.00",
-                                "transShopName": "",
-                                "cardNO": "3333",
-                                "transType": "30",
-                                "customerMobile": "18513403219",
-                                "customerSexName": "男",
-                                "transIDFormat": "000010062844",
-                                "transTimeFormat": "2015-06-18 16:15:43",
-                                "transTime": "20150618161543",
-                                "cardLevelName": "VIP5",
-                                "transRemark": "",
-                                "transTypeName": "消费"
-                            }
-                        ];
+                        scope.reportlist = [];
                     };
                     init();
 
@@ -1016,8 +995,10 @@ define(['app'], function(app)
                         scope.listdateto = null;
                     });
 
-                    el.on('click', '.btn-query', function() {
+                    el.on('click', '.btn-query-report', function() {
                         if(scope.reporttype == 1) {
+                            scope.reportprnstr = '';
+
                             scope.CCS.reportDetail({
                                 queryDate: IX.Date.getDateByFormat(scope.detaildate, 'yyyyMMdd')
                             }).success(function(data) {
@@ -1028,6 +1009,8 @@ define(['app'], function(app)
                                 }
                             });
                         }else{
+                            scope.reportlist = [];
+
                             scope.CCS.reportTotal({
                                 startDate: IX.Date.getDateByFormat(scope.listdatefrom, 'yyyyMMdd'),
                                 endDate: IX.Date.getDateByFormat(scope.listdateto, 'yyyyMMdd')
