@@ -1,5 +1,6 @@
 require.config({
-	baseUrl : '/js',
+	// baseUrl : './js',
+	appDir : './js',
 	paths : {
 		'angular' : 'vendor/angular/angular',
 		'angular-route' : 'vendor/angular-route/angular-route',
@@ -17,7 +18,7 @@ require.config({
 		'commonFn' : 'utils/commonFn',
 		'datatype' : 'utils/datatype',
 		'global-const' : 'api/global-const',
-		'global-dev-url' : 'api/global-dev-url',
+		// 'global-dev-url' : 'api/global-dev-url',
 		'global-url' : 'api/global-url',
 		'angularLocalStorage' : 'vendor/angularLocalStorage/angularLocalStorage',
 		'pymatch' : 'utils/pymatch',
@@ -78,7 +79,7 @@ require.config({
 	}
 });
 
-require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'matcher', 'uuid'], function (app, _) {
+require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'global-url', 'api', 'matcher', 'uuid'], function (app, _) {
 	if (window.HualalaWorkMode == 'dev') {
 		// require(['global-dev-url', 'api'], function () {
 		// 	angular.bootstrap(document, ['app']);

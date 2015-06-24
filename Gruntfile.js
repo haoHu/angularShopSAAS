@@ -38,7 +38,8 @@ module.exports = function (grunt) {
 						'<%= config.dist %>/.git'
 					]
 				}]
-			}
+			},
+			disttest : ['<%= config.dist %>/css/*.less', '<%= config.dist %>/test']
 		},
 		// JS语法校验
 		jshint : {
@@ -131,7 +132,7 @@ module.exports = function (grunt) {
 			dist : [
 				'less',
 				'copy:css',
-				'svgmin'
+				'copy:dist'
 			]
 		},
 		// web 服务器
@@ -171,8 +172,16 @@ module.exports = function (grunt) {
 			},
 			dist : {
 				options : {
-					base : '<%= config.dist %>',
-					livereload : false
+					// base : '<%= config.dist %>',
+					// livereload : false
+					middleware : function (connect) {
+						return [
+							connect.static('<%= config.dist %>'),
+							connect().use('/bower_components', connect.static('./bower_components')),
+							connect().use('/test', connect.static('./test')),
+							connect.static(config.dist)
+						]
+					}
 				}
 			}
 		},
@@ -187,6 +196,19 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		// 压缩css文件
+		cssmin : {
+			options : {
+				report : "gzip",
+				banner : "/*Hualala SASS Layout File*/"
+			},
+			minify : {
+				expand : true,
+				cwd : "<%= config.dist %>",
+				src : ["css/*.css", "js/vendor/{,*/}*.css"],
+				dest : "<%= config.dist %>"
+			}
+		},
 		// 拷贝文件
 		copy : {
 			css : {
@@ -195,6 +217,16 @@ module.exports = function (grunt) {
 				cwd : '<%= config.src %>/css',
 				dest : '.tmp/css',
 				src : '{,*/}*.css'
+			},
+			dist : {
+				expand : true,
+				dot : true,
+				cwd : '<%= config.src %>',
+				dest : '<%= config.dist %>',
+				src : [
+					'{,*/}*.html',
+					'css/*.css'
+				]
 			}
 		},
 		// 指定不同发布环境页面的设置
@@ -206,23 +238,89 @@ module.exports = function (grunt) {
 			},
 			mu : {
 				files : {
-					'<%= config.dist %>/index.html' : '<%= config.dist %>/index.html'
+					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html'
 				}
 			},
 			dohko : {
 				files : {
-					'<%= config.dist %>/index.html' : '<%= config.dist %>/index.html'
+					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html'
 				}
 			},
 			dist : {
 				files : {
-					'<%= config.dist %>/index.html' : '<%= config.dist %>/index.html'
+					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html'
 				}
 			}
 		},
 		requirejs : {
 			compile : {
-				options : {}
+				options : {
+					appDir : "<%= config.src %>/",
+					baseUrl : "./js",
+					mainConfigFile : "<%= config.src %>/js/main.js",
+					dir : "<%= config.dist %>",
+					modules : [
+						{
+							name : "main"
+							// include : ["jquery", "underscore", 'IX', 'commonFn', 'datatype', 'global-const', 'matcher', 'uuid']
+						},
+						{
+							name : "signin/SigninViewController",
+							include : ["services/appServices", "directives/appDirectives"],
+							exclude : ["main"]
+						},
+						{
+							name : "signup/SignupViewController",
+							include : ["services/appServices", "directives/appDirectives"],
+							exclude : ["main"]
+						},
+						{
+							name : "profile/moreViewController",
+							include : ['services/appServices', 'directives/appDirectives'],
+							exclude : ["main"]
+						},
+						{
+							name : 'profile/soldoutViewController',
+							include : ['services/appServices', 'directives/appDirectives', 'filters/appFilters', 'services/orderServices', 'services/foodMenuServices'],
+							exclude : ["main"]
+						},
+						{
+							name : 'baobiao/BaoBiaoViewController',
+							include : ['services/appServices', 'directives/appDirectives'],
+							exclude : ["main"]
+						},
+						{
+							name : 'huiyuan/HuiYuanViewController',
+							include : ['directives/appDirectives', 'services/appServices', 'filters/appFilters'],
+							exclude : ["main"]
+						},
+						{
+							name : 'dingdan/DingDanViewController',
+							include : ['directives/appDirectives', 'services/appServices', 'services/orderServices', 'filters/appFilters'],
+							exclude : ["main"]
+						},
+						{
+							name : 'diandan/DinnerViewController',
+							include : ['directives/appDirectives', 'services/appServices', 'services/orderServices', 'services/foodMenuServices', 'filters/appFilters'],
+							exclude : ["main"]
+						},
+						{
+							name : 'diandan/TableViewController',
+							include : ['directives/appDirectives', 'services/appServices', 'services/orderServices', 'services/tableServices', 'filters/appFilters'],
+							exclude : ["main"]
+						},
+						{
+							name : 'jiedan/JieDanViewController',
+							include : ['directives/appDirectives','services/appServices','services/orderServices','services/tableServices','filters/appFilters'],
+							exclude : ["main"]
+						},
+						{
+							name : 'home/HomeViewController',
+							include : ['services/appServices'],
+							exclude : ["main"]
+						}
+					]
+				}
 			}
 		},
 		karma : {
@@ -244,8 +342,8 @@ module.exports = function (grunt) {
 		grunt.task.run([
 					'clean:server',
 					'bower',
-					'targethtml:dev',
 					'concurrent:server',
+					'targethtml:dev',
 					'connect:livereload',
 					'watch'
 				]);
@@ -256,9 +354,12 @@ module.exports = function (grunt) {
 		grunt.task.run([
 			'clean:dist',
 			'bower',
+			'concurrent:dist',
+			'requirejs',
+			'clean:disttest',
 			'targethtml:' + htmlTarget,
-			'requirejs'
-			]);
+			'cssmin'
+		]);
 	});
 
 	// 单元测试

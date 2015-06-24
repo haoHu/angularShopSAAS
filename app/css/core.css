@@ -1411,7 +1411,7 @@ body {
 }
 .section-huiyuan .tab-join .panel-viplevel {
   position: absolute;
-  right: 10px;
+  right: -20px;
   top: -59px;
 }
 .section-huiyuan .tab-join .panel-viplevel .header {
@@ -1440,7 +1440,7 @@ body {
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan {
   position: absolute;
-  right: 10px;
+  right: -20px;
   top: -59px;
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan .header {
@@ -1467,7 +1467,7 @@ body {
 }
 .section-huiyuan .tab-consume .panel-vouchers {
   position: absolute;
-  right: 10px;
+  right: -20px;
   top: -59px;
 }
 .section-huiyuan .tab-consume .panel-vouchers .header {
