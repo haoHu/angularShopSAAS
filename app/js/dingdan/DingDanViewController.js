@@ -178,12 +178,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 
 	/*订单详情模态窗口控制器*/
 	app.controller('OrderDetailViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert',
-		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert',
+		function ($scope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get("SHOPINFO"),
 				operationMode = _.result(shopInfo, 'operationMode');
+			var orderData = OrderService.getOrderData(),
+				reviewBy = _.result(orderData, 'reviewBy', '');
+			$scope.reviewBy = reviewBy;
 			// 跳转点菜页面
 			var jumpToDinnerPage = function (saasOrderKey, tableName) {
 				var shopInfo = storage.get("SHOPINFO"),
@@ -276,7 +279,130 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				jumpToDinnerPage(_.result(orderData, 'saasOrderKey'), _.result(orderData, 'tableName'));
 				$scope.close();
 			};
+			// 完成审核
+			$scope.doAudit = function () {
+				var callServer = OrderService.orderAudit();
+				callServer.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						AppAlert.add('success', "完成审核");
+						$scope.reviewBy = $XP(data, 'data.reviewBy', '');
+					} else {
+						AppAlert.add('danger', _.result(data, 'msg', ''));
+					}
+				});
+			};
+			// 打开订单详情窗口
+			var openModal = function (modalCfg) {
+				// if ($scope.modalIsOpen()) return;
+				var modalSize = 'lg',
+					windowClass = 'orderdetail-modal',
+					backdrop = 'static',
+					controller = 'OrderDetailViewController',
+					templateUrl = 'js/dingdan/orderDetail.html',
+					resolve = {
+						_scope : function () {
+							return $scope;
+						}
+					};
+				// $scope.modalIsOpen(true);
+				$modal.open(modalCfg);
+			};
+			// 修改发票
+			$scope.modifyInvoice = function () {
+				openModal({
+					modalSize : 'md',
+					windowClass : 'invoice-modal',
+					backdrop : 'static',
+					controller : 'OrderInvoiceViewController',
+					templateUrl : 'js/dingdan/invoice.html',
+					resolve : {
+						_scope : function () {
+							return $scope;
+						}
+					}
+				});
+			};
+			// 作废操作
+			$scope.abolishOrder = function () {
+				openModal({
+					modalSize : 'md',
+					windowClass : 'invoice-modal',
+					backdrop : 'static',
+					controller : 'AbolishOrderViewController',
+					templateUrl : 'js/dingdan/abolish.html',
+					resolve : {
+						_scope : function () {
+							return $scope;
+						}
+					}
+				});
+			};
+			
 			$scope.resetOrderInfo();
+		}
+	]);
+
+	/*订单发票*/
+	app.controller('OrderInvoiceViewController', [
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert) {
+			IX.ns("Hualala");
+			var HC = Hualala.Common;
+			var shopInfo = storage.get("SHOPINFO"),
+				operationMode = _.result(shopInfo, 'operationMode');
+			var orderInfo = OrderService.getOrderData();
+			$scope.invoiceTitle = _.result(orderInfo, 'invoiceTitle', '');
+			$scope.invoiceAmount = _.result(orderInfo, 'invoiceAmount', '');
+			$scope.modifyRemark = '';
+			// 关闭窗口
+			$scope.close = function () {
+				// _scope.modalIsOpen(false);
+				$modalInstance.close();
+			};
+			// 保存数据
+			$scope.save = function () {
+				var callServer = OrderService.updateOrderInvoice({
+					invoiceTitle : $scope.invoiceTitle,
+					invoiceAmount : $scope.invoiceAmount,
+					modifyRemark : $scope.modifyRemark
+				});
+				callServer.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						$scope.close();
+					} else {
+						AppAlert.add('danger', _.result(data, 'msg', ''));
+					}
+				});
+			};
+		}
+	]);
+	/*账单作废操作*/
+	app.controller('AbolishOrderViewController', [
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert) {
+			IX.ns("Hualala");
+			var HC = Hualala.Common;
+			var orderInfo = OrderService.getOrderData();
+			$scope.saasOrderRemark = '';
+			// 关闭窗口
+			$scope.close = function () {
+				// _scope.modalIsOpen(false);
+				$modalInstance.close();
+			};
+			// 保存数据
+			$scope.save = function () {
+				var callServer = OrderService.abolishOrder($scope.saasOrderRemark);
+				callServer.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						$scope.close();
+					} else {
+						AppAlert.add('danger', _.result(data, 'msg', ''));
+					}
+				});
+			};
 		}
 	]);
 });

@@ -1200,6 +1200,41 @@ define(['app', 'uuid'], function (app, uuid) {
 				self.FJZFlag = flag || '';
 			};
 
+			/**
+			 * 账单审核
+			 * @return {[type]} [description]
+			 */
+			this.orderAudit = function () {
+				return CommonCallServer.orderAudit({
+					saasOrderKey : _.result(self._OrderData, 'saasOrderKey')
+				});
+			};
+
+			/**
+			 * 更改账单发票信息
+			 * @return {[type]} [description]
+			 */
+			this.updateOrderInvoice = function (params) {
+				return CommonCallServer.updateOrderInvoice(_.extend({
+					saasOrderKey : _.result(self._OrderData, 'saasOrderKey')
+				}, params));
+			};
+
+			/**
+			 * 订单作废操作
+			 * @return {[type]} [description]
+			 */
+			this.abolishOrder = function (remark) {
+				var saasOrderKey = _.result(self._OrderData, 'saasOrderKey');
+				return CommonCallServer.submitOrder({
+					actionType : 'ZF',
+					orderJson : JSON.stringify({
+						saasOrderKey : saasOrderKey,
+						saasOrderRemark : remark
+					})
+				});
+			};
+
 		}]
 	);
 

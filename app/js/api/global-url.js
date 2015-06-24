@@ -73,8 +73,12 @@ define(['IX'], function () {
 		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"],
 		// 设置沽清菜品
 		["setSoldOutFoodLst", "/saas/base/setSoldOutFoodLst.ajax", "", "POST"],
-
-		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"]
+		// 获取本地服务器信息
+		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"],
+		// 账单审核
+		["orderAudit", "/saas/order/review.ajax", "", "POST"],
+		// 更改已结账单发票信息
+		["updateOrderInvoice", "/saas/order/updateOrderInvoice.ajax", "", "POST"]
 
         // 会员入会办卡
         ,["createVIPCard", "/crm/card/create.ajax", "", "POST"]
