@@ -24,6 +24,11 @@ define(['app'], function (app) {
 				$scope.curSoldoutItems = recs;
 				$scope.isModified = isModified;
 			};
+			$scope.updateSoldoutToFoodMenu = function () {
+				var recs = SoldoutService.getSoldoutFoodLst();
+				FoodMenuService.updateSoldOutFoodLst(recs);
+				$scope.$broadcast('foodCategory.change');
+			};
 			// 加载菜单数据
 			FoodMenuService.initFoodMenuData(function (data) {
 				var firstCate = FoodMenuService.getFirstCategory();
@@ -254,6 +259,7 @@ define(['app'], function (app) {
 						SoldoutService.deleteSoldoutFoodItem($scope.formData);
 						_scope.modalIsOpen(false);
 						_scope.updateCurSoldoutItems(true);
+						_scope.updateSoldoutToFoodMenu();
 						$modalInstance.close();
 					},
 					noFn : function () {
@@ -270,6 +276,7 @@ define(['app'], function (app) {
 						SoldoutService.addSoldoutFoodItem($scope.formData);
 						_scope.modalIsOpen(false);
 						_scope.updateCurSoldoutItems(true);
+						_scope.updateSoldoutToFoodMenu();
 						$modalInstance.close();
 					},
 					noFn : function () {

@@ -305,10 +305,15 @@ body {
 .section-diandan .menu-plain .foods > .cell-btn:active {
   background-color: #99ccff;
 }
-.section-diandan .menu-plain .foods > .cell-btn.soldout {
+.section-diandan .menu-plain .foods > .cell-btn.soldouted {
   background-color: #D9534F;
   border-color: #D43F3A;
   color: #fff;
+}
+.section-diandan .menu-plain .foods > .cell-btn.soldout-food {
+  color: #FFF;
+  background-color: #F0AD4E;
+  border-color: #EEA236;
 }
 .section-diandan .order-header > div {
   padding: .5rem;

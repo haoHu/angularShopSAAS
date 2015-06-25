@@ -191,9 +191,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					isSetFood = FoodMenuService.isSetFood(unitKey),
 					item = null;
 				var qty = _.result(soldout, 'qty', '');
-				if (!_.isEmpty(soldout) && qty == 0) {
-					AppAlert.add('danger', '菜品已经沽清!');
-					return;
+				if (!_.isEmpty(soldout)) {
+					if (qty != 0) {
+						AppAlert.add('warning', '菜品即将沽清!');
+					} else {
+						AppAlert.add('danger', '菜品已经沽清!');
+						return;
+					}
 				}
 				// 向订单中添加菜品条目
 				if (isSetFood) {

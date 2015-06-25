@@ -193,6 +193,15 @@ define(['app'], function (app) {
 						_.isFunction(error) && error(data, status, headers, config);
 					});
 			};
+			/**
+			 * 更新沽清菜品数据
+			 * @param  {[type]} foodLst [description]
+			 * @return {[type]}         [description]
+			 */
+			this.updateSoldOutFoodLst = function (foodLst) {
+				self._SoldOutFoods = foodLst;
+				initFoodMenuDB();
+			};
 
 			/**
 			 * 通过菜品数据和沽清菜品数据整理app可用的菜单数据
