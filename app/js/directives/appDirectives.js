@@ -362,13 +362,136 @@ define(['app'], function (app) {
     app.directive('numkeyboard', function () {
         return {
             restrict : 'E',
-            template : '<div class="site-numkeyboard"><table><tbody><tr><td><div class="btn btn-default btn-block btn-lg">7</div></td><td><div class="btn btn-default btn-block btn-lg">8</div></td><td><div class="btn btn-default btn-block btn-lg">9</div></td><td rowspan="2"><div class="btn btn-default btn-block btn-lg"><-</div></td></tr><tr><td><div class="btn btn-default btn-block btn-lg">4</div></td><td><div class="btn btn-default btn-block btn-lg">5</div></td><td><div class="btn btn-default btn-block btn-lg">6</div></td></tr><tr><td><div class="btn btn-default btn-block btn-lg">1</div></td><td><div class="btn btn-default btn-block btn-lg">2</div></td><td><div class="btn btn-default btn-block btn-lg">3</div></td><td rowspan="2"><div class="btn btn-default btn-block btn-lg">CE</div></td></tr><tr><td colspan="2"><div class="btn btn-default btn-block btn-lg">0</div></td><td><div class="btn btn-default btn-block btn-lg">.</div></td></tr></tbody></table></div>',
+            template : '<div class="site-numkeyboard"><table><tbody><tr><td><div class="btn btn-default btn-block btn-lg" value="7">7</div></td><td><div class="btn btn-default btn-block btn-lg" value="8">8</div></td><td><div class="btn btn-default btn-block btn-lg" value="9">9</div></td><td rowspan="2"><div class="btn btn-default btn-block btn-lg" value="backdrop"><-</div></td></tr><tr><td><div class="btn btn-default btn-block btn-lg" value="4">4</div></td><td><div class="btn btn-default btn-block btn-lg" value="5">5</div></td><td><div class="btn btn-default btn-block btn-lg" value="6">6</div></td></tr><tr><td><div class="btn btn-default btn-block btn-lg" value="1">1</div></td><td><div class="btn btn-default btn-block btn-lg" value="2">2</div></td><td><div class="btn btn-default btn-block btn-lg" value="3">3</div></td><td rowspan="2"><div class="btn btn-default btn-block btn-lg" value="clear">CE</div></td></tr><tr><td colspan="2"><div class="btn btn-default btn-block btn-lg" value="0">0</div></td><td><div class="btn btn-default btn-block btn-lg" value=".">.</div></td></tr></tbody></table></div>',
             replace : true,
             scope : {
-
+                curTarget : '=curTarget'
             },
             link : function (scope, el, attrs) {
-                
+                // 获取选择区域位置，如果未选择便是光标位置
+                function getSelection(domEl) {
+                    return (
+                        ('selectionStart' in domEl && function () {
+                            var l = domEl.selectionEnd - domEl.selectionStart;
+                            return {
+                                start : domEl.selectionStart,
+                                end : domEl.selectionEnd,
+                                length : l,
+                                text : domEl.value.substr(domEl.selectionStart, l)
+                            };
+                        }) ||
+                        (document.selection && function () {
+                            domEl.focus();
+                            var r = document.selection.createRange();
+                            if (r === null) {
+                                return {
+                                    start : 0,
+                                    end : domEl.value.length,
+                                    length : 0
+                                };
+                            }
+                            var re = domEl.createTextRange();
+                            var rc = re.duplicate();
+                            re.moveToBookmark(r.getBookmark());
+                            rc.setEndPoint('EndToStart', re);
+                            return {
+                                start : rc.text.length,
+                                end : rc.text.length + r.text.length,
+                                length : r.text.length,
+                                text : r.text
+                            };
+                        }) || 
+                        function () {
+                            return null;
+                        }
+                    )();
+                }
+                // 替换选择
+                function replaceSelection(domEl) {
+                    var text = arguments[0] || '';
+                    return (
+                        // mozilla / dom 3.0
+                        ('selectionStart' in domEl && function () {
+                            domEl.value = domEl.value.substr(0, domEl.selectionStart) + text + domEl.value.substr(domEl.selectionEnd, domEl.value.length);
+                            return this;
+                        }) ||
+                        // exploder
+                        (document.selection && function () {
+                            domEl.focus();
+                            document.selection.createRange().text = text;
+                            return this;
+                        }) ||
+                        // browser not supported
+                        function () {
+                            domEl.value += text;
+                            return $(domEl)
+                        }
+                    )();
+                }
+                // 设置光标位置
+                function setCaretPosition(domEl, pos) {
+                    if (domEl.setSelectionRange) {
+                        domEl.focus();
+                        domEl.setSelectionRange(pos.start, pos.end);
+                    } else if (domEl.createTextRange) {
+                        var range = domEl.createTextRange();
+                        range.collapse(true);
+                        range.moveEnd('character', pos.start);
+                        range.moveStart('charracter', pos.end);
+                        range.select();
+                    }
+                }
+                el.on('click', '.btn', function (e) {
+                    var v = $(this).attr('value');
+                    var tarEl = scope.curTarget;
+                    if (!tarEl) return;
+                    var val = tarEl.val() + '';
+                    var pos = getSelection(tarEl[0]);
+                    var _pos = {start : 0, end : 0};
+                    switch(v) {
+                        case 'backdrop':
+                            if (pos.length > 0) {
+                                val = val.slice(0, pos.start).concat(val.slice(pos.end));
+                                _pos = {
+                                    start : pos.start,
+                                    end : pos.start
+                                };
+                            } else if (pos.start == 0) {
+                                val = val;
+                                _pos = pos;
+                            } else {
+                                val = val.slice(0, pos.start - 1).concat(val.slice(pos.end));
+                                _pos = {
+                                    start : pos.start - 1,
+                                    end : pos.start - 1
+                                };
+                            }
+                            break;
+                        case 'clear':
+                            val = '';
+                            break;
+                        default :
+                            // tarEl.val(val.toString() + v.toString());
+                            if (pos.length > 0) {
+                                val = val.slice(0, pos.start).concat(v).concat(val.slice(pos.end));
+                                
+                            } else if (pos.start == 0) {
+                                val = v.concat(val);
+                                
+                            } else {
+                                val = val.slice(0, pos.start).concat(v).concat(val.slice(pos.end));
+                                
+                            }
+                            _pos = {
+                                start : pos.start + v.length,
+                                end : pos.start + v.length
+                            };
+                            break;
+                    }
+                    tarEl.val(val);
+                    setCaretPosition(tarEl[0], _pos);
+                    tarEl.trigger('change');
+                });
             }
         }
     });

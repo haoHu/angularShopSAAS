@@ -32,6 +32,21 @@ define(['app'], function (app) {
 				$scope.fmels.channelKey = v;
 				$scope.fmels.channelName = _.result(d, 'channelName', '');
 			};
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
+			};
+			
 			// 加载单头表单数据
 			// _scope依赖的scope
 			CommonCallServer.getChannelLst()
@@ -146,6 +161,20 @@ define(['app'], function (app) {
 				});
 				$scope.fmels.channelKey = v;
 				$scope.fmels.channelName = _.result(d, 'channelName', '');
+			};
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
 			};
 			// 加载单头表单数据
 			// _scope依赖的scope

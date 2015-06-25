@@ -9,24 +9,24 @@
 				<div class="form-group">
 					<label for="" class="col-xs-3 control-label">人数</label>
 					<div class="col-xs-8">
-						<input type="text" class="form-control" ng-model="fmels.person">
+						<input type="text" class="form-control" ng-model="fmels.person" ng-focus="inputFocus($event)">
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="" class="col-xs-3 control-label">台/牌号</label>
 					<div class="col-xs-8">
-						<input type="text" class="form-control" ng-readonly="{{tableNameIsReadOnly()}}" ng-model="fmels.tableName">
+						<input type="text" class="form-control" ng-readonly="{{tableNameIsReadOnly()}}" ng-model="fmels.tableName" ng-focus="inputFocus($event)">
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="" class="col-xs-3 control-label">备注</label>
 					<div class="col-xs-8">
-						<input type="text" class="form-control" ng-model="fmels.saasOrderRemark">
+						<input type="text" class="form-control" ng-model="fmels.saasOrderRemark" ng-focus="inputFocus($event)">
 					</div>
 				</div>
 			</div>
 			<!-- 软键盘 -->
-			<numkeyboard></numkeyboard>
+			<numkeyboard cur-target="focusInputEl"></numkeyboard>
 			
 		</div>
 		<div class="col-xs-6">
@@ -34,17 +34,17 @@
 				<div class="form-group">
 					<label for="" class="col-xs-2 control-label">姓名</label>
 					<div class="col-xs-4">
-						<input type="text" class="form-control" ng-model="fmels.userName">
+						<input type="text" class="form-control" ng-model="fmels.userName" ng-focus="inputFocus($event)">
 					</div>
 					<label for="" class="col-xs-2 control-label">电话</label>
 					<div class="col-xs-4">
-						<input type="text" class="form-control" ng-model="fmels.userMobile">
+						<input type="text" class="form-control" ng-model="fmels.userMobile" ng-focus="inputFocus($event)">
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="" class="col-xs-2 control-label">地址</label>
 					<div class="col-xs-10">
-						<input type="text" class="form-control" ng-model="fmels.userAddress">
+						<input type="text" class="form-control" ng-model="fmels.userAddress" ng-focus="inputFocus($event)">
 					</div>
 				</div>
 			</div>

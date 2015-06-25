@@ -485,6 +485,20 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.onSendReasonChange = function (v) {
 				$scope.sendReason = v;
 			};
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly') && !curEl.attr('disabled')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
+			};
 		}
 	]);
 
@@ -522,6 +536,20 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 退菜原因变化
 			$scope.onCancelReasonChange = function (v) {
 				$scope.cancelReason = v;
+			};
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly') && !curEl.attr('disabled')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
 			};
 		}
 	]);
@@ -578,6 +606,20 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				
 				
 			};
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly') && !curEl.attr('disabled')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
+			};
 		}
 	]);
 
@@ -621,6 +663,20 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 改价原因变化
 			$scope.onFoodPriceNoteChange = function (v) {
 				$scope.priceNote = v;
+			};
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly') && !curEl.attr('disabled')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
 			};
 		}
 	]);
@@ -1431,7 +1487,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						return ;
 					});
 
-					
+					// 输入框聚焦事件
+					// 告诉软键盘当前操作控件
+					scope.inputFocus = function ($event) {
+						IX.Debug.info($event);
+						var curEl = $($event.target);
+						if (!curEl.attr('readonly') && !curEl.attr('disabled')) {
+							scope.focusInputEl = curEl;
+						} else {
+							scope.focusInputEl = null;
+						}
+						return;
+
+					};
 
 					
 				}
@@ -1703,6 +1771,20 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							callServer = scope.getVIPCardInfo(val);
 						}
 					});
+					// 输入框聚焦事件
+					// 告诉软键盘当前操作控件
+					scope.inputFocus = function ($event) {
+						IX.Debug.info($event);
+						var curEl = $($event.target);
+						if (!curEl.attr('readonly') && !curEl.attr('disabled')) {
+							scope.focusInputEl = curEl;
+						} else {
+							scope.focusInputEl = null;
+						}
+						return;
+
+					};
+
 				}
 			}
 		}

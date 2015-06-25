@@ -123,12 +123,12 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">数量</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" />
+							<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" />
 							<span class="help-block">可以赠送数量：{{enableSendNumber}}</span>
 						</div>
 
 					</div>
-					<numkeyboard></numkeyboard>
+					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 				<div class="col-xs-6">
 					<div class="" >
@@ -165,11 +165,11 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">数量</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" />
+							<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" />
 							<span class="help-block">可以退菜数量：{{enableCancelNumber}}</span>
 						</div>
 					</div>
-					<numkeyboard></numkeyboard>
+					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 				<div class="col-xs-6">
 					<div class="" >
@@ -206,11 +206,11 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">数量</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodCount" ng-model="foodCount" />
+							<input type="text" class="form-control" name="foodCount" ng-model="foodCount" ng-focus="inputFocus($event)"/>
 							<span class="help-block">当前菜品数量：{{curFoodCount}}</span>
 						</div>
 					</div>
-					<numkeyboard></numkeyboard>
+					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 			</div>
 			
@@ -237,11 +237,11 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">价格</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" />
+							<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" ng-focus="inputFocus($event)"/>
 							<span class="help-block">菜品当前价格：{{curFoodPrice}}</span>
 						</div>
 					</div>
-					<numkeyboard></numkeyboard>
+					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 				<div class="col-xs-6">
 					<div class="" >
@@ -567,12 +567,12 @@
 					<div class="form-group" ng-repeat="el in formCfg">
 						<label class="col-xs-4 control-label">{{el.label}}</label>
 						<div class="col-xs-8">
-							<input type="number" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} />
+							<input type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
 						</div>
 					</div>
 				</div>
 				<div>
-				<numkeyboard></numkeyboard>
+				<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 
 				
@@ -587,7 +587,7 @@
 					<label class="col-xs-3 control-label">卡号</label>
 					<div class="col-xs-7">
 						<div class="input-group">
-							<input type="text" class="form-control" name="card_id" value="18910021580" placeholder="卡号/手机号"/>
+							<input type="text" class="form-control" name="card_id" value="18910021580" placeholder="卡号/手机号" ng-focus="inputFocus($event)"/>
 							<span class="input-group-btn">
 								<button class="btn btn-default" type="button" name="search" data-loading-text="查询中..." autocomplete="off" >查询</button>
 							</span>
@@ -615,7 +615,7 @@
 				<div class="form-group">
 					<label class="col-xs-3 control-label">使用积分</label>
 					<div class="col-xs-5">
-						<input type="number" class="form-control" name="point_amount" ng-model="payByPoint" />
+						<input type="text" class="form-control" name="point_amount" ng-model="payByPoint" ng-focus="inputFocus($event)"/>
 					</div>
 					<div class="col-xs-4">
 						<p class="help-block info">使用积分:{{vipInfo.cardPointBalance}}</p>
@@ -625,7 +625,7 @@
 				<div class="form-group">
 					<label class="col-xs-3 control-label">使用卡值</label>
 					<div class="col-xs-5">
-						<input type="number" class="form-control" name="money_amount" ng-model="payByCash" />
+						<input type="text" class="form-control" name="money_amount" ng-model="payByCash" ng-focus="inputFocus($event)"/>
 					</div>
 					<div class="col-xs-4">
 						<p class="help-block info">使用余额:{{vipInfo.cardCashBalance | mycurrency:"￥"}}</p>
@@ -646,12 +646,12 @@
 				<div class="form-group">
 					<label class="col-xs-3 control-label">支付确认码</label>
 					<div class="col-xs-7">
-						<input type="password" class="form-control" name="auth_code" value="{{cardTransPWD}}"/>
+						<input type="password" class="form-control" name="auth_code" value="{{cardTransPWD}}" ng-focus="inputFocus($event)"/>
 					</div>
 					
 				</div>
 			</div>
-			<numkeyboard></numkeyboard>
+			<numkeyboard cur-target="focusInputEl"></numkeyboard>
 
 		</div>
 	</script>
