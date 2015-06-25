@@ -152,12 +152,24 @@
 							<h4>账单主信息</h4>
 						</header>
 						<div class="detail-grid">
+						<!--
 							<div class="row">
 								<div class="col-xs-6 item" ng-repeat="el in curOrderDetail">
-									<label class="col-xs-7 text-right">
+									<label class="col-xs-6 text-right">
 										{{el.label}}:
 									</label>
-									<p class="col-xs-5 text-left">
+									<p class="col-xs-6 text-left">
+										{{mapOrderDetailValue(el)}}
+									</p>
+								</div>
+							</div>
+						-->
+							<div class="row" ng-repeat="row in curOrderDetail">
+								<div class="col-xs-6 item" ng-repeat="el in row">
+									<label class="col-xs-6 text-right">
+										{{el.label}}:
+									</label>
+									<p class="col-xs-6 text-left">
 										{{mapOrderDetailValue(el)}}
 									</p>
 								</div>
@@ -180,7 +192,7 @@
 								
 							</div>
 							<div class="row">
-								<div class="col-xs-6">
+								<div class="col-xs-6 item">
 									<label class="col-xs-7 text-right">菜品金额:</label>
 									<p class="col-xs-5 text-left cash">
 										{{getOrderFoodAmount() | mycurrency:"￥"}}

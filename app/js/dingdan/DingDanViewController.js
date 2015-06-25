@@ -17,19 +17,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 		checkoutBy : {label : '结账人员'},
 		orderStatus : {label : '订单状态', type : 'orderStatus'},
 		foodCount : {label : '菜品条目数'},
-		foodAmount : {label : '菜品金额合计'},
-		sendFoodAmount : {label : '赠菜金额合计'},
+		foodAmount : {label : '菜品金额合计', type : 'cash', format : '￥'},
+		sendFoodAmount : {label : '赠菜金额合计', type : 'cash', format : '￥'},
 		cardNo : {label : '会员卡号'},
 		cardTransID : {label : '会员卡交易ID'},
 		discountRate : {label : '折扣率'},
 		discountRange : {label : '打折范围', type : 'discountRange'},
 		isVipPrice : {label : '是否执行会员价', type : 'isVipPrice'},
 		moneyWipeZeroType : {label : '抹零规则', type : 'moneyWipeZeroType'},
-		promotionAmount : {label : '优惠金额'},
+		promotionAmount : {label : '优惠金额', type : 'cash', format : '￥'},
 		promotionDesc : {label : '优惠描述'},
-		paidAmount : {label : '订单实收金额'},
+		paidAmount : {label : '订单实收金额', type : 'cash', format : '￥'},
 		invoiceTitle : {label : '发票抬头'},
-		invoiceAmount : {label : '开票金额'},
+		invoiceAmount : {label : '开票金额', type : 'cash', format : '￥'},
 		userName : {label : '顾客姓名'},
 		userSex : {label : '顾客性别', type : 'userSex'},
 		userMobile : {label : '顾客电话'},
@@ -37,7 +37,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 		modifyOrderLog : {label : '修改订单日志'},
 		YJZCount : {label : '预结账次数'},
 		FJZCount : {label : '反结账次数'},
-		alertFlagLst : {label : '账单异常操作标识'},
+		alertFlagLst : {label : '账单异常标识'},
 		saasOrderRemark : {label : '账单备注'},
 		deviceCode : {label : '设备编号'},
 		deviceName : {label : '设备名称'},
@@ -234,14 +234,23 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			
 			var mapOrderDetailData = function () {
 				var detailLabels = OrderDetailLabels;
-				var ret = [];
+				var ret = [], i = 0;
 				_.each(detailLabels, function (el, k) {
 					var v = _.result(orderData, k),
 						label = el.label;
-					ret.push(_.extend(el, {
-						key : k,
-						value : v
-					}));
+					var idx = Math.floor(i / 2);
+					if (_.isEmpty(ret[idx])) {
+						ret.push([_.extend(el, {
+							key : k,
+							value : v
+						})]);
+					} else {
+						ret[idx].push(_.extend(el, {
+							key : k,
+							value : v
+						}));
+					}
+					i++;
 				});
 				return ret;
 			};
@@ -275,6 +284,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 						break;
 					case 'userSex':
 						ret = _.result(_.find(_.find(Hualala.TypeDef.GENDER, function (el) {return el.value == v;})), 'label', emptyStr);
+						break;
+					case 'cash':
+						ret = $filter('mycurrency')(v, format);
 						break;
 					default:
 						ret = v || emptyStr;

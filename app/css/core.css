@@ -1179,6 +1179,7 @@ body {
 .orderdetail-modal .modal-dialog .section-diandan .detail-plain .order-detail > .detail-grid .item > p,
 .orderdetail-modal .modal-dialog .section-diandan .detail-plain .paylst-plain > .detail-grid .item > p {
   padding: 0 .5rem 0 0;
+  margin-bottom: 5px;
 }
 .orderdetail-modal .modal-dialog .section-diandan .detail-plain .order-detail {
   height: 60%;
