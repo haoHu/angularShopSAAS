@@ -132,7 +132,11 @@ define(['app'], function (app) {
 			// 3. 关闭模态窗口
 			// 4. 刷新沽清菜品列表
 			$scope.insertFoodItem = function (unitKey) {
-				openSoldoutSettingModal(unitKey, 'new');
+				var soldoutLst = SoldoutService.getSoldoutFoodLst();
+				var item = _.find(soldoutLst, function (el) {
+					return el.unitKey == unitKey;
+				});
+				openSoldoutSettingModal(unitKey, _.isEmpty(item) ? 'new' : 'edit');
 			};
 
 			/**
