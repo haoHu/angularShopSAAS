@@ -71,7 +71,7 @@
 	.menu-plain {
 		.cates, .foods {overflow : hidden; position : relative;}
 		.cell-btn {
-			padding : 10px 0 0; border : 1px solid @xBaseBorderColor; color : @xBaseColor;
+			padding : 10px 0 0; border : 1px solid @xBaseBorderColor; color : @xBaseColor; background-color: @xLightBtnBG;
 			cursor : pointer;
 		}
 		.cates {
@@ -116,6 +116,9 @@
 			}
 			&.active, &:active {
 				background-color: @xDarkBtnBG;
+			}
+			&.soldout {
+				background-color: #D9534F; border-color : #D43F3A; color : #fff;
 			}
 		}
 		

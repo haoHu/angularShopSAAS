@@ -187,8 +187,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 为订单插入菜品条目
 			$scope.insertFoodItem = function (unitKey) {
 				var food = FoodMenuService.getFoodByUnitKey(unitKey),
+					soldout = _.result(food, '__soldout', null),
 					isSetFood = FoodMenuService.isSetFood(unitKey),
 					item = null;
+				var qty = _.result(soldout, 'qty', '');
+				if (!_.isEmpty(soldout) && qty == 0) {
+					AppAlert.add('danger', '菜品已经沽清!');
+					return;
+				}
 				// 向订单中添加菜品条目
 				if (isSetFood) {
 					// TODO  套餐需要弹出配置套餐的窗口

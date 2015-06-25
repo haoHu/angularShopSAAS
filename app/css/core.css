@@ -253,6 +253,7 @@ body {
   padding: 10px 0 0;
   border: 1px solid #e6e6e6;
   color: #333333;
+  background-color: #e6f2fd;
   cursor: pointer;
 }
 .section-diandan .menu-plain .cates {
@@ -303,6 +304,11 @@ body {
 .section-diandan .menu-plain .foods > .cell-btn.active,
 .section-diandan .menu-plain .foods > .cell-btn:active {
   background-color: #99ccff;
+}
+.section-diandan .menu-plain .foods > .cell-btn.soldout {
+  background-color: #D9534F;
+  border-color: #D43F3A;
+  color: #fff;
 }
 .section-diandan .order-header > div {
   padding: .5rem;
@@ -1410,9 +1416,6 @@ body {
 }
 .section-huiyuan .form-inline label {
   width: 100px;
-}
-.section-huiyuan input {
-  border-radius: 0px !important;
 }
 .section-huiyuan label {
   text-align: right;

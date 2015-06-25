@@ -86,7 +86,8 @@ define(['app'], function (app) {
 			};
 			var openSoldoutSettingModal = function (unitKey, modalType) {
 				var food = FoodMenuService.getFoodByUnitKey(unitKey),
-					unitKey = $XP(food, '_foodUnit.unitKey'),
+					unitKey = $XP(food, '__foodUnit.unitKey'),
+					soldout = _.extend($XP(food, '__soldout'), SoldoutService.getSoldoutFoodItem(unitKey)),
 					isSoldoutFood = SoldoutService.isSoldoutFood(unitKey),
 					isSetFood = FoodMenuService.isSetFood(unitKey);
 				$scope.curFoodItem = {
@@ -94,8 +95,8 @@ define(['app'], function (app) {
 					foodKey : $XP(food, 'foodKey', ''),
 					unit : $XP(food, '__foodUnit.unit', ''),
 					unitKey : $XP(food, '__foodUnit.unitKey', ''),
-					defaultQty : 0,
-					qty : 0,
+					defaultQty : _.isEmpty(soldout) ? 0 : parseFloat(_.result(soldout, 'defaultQty', 0)),
+					qty : _.isEmpty(soldout) ? 0 : parseFloat(_.result(soldout, 'qty', 0))
 				};
 				$scope.modalType = modalType;
 
@@ -110,10 +111,10 @@ define(['app'], function (app) {
 						}
 					};
 				console.info(food);
-				if (isSoldoutFood) {
-					AppAlert.add('danger', '该菜品已经添加到沽清列表中!');
-					return;
-				}
+				// if (isSoldoutFood) {
+				// 	AppAlert.add('danger', '该菜品已经添加到沽清列表中!');
+				// 	return;
+				// }
 				if ($scope.modalIsOpen()) return;
 
 				$scope.modalIsOpen(true);
