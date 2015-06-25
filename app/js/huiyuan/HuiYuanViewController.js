@@ -39,6 +39,7 @@ define(['app'], function(app)
                 hide: function() {
                     $('.userinfo').hide();
                     $('.panel-vouchers').hide();
+                    $scope.user = null;
                 }
             };
 
@@ -102,7 +103,8 @@ define(['app'], function(app)
                     pointaccount: d.cardPointBalance,
                     pointrate: d.pointRate,
                     pointasmoneyrate: d.pointAsMoneyRate,
-                    joinplace: '哗啦啦体验店铺（中关村店）'
+                    joinplace: '哗啦啦体验店铺（中关村店）',
+                    cardkey: d.cardKey
                 };
 
                 $scope.panel_userinfo.show();
@@ -306,8 +308,6 @@ define(['app'], function(app)
                             if(data.data.isSysSwitchActive == '1') {
                                 el.find('.panel-oldcard').show();
                             }
-
-                            scope.$apply();
                         }else {
                             scope.AA.add('danger', data.msg);
                         }
@@ -504,7 +504,7 @@ define(['app'], function(app)
                     el.on('click', '.btn-submit-recharge', function() {
                         if(!$(this).hasClass('disable')) {
                             scope.CCS.saveMoney({
-                                cardID: scope.user.cardnumber || scope.user.phone,
+                                cardID: scope.user.cardkey,
                                 payWayName: scope.payway,
                                 saveMoneySetID: scope.rechargeway == 0 ? '' : scope.rechargeplan.saveMoneySetID,
                                 transAmount: scope.rechargeway == 0 ? scope.rechargeamount : scope.rechargeplan.setSaveMoney,
@@ -546,33 +546,33 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>本次消费金额</label>',
-                                '<input style="width: 100px;" type="number" class="form-control consumeamount" ng-model="consumeamount">',
+                                '<input style="width: 100px;" type="number" class="form-control group" ng-model="group.consumeamount" ng-change="calculate(\'consumeamount\')">',
                                 '<label style="width:30px;margin-left:1px;">单号</label>',
-                                '<input style="width: 100px;" type="text" class="form-control ordernumber" ng-model="ordernumber">',
+                                '<input style="width: 100px;" type="number" class="form-control ordernumber" ng-model="ordernumber">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>代金券抵扣金额</label>',
-                                '<input style="width: 100px;" type="number" disabled class="form-control voucheramount" ng-model="usevoucheramount">',
+                                '<input style="width: 100px;" type="number" disabled class="form-control group usevoucheramount" ng-model="group.usevoucheramount" ng-change="calculate(\'consumeamount\')">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>积分抵扣金额</label>',
-                                '<input style="width: 100px;" type="number" class="form-control pointamount" ng-model="pointamount">',
+                                '<input style="width: 100px;" type="number" class="form-control group" ng-model="group.pointamount" ng-change="calculate(\'pointamount\')">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>储值余额付款</label>',
-                                '<input style="width: 100px;" type="number" class="form-control balanceamount" ng-model="balanceamount">',
+                                '<input style="width: 100px;" type="number" class="form-control group" ng-model="group.balanceamount" ng-change="calculate(\'balanceamount\')">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                             '<label>消费可积分金额</label>',
-                            '<input style="width: 100px;" type="number" class="form-control pointgetamount" ng-model="pointgetamount">',
+                            '<input style="width: 100px;" type="number" class="form-control group" ng-model="group.pointgetamount" ng-change="calculate(\'pointgetamount\')">',
                             '<span><-现金支付那部分金额</span>',
                             '</div>',
                         '</div>',
@@ -613,11 +613,14 @@ define(['app'], function(app)
                     el.find('.panel-vouchers ul').css('height', $(window).height() - 41);
 
                     var init = function() {
-                        scope.consumeamount = null;
+                        scope.group = {
+                            consumeamount: 0,
+                            usevoucheramount: 0,
+                            pointamount: 0,
+                            balanceamount: 0,
+                            pointgetamount: 0
+                        }
                         scope.usevoucher = [];
-                        scope.usevoucheramount = null;
-                        scope.pointamount = null;
-                        scope.balanceamount = null;
                     };
                     init();
 
@@ -631,78 +634,74 @@ define(['app'], function(app)
                                 }
                             }
 
-                            scope.usevoucheramount = sum;
+                            scope.group.usevoucheramount = sum;
 
-                            if(sum >= scope.consumeamount) {
+                            if(sum >= scope.group.consumeamount) {
                                 $('.panel-vouchers').addClass('full');
                             }
-
-                            scope.$apply();
                         }
                     });
 
                     //价格变动时的一些联动
-                    scope.$watch('consumeamount', function(n, o, s) {
+                    scope.calculate = function(name) {
+
                         if(scope.user) {
                             scope.usevoucher = [];
-                            scope.pointamount = 0;
-                            scope.balanceamount = 0;
-                            scope.pointgetamount = n;
-                        }
-                    });
-                    scope.$watch('usevoucheramount', function(n, o, s) {
-                        if(scope.user) {
-                            scope.pointamount = 0;
-                            scope.balanceamount = 0;
-                            var sum = scope.consumeamount - n;
-                            if(sum >= 0) {
-                                scope.pointgetamount = sum;
-                            }else {
-                                scope.pointgetamount = 0;
-                            }
-                        }
-                    });
-                    scope.$watch('pointamount', function(n, o, s) {
-                        if(scope.user) {
-                            scope.balanceamount = 0;
-                            var sum = scope.consumeamount - scope.usevoucheramount - n;
-                            if(sum >= 0) {
-                                scope.pointgetamount = sum;
-                            }else {
-                                scope.pointgetamount = 0;
-                                scope.pointamount = scope.consumeamount - scope.usevoucheramount;
+                            var ca, uva, pa, ba, pga;
+
+                            switch (name) {
+                                case 'consumeamount' : {
+                                    pa = ba = uva = 0;
+                                    ca = scope.group['consumeamount'];
+                                    pga = scope.group['consumeamount'];
+                                }break;
+
+                                case 'usevoucheramount' : {
+                                    pa = ba = 0;
+                                    uva = scope.group['usevoucheramount'];
+                                    ca = scope.group['consumeamount'];
+                                    pga = ca - uva;
+                                    if(!pga) pga = 0;
+                                }break;
+
+                                case 'pointamount' : {
+                                    ba = 0;
+                                    pa = scope.group['pointamount'];
+                                    uva = scope.group['usevoucheramount'];
+                                    ca = scope.group['consumeamount'];
+                                    if(pa > ca - uva) {
+                                        pa = ca - uva;
+                                    }
+                                    if(pa > parseFloat(scope.user.pointaccount) * parseFloat(scope.user.pointasmoneyrate)) {
+                                        pa = parseFloat(scope.user.pointaccount) * parseFloat(scope.user.pointasmoneyrate);
+                                    }
+                                    pga = ca - uva - pa;
+                                    if(!pga) pga = 0;
+                                }break;
+
+                                case 'balanceamount' : {
+                                    ba = scope.group['balanceamount'];
+                                    pa = scope.group['pointamount'];
+                                    uva = scope.group['usevoucheramount'];
+                                    ca = scope.group['consumeamount'];
+                                    if(ba > ca - uva - pa) {
+                                        ba = ca - uva - pa;
+                                    }
+                                    if(ba > scope.user.cashaccount) {
+                                        ba = parseFloat(scope.user.cashaccount);
+                                    }
+                                    pga = ca - uva - pa - ba;
+                                    if(!pga) pga = 0;
+                                }break;
+
                             }
 
-                            if(scope.pointamount > scope.user.pointaccount * scope.user.pointasmoneyrate) {
-                                scope.pointamount = scope.user.pointaccount * scope.user.pointasmoneyrate;
-                            }
+                            scope.group.pointamount = pa;
+                            scope.group.usevourcheramount = uva;
+                            scope.group.balanceamount = ba;
+                            scope.group.pointgetamount = pga;
                         }
-                    });
-                    scope.$watch('balanceamount', function(n, o, s) {
-                        if(scope.user) {
-                            var sum = scope.consumeamount - scope.usevoucheramount - scope.pointamount - n;
-                            if(sum >= 0) {
-                                scope.pointgetamount = sum;
-                            }else {
-                                scope.pointgetamount = 0;
-                                scope.balanceamount = scope.consumeamount - scope.usevoucheramount - scope.pointamount;
-                            }
-
-                            if(scope.balanceamount > scope.user.cashaccount) {
-                                scope.balanceamount = scope.user.cashaccount;
-                            }
-                        }
-                    });
-                    scope.$watch('pointgetamount', function(n, o, s) {
-                        if(scope.user) {
-                            var sum = scope.consumeamount - scope.usevoucheramount - scope.pointamount -scope.balanceamount - n;
-                            if(sum >= 0) {
-                                scope.pointgetamount = sum;
-                            }else {
-                                scope.pointgetamount = 0;
-                            }
-                        }
-                    });
+                    }
 
                     //点击储值套餐标签时
                     el.on('click', '.panel-vouchers li', function() {
@@ -717,23 +716,23 @@ define(['app'], function(app)
                         $('.panel-vouchers').find('.active').each(function() {
                             scope.usevoucher.push(scope.vouchers[$(this).index()]);
                         });
-
-                        scope.$apply();
                     });
 
                     //点击提交按钮时
                     el.on('click', '.btn-submit-consume', function() {
                         if(!$(this).hasClass('disable')) {
                             scope.CCS.deductMoney({
-                                cardKey: scope.user.cardnumber || scope.user.phone,
-                                consumeptionAmount: scope.pointgetamount,
-                                consumeptionPointAmount: scope.pointgetamount,
+                                cardKey: scope.user.cardkey,
+                                consumptionAmount: scope.pointgetamount,
+                                consumptionPointAmount: scope.pointgetamount,
                                 deductGiftAmount: scope.usevoucheramount,
                                 deductMoneyAmount: scope.balanceamount,
                                 deductPointAmount: scope.pointamount,
                                 discountAmount: 0,
                                 posOrderNo: scope.ordernumber,
-                                remark: scope.remark
+                                remark: scope.remark,
+                                EGiftItemIDList: '',
+                                exchangeItemIDList: ''
                             }).success(function(data) {
                                 if(data.code == '000') {
                                     scope.AA.add('success', '消费成功！');
@@ -877,17 +876,26 @@ define(['app'], function(app)
                             var self = $(this);
 
                             if(!self.hasClass('btn-disable')) {
-                                self.html('60秒后重新发送').addClass('btn-disable');
+                                scope.CCS.sendCode({
+                                    customerMobile: scope.sendcodephone,
+                                    SMSVerCode: createCode()
+                                }).success(function(data) {
+                                    if(data.code == '000') {
+                                        self.html('60秒后重新发送').addClass('btn-disable');
 
-                                ti = setInterval(function() {
-                                    if(time > 0) {
-                                        time --;
-                                        self.html(time + '秒后重新发送')
+                                        ti = setInterval(function() {
+                                            if(time > 0) {
+                                                time --;
+                                                self.html(time + '秒后重新发送')
+                                            }else{
+                                                clearInterval(ti);
+                                                self.html('获取验证码').removeClass('btn-disable');
+                                            }
+                                        }, 1000);
                                     }else{
-                                        clearInterval(ti);
-                                        self.html('获取验证码').removeClass('btn-disable');
+                                        scope.AA.add('danger', data.msg);
                                     }
-                                }, 1000);
+                                });
                             }
                         }
                     });
@@ -904,11 +912,23 @@ define(['app'], function(app)
                         }
                     };
 
+                    var createCode = function() {
+                        var str = '123456789';
+
+                        var code = '';
+
+                        for(var i = 0; i < 5; i ++) {
+                            code += str.charAt(Math.floor(Math.random() * 6));
+                        }
+
+                        return code;
+                    };
+
                     //点击提交按钮时
                     el.on('click', '.btn-submit-handle', function() {
                         if(!$(this).hasClass('disable')) {
                             scope.CCS.cardOption({
-                                cardKey: scope.user.cardnumber || scope.user.phone,
+                                cardID: scope.user.cardkey,
                                 optionType: scope.handletype[scope.handler],
                                 remark: scope.remark,
                                 newCardNoOrMobile: getval(scope.handler),

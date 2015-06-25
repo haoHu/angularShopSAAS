@@ -94,6 +94,8 @@ define(['IX'], function () {
         ,["reportTotal", "/crm/report/total.ajax", "", "POST"]
         //会员消费汇总
         ,["reportDetail", "/crm/report/detail.ajax", "", "POST"]
+        //发送验证码短信
+        ,["sendCode", "/crm/mobile/code.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;
