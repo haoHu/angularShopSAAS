@@ -78,7 +78,21 @@
 			// .order-footer {bottom : 2px;}
 		}
 		.section-diandan {
-			.order-plain {width : 50%;}
+			.order-plain {
+				.order-box {padding-bottom : 5rem;}
+				width : 50%;
+				.order-list {
+					overflow: auto; padding-bottom : 0; height : initial;
+				}
+				.order-list .table-responsive {
+				}
+				.table td, .table th {
+					min-width:8rem; font-size: 1rem;
+				}
+				.order-footer {
+					height : 5rem;
+				}
+			}
 			.detail-plain {
 				position : absolute; right : 0; top : 0; bottom : 0; left : 50%;
 				.order-detail, .paylst-plain {

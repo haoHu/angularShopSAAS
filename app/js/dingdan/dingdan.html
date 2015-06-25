@@ -109,28 +109,98 @@
 							<header class="order-header" >
 								<orderheader fmels="orderHeader" channels="OrderChannels" class="clearfix " ></orderheader>
 							</header>
-							<!-- 订单条目头 -->
+							<!-- 订单条目头 
 							<div class="row grid-header">
 								<span class="col-xs-1 grid-cell txt"></span>
 								<span class="col-xs-4 grid-cell txt">品名</span>
 								<span class="col-xs-2 grid-cell num">数量</span>
 								<span class="col-xs-2 grid-cell unit">规格</span>
 								<span class="col-xs-3 grid-cell price">小计</span>
-							</div>
+							</div>-->
 							<!-- <div>{{curOrderItems.length}}</div> -->
 							<div class="order-list">
-								<orderlist type="multiple"></orderlist>
+								<!--<orderlist type="multiple"></orderlist>-->
+								<div class="table-responsive">
+									<table class="table table-bordered table-condensed ">
+										<thead>
+											<tr>
+												<th>分类名称</th>
+												<th>收入科目</th>
+												<th>是否套餐</th>
+												<th>是否套餐明细</th>
+												<th>菜品Key</th>
+												<th>菜品名称</th>
+												<th>点菜数量</th>
+												<th>退菜数量</th>
+												<th>赠菜数量</th>
+												<th>退菜原因</th>
+												<th>退菜操作员</th>
+												<th>退菜时间</th>
+												<th>赠菜原因</th>
+												<th>赠菜操作员</th>
+												<th>赠菜时间</th>
+												<th>是否临时菜</th>
+												<th>菜品规格</th>
+												<th>是否参与打折</th>
+												<th>成交价格</th>
+												<th>实收价格</th>
+												<th>点菜要求</th>
+												<th>改价原因</th>
+												<th>改价操作员</th>
+												<th>改价时间</th>
+												<th>点菜人员</th>
+												<th>制作状态</th>
+												<th>上菜时间</th>
+												<th>记录创建时间</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="el in curOrderItems">
+												<td class="txt">{{el.foodCategoryName}}</td>
+												<td class="txt">{{el.foodSubjectName}}</td>
+												<td class="txt">{{el.isSetFood == 1 && el.isSFDetail == 1 ? '是' : '否'}}</td>
+												<td class="txt">{{el.isSFDetail == 1 ? '是' : '否'}}</td>
+												<td class="txt">{{el.foodKey}}</td>
+												<td class="txt">{{el.foodName}}</td>
+												<td class="num">{{el.foodNumber}}</td>
+												<td class="num">{{el.foodCancelNumber}}</td>
+												<td class="num">{{el.foodSendNumber}}</td>
+												<td class="txt">{{el.cancelReason}}</td>
+												<td class="txt">{{el.cancelBy}}</td>
+												<td class="date">{{el.cancelTime | formatDateTimeStr}}</td>
+												<td class="txt">{{el.sendReason}}</td>
+												<td class="txt">{{el.sendBy}}</td>
+												<td class="date">{{el.sendTime}}</td>
+												<td class="txt">{{el.isTempFood == 1 ? '是' : '否'}}</td>
+												<td class="txt">{{el.unit}}</td>
+												<td class="txt">{{el.isDiscount == 1 ? '是' : '否'}}</td>
+												<td class="num">{{el.foodPayPrice | mycurrency:'￥'}}</td>
+												<td class="num">{{el.foodPayPriceReal | mycurrency:'￥'}}</td>
+												<td class="txt">{{el.foodRemark}}</td>
+												<td class="txt">{{el.modifyReason}}</td>
+												<td class="txt">{{el.modifyBy}}</td>
+												<td class="date">{{el.modifyTime}}</td>
+												<td class="txt">{{el.orderBy}}</td>
+												<td class="txt">{{el.makeStatus == 0 ? '等叫' : (el.makeStatus == 1 ? '即起' : (el.makeStatus == 2 ? '加急' : '已上菜'))}}</td>
+												<td class="date">{{el.makedTime | formatDateTimeStr}}</td>
+												<td class="date">{{el.createTime | formatDateTimeStr}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
 							</div>
 							
 							
 						</div>
 						
 						<footer class="order-footer">
-							<!-- 订单操作按钮组 -->
+							<!-- 订单操作按钮组
 							<div class="btn-grp btn-group-justified " order-pager="{{curOrderItems.length}}">
 								<div class="btn-group" role="group"><button class="btn btn-default btn-block btn-prev" type="button" pager-act="prev">上页</button></div>
 								<div class="btn-group" role="group"><button class="btn btn-default btn-block btn-next" type="button" pager-act="next">下页</button></div>
 							</div>
+							 -->
 							<!-- 订单单注 -->
 							<div class="order-remark clearfix">
 								<div class="col-xs-7">

@@ -26,6 +26,16 @@ body {
 .panel .panel-footer {
   padding: 0;
 }
+.table td.txt,
+.table th.txt,
+.table td.date,
+.table th.date {
+  text-align: left;
+}
+.table td.num,
+.table th.num {
+  text-align: right;
+}
 #site_wrapper {
   position: relative;
   display: block;
@@ -1150,6 +1160,22 @@ body {
 }
 .orderdetail-modal .modal-dialog .section-diandan .order-plain {
   width: 50%;
+}
+.orderdetail-modal .modal-dialog .section-diandan .order-plain .order-box {
+  padding-bottom: 5rem;
+}
+.orderdetail-modal .modal-dialog .section-diandan .order-plain .order-list {
+  overflow: auto;
+  padding-bottom: 0;
+  height: initial;
+}
+.orderdetail-modal .modal-dialog .section-diandan .order-plain .table td,
+.orderdetail-modal .modal-dialog .section-diandan .order-plain .table th {
+  min-width: 8rem;
+  font-size: 1rem;
+}
+.orderdetail-modal .modal-dialog .section-diandan .order-plain .order-footer {
+  height: 5rem;
 }
 .orderdetail-modal .modal-dialog .section-diandan .detail-plain {
   position: absolute;
