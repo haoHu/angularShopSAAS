@@ -49,6 +49,22 @@ body {
   left: 0;
   width: 6rem;
   border-right: 1px solid #e6e6e6;
+  background-color: #f1f1f1;
+}
+#site_header .nav-pills li > a {
+  text-align: center;
+  color: #6e6e6e;
+}
+#site_header .nav-pills .glyphicon {
+  display: block;
+  font-size: 3rem;
+  margin-bottom: .5rem;
+}
+#site_header .nav-pills > li.active > a,
+#site_header .nav-pills > li.active > a:hover,
+#site_header .nav-pills > li.active > a:focus {
+  color: #ff6600;
+  background-color: transparent;
 }
 #site_body {
   height: 100%;

@@ -49,8 +49,21 @@ body {
 }
 #site_header {
 	position : absolute; top : 0; bottom : 0; left : 0;
-	width : @siteHeaderW; border-right : 1px solid @xBaseBorderColor;
+	width : @siteHeaderW; border-right : 1px solid @xBaseBorderColor; 
+	background-color: @xPageHeaderBG;
 	// outline : 1px solid #111;
+	.nav-pills {
+		li > a {text-align: center; color : @xSiteNavColor;}
+		.glyphicon {
+			display: block; font-size: 3rem; margin-bottom: .5rem;
+		}
+		> li.active > a,
+		> li.active > a:hover,
+		> li.active > a:focus {
+			color : @xSiteNavActiveColor;
+			background-color: transparent;
+		}
+	}
 }
 #site_body {
 	height : 100%; margin-left : @siteHeaderW; position: relative;
