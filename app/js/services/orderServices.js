@@ -1277,10 +1277,12 @@ define(['app', 'uuid'], function (app, uuid) {
 			var initOrderPaySettings = function () {
 				// 获得订单支付科目计算必须的相关全局参数
 				// self.isVipPrice;self.discountRate;self.discountRange;self.moneyWipeZeroType,self.foodAmount
+				var shopInfo = storage.get("SHOPINFO"),
+					_moneyWipeZeroType = _.result(shopInfo, 'moneyWipeZeroType', 0);
 				_.each(OrderPaySettingKeys, function (k) {
 					self[k] = _.result(self._OrderData, k);
 					if (k == 'moneyWipeZeroType') {
-						self[k] = _.isEmpty(self._OrderData[k]) ? 0 : _.result(self._OrderData, k, 0);
+						self[k] = _.isEmpty(self._OrderData[k]) ? _moneyWipeZeroType : _.result(self._OrderData, k, 0);
 					}
 					// for test set moneyWipeZeroType = 4
 					// if (k == 'moneyWipeZeroType') {
@@ -1298,16 +1300,17 @@ define(['app', 'uuid'], function (app, uuid) {
 				self.updateFoodAmount();
 				// 计算并更新账单赠送菜品金额合计
 				self.updatePaySubjectItem("sendFoodPromotionPay");
-				if (_.isEmpty(_.result(self._OrderData, 'payLst'))) return;
-				
-				// 计算并更新会员价优惠金额合计
-				self.updatePaySubjectItem("vipPricePromotionPay");
-				// 计算并更新账单折扣合计
-				self.updatePaySubjectItem("discountPay", {
-					isVipPrice : self.isVipPrice,
-					discountRate : self.discountRate,
-					discountRange : self.discountRange
-				});
+				// if (_.isEmpty(_.result(self._OrderData, 'payLst'))) return;
+				if (!_.isEmpty(_.result(self._OrderData, 'payLst'))) {
+					// 计算并更新会员价优惠金额合计
+					self.updatePaySubjectItem("vipPricePromotionPay");
+					// 计算并更新账单折扣合计
+					self.updatePaySubjectItem("discountPay", {
+						isVipPrice : self.isVipPrice,
+						discountRate : self.discountRate,
+						discountRange : self.discountRange
+					});
+				}
 				// 计算并更新账单元整
 				self.updatePaySubjectItem("wipeZeroPay");
 			};
