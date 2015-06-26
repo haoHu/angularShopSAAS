@@ -1,0 +1,21 @@
+.btngrp-box(@boxWidth : 100%, @boxHeight : 100%, @btnCols : 3, @btnRows : 2) {
+	@btnWidth : percentage(1 / @btnCols);
+	@btnHeight : percentage(1 / @btnRows);
+	position : relative; width : @boxWidth; height : @boxHeight;
+	background-color : @xLightBtnBG; overflow: hidden;
+	> .btn-group {
+		height : 100%; width : 100%; margin : 0; padding : 0;
+		.btn-radio, .btn-checkbox {
+			display: block; width : @btnWidth; height : @btnHeight; margin : 0; padding : 5px; border-radius: 0;
+			background-color : @xLightBtnBG; border : 1px solid @xBaseBorderColor; white-space: normal; overflow: hidden;
+			p {margin : 0 0 5px;}
+		}
+		.btn-radio.active, .btn-checkbox.active {
+			background-color : @xDarkBtnBG;
+		}
+	}
+	.btn-pager {
+		position : absolute; bottom : 0; right : 0; z-index: 10;
+		width : @btnWidth; height: @btnHeight; background-color : @xLightBtnBG; border-radius: 0;
+	}
+}

@@ -510,10 +510,10 @@ body {
   background-color: #f96;
 }
 .btngrp-box {
-  width: 100%;
-  height: 9rem;
   position: relative;
-  background: #e6f2fd;
+  width: 100%;
+  height: 14rem;
+  background-color: #e6f2fd;
   overflow: hidden;
 }
 .btngrp-box > .btn-group {
@@ -524,15 +524,16 @@ body {
 }
 .btngrp-box > .btn-group .btn-radio,
 .btngrp-box > .btn-group .btn-checkbox {
+  display: block;
   width: 33.33333333%;
   height: 50%;
   margin: 0;
-  bottom: 0;
+  padding: 5px;
   border-radius: 0;
-  display: block;
   background-color: #e6f2fd;
   border: 1px solid #e6e6e6;
   white-space: normal;
+  overflow: hidden;
 }
 .btngrp-box > .btn-group .btn-radio p,
 .btngrp-box > .btn-group .btn-checkbox p {
@@ -549,6 +550,50 @@ body {
   z-index: 10;
   width: 33.33333333%;
   height: 50%;
+  background-color: #e6f2fd;
+  border-radius: 0;
+}
+.btngrp-box.discount-grp {
+  position: relative;
+  width: 100%;
+  height: 42rem;
+  background-color: #e6f2fd;
+  overflow: hidden;
+}
+.btngrp-box.discount-grp > .btn-group {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.btngrp-box.discount-grp > .btn-group .btn-radio,
+.btngrp-box.discount-grp > .btn-group .btn-checkbox {
+  display: block;
+  width: 33.33333333%;
+  height: 16.66666667%;
+  margin: 0;
+  padding: 5px;
+  border-radius: 0;
+  background-color: #e6f2fd;
+  border: 1px solid #e6e6e6;
+  white-space: normal;
+  overflow: hidden;
+}
+.btngrp-box.discount-grp > .btn-group .btn-radio p,
+.btngrp-box.discount-grp > .btn-group .btn-checkbox p {
+  margin: 0 0 5px;
+}
+.btngrp-box.discount-grp > .btn-group .btn-radio.active,
+.btngrp-box.discount-grp > .btn-group .btn-checkbox.active {
+  background-color: #99ccff;
+}
+.btngrp-box.discount-grp .btn-pager {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  width: 33.33333333%;
+  height: 16.66666667%;
   background-color: #e6f2fd;
   border-radius: 0;
 }

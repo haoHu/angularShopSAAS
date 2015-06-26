@@ -280,29 +280,12 @@
 }
 
 .btngrp-box {
-	@btnCols : 3; 
-	@btnRows : 2;
-	@btnWidth : percentage(1 / @btnCols);
-	@btnHeight : percentage(1 / @btnRows);
-	width : 100%; height : 9rem; position: relative;
-	background : @xLightBtnBG; overflow: hidden;
-	> .btn-group {
-		height : 100%; width : 100%; margin : 0; padding : 0;
-		.btn-radio, .btn-checkbox {
-			width : @btnWidth; height: @btnHeight; margin : 0; bottom : 0; border-radius: 0;
-			display: block; background-color: @xLightBtnBG; 
-			border : 1px solid @xBaseBorderColor; white-space : normal;
-			p {margin : 0 0 5px;}
-		}
-		.btn-radio.active, .btn-checkbox.active {
-			background-color: @xDarkBtnBG;
-		}
-	}
-	.btn-pager {
-		position : absolute; bottom : 0; right : 0; z-index: 10;
-		width : @btnWidth; height : @btnHeight; background-color: @xLightBtnBG;
-		border-radius: 0;
-	}
+	.btngrp-box(100%, 14rem, 3, 2);
+}
+
+// 折扣选项组
+.btngrp-box.discount-grp {
+	.btngrp-box(100%, 42rem, 3, 6);
 }
 
 // 纵向多选按钮组
