@@ -1296,9 +1296,10 @@ define(['app', 'uuid'], function (app, uuid) {
 				self.calcOrderItemsSubTotal();
 				// 计算并更新订单菜品金额合计
 				self.updateFoodAmount();
-				if (_.isEmpty(_.result(self._OrderData, 'payLst'))) return;
 				// 计算并更新账单赠送菜品金额合计
 				self.updatePaySubjectItem("sendFoodPromotionPay");
+				if (_.isEmpty(_.result(self._OrderData, 'payLst'))) return;
+				
 				// 计算并更新会员价优惠金额合计
 				self.updatePaySubjectItem("vipPricePromotionPay");
 				// 计算并更新账单折扣合计
