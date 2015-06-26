@@ -370,7 +370,7 @@
 				<div class="col-xs-6" ng-repeat="el in curSetFoodLst">
 					<div class="" >
 						<h4>{{el.foodCategoryName}}({{el.items.length}}选<span class="text-danger">{{el.chooseCount}}</span>)</h4>
-						<div class="btngrp-box " pager-list="loop" pager-data="{{el.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-2x3" pager-list="loop" pager-data="{{el.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<checkboxgroup group-opts="el.items" checkbox-name="cate_{{$index}}" cur-val="el.selectedFoods" class="btn-group" role="group" data-toggle="buttons" on-change="onSetFoodChange(val, checkboxName)" ></checkboxgroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
