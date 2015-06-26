@@ -403,7 +403,10 @@
 						<div id="food_list" class="opt-box">
 							<div class="cate-items">
 								<div class="cate-item" ng-repeat="el in curSetFoodLst">
-									<h5>{{el.foodCategoryName}}({{el.items.length}}选<span class="text-danger">{{el.chooseCount}}</span>)</h5>
+									<h5>
+										{{el.foodCategoryName}}({{el.items.length}}选<span class="text-danger">{{el.chooseCount}}</span>)
+										<small class="text-danger" ng-if="el.canSwitch == 0">固定搭配,不可选择</small>
+									</h5>
 									<ul class="row list-unstyled btn-list">
 										<!--<li class="col-xs-3 btn btn-default btn-cell" ng-class="{active : curFoodBtnID == food._id}" ng-click="captureCurFoodItem(el.foodCategoryName, food.unitKey, $index)" ng-repeat="food in getChosenFoods(el.foodCategoryName)" id="{{food._id}}">
 											<div ng-bind-html="parseSnippet(food.label)"></div>
@@ -439,7 +442,7 @@
 					<section class="opt-body">
 						<div class="opt-box">
 							<ul class="row list-unstyled btn-list" ng-if="curMenuType == 'food'">
-								<li class="col-xs-6 btn btn-default btn-cell" ng-repeat="food in getFoodOpts(curFoodCategory)" ng-click="replaceFoodItem(food.unitKey)">
+								<li class="col-xs-6 btn btn-default btn-cell" ng-repeat="food in getFoodOpts(curFoodCategory)" ng-click="replaceFoodItem(food.unitKey)" ng-disabled="food.canSwitch == 0">
 									<div ng-bind-html="parseSnippet(food.label)"></div>
 								</li>
 							</ul>

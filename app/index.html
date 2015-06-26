@@ -30,7 +30,13 @@
 							<li ng-class="{active: curNav=='/snack'}" ng-if="ShopOperationMode == '1'">
 								<a href="#/snack">点单</a>
 							</li> -->
-							<li ng-class="{active: curNav == (ShopOperationMode == '0' ? '/dinner/table' : '/snack')}">
+							<!-- <li ng-class="{active: curNav == (ShopOperationMode == '0' ? '/dinner/table' : '/snack')}">
+								<a href="{{ShopOperationMode == '0' ? '#/dinner/table' : '#/snack'}}">
+									<span class="glyphicon glyphicon-edit"></span>
+									<span>点单</span>
+								</a>
+							</li> -->
+							<li ng-class="{active: curNav.indexOf(ShopOperationMode == '0' ? '/dinner' : '/snack') >= 0}">
 								<a href="{{ShopOperationMode == '0' ? '#/dinner/table' : '#/snack'}}">
 									<span class="glyphicon glyphicon-edit"></span>
 									<span>点单</span>

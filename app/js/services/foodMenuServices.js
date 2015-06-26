@@ -375,7 +375,8 @@ define(['app'], function (app) {
 			// 格式化套餐搭配数据结构
 			var mapSetFoodCateItems = function (cate) {
 				var items = _.result(cate, 'items'),
-					selectedFoods = [];
+					selectedFoods = [],
+					canSwitch = _.result(cate, 'canSwitch', 0);
 				items = _.map(items, function (food) {
 					var foodName =  _.result(food, 'foodName', ''),
 						unit = _.result(food, 'unit', ''),
@@ -393,11 +394,13 @@ define(['app'], function (app) {
 						foodName : foodName,
 						addPrice : addPrice,
 						label : txt,
-						value : unitKey
+						value : unitKey,
+						canSwitch : canSwitch
 					});
 					return _.extend(food, {
 						label :  txt,
-						value : unitKey
+						value : unitKey,
+						canSwitch : canSwitch
 					});
 				});
 				return _.extend(cate, {
