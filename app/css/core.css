@@ -509,21 +509,109 @@ body {
 .section-diandan .btns-plain .col-xs-2:first-of-type > .btn {
   background-color: #f96;
 }
-.btngrp-box {
+.btngrp-box.btngrp-3x3 {
+  position: relative;
+  width: 100%;
+  height: 21rem;
+  background-color: #e6f2fd;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-3x3 > .btn-group {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.btngrp-box.btngrp-3x3 > .btn-group .btn-radio,
+.btngrp-box.btngrp-3x3 > .btn-group .btn-checkbox {
+  display: block;
+  width: 33.33333333%;
+  height: 33.33333333%;
+  margin: 0;
+  padding: 5px;
+  border-radius: 0;
+  background-color: #e6f2fd;
+  border: 1px solid #e6e6e6;
+  white-space: normal;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-3x3 > .btn-group .btn-radio p,
+.btngrp-box.btngrp-3x3 > .btn-group .btn-checkbox p {
+  margin: 0 0 5px;
+}
+.btngrp-box.btngrp-3x3 > .btn-group .btn-radio.active,
+.btngrp-box.btngrp-3x3 > .btn-group .btn-checkbox.active {
+  background-color: #99ccff;
+}
+.btngrp-box.btngrp-3x3 .btn-pager {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  width: 33.33333333%;
+  height: 33.33333333%;
+  background-color: #e6f2fd;
+  border-radius: 0;
+}
+.btngrp-box.btngrp-5x5 {
+  position: relative;
+  width: 100%;
+  height: 35rem;
+  background-color: #e6f2fd;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-5x5 > .btn-group {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.btngrp-box.btngrp-5x5 > .btn-group .btn-radio,
+.btngrp-box.btngrp-5x5 > .btn-group .btn-checkbox {
+  display: block;
+  width: 20%;
+  height: 20%;
+  margin: 0;
+  padding: 5px;
+  border-radius: 0;
+  background-color: #e6f2fd;
+  border: 1px solid #e6e6e6;
+  white-space: normal;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-5x5 > .btn-group .btn-radio p,
+.btngrp-box.btngrp-5x5 > .btn-group .btn-checkbox p {
+  margin: 0 0 5px;
+}
+.btngrp-box.btngrp-5x5 > .btn-group .btn-radio.active,
+.btngrp-box.btngrp-5x5 > .btn-group .btn-checkbox.active {
+  background-color: #99ccff;
+}
+.btngrp-box.btngrp-5x5 .btn-pager {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  width: 20%;
+  height: 20%;
+  background-color: #e6f2fd;
+  border-radius: 0;
+}
+.btngrp-box.btngrp-2x3 {
   position: relative;
   width: 100%;
   height: 14rem;
   background-color: #e6f2fd;
   overflow: hidden;
 }
-.btngrp-box > .btn-group {
+.btngrp-box.btngrp-2x3 > .btn-group {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
 }
-.btngrp-box > .btn-group .btn-radio,
-.btngrp-box > .btn-group .btn-checkbox {
+.btngrp-box.btngrp-2x3 > .btn-group .btn-radio,
+.btngrp-box.btngrp-2x3 > .btn-group .btn-checkbox {
   display: block;
   width: 33.33333333%;
   height: 50%;
@@ -535,15 +623,15 @@ body {
   white-space: normal;
   overflow: hidden;
 }
-.btngrp-box > .btn-group .btn-radio p,
-.btngrp-box > .btn-group .btn-checkbox p {
+.btngrp-box.btngrp-2x3 > .btn-group .btn-radio p,
+.btngrp-box.btngrp-2x3 > .btn-group .btn-checkbox p {
   margin: 0 0 5px;
 }
-.btngrp-box > .btn-group .btn-radio.active,
-.btngrp-box > .btn-group .btn-checkbox.active {
+.btngrp-box.btngrp-2x3 > .btn-group .btn-radio.active,
+.btngrp-box.btngrp-2x3 > .btn-group .btn-checkbox.active {
   background-color: #99ccff;
 }
-.btngrp-box .btn-pager {
+.btngrp-box.btngrp-2x3 .btn-pager {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -598,8 +686,48 @@ body {
   border-radius: 0;
 }
 .btngrp-box.btngrp-vertical {
+  position: relative;
   width: 100%;
   height: 600px;
+  background-color: #e6f2fd;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-vertical > .btn-group {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.btngrp-box.btngrp-vertical > .btn-group .btn-radio,
+.btngrp-box.btngrp-vertical > .btn-group .btn-checkbox {
+  display: block;
+  width: 100%;
+  height: 16.66666667%;
+  margin: 0;
+  padding: 5px;
+  border-radius: 0;
+  background-color: #e6f2fd;
+  border: 1px solid #e6e6e6;
+  white-space: normal;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-vertical > .btn-group .btn-radio p,
+.btngrp-box.btngrp-vertical > .btn-group .btn-checkbox p {
+  margin: 0 0 5px;
+}
+.btngrp-box.btngrp-vertical > .btn-group .btn-radio.active,
+.btngrp-box.btngrp-vertical > .btn-group .btn-checkbox.active {
+  background-color: #99ccff;
+}
+.btngrp-box.btngrp-vertical .btn-pager {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  width: 100%;
+  height: 16.66666667%;
+  background-color: #e6f2fd;
+  border-radius: 0;
 }
 .btngrp-box.btngrp-vertical .btn-checkbox,
 .btngrp-box.btngrp-vertical .btn-radio,
@@ -703,7 +831,7 @@ body {
 .pay-modal .pay-ctrl .pay-schema > section .list-group-item {
   padding: 0;
   position: relative;
-  min-height: 3rem;
+  min-height: 3.5rem;
   cursor: pointer;
 }
 .pay-modal .pay-ctrl .pay-schema > section .list-group-item .btn-default {

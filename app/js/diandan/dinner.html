@@ -133,7 +133,7 @@
 				<div class="col-xs-6">
 					<div class="" >
 						<h4>赠菜原因</h4>
-						<div class="btngrp-box" pager-list="loop" pager-data="{{SendFoodReasons}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-3x3" pager-list="loop" pager-data="{{SendFoodReasons}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="SendFoodReasons" radio-name="sendReason" cur-val="{{sendReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onSendReasonChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
@@ -174,7 +174,7 @@
 				<div class="col-xs-6">
 					<div class="" >
 						<h4>退菜原因</h4>
-						<div class="btngrp-box" pager-list="loop" pager-data="{{CancelFoodReasons}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-3x3" pager-list="loop" pager-data="{{CancelFoodReasons}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="CancelFoodReasons" radio-name="cancelReason" cur-val="{{cancelReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onCancelReasonChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
@@ -246,7 +246,7 @@
 				<div class="col-xs-6">
 					<div class="" >
 						<h4>改价原因</h4>
-						<div class="btngrp-box" pager-list="loop" pager-data="{{ModifyPriceNotes}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-3x3" pager-list="loop" pager-data="{{ModifyPriceNotes}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="ModifyPriceNotes" radio-name="priceReason" cur-val="" class="btn-group" role="group" data-toggle="buttons" on-change="onFoodPriceNoteChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
@@ -277,7 +277,7 @@
 				<div class="col-xs-12">
 					<div class="" >
 						<h4>作法选择</h4>
-						<div class="btngrp-box" pager-list="loop" pager-data="{{FoodMethods}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-5x5" pager-list="loop" pager-data="{{FoodMethods}}" page-size="24" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="FoodMethods" radio-name="foodMethod" cur-val="{{foodMethod}}" class="btn-group" role="group" data-toggle="buttons" on-change="onFoodRemarkChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
@@ -308,7 +308,7 @@
 				<div class="col-xs-12">
 					<div class="" >
 						<h4>口味选择</h4>
-						<div class="btngrp-box" pager-list="loop" pager-data="{{FoodRemarks}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-5x5" pager-list="loop" pager-data="{{FoodRemarks}}" page-size="24" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="FoodRemarks" radio-name="foodRemark" cur-val="{{foodRemark}}" class="btn-group" role="group" data-toggle="buttons" on-change="onFoodRemarkChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
@@ -339,7 +339,7 @@
 				<div class="col-xs-12">
 					<div class="" >
 						<h4>单注选择</h4>
-						<div class="btngrp-box" pager-list="loop" pager-data="{{OrderRemarks}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-5x5" pager-list="loop" pager-data="{{OrderRemarks}}" page-size="24" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="OrderRemarks" radio-name="orderRemark" cur-val="{{orderRemark}}" class="btn-group" role="group" data-toggle="buttons" on-change="onOrderRemarkChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
@@ -515,15 +515,25 @@
 							<label class="col-xs-5 control-label">未付</label>
 							<p class="col-xs-7 sum">{{orderPayDetail.unPayAmount | mycurrency: "￥"}}</p>
 						</div>
-						<div class="row">
-							<div class="col-xs-6">
-								<button type="button" class="btn btn-default btn-block" ng-click="openCashBox()">开钱箱</button>
+						<div class="btn-group btn-group-justified" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default btn-block btn-lg" ng-click="openCashBox()">开钱箱</button>
 							</div>
-							<div class="col-xs-6">
-								<button type="button" class="btn btn-default btn-block" ng-click="printCheckoutPreBill()">打印预结账单</button>
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default btn-block btn-lg" ng-click="printCheckoutPreBill()">打印预结单</button>
 							</div>
 						</div>
-						<button type="button" class="btn btn-default btn-block" ng-class="{disabled : !isCanbeSubmit(orderPayDetail)}" ng-click="submitOrderPay()">完成结账</button>
+						<!--
+						<div class="row">
+							<div class="col-xs-6">
+								<button type="button" class="btn btn-default btn-block btn-lg" ng-click="openCashBox()">开钱箱</button>
+							</div>
+							<div class="col-xs-6">
+								<button type="button" class="btn btn-default btn-block btn-lg" ng-click="printCheckoutPreBill()">打印预结单</button>
+							</div>
+						</div>
+						-->
+						<button type="button" class="btn btn-default btn-block btn-lg" ng-class="{disabled : !isCanbeSubmit(orderPayDetail)}" ng-click="submitOrderPay()">完成结账</button>
 					</footer>
 				</section>
 				
@@ -537,10 +547,10 @@
 							<vippayform ng-if="getPayFormType(paySubjectGrp) == 'vip'" pay-subject-grp="paySubjectGrp"></vippayform>
 						</div>
 						<div class="panel-footer">
-							<button  class="btn btn-default btn-block" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)">
+							<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)">
 								确认收款
 							</button>
-							<button  class="btn btn-default btn-block" ng-if="getPayFormType(paySubjectGrp) == 'vip'" ng-click="submitPayForm(paySubjectGrp)">
+							<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'vip'" ng-click="submitPayForm(paySubjectGrp)">
 								会员消费确认
 							</button>
 						</div>
@@ -640,7 +650,7 @@
 					<label class="">用券:</label>
 					<span>{{curCashVoucherStr}}</span>
 				</div>
-				<div class="btngrp-box " pager-list="loop" pager-data="{{cashVoucherOpts}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+				<div class="btngrp-box btngrp-2x3" pager-list="loop" pager-data="{{cashVoucherOpts}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 					<checkboxgroup group-opts="cashVoucherOpts" checkbox-name="cash_voucher" cur-val="curCashVouchers" class="btn-group" role="group" data-toggle="buttons" on-change="onCashVoucherChange(val, checkboxName, tarScope, curVal)" ></checkboxgroup>
 					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 				</div>

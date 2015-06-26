@@ -279,7 +279,13 @@
 
 }
 
-.btngrp-box {
+.btngrp-box.btngrp-3x3 {
+	.btngrp-box(100%, 21rem, 3, 3);
+}
+.btngrp-box.btngrp-5x5 {
+	.btngrp-box(100%, 35rem, 5, 5);
+}
+.btngrp-box.btngrp-2x3 {
 	.btngrp-box(100%, 14rem, 3, 2);
 }
 
@@ -297,7 +303,7 @@
 	@btnRows : 6;
 	@btnWidth : percentage(1 / @btnCols);
 	@btnHeight : percentage(1 / @btnRows);
-	width: @boxWidth; height : @boxHeight;
+	.btngrp-box(@boxWidth, @boxHeight, @btnCols, @btnRows);
 
 	.btn-checkbox, .btn-radio, .btn-pager {
 		height : @btnHeight; width : @btnWidth;
@@ -357,7 +363,7 @@
 				-webkit-box-flex-group : 1;
 				// outline: #123;
 				.list-group-item {
-					padding : 0; position : relative; min-height: 3rem; cursor : pointer;
+					padding : 0; position : relative; min-height: 3.5rem; cursor : pointer;
 					.btn-default {position : absolute; right : 0; }
 				}
 				.list-group-item.active {
