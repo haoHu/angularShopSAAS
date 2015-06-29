@@ -10,6 +10,29 @@ define(['app'], function (app) {
 			$scope.appSoldOutSetting = function (e) {
 				$location.path('/more/soldout');
 			};
+			// 版本信息表
+			$scope.appVersionSetting = function (e) {
+				if ($scope.modalIsOpen()) return;
+				var modalSize = 'lg',
+					windowClass = 'server-modal',
+					backdrop = 'static',
+					controller = 'AppVersionInfoModalController',
+					templateUrl = 'js/profile/appversion.html',
+					resolve = {
+						_scope : function() {
+							return $scope;
+						}
+					};
+				$scope.modalIsOpen(true);
+				$modal.open({
+					size : modalSize,
+					windowClass : windowClass,
+					controller : controller,
+					templateUrl : templateUrl,
+					resolve : resolve,
+					backdrop : backdrop
+				});
+			};
 			// 设置/获取当前是否打开了详情模态窗口
 			$scope.modalIsOpen = function (b) {
 				if (_.isBoolean(b)) {
@@ -187,6 +210,46 @@ define(['app'], function (app) {
 					.error(function (data) {
 						AppAlert.add('danger', "修改密码服务失败");
 					});
+			};
+		}
+	]);
+
+	app.controller('AppVersionInfoModalController', [
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'AppBaseDataVersion', 'AppAlert',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, AppBaseDataVersion, AppAlert) {
+			var shopInfo = storage.get('SHOPINFO'),
+				groupID = _.result(shopInfo, 'groupID'),
+				shopID = _.result(shopInfo, 'shopID');
+			var loadBaseDataLst = function () {
+					var callServer = AppBaseDataVersion.initBaseDataVersionLst({
+						shopID : shopID,
+						groupID : groupID
+					});
+					callServer.success(function (data) {
+						var code = _.result(data, 'code');
+						if (code == '000') {
+							$scope.baseDataVersionLst = AppBaseDataVersion.getBaseDataVersionLst();
+						}
+					});
+				};
+			loadBaseDataLst();
+			// 关闭窗口
+			$scope.close = function () {
+				_scope.modalIsOpen(false);
+				$modalInstance.close();
+			};
+			// 更新信息 
+			$scope.update = function (param) {
+				var c = AppBaseDataVersion.updateBaseInfo(param);
+				c.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						AppAlert.add('success', '更新成功!');
+						loadBaseDataLst();
+					} else {
+						AppAlert.add('danger', _.reuslt(data, 'msg', ''));
+					}
+				});
 			};
 		}
 	]);

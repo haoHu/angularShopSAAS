@@ -1,4 +1,194 @@
 <section class="section" ng-controller="BaoBiaoViewController">
-    <p app-color="blue">{{page.heading}}</p>
-    <p>This is the '报表' page</p>
+	<ul class="nav  nav-tabs nav-justified">
+		<li class="tab-page" ng-class="{active: curPageType == 'biz'}"><a href="#/baobiao?tab=biz">当前营业数据</a></li>
+		<li class="tab-page" ng-class="{active: curPageType == 'log'}"><a href="#/baobiao?tab=log">操作日志</a></li>
+		<li class="tab-page" ng-class="{active: curPageType == 'comp'}"><a href="#/baobiao?tab=comp">综合营业数据</a></li>
+	</ul>
+	<section class="tab-cnt" ng-if="curPageType == 'biz'">
+		<div class="cnt-body table-responsive">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>类型</th>
+						<th>单数</th>
+						<th>人数</th>
+						<th>流水</th>
+						<th>待结单数</th>
+						<th>待结金额</th>
+						<th>优惠金额</th>
+						<th>实收金额</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="info" ng-class="{success: $last}" ng-repeat="row in curBizData">
+						<td>{{row.typeName}}</td>
+						<td>{{row.orderCount}}</td>
+						<td>{{row.person}}</td>
+						<td>{{row.foodAmount | mycurrency:"￥"}}</td>
+						<td>{{row.waitCheckoutOrderCount}}</td>
+						<td>{{row.waitCheckoutOrderAmount | mycurrency:"￥"}}</td>
+						<td>{{row.promotionAmount | mycurrency:"￥"}}</td>
+						<td>{{row.paidAmountTotal | mycurrency:"￥"}}</td>
+					</tr>
+					<tr ng-if="curBizData.length == 0">
+						<td colspan="8">无数据</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>类型</th>
+						<th>单数</th>
+						<th>实收金额</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="info" ng-repeat="row in curBizPay">
+						<td>{{row.typeName}}</td>
+						<td>{{row.orderCount}}</td>
+						<td>{{row.paidAmount | mycurrency:"￥"}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	<section class="tab-cnt" ng-if="curPageType=='log'">
+		<header class="cnt-header">
+			<div class="filter-bar row">
+				<div class="col-xs-3 clearfix">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3 clearfix">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-6 clearfix">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" placeholder="日志名、内容、设备名、操作员" ng-model="qKeyword" ng-keyup="queryByKeyword($event)" />
+						<span class="input-group-btn" ng-click="queryByKeyword($event)"><button class="btn btn-default btn-lg" type="button">搜索</button></span>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class="cnt-body table-responsive">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>创建时间</th>
+						<th>操作人员</th>
+						<th>日志类型</th>
+						<th>日志描述</th>
+						<th>设备名称</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="row in curLogLst">
+						<td>{{row.createTime}}</td>
+						<td>{{row.createBy}}</td>
+						<td>{{row.logSubject}}</td>
+						<td>{{row.logRemark}}</td>
+						<td>{{row.deviceName}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<footer class="cnt-footer">
+			<p class="pager-info pull-left">页码:{{curPageNo}} / {{numPages}}</p>
+			<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
+		</footer>
+	</section>
+	<section class="tab-cnt" ng-if="curPageType=='comp'">
+		<header class="cnt-header">
+			<div class="filter-bar row">
+				<div class="col-xs-3 clearfix">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" readonly="" placeholder="开始时间">
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button">
+								<span class="glyphicon glyphicon-time"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3 clearfix">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" readonly="" placeholder="截止时间">
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button">
+								<span class="glyphicon glyphicon-time"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" placeholder="收银人员">
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button">
+								<span class="caret"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" placeholder="营业时段">
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button">
+								<span class="caret"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<div class="input-group">
+						<input type="text" class="form-control input-lg" placeholder="桌台区域">
+						<span class="input-group-btn">
+							<button class="btn btn-default btn-lg" type="button">
+								<span class="caret"></span>
+							</button>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-3">
+					<button class="btn btn-default btn-lg btn-block" type="button">查询</button>
+				</div>
+				
+			</div>
+		</header>
+	</section>
 </section>

@@ -78,7 +78,17 @@ define(['IX'], function () {
 		// 账单审核
 		["orderAudit", "/saas/order/review.ajax", "", "POST"],
 		// 更改已结账单发票信息
-		["updateOrderInvoice", "/saas/order/updateOrderInvoice.ajax", "", "POST"]
+		["updateOrderInvoice", "/saas/order/updateOrderInvoice.ajax", "", "POST"],
+		// 查询当前营业数据
+		["queryCurBizData", "/saas/order/queryCurrBizData.ajax", "", "POST"],
+		// 查询操作日志
+		["queryLog", "/saas/order/queryLog.ajax", "", "POST"],
+		// 查询综合营业数据
+		["queryCompositeBizData", "/saas/order/queryCompositeBizData.ajax", "", "POST"],
+		// 获取基本信息版本表
+		["getBaseDataVersionLst", "/saas/base/getBaseDataVersionLst.ajax", "", "POST"],
+		// 更新基本信息
+		["updateBaseInfo", "/saas/base/downloadBaseInfo.ajax", "", "POST"]
 
         // 会员入会办卡
         ,["createVIPCard", "/crm/card/create.ajax", "", "POST"]

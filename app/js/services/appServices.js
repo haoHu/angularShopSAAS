@@ -384,4 +384,61 @@ define(['app'], function (app) {
 			};
 		}
 	]);
+
+	// 基本信息版本服务
+	app.service('AppBaseDataVersion', [
+		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer',
+		function ($rootScope, $location, $filter, storage, CommonCallServer) {
+			var self = this,
+				_BaseDataLst = [],
+				_BaseDataHT = new IX.IListManager();
+			/**
+			 * 加载基本信息版本表
+			 * @return {[type]} [description]
+			 */
+			this.loadBaseDataVersionLst = function (param) {
+				var c = CommonCallServer.getBaseDataVersionLst(param);
+				c.success(function (data) {
+					var ret = $XP(data, 'data.records', []);
+					_BaseDataLst = ret;
+				});
+				return c;
+			};
+			/**
+			 * 构建基本信息版本表
+			 * @return {[type]} [description]
+			 */
+			this.initBaseDataVersionLst = function (param) {
+				var c = self.loadBaseDataVersionLst(param);
+				_BaseDataHT.clear();
+				c.success(function (data) {
+					_.each(_BaseDataLst, function (el) {
+						var msgType = _.result(el, 'msgType');
+						_BaseDataHT.register(msgType, el);
+					});
+				});
+				return c;
+			};
+			/**
+			 * 获取全部数据
+			 * @return {[type]} [description]
+			 */
+			this.getBaseDataVersionLst = function () {
+				return _BaseDataHT.getAll();
+			};
+			/**
+			 * 更新基本信息
+			 * @param  {[type]} param [description]
+			 * @return {[type]}       [description]
+			 */
+			this.updateBaseInfo = function (param) {
+				var action = _.result(param, 'msgType');
+				var c = CommonCallServer.updateBaseInfo({
+					action : action
+				});
+				return c;
+			};
+
+		}
+	]);
 });

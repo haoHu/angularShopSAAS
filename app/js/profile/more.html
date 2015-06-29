@@ -1,6 +1,7 @@
 <section class="section section-profile" ng-controller="MoreViewController">
 	<div class="row site-btngrp">
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appSoldOutSetting($event)">沽清管理</button>
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appVersionSetting($event)">版本信息</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appModifyPWD($event)">修改密码</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appSetting($event)">站点设置</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appDebug($event)">调试</button>
@@ -10,7 +11,7 @@
 	</div>
 	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 	
-	<!-- 选择桌台 -->
+	<!-- 服务器信息 -->
 	<script type="text/ng-template" id="js/profile/servermodal.html">
 		<div class="modal-header">
 			<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
@@ -333,6 +334,46 @@
 				</div>
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default btn-lg" ng-click="close()" >取消</button>
+				</div>
+			</div>
+		</div>
+	</script>
+	<!-- 版本信息窗口 -->
+	<script type="text/ng-template" id="js/profile/appversion.html">
+		<div class="modal-header">
+			<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">
+				基本信息版本表
+			</h4>
+		</div>
+		<div class="modal-body">
+			<div class="table-responsive">
+				<table class="table table-hover table-striped table-condensed">
+					<thead>
+						<tr>
+							<th>信息类型</th>
+							<th>最后更新时间</th>
+							<th>本地最后更新时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="row in baseDataVersionLst">
+							<td>{{row.baseTypeName}}</td>
+							<td>{{row.lastUpdateTime | formatDateTimeStr}}</td>
+							<td>{{row.locallastUpdateTime | formatDateTimeStr}}</td>
+							<td>
+								<button type="button" class="btn btn-default btn-md" ng-click="update(row)" >更新</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="close()" >关闭</button>
 				</div>
 			</div>
 		</div>

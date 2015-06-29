@@ -82,7 +82,9 @@ define([], function () {
 				templateUrl : 'js/baobiao/baobiao.html',
 				dependencies : [
 					'baobiao/BaoBiaoViewController',
-					'directives/appDirectives'
+					'directives/appDirectives',
+					'services/appServices',
+					'filters/appFilters'
 				]
 			},
 			'/signin' : {
@@ -106,7 +108,8 @@ define([], function () {
 				dependencies : [
 					'profile/moreViewController',
 					'services/appServices',
-					'directives/appDirectives'
+					'directives/appDirectives',
+					'filters/appFilters'
 				]
 			},
 			'/more/soldout' : {
