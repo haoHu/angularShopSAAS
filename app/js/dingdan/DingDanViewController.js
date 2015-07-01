@@ -193,7 +193,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					orderStatus = _.result(order, 'orderStatus'),
 					orderSubType = _.result(order, 'orderSubType'),
 					tableName = _.result(order, 'tableName');
-				if (orderStatus != 40) {
+				if (orderStatus == 20) {
 					// 跳转点单页面
 					jumpToDinnerPage(saasOrderKey, tableName);
 				} else {
@@ -452,6 +452,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					pageNo : _scope.curPageNo,
 					pageSize : _scope.pageSize
 				});
+			};
+
+			$scope.checkOrderIsVoided = function () {
+				return _.result(orderData, 'orderStatus') == '30';
 			};
 			
 			$scope.resetOrderInfo();
