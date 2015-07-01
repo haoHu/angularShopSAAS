@@ -136,10 +136,12 @@ define(['app'], function(app)
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					} else {
 						AppAlert.add('success', "数据加载成功");
-						$scope.compBizData = ShopCurBizService.parseReceiptInfo();
+						$scope.compBizData = ShopCompositeBizService.parseReceiptInfo();
 					}
 				}).error(function (data) {
 					AppAlert.add('danger', '请求失败');
+					// for test
+					// $scope.compBizData = ShopCompositeBizService.parseReceiptInfo();
 				});
 			};
 			

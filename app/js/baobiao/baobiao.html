@@ -20,15 +20,17 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="" ng-class="{success: $last, info : !$last}" ng-repeat="row in curBizData">
+					<!-- 由于后台数据没有按照约定的数据结构给出，导致无法做数据行样式的区分
+					ng-class="{success: $last, info : !$last}" -->
+					<tr class=""  ng-repeat="row in curBizData">
 						<td class="txt">{{row.typeName}}</td>
 						<td class="num">{{row.orderCount}}</td>
 						<td class="num">{{row.person}}</td>
-						<td class="num">{{row.foodAmount | mycurrency:"￥"}}</td>
-						<td class="num">{{row.waitCheckoutOrderCount | prettyNum}}</td>
-						<td class="num">{{row.waitCheckoutOrderAmount | mycurrency:"￥"}}</td>
-						<td class="num">{{row.promotionAmount | mycurrency:"￥"}}</td>
-						<td class="num">{{row.paidAmount | mycurrency:"￥"}}</td>
+						<td class="num">{{row.foodAmount.length == 0 ? '' : (row.foodAmount | mycurrency:"￥")}}</td>
+						<td class="num">{{row.waitCheckoutOrderCount.length == 0 ? '' : (row.waitCheckoutOrderCount | prettyNum)}}</td>
+						<td class="num">{{row.waitCheckoutOrderAmount.length == 0 ? '' : (row.waitCheckoutOrderAmount | mycurrency:"￥")}}</td>
+						<td class="num">{{row.promotionAmount.length == 0 ? '' : (row.promotionAmount | mycurrency:"￥")}}</td>
+						<td class="num">{{row.paidAmount.length == 0 ? '' : (row.paidAmount | mycurrency:"￥")}}</td>
 					</tr>
 					<tr ng-if="curBizData.length == 0">
 						<td colspan="8">无数据</td>

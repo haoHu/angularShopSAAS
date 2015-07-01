@@ -1918,4 +1918,24 @@ body {
   height: 100%;
   overflow: auto;
   border: 1px solid #e6e6e6;
+  text-align: left;
+}
+.section-baobiao .tab-comp .receipt-box p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5rem;
+  font-size: 1rem;
+}
+.section-baobiao .tab-comp .receipt-box p.font-1x {
+  font-size: 1rem;
+}
+.section-baobiao .tab-comp .receipt-box p.font-2x {
+  font-size: 2rem;
+}
+.section-baobiao .tab-comp .receipt-box p.bold {
+  font-weight: 700;
+}
+.section-baobiao .tab-comp .receipt-box p.highlight > span {
+  background-color: #111;
+  color: #fff;
 }
