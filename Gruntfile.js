@@ -12,6 +12,7 @@ module.exports = function (grunt) {
 		src : "app",
 		dist : "dist",
 		test : "test",
+		zipFileName : "",
 		pkg : grunt.file.readJSON("package.json"),
 		connect : {
 			port : 9000,
@@ -39,7 +40,8 @@ module.exports = function (grunt) {
 					]
 				}]
 			},
-			disttest : ['<%= config.dist %>/css/*.less', '<%= config.dist %>/test']
+			disttest : ['<%= config.dist %>/css/*.less', '<%= config.dist %>/test'],
+			zip : './*.tar.gz'
 		},
 		// JS语法校验
 		jshint : {
@@ -360,6 +362,14 @@ module.exports = function (grunt) {
 			'targethtml:' + htmlTarget,
 			'cssmin'
 		]);
+		if (htmlTarget == 'mu' || htmlTarget == 'dohko' || htmlTarget == 'dist') {
+			grunt.task.run([
+				'clean:zip',
+				'genSVNRevision:' + htmlTarget,
+				'genRevision',
+				'zip'
+			]);
+		}
 	});
 
 	// 单元测试
@@ -372,5 +382,82 @@ module.exports = function (grunt) {
 				'connect:test',
 				'karma'
 			]);
+	});
+
+	// 生成打包文件所需版本号
+	grunt.registerTask('genSVNRevision', "Generate SVN Revision to zip file name", function (target) {
+		var done = this.async(),
+			exec = require('child_process').exec,
+			child;
+		child = exec("svn info|grep Revision |sed 's/.* //'", {
+			cwd : './'
+		}, function (error, stdout, stderr) {
+			if (error !== null) {
+				grunt.log.error('exec error: ' + error);
+				done(false);
+				return;
+			}
+			grunt.log.ok("The SVN Revision hasbeen generated!");
+			var date = new Date(),
+				y = date.getFullYear(),
+				m = date.getMonth() + 1,
+				d = date.getDate(),
+				revision = parseInt(stdout);
+			m = m > 9 ? m : ('0' + m);
+			d = d > 9 ? d : ('0' + d);
+			grunt.log.ok(stdout);
+			grunt.log.ok(revision);
+			config.zipFileName = target + '.SAAS-FE.' + y + m + d + '_' + revision + '.tar.gz';
+			grunt.log.ok("The zip file name is " + config.zipFileName);
+			done(true);
+		});
+	});
+
+	// 生成打包文件版本说明文件
+	grunt.registerTask('genRevision', "Generate revision file", function () {
+		var done = this.async(),
+			fileName = config.zipFileName,
+			revisionFile = './revision';
+		var revisionValue = fileName.split('.')[2];
+		fs.exists(revisionFile, function (exists) {
+			if (exists) {
+				fs.unlinkSync(revisionFile);
+			}
+			fs.open(revisionFile, 'w+', function (err, fd) {
+				if (err) {throw err;}
+				var buffer = new Buffer(revisionValue),
+					bufferLength = buffer.length, filePosition = null;
+				fs.write(fd, buffer, 0, bufferLength, filePosition, function (err, written) {
+					if (err) {throw err;}
+					grunt.log.ok('wrote ' + written + ' bytes');
+					fs.close(fd, function (err) {
+						if (err) {throw err;}
+					});
+					done(true);
+				});
+			});
+		});
+	});
+
+	// 打包压缩前段工程文件
+	grunt.registerTask('zip', "Zip builded files to dist.tar.gz", function () {
+		var done = this.async(),
+			exec = require('child_process').exec,
+			child;
+		var fileName = config.zipFileName,
+			cmd = 'tar -zcvf ' + fileName + ' ./dist ./revision';
+		grunt.log.ok("The zip file name is " + fileName);
+		child = exec(cmd, {
+			cwd : './'
+		}, function (error, stdout, stderr) {
+			if (error !== null) {
+				grunt.log.error('exec error:' + error);
+				done(false);
+				return ;
+			}
+			grunt.log.ok("The project has been ziped!");
+			grunt.log.ok(stdout);
+			done(true);
+		});
 	});
 };
