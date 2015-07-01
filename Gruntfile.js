@@ -276,7 +276,7 @@ module.exports = function (grunt) {
 						},
 						{
 							name : "profile/moreViewController",
-							include : ['services/appServices', 'directives/appDirectives'],
+							include : ['services/appServices', 'directives/appDirectives', 'filters/appFilters'],
 							exclude : ["main"]
 						},
 						{
@@ -286,7 +286,7 @@ module.exports = function (grunt) {
 						},
 						{
 							name : 'baobiao/BaoBiaoViewController',
-							include : ['services/appServices', 'directives/appDirectives'],
+							include : ['services/appServices', 'directives/appDirectives', 'services/statisticsServices', 'filters/appFilters'],
 							exclude : ["main"]
 						},
 						{
