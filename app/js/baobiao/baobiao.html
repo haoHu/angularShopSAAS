@@ -1,66 +1,66 @@
-<section class="section" ng-controller="BaoBiaoViewController">
+<section class="section section-baobiao" ng-controller="BaoBiaoViewController">
 	<ul class="nav  nav-tabs nav-justified">
 		<li class="tab-page" ng-class="{active: curPageType == 'biz'}"><a href="#/baobiao?tab=biz">当前营业数据</a></li>
 		<li class="tab-page" ng-class="{active: curPageType == 'log'}"><a href="#/baobiao?tab=log">操作日志</a></li>
 		<li class="tab-page" ng-class="{active: curPageType == 'comp'}"><a href="#/baobiao?tab=comp">综合营业数据</a></li>
 	</ul>
-	<section class="tab-cnt" ng-if="curPageType == 'biz'">
+	<section class="tab-cnt tab-biz" ng-show="curPageType == 'biz'">
 		<div class="cnt-body table-responsive">
 			<table class="table table-bordered table-hover">
 				<thead>
 					<tr>
-						<th>类型</th>
-						<th>单数</th>
-						<th>人数</th>
-						<th>流水</th>
-						<th>待结单数</th>
-						<th>待结金额</th>
-						<th>优惠金额</th>
-						<th>实收金额</th>
+						<th class="txt">类型</th>
+						<th class="num">单数</th>
+						<th class="num">人数</th>
+						<th class="num">流水</th>
+						<th class="num">待结单数</th>
+						<th class="num">待结金额</th>
+						<th class="num">优惠金额</th>
+						<th class="num">实收金额</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="info" ng-class="{success: $last}" ng-repeat="row in curBizData">
-						<td>{{row.typeName}}</td>
-						<td>{{row.orderCount}}</td>
-						<td>{{row.person}}</td>
-						<td>{{row.foodAmount | mycurrency:"￥"}}</td>
-						<td>{{row.waitCheckoutOrderCount}}</td>
-						<td>{{row.waitCheckoutOrderAmount | mycurrency:"￥"}}</td>
-						<td>{{row.promotionAmount | mycurrency:"￥"}}</td>
-						<td>{{row.paidAmountTotal | mycurrency:"￥"}}</td>
+					<tr class="" ng-class="{success: $last, info : !$last}" ng-repeat="row in curBizData">
+						<td class="txt">{{row.typeName}}</td>
+						<td class="num">{{row.orderCount}}</td>
+						<td class="num">{{row.person}}</td>
+						<td class="num">{{row.foodAmount | mycurrency:"￥"}}</td>
+						<td class="num">{{row.waitCheckoutOrderCount | prettyNum}}</td>
+						<td class="num">{{row.waitCheckoutOrderAmount | mycurrency:"￥"}}</td>
+						<td class="num">{{row.promotionAmount | mycurrency:"￥"}}</td>
+						<td class="num">{{row.paidAmount | mycurrency:"￥"}}</td>
 					</tr>
 					<tr ng-if="curBizData.length == 0">
 						<td colspan="8">无数据</td>
 					</tr>
 				</tbody>
 			</table>
-			<table class="table table-bordered table-hover">
+			<!-- <table class="table table-bordered table-hover">
 				<thead>
 					<tr>
-						<th>类型</th>
-						<th>单数</th>
-						<th>实收金额</th>
+						<th class="txt">类型</th>
+						<th class="num">单数</th>
+						<th class="num">实收金额</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr class="info" ng-repeat="row in curBizPay">
-						<td>{{row.typeName}}</td>
-						<td>{{row.orderCount}}</td>
-						<td>{{row.paidAmount | mycurrency:"￥"}}</td>
+						<td class="txt">{{row.typeName}}</td>
+						<td class="num">{{row.orderCount}}</td>
+						<td class="num">{{row.paidAmount | mycurrency:"￥"}}</td>
 					</tr>
 				</tbody>
-			</table>
+			</table> -->
 		</div>
 	</section>
-	<section class="tab-cnt" ng-if="curPageType=='log'">
+	<section class="tab-cnt tab-log" ng-show="curPageType=='log'">
 		<header class="cnt-header">
 			<div class="filter-bar row">
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qform.startDate" is-open="qform.dp1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event, qform.startDate)" ng-change="queryByDate($event, qform.startDate)" ng-click="openDatePicker($event, '1')"/>
 						<span class="input-group-btn">
-							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '1')">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</button>
 						</span>
@@ -68,9 +68,9 @@
 				</div>
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qform.endDate" is-open="qform.dp2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event, qform.endDate)" ng-change="queryByDate($event, qform.endDate)" ng-click="openDatePicker($event, '2')"/>
 						<span class="input-group-btn">
-							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '2')">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</button>
 						</span>
@@ -78,7 +78,7 @@
 				</div>
 				<div class="col-xs-6 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" placeholder="日志名、内容、设备名、操作员" ng-model="qKeyword" ng-keyup="queryByKeyword($event)" />
+						<input type="text" class="form-control input-lg" placeholder="日志名、内容、设备名、操作员" ng-model="qform.keyword" ng-keyup="queryByKeyword($event)" />
 						<span class="input-group-btn" ng-click="queryByKeyword($event)"><button class="btn btn-default btn-lg" type="button">搜索</button></span>
 					</div>
 				</div>
@@ -88,107 +88,142 @@
 			<table class="table table-bordered table-hover">
 				<thead>
 					<tr>
-						<th>创建时间</th>
-						<th>操作人员</th>
-						<th>日志类型</th>
-						<th>日志描述</th>
-						<th>设备名称</th>
+						<th class="date">创建时间</th>
+						<th class="txt">操作人员</th>
+						<th class="txt">日志类型</th>
+						<th class="txt">日志描述</th>
+						<th class="txt">设备名称</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="row in curLogLst">
-						<td>{{row.createTime}}</td>
-						<td>{{row.createBy}}</td>
-						<td>{{row.logSubject}}</td>
-						<td>{{row.logRemark}}</td>
-						<td>{{row.deviceName}}</td>
+						<td class="date">{{row.createTime}}</td>
+						<td class="txt">{{row.createBy}}</td>
+						<td class="txt">{{row.logSubject}}</td>
+						<td class="txt">{{row.logRemark}}</td>
+						<td class="txt">{{row.deviceName}}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<footer class="cnt-footer">
-			<p class="pager-info pull-left">页码:{{curPageNo}} / {{numPages}}</p>
-			<pagination total-items="totalSize || 0" ng-model="curPageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
+			<p class="pager-info pull-left">页码:{{qform.pageNo}} / {{numPages}}</p>
+			<pagination total-items="totalSize || 0" ng-model="qform.pageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="qform.pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
 		</footer>
 	</section>
-	<section class="tab-cnt" ng-if="curPageType=='comp'">
+	<section class="tab-cnt tab-comp" ng-show="curPageType=='comp'">
 		<header class="cnt-header">
 			<div class="filter-bar row">
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qform.startDate" is-open="qform.dp1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '1')"/>
 						<span class="input-group-btn">
-							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '1')">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</button>
 						</span>
 					</div>
 				</div>
 				<div class="col-xs-3">
-					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly="" placeholder="开始时间">
+					<div class="input-group timepicker" id="startTime" ng-click="popupTimePicker($event, 'startTime')">
+						<input type="text" class="form-control input-lg" readonly="" placeholder="开始时间" value="{{formatDateTime(qform.startTime, 'HH:mm')}}">
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button">
 								<span class="glyphicon glyphicon-time"></span>
 							</button>
 						</span>
+					</div>
+					<div class="timepicker-box hidden">
+						<timepicker ng-model="qform.startTime" hour-step="1" minute-step="15" show-meridian="false"></timepicker>
+						<button class="btn btn-default btn-lg btn-block">关闭</button>
 					</div>
 				</div>
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qform.endDate" is-open="qform.dp2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '2')"/>
 						<span class="input-group-btn">
-							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
+							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '2')">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</button>
 						</span>
 					</div>
 				</div>
 				<div class="col-xs-3">
-					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly="" placeholder="截止时间">
+					<div class="input-group timepicker" id="endTime" ng-click="popupTimePicker($event, 'endTime')">
+						<input type="text" class="form-control input-lg" readonly="" placeholder="截止时间" value="{{formatDateTime(qform.endTime, 'HH:mm')}}">
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button">
 								<span class="glyphicon glyphicon-time"></span>
 							</button>
 						</span>
 					</div>
+					<div class="timepicker-box hidden">
+						<timepicker ng-model="qform.endTime" hour-step="1" minute-step="15" show-meridian="false"></timepicker>
+						<button class="btn btn-default btn-lg btn-block">关闭</button>
+					</div>
 				</div>
 				<div class="col-xs-3">
-					<div class="input-group">
-						<input type="text" class="form-control input-lg" placeholder="收银人员">
+					<div class="input-group dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<input type="text" class="form-control input-lg" readonly placeholder="收银人员" ng-model="qform.checkoutBy">
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button">
 								<span class="caret"></span>
 							</button>
 						</span>
 					</div>
+					<ul class="dropdown-menu" role="menu">
+						<li ng-repeat="item in CheckoutUsers" ng-class="{active: item.value == qform.checkoutBy}" ng-click="queryByFilterItem(item, 'checkoutBy')">
+							<a>{{item.label}}</a>
+						</li>
+					</ul>
 				</div>
 				<div class="col-xs-3">
-					<div class="input-group">
-						<input type="text" class="form-control input-lg" placeholder="营业时段">
+					<div class="input-group dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<input type="text" class="form-control input-lg" readonly placeholder="营业时段" ng-model="qform.timeName">
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button">
 								<span class="caret"></span>
 							</button>
 						</span>
 					</div>
+					<ul class="dropdown-menu" role="menu">
+						<li ng-repeat="item in TimeNames" ng-class="{active: item.value == qform.timeName}" ng-click="queryByFilterItem(item, 'timeName')">
+							<a>{{item.label}}</a>
+						</li>
+					</ul>
 				</div>
 				<div class="col-xs-3">
-					<div class="input-group">
-						<input type="text" class="form-control input-lg" placeholder="桌台区域">
-						<span class="input-group-btn">
+					<div class="input-group dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<input type="text" class="form-control input-lg dropdown-toggle" readonly placeholder="桌台区域" ng-model="qform.areaName" >
+						<span class="input-group-btn dropdown-toggle" >
 							<button class="btn btn-default btn-lg" type="button">
 								<span class="caret"></span>
 							</button>
 						</span>
 					</div>
+					<ul class="dropdown-menu" role="menu">
+						<li ng-repeat="item in TableAreas" ng-class="{active: item.value == qform.areaName}" ng-click="queryByFilterItem(item, 'areaName')">
+							<a>{{item.label}}</a>
+						</li>
+					</ul>
 				</div>
 				<div class="col-xs-3">
-					<button class="btn btn-default btn-lg btn-block" type="button">查询</button>
+					<button class="btn btn-default btn-lg btn-block" ng-click="queryLst()">搜索</button>
 				</div>
 				
 			</div>
 		</header>
+		<div class="cnt-body">
+			<div class="col-xs-5 receipt-box" ng-bind-html="parseSnippet(compBizData)">
+				
+			</div>
+			<div class="col-xs-7">
+				<h4>查询范围</h4>
+				<div class="btn-group">
+					<label for="" class="btn btn-default btn-lg " ng-repeat="el in QueryRangeLst" ng-model="el.checked" btn-checkbox ng-change="onQueryRangeChange()">{{el.label}}</label>
+				</div>
+			</div>
+		</div>
 	</section>
+	
 </section>

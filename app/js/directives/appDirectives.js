@@ -323,14 +323,14 @@ define(['app'], function (app) {
                 scope.parseSnippet = function (v) {
                     return $sce.trustAsHtml(v);
                 };
-                // scope.isChecked = function (val) {
-                //     var item = _.find(scope.curVal, function (el) {
-                //         return el == val;
-                //     });
-                //     // console.info(scope.curVal);
-                //     // console.info(val);
-                //     return _.isEmpty(item) ? false : true;
-                // };
+                scope.isChecked = function (val) {
+                    var item = _.find(scope.curVal, function (el) {
+                        return el == val;
+                    });
+                    // console.info(scope.curVal);
+                    // console.info(val);
+                    return _.isEmpty(item) ? false : true;
+                };
 
 
                 el.on('change', ':checkbox', function (e) {

@@ -114,4 +114,16 @@ define(['app'], function (app) {
 		};
 		return filterFn;
 	});
+
+	// 美化数字
+	app.filter("prettyNum", function () {
+		IX.ns("Hualala");
+		var filterFn = function (v) {
+			var s = parseFloat(v);
+			if (isNaN(s)) return v;
+			var dataStr = Hualala.Common.Math.prettyNumeric(s);
+			return dataStr.toString();
+		};
+		return filterFn;
+	});
 });

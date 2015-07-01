@@ -1864,3 +1864,58 @@ body {
 .section-soldout .menu-plain {
   padding-bottom: 0;
 }
+.section-baobiao .tab-cnt {
+  position: absolute;
+  top: 42px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+.section-baobiao .tab-cnt .cnt-header {
+  position: relative;
+  background-color: #fff;
+  z-index: 10;
+}
+.section-baobiao .tab-cnt .cnt-body {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9;
+}
+.section-baobiao .tab-biz .cnt-body {
+  top: 0;
+  overflow: auto;
+}
+.section-baobiao .tab-log .cnt-body {
+  top: 46px;
+  padding-bottom: 72px;
+  overflow: auto;
+}
+.section-baobiao .tab-log .cnt-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 72px;
+}
+.section-baobiao .tab-comp .cnt-body {
+  top: 92px;
+}
+.section-baobiao .tab-comp .btn-group > .btn {
+  border-radius: 3px!important;
+  margin-bottom: .5rem;
+  width: 10rem;
+  margin-right: 1rem;
+}
+.section-baobiao .tab-comp .btn-group > .btn.active {
+  background: #449D44;
+  border-color: #398439;
+  color: #fff;
+}
+.section-baobiao .tab-comp .receipt-box {
+  height: 100%;
+  overflow: auto;
+  border: 1px solid #e6e6e6;
+}

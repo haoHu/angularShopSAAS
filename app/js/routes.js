@@ -84,6 +84,7 @@ define([], function () {
 					'baobiao/BaoBiaoViewController',
 					'directives/appDirectives',
 					'services/appServices',
+					'services/statisticsServices',
 					'filters/appFilters'
 				]
 			},

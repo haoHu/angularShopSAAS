@@ -88,7 +88,9 @@ define(['IX'], function () {
 		// 获取基本信息版本表
 		["getBaseDataVersionLst", "/saas/base/getBaseDataVersionLst.ajax", "", "POST"],
 		// 更新基本信息
-		["updateBaseInfo", "/saas/base/downloadBaseInfo.ajax", "", "POST"]
+		["updateBaseInfo", "/saas/base/downloadBaseInfo.ajax", "", "POST"],
+		// 获取报表查询字典
+		["getReportDictionary", "/saas/order/getReportDictionary.ajax", "", "POST"]
 
         // 会员入会办卡
         ,["createVIPCard", "/crm/card/create.ajax", "", "POST"]
