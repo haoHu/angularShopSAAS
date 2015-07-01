@@ -749,7 +749,7 @@ define(['app'], function(app)
                         if(!$(this).hasClass('disable')) {
                             scope.CCS.deductMoney({
                                 cardKey: scope.user.cardkey,
-                                consumptionAmount: scope.group.pointgetamount,
+                                consumptionAmount: scope.group.consumeamount,
                                 consumptionPointAmount: scope.group.pointgetamount,
                                 deductGiftAmount: scope.group.usevoucheramount,
                                 deductMoneyAmount: scope.group.balanceamount,
