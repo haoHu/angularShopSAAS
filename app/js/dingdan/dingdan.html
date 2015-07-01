@@ -14,8 +14,8 @@
 			<div class="btn-group col-xs-3 clearfix">
 				<label class="btn btn-default btn-lg col-xs-3" ng-model="qOrderSubType" btn-radio="'-1'" ng-click="queryByOrderSubType('-1')">全部</label>
 				<label class="btn btn-default btn-lg col-xs-3" ng-model="qOrderSubType" btn-radio="'0'" ng-click="queryByOrderSubType('0')">堂食</label>
-				<label class="btn btn-default btn-lg col-xs-3" ng-model="qOrderSubType" btn-radio="'1'" ng-click="queryByOrderSubType('1')">外卖</label>
-				<label class="btn btn-default btn-lg col-xs-3" ng-model="qOrderSubType" btn-radio="'2'" ng-click="queryByOrderSubType('2')">自提</label>
+				<label class="btn btn-default btn-lg col-xs-3" ng-model="qOrderSubType" btn-radio="'20'" ng-click="queryByOrderSubType('20')">外卖</label>
+				<label class="btn btn-default btn-lg col-xs-3" ng-model="qOrderSubType" btn-radio="'21'" ng-click="queryByOrderSubType('21')">自提</label>
 			</div>
 			<div class="btn-group col-xs-3 clearfix">
 				<label for="" class="btn btn-default btn-lg col-xs-4" ng-model="qOrderStatus" btn-radio="'20'" ng-click="queryByOrderStatus('20')">未结账</label>
@@ -59,8 +59,8 @@
 								<div class="zizhu" ng-if="order.netOrderTypeCode.slice(0, 2).toLowerCase() == 'ws'">
 									<span class="icon-zizhu" ></span>
 								</div>
-								<span class="icon-waimai" ng-if="order.orderSubType == 1"></span>
-								<span class="icon-ziti" ng-if="order.orderSubType == 2"></span>
+								<span class="icon-waimai" ng-if="order.orderSubType == 20"></span>
+								<span class="icon-ziti" ng-if="order.orderSubType == 21"></span>
 								<span class="icon-tangshi" ng-if="order.orderSubType == 0"></span>
 								&nbsp;
 							</td>
