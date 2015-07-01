@@ -3,6 +3,7 @@
 /.tmp/
 /dist/
 dist.zip
+*.tar.gz
 npm-debug.log
 revision
 .DS_Store
