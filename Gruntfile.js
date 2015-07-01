@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 		src : "app",
 		dist : "dist",
 		test : "test",
-		zipFileName : "",
+		zipFileName : "dist",
 		pkg : grunt.file.readJSON("package.json"),
 		connect : {
 			port : 9000,
