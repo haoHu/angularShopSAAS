@@ -670,7 +670,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @param {Number} count  直接更新数量
 			 * @return {Object} 条目数据         
 			 */
-			this.updateOrderItemCount = function (itemKey, step, count) {
+			this.updateOrderItemCount = function (itemKey, step, count, empInfo) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', "0"),
@@ -695,7 +695,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				}
 				if (printStatus != 0 && isNeedConfirmFoodNumber != 0) {
 					// 已落单并且需要确认数量的菜品，需要进行确认数量的菜品操作服务
-					callServer = self.foodOperation('QRSL', [itemKey]);
+					callServer = self.foodOperation('QRSL', [itemKey], empInfo);
 				}
 				// 1. 如果当前条目为普通菜品主条目
 				// 	改变主条目的数量
@@ -792,7 +792,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @param  {[type]} sendReason [description]
 			 * @return {[type]}            [description]
 			 */
-			this.sendOrderFoodItem = function (itemKey, sendNumber, sendReason) {
+			this.sendOrderFoodItem = function (itemKey, sendNumber, sendReason, empInfo) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', 0);
@@ -802,7 +802,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				item.sendReason = sendReason;
 				if (printStatus != 0) {
 					// TODO 已落单菜品修改赠送， 更新数据字典后，要直接提交，并刷新订单数据
-					callServer = self.foodOperation('ZC', [itemKey]);
+					callServer = self.foodOperation('ZC', [itemKey], empInfo);
 				}
 				return callServer;
 			};
@@ -814,7 +814,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @param  {[type]} cancelReason [description]
 			 * @return {[type]}              [description]
 			 */
-			this.cancelOrderFoodItem = function (itemKey, cancelNumber, cancelReason) {
+			this.cancelOrderFoodItem = function (itemKey, cancelNumber, cancelReason, empInfo) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', 0); 
@@ -824,7 +824,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				item.cancelReason = cancelReason;
 				if (printStatus != 0) {
 					// TODO 已落单菜品修改退菜， 更新数据字典后，要直接提交，并刷新订单数据
-					callServer = self.foodOperation('TC', [itemKey]);
+					callServer = self.foodOperation('TC', [itemKey], empInfo);
 				}
 				return callServer;
 			};
@@ -891,7 +891,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @param  {[type]} priceNote [description]
 			 * @return {[type]}           [description]
 			 */
-			this.updateOrderFoodPrice = function (itemKey, foodPrice, priceNote) {
+			this.updateOrderFoodPrice = function (itemKey, foodPrice, priceNote, empInfo) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', "0"); 
@@ -904,7 +904,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				item.foodVipPrice = foodPrice;
 				if (printStatus != 0) {
 					// TODO 已落单菜品改价，更新菜品数据字典后，要直接提交，并刷新订单数据
-					callServer = self.foodOperation('GJ', [itemKey]);
+					callServer = self.foodOperation('GJ', [itemKey], empInfo);
 				}
 				return callServer;
 			};
@@ -914,9 +914,9 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @param  {[type]} itemKeys [description]
 			 * @return {[type]}          [description]
 			 */
-			this.urgeOrderFood = function (itemKeys) {
+			this.urgeOrderFood = function (itemKeys, empInfo) {
 				var callServer = null;
-				callServer = self.foodOperation('CJC', itemKeys);
+				callServer = self.foodOperation('CJC', itemKeys, empInfo);
 				return callServer;
 			};
 
@@ -941,7 +941,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 落单操作
 			 * @return {[type]} [description]
 			 */
-			this.submitOrder = function (actionType, payParams) {
+			this.submitOrder = function (actionType, payParams, tmpEMP) {
 				var params = {};
 				var foodItemPostKeys = FoodItemKeys,
 					postKeys = 'actionType,submitBatchNo,orderJson'.split(','),
@@ -981,7 +981,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					empName : empName,
 					bizModel : operationMode,
 					allFoodRemark : allFoodRemark
-				}, orderHeader, {
+				}, orderHeader, tmpEMP, {
 					foodLst : foodLst
 				}, (_.isEmpty(self.FJZFlag) ? {} : {FJZFlag : self.FJZFlag}));
 				if (actionType == 'JZ' || actionType == 'YJZ') {
@@ -1013,7 +1013,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @param  {[type]} itemKeys    [description]
 			 * @return {[type]}            [description]
 			 */
-			this.foodOperation = function (actionType, itemKeys) {
+			this.foodOperation = function (actionType, itemKeys, empInfo) {
 				itemKeys = _.isString(itemKeys) ? [itemKeys] : itemKeys;
 				var saasOrderKey = self.getSaasOrderKey();
 				var foodLst = _.map(itemKeys, function (itemKey) {
@@ -1066,7 +1066,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				}
 				IX.Debug.info("Current Food Operation Post Data:");
 				IX.Debug.info(postData);
-				return CommonCallServer.foodOperation(postData)
+				return CommonCallServer.foodOperation(_.extend(postData, empInfo))
 					.success(function (data) {
 						var _data = _.result(data, 'data'),
 							foodLst = _.result(_data, 'foodLst');

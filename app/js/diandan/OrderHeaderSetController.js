@@ -108,8 +108,8 @@ define(['app'], function (app) {
 		}
 	]);*/
 	app.controller('OpenTableSetController', [
-		'$rootScope', '$scope', '$location', '$modalInstance', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'OrderChannel', 'AppAlert',
-		function ($rootScope, $scope, $location, $modalInstance, $filter, _scope, CommonCallServer, OrderService, OrderChannel, AppAlert) {
+		'$rootScope', '$scope', '$location', '$modalInstance', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
+		function ($rootScope, $scope, $location, $modalInstance, $filter, _scope, CommonCallServer, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			$scope.fmels = _.extend(_scope.fmels, {
@@ -127,8 +127,7 @@ define(['app'], function (app) {
 						postData[k] = v;
 					}
 				});
-				// 开台操作
-				OrderService.tableOperation('KT', postData).success(function (data) {
+				var successCallBack = function (data) {
 					var code = _.result(data, 'code'),
 						rec = data.data.records[0],
 						saasOrderKey = _.result(rec, 'saasOrderKey');
@@ -141,10 +140,25 @@ define(['app'], function (app) {
 					if (code == '000') {
 						_scope.jumpToDinnerPage();
 						$scope.close();
+					} else if (code == 'CS005') {
+						AppAuthEMP.add({
+							yesFn : function (empInfo) {
+								OrderService.tableOperation('KT', _.extend(postData, empInfo)).success(function (data) {
+									successCallBack(data);
+								});
+							},
+							noFn : function () {
+
+							}
+						});
 					} else {
 						// HC.TopTip.addTopTips($rootScope, data);
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
+				};
+				// 开台操作
+				OrderService.tableOperation('KT', postData).success(function (data) {
+					successCallBack(data);
 				});
 			};
 			$scope.tableNameIsReadOnly = function () {

@@ -197,6 +197,113 @@ define(['app'], function (app) {
 		}
 	]);
 
+	app.factory('AppAuthEMP', [
+		'$rootScope', '$timeout', '$sce', '$modal',
+		function ($rootScope, $timeout, $sce, $modal) {
+			var appAuthService;
+			$rootScope.authSets = [];
+			app.controller('AppAuthController', [
+				'$scope', '$rootScope', '$modalInstance', '_scope',
+				function ($scope, $rootScope, $modalInstance, _scope) {
+					var curAuthSet = _.result(_scope, 'curAuthSet');
+					$scope.authSet = curAuthSet;
+					var closeAuth = function () {
+						$modalInstance.close();
+						curAuthSet.authObj.closeAuth(curAuthSet);
+					};
+					$scope.yesFn = function () {
+						$scope.authSet.yesFn({
+							tempAllowEmpCode : $scope.tempAllowEmpCode,
+							tempAllowEmpPWD : $scope.tempAllowEmpPWD
+						});
+						
+						closeAuth();
+					};
+					$scope.noFn = function () {
+						$scope.authSet.noFn();
+						closeAuth();
+					};
+				}
+			]);
+			return appAuthService = {
+				add : function (cfg) {
+					var defSetting = {
+						title : "权限验证窗口",
+						msg : "",
+						yesText : "确认",
+						noText : "取消",
+						yesFn : function () {},
+						noFn : function () {}
+					};
+					var curAuthSet = _.extend(defSetting, cfg, {
+						authObj : this
+					});
+					$rootScope.authSets.push(curAuthSet);
+					var modalSize = 'md',
+						windowClass = 'site-confirm',
+						backdrop = 'fixed',
+						controller = 'AppAuthController',
+						// templateUrl = 'js/services/confirm.html',
+						template = [
+							'<div class="modal-body text-warning">',
+								'<div class="form-horizontal">',
+									'<div class="form-group">',
+										'<label for="empID" class="col-xs-4 control-label">工号</label>',
+										'<div class="col-xs-8">',
+											'<input type="text" class="form-control" id="empID" ng-model="tempAllowEmpCode" />',
+										'</div>',
+									'</div>',
+									'<div class="form-group">',
+										'<label for="empPWD" class="col-xs-4 control-label">密码</label>',
+										'<div class="col-xs-8">',
+											'<input type="password" class="form-control" id="empPWD" ng-model="tempAllowEmpPWD" />',
+										'</div>',
+									'</div>',
+								'</div>',
+							'</div>',
+							'<div class="modal-footer bg-warning">',
+								'<div class="btn-group btn-group-justified" role="group">',
+									'<div class="btn-group" role="group">',
+										'<button type="button" class="btn btn-warning btn-lg" ng-click="yesFn()">{{confirmSet.yesText}}</button>',
+									'</div>',
+									'<div class="btn-group" role="group">',
+										'<button type="button" class="btn btn-default btn-lg" ng-click="noFn()">{{confirmSet.noText}}</button>',
+									'</div>',
+								'</div>',
+							'</div>'
+						].join(''),
+						resolve = {
+							_scope : function () {
+								return {
+									curAuthSet : curAuthSet
+								};
+							}
+						};
+					$modal.open({
+						size : modalSize,
+						windowClass : windowClass,
+						// scope : $rootScope,
+						controller : controller,
+						// templateUrl : templateUrl,
+						template : template,
+						resolve : resolve,
+						backdrop : backdrop
+					});
+				},
+				closeAuth : function (authSet) {
+					return this.closeAuthIdx($rootScope.authSets.indexOf(authSet));
+				},
+				closeAuthIdx : function (index) {
+					return $rootScope.authSets.splice(index, 1);
+				},
+				clear : function () {
+					$rootScope.authSets = [];
+				}
+			};
+
+		}
+	]);
+
 	// 门店系统服务器相关信息服务
 	app.service('SAASLocalServerInfo',[
 		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer',

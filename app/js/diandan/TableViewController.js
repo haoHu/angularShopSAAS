@@ -1,8 +1,8 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	// 桌台控制器
 	app.controller('TableViewController', [
-		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderService', 'TableService', 'OrderChannel', 'OrderNoteService', 'AppAlert',
-		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, OrderService, TableService, OrderChannel, OrderNoteService, AppAlert) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderService', 'TableService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, OrderService, TableService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -293,16 +293,28 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var orderItems = $scope.curSelectedOrderItems;
 				// 使用已落单菜品操作服务进行催叫菜操作
 				var callServer = OrderService.urgeOrderFood(orderItems);
-				callServer.success(function (data) {
+				var successCallBack = function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
 						// HC.TopTip.addTopTips($rootScope, _.extend(data, {msg : "催叫成功"}));
 						AppAlert.add('success', '催叫成功');
+					} else if (code == 'CS005') {
+						AppAuthEMP.add({
+							yesFn : function (empInfo) {
+								callServer = OrderService.urgeOrderFood(orderItems, empInfo);
+								callServer.success(successCallBack);
+							},
+							noFn : function () {
+
+							}
+						});
 					} else {
 						// HC.TopTip.addTopTips($rootScope, data);
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
-					
+				};
+				callServer.success(function (data) {
+					successCallBack(data);
 				});
 			};
 
@@ -398,8 +410,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 换台操作控制器
 	app.controller('ChangeTableController', [
-		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'AppAlert', 'AppConfirm',
-		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, AppAlert, AppConfirm) {
+		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'AppAlert', 'AppConfirm', 'AppAuthEMP',
+		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, AppAlert, AppConfirm, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -520,23 +532,37 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作',
 						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？',
 						yesFn : function () {
-							var callServer = OrderService.tableOperation(actionType, {
+							var postParams = {
 								fromTableName : fromTableName,
 								toTableName : $scope.curTableName,
 								foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
 
-							});
-							callServer.success(function (data) {
+							};
+							var successCallBack = function (data) {
 								var code = _.result(data, 'code');
 								if (code == '000') {
 									// HC.TopTip.addTopTips($rootScope, data);
 									AppAlert.add('success', _.result(data, 'msg', ''));
 									_scope.refresh(table, actionType);
 									$modalInstance.close();
+								} else if (code == 'CS005') {
+									AppAuthEMP.add({
+										yesFn : function (empInfo) {
+											callServer = OrderService.tableOperation(actionType, IX.extend(postParams, empInfo));
+											callServer.success(successCallBack);
+										},
+										noFn : function () {
+
+										}
+									});
 								} else {
 									// HC.TopTip.addTopTips($rootScope, data);
 									AppAlert.add('danger', _.result(data, 'msg', ''));
 								}
+							};
+							var callServer = OrderService.tableOperation(actionType, postParams);
+							callServer.success(function (data) {
+								successCallBack(data);
 							});
 						},
 						noFn : function () {
@@ -602,22 +628,36 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作',
 						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？',
 						yesFn : function () {
-							var callServer = OrderService.tableOperation(actionType, {
+							var postParams = {
 								fromTableName : fromTableName,
 								toTableName : $scope.curTableName,
 								foodItemKeyLst : JSON.stringify({itemKey : foodItemKeyLst})
-							});
-							callServer.success(function (data) {
+							};
+							var callServer = OrderService.tableOperation(actionType, postParams);
+							var successCallBack = function (data) {
 								var code = _.result(data, 'code');
 								if (code == '000') {
 									// HC.TopTip.addTopTips($rootScope, data);
 									AppAlert.add('success', _.result(data, 'msg', ''));
 									_scope.refresh(table, actionType);
 									$modalInstance.close();
+								} else if (code == 'CS005') {
+									AppAuthEMP.add({
+										yesFn : function (empInfo) {
+											callServer = OrderService.tableOperation(actionType, _.extend(postParams, empInfo));
+											callServer.success(successCallBack);
+										},
+										noFn : function () {
+
+										}
+									});
 								} else {
 									// HC.TopTip.addTopTips($rootScope, data);
 									AppAlert.add('danger', _.result(data, 'msg', ''));
 								}
+							};
+							callServer.success(function (data) {
+								successCallBack(data);
 							});
 						},
 						noFn : function () {

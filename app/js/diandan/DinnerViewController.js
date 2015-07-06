@@ -1,8 +1,8 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	app.controller('SnackViewController', 
 	[
-		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert',
-		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -390,10 +390,29 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.submitOrder = function () {
 				var callServer = OrderService.submitOrder('LD');
 				if (_.isEmpty(callServer)) return;
-				callServer.success(function (data, status, headers, config) {
-						var ret = _.result(data, 'data', {});
+				var addAuthEMP = function () {
+					AppAuthEMP.add({
+						yesFn : function (empInfo) {
+							callServer = OrderService.submitOrder('LD', null, empInfo);
+							callServer.success(successCallBack);
+						},
+						noFn : function () {
+
+						}
+					});
+				};
+				var successCallBack = function (data) {
+					var code = _.result(data, 'code');
+					var ret = _.result(data, 'data', {});
+					if (code == '000') {
 						OrderService.initOrderFoodDB(ret);
 						$scope.resetOrderInfo();
+					} else if (code == 'CS005') {
+						addAuthEMP();
+					}
+				};
+				callServer.success(function (data, status, headers, config) {
+						successCallBack(data);
 						// $scope.orderHeader = OrderService.getOrderHeaderData();
 						// $scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
 						// $scope.curOrderRemark = OrderService.getOrderRemark();
@@ -487,9 +506,26 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 				IX.Debug.info("Food Item Send setting:");
 				IX.Debug.info("foodSendNumber:" + $scope.foodSendNumber + ";sendReason:" + $scope.sendReason);
-				OrderService.sendOrderFoodItem(curItemKey, $scope.foodSendNumber, $scope.sendReason);
-				_scope.refreshOrderList();
-				$modalInstance.close();
+				var callServer = OrderService.sendOrderFoodItem(curItemKey, $scope.foodSendNumber, $scope.sendReason);
+				var successCallBack = function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						_scope.refreshOrderList();
+						$modalInstance.close();
+					} else if (code == 'CS005') {
+						AppAuthEMP.add({
+							yesFn : function (empInfo) {
+								callServer = OrderService.sendOrderFoodItem(curItemKey, $scope.foodSendNumber, $scope.sendReason, empInfo);
+								callServer.success(successCallBack);
+							},
+							noFn : function () {
+
+							}
+						});
+					}
+				};
+				callServer.success(successCallBack);
+				
 			};
 			// 赠菜原因变化
 			$scope.onSendReasonChange = function (v) {
@@ -514,8 +550,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 退菜操作控制器
 	app.controller('OrderItemCancelController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var cancelReasonData = OrderNoteService.getCancelFoodReasonNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
@@ -539,9 +575,31 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 				IX.Debug.info("Food Item Cancel Setting:");
 				IX.Debug.info("foodCancelNumber:" + $scope.foodCancelNumber + ";cancelReason:" + $scope.cancelReason);
-				OrderService.cancelOrderFoodItem(curItemKey, $scope.foodCancelNumber, $scope.cancelReason);
-				_scope.refreshOrderList();
-				$modalInstance.close();
+				var callServer = OrderService.cancelOrderFoodItem(curItemKey, $scope.foodCancelNumber, $scope.cancelReason);
+				var successCallBack = function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						_scope.refreshOrderList();
+						$modalInstance.close();
+					} else if (code == 'CS005') {
+						AppAuthEMP.add({
+							yesFn : function (empInfo) {
+								callServer = OrderService.cancelOrderFoodItem(curItemKey, $scope.foodCancelNumber, $scope.cancelReason, empInfo);
+								callServer.success(successCallBack);
+							},
+							noFn : function () {
+
+							}
+						});
+					} else {
+
+					}
+				};
+				callServer.success(function (data) {
+					successCallBack(data);
+				});
+
+				
 			};
 			// 退菜原因变化
 			$scope.onCancelReasonChange = function (v) {
@@ -566,8 +624,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 改量操作控制器
 	app.controller('OrderItemModifyCountController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var curItemKey = _scope.curFocusOrderItemKey,
 				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey);
@@ -589,6 +647,31 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				IX.Debug.info("foodCount:" + $scope.foodCount);
 				var obj = OrderService.updateOrderItemCount(curItemKey, 0, $scope.foodCount),
 					item = null, callServer = null;
+				var successCallBack = function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						_scope.refreshOrderList();
+						if (_.isEmpty(item)) {
+							// 默认选中订单列表中第一个条目
+							var firstItem = _scope.curOrderItems[0];
+							_scope.selectOrderItem(_.result(firstItem, 'itemKey'));
+						}
+						$modalInstance.close();
+					} else if (code == 'CS005') {
+						AppAuthEMP.add({
+							yesFn : function (empInfo) {
+								obj = OrderService.updateOrderItemCount(curItemKey, 0, $scope.foodCount, empInfo);
+								callServer = obj.callServer;
+								item = obj.item;
+								callServer.success(successCallBack);
+							},
+							noFn : function () {
+
+							}
+						});
+					}
+					
+				};
 
 				if (_.isEmpty(obj.callServer)) {
 					item = obj;
@@ -603,13 +686,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					callServer = obj.callServer;
 					item = obj.item;
 					callServer.success(function (data) {
-						_scope.refreshOrderList();
-						if (_.isEmpty(item)) {
-							// 默认选中订单列表中第一个条目
-							var firstItem = _scope.curOrderItems[0];
-							_scope.selectOrderItem(_.result(firstItem, 'itemKey'));
-						}
-						$modalInstance.close();
+						successCallBack(data);
 					});
 				}
 				
@@ -635,8 +712,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 改价操作控制器
 	app.controller('OrderItemModifyPriceController', [
-		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert',
-		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '_scope', 'OrderNoteService', 'OrderService', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, _scope, OrderNoteService, OrderService, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var modifyPriceData = OrderNoteService.getModifyPriceNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
@@ -653,6 +730,23 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 提交并关闭窗口
 			$scope.save = function () {
 				var callServer;
+				var successCallBack = function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						_scope.refreshOrderList();
+					} else if (code == 'CS005') {
+						AppAuthEMP.add({
+							yesFn : function (empInfo) {
+								callServer = OrderService.updateOrderFoodPrice(curItemKey, $scope.foodPrice, $scope.priceNote, empInfo);
+								callServer.success(successCallBack);
+							},
+							noFn : function () {
+
+							}
+						});
+					}
+					
+				}
 				// TODO submit Modify result
 				if ((_.isEmpty($scope.priceNote) && parseFloat($scope.foodPrice) > 0) || $scope.foodPrice.length == 0) {
 					return ;
@@ -665,7 +759,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					_scope.refreshOrderList();
 				} else {
 					callServer.success(function (data, status, headers, config) {
-						_scope.refreshOrderList();
+						successCallBack(data);
 					});
 				}
 				$modalInstance.close();
@@ -1193,6 +1287,36 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var cardNo = OrderPayService.cardNo, cardTransID = OrderPayService.cardTransID;
 				var vipCardDeductMoneyCallServer = null, submitOrderCallServer = null;
 
+				var submitOrderSuccess = function (data) {
+					var code = _.result(data, 'code');
+					if (code == "000") {
+						$scope.$broadcast('pay.upVIPCard', null);
+						OrderService.initOrderFoodDB({});
+						_scope.resetOrderInfo();
+						// 3. 打印结账清单
+						Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
+						if (operationMode == 0) {
+							$scope.jumpToTablePage();
+						}
+						$scope.close();
+					} else if (code == 'CS005') {
+						AppAuthEMP.add({
+							yesFn : function (empInfo) {
+								callServer = OrderService.submitOrder('JZ', 
+									_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams()), empInfo);
+								callServer.success(submitOrderSuccess);
+							},
+							noFn : function () {
+
+							}
+						});
+					} else {
+						// HC.TopTip.addTopTips($rootScope, data);
+						// alert(_.result(data, 'msg', ''));
+						AppAlert.add('danger', _.result(data, 'msg', ''));
+					}
+				};
+
 				if (!_.isEmpty(cardNo) && _.isEmpty(cardTransID)) {
 					// 会员卡扣款提交
 					vipCardDeductMoneyCallServer = OrderPayService.vipCardDeductMoney();
@@ -1207,22 +1331,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams())
 							);
 							!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
-								var code = _.result(data, 'code');
-								if (code == "000") {
-									$scope.$broadcast('pay.upVIPCard', null);
-									OrderService.initOrderFoodDB({});
-									_scope.resetOrderInfo();
-									// 3. 打印结账清单
-									Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
-									if (operationMode == 0) {
-										$scope.jumpToTablePage();
-									}
-									$scope.close();
-								} else {
-									// HC.TopTip.addTopTips($rootScope, data);
-									// alert(_.result(data, 'msg', ''));
-									AppAlert.add('danger', _.result(data, 'msg', ''));
-								}
+								submitOrderSuccess(data);
 								
 							});
 						} else {
@@ -1235,22 +1344,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams())
 					);
 					!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
-						var code = _.result(data, 'code');
-						if (code == "000") {
-							$scope.$broadcast('pay.upVIPCard', null);
-							OrderService.initOrderFoodDB({});
-							_scope.resetOrderInfo();
-							// 3. 打印结账清单
-							Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
-							if (operationMode == 0) {
-								$scope.jumpToTablePage();
-							}
-							$scope.close();
-						} else {
-							// HC.TopTip.addTopTips($rootScope, data);
-							AppAlert.add('danger', _.result(data, 'msg', ''));
-							// alert(_.result(data, 'msg', ''));
-						}
+						submitOrderSuccess(data);
 						
 					});
 				}
@@ -2109,8 +2203,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	
 	// 订单操作按钮组
 	app.directive('orderhandlebtns', [
-		"$modal", "$rootScope", "$filter", "OrderService", "OrderPayService", "AppAlert",
-		function ($modal, $rootScope, $filter, OrderService, OrderPayService, AppAlert) {
+		"$modal", "$rootScope", "$filter", "OrderService", "OrderPayService", "AppAlert", "AppAuthEMP",
+		function ($modal, $rootScope, $filter, OrderService, OrderPayService, AppAlert, AppAuthEMP) {
 			return {
 				restrict : 'E',
 				template : [
@@ -2173,6 +2267,28 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						} else if (act == "payOrder" || act == "cashPayOrder") {
 							// 结账操作，需要先提交一次订单，待服务返回结账数据后进行结账
 							submitOrder = OrderService.submitOrder('LD');
+							var successCallBack = function (data) {
+								var code = _.result(data, 'code'),
+									ret = _.result(data, 'data');
+								if (code == '000') {
+									OrderService.initOrderFoodDB(ret);
+									scope.resetOrderInfo();
+									openOrderPayModal();
+								} else if (code == 'CS005') {
+									AppAuthEMP.add({
+										yesFn : function (empInfo) {
+											submitOrder = OrderService.submitOrder('LD', null, empInfo);
+											submitOrder.success(function (data) {
+												successCallBack(data);
+											});
+										},
+										noFn : function () {
+
+										}
+									});
+								}
+								
+							};
 							var openOrderPayModal = function () {
 								var needConfirmFoodNumberItems = OrderService.getNeedConfirmFoodNumberItems();
 								if (needConfirmFoodNumberItems.length > 0) {
@@ -2195,10 +2311,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								openOrderPayModal();
 							} else {
 								submitOrder.success(function (data) {
-									var ret = _.result(data, 'data', {});
-									OrderService.initOrderFoodDB(ret);
-									scope.resetOrderInfo();
-									openOrderPayModal();
+									successCallBack(data);
 								});
 							}
 							
