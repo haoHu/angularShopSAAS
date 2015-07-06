@@ -245,6 +245,9 @@ define(['app'], function (app) {
 						controller = 'AppAuthController',
 						// templateUrl = 'js/services/confirm.html',
 						template = [
+							'<div class="modal-header">',
+								'<h4 class="modal-title">获取临时权限</h4>',
+							'</div>',
 							'<div class="modal-body text-warning">',
 								'<div class="form-horizontal">',
 									'<div class="form-group">',
