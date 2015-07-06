@@ -264,10 +264,10 @@ define(['app'], function (app) {
 							'<div class="modal-footer bg-warning">',
 								'<div class="btn-group btn-group-justified" role="group">',
 									'<div class="btn-group" role="group">',
-										'<button type="button" class="btn btn-warning btn-lg" ng-click="yesFn()">{{confirmSet.yesText}}</button>',
+										'<button type="button" class="btn btn-warning btn-lg" ng-click="yesFn()">{{authSet.yesText}}</button>',
 									'</div>',
 									'<div class="btn-group" role="group">',
-										'<button type="button" class="btn btn-default btn-lg" ng-click="noFn()">{{confirmSet.noText}}</button>',
+										'<button type="button" class="btn btn-default btn-lg" ng-click="noFn()">{{authSet.noText}}</button>',
 									'</div>',
 								'</div>',
 							'</div>'

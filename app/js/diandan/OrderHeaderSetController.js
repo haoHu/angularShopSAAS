@@ -129,7 +129,7 @@ define(['app'], function (app) {
 				});
 				var successCallBack = function (data) {
 					var code = _.result(data, 'code'),
-						rec = data.data.records[0],
+						rec = $XP(data, 'data.records', [])[0],
 						saasOrderKey = _.result(rec, 'saasOrderKey');
 					_scope.updateOrderHeader({
 						person : $scope.person,
