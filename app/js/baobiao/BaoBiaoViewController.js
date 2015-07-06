@@ -239,6 +239,11 @@ define(['app'], function(app)
 			$scope.parseSnippet = function (v) {
 				return $sce.trustAsHtml(v);
 			};
+			// 打印综合营业数据
+			$scope.printCompBizData = function () {
+				var printTxt = ShopCompositeBizService.getReportPrintTxt();
+				Hualala.DevCom.exeCmd("PrintOther", printTxt);
+			};
 			
 
 			initFormParams();

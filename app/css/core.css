@@ -1915,10 +1915,22 @@ body {
   color: #fff;
 }
 .section-baobiao .tab-comp .receipt-box {
+  position: relative;
   height: 100%;
-  overflow: auto;
+  padding: 15px 0px 60px 15px;
+  overflow: hidden;
   border: 1px solid #e6e6e6;
   text-align: left;
+}
+.section-baobiao .tab-comp .receipt-box .receipt-cnt {
+  height: 100%;
+  overflow: auto;
+}
+.section-baobiao .tab-comp .receipt-box .receipt-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 .section-baobiao .tab-comp .receipt-box p {
   margin: 0;

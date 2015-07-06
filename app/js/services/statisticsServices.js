@@ -144,6 +144,9 @@ define(['app'], function (app) {
 				});
 				return htm.join('');
 			};
+			this.getReportPrintTxt = function () {
+				return decodeURIComponent(_.result(compBizData, 'reportPrnTxt', ''));
+			};
 		}
 	]);
 

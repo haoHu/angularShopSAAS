@@ -215,9 +215,12 @@
 				
 			</div>
 		</header>
-		<div class="cnt-body">
-			<div class="col-xs-5 receipt-box" ng-bind-html="parseSnippet(compBizData)">
-				
+		<div class="cnt-body row">
+			<div class="col-xs-5 receipt-box">
+				<div class="receipt-cnt" ng-bind-html="parseSnippet(compBizData)"></div>
+				<div class="receipt-footer">
+					<button type="button" class="btn btn-success btn-lg btn-block" ng-click="printCompBizData()">打印报表</button>
+				</div>
 			</div>
 			<div class="col-xs-7">
 				<h4>查询范围</h4>
