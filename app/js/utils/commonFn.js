@@ -325,7 +325,8 @@
 		var cmdSet = _.result(cmdLib, cmd);
 		var tag = _.result(cmdSet, 'tagName'),
 			isEmptyTag = _.result(cmdSet, 'isEmptyTag');
-		var $inputEl = $('<input type="text" id="site_clipboard"/>').appendTo('body');
+		// var $inputEl = $('<input type="text" id="site_clipboard"/>').appendTo('body');
+		var $inputEl = $('<textarea id="site_clipboard"/>').appendTo('body');
 		var cnt = '<' + tag + '>' + (!isEmptyTag ? msg : '') + '</' + tag + '>';
 		$inputEl.bind('click', function (e) {
 			$inputEl.val(cnt);
