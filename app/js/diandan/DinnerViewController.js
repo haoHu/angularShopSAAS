@@ -524,7 +524,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						});
 					}
 				};
-				callServer.success(successCallBack);
+				if (!_.isEmpty(callServer)) {
+					callServer.success(successCallBack);
+				} else {
+					_scope.refreshOrderList();
+					$modalInstance.close();
+				}
 				
 			};
 			// 赠菜原因变化
