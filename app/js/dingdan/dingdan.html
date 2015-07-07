@@ -283,7 +283,7 @@
 					<button type="button" class="btn btn-default btn-lg" ng-disabled="checkOrderIsVoided()" ng-disabled="reviewBy.length > 0" ng-click="doAudit()">完成审核</button>
 				</div>
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default btn-lg" ng-disabled="checkOrderIsVoided()" ng-click="modifyInvoice()">修改发票</button>
+					<button type="button" class="btn btn-default btn-lg" ng-disabled="checkOrderIsVoided()" ng-click="modifyInvoice()">修改发票及赠券</button>
 				</div>
 			</div>
 			<div class="btn-group btn-group-justified" role="group">
@@ -302,7 +302,7 @@
 
 	<script type="text/ng-template" id="js/dingdan/invoice.html">
 		<div class="modal-header">
-			<h4 class="modal-title">修改订单发票</h4>
+			<h4 class="modal-title">修改订单发票及赠券</h4>
 		</div>
 		<div class="modal-body">
 			<div class="form-horizontal clearfix">
@@ -322,6 +322,18 @@
 					<label for="" class="col-xs-3 control-label">说明</label>
 					<div class="col-xs-9">
 						<input type="text" class="form-control" name="modifyRemark" ng-model="modifyRemark" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-3 control-label">赠券金额</label>
+					<div class="col-xs-9">
+						<input type="text" class="form-control" name="sendCouponAmount" ng-model="sendCouponAmount" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-3 control-label">赠券说明</label>
+					<div class="col-xs-9">
+						<input type="text" class="form-control" name="sendCouponRemark" ng-model="sendCouponRemark" />
 					</div>
 				</div>
 

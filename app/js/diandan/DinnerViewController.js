@@ -1115,8 +1115,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert',
-		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);

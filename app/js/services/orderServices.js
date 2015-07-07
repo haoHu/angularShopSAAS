@@ -1204,10 +1204,10 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 账单审核
 			 * @return {[type]} [description]
 			 */
-			this.orderAudit = function () {
-				return CommonCallServer.orderAudit({
+			this.orderAudit = function (empInfo) {
+				return CommonCallServer.orderAudit(_.extend({
 					saasOrderKey : _.result(self._OrderData, 'saasOrderKey')
-				});
+				}, empInfo));
 			};
 
 			/**
@@ -1224,15 +1224,15 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 订单作废操作
 			 * @return {[type]} [description]
 			 */
-			this.abolishOrder = function (remark) {
+			this.abolishOrder = function (remark, empInfo) {
 				var saasOrderKey = _.result(self._OrderData, 'saasOrderKey');
-				return CommonCallServer.submitOrder({
+				return CommonCallServer.submitOrder(_.extend({
 					actionType : 'ZF',
 					orderJson : JSON.stringify({
 						saasOrderKey : saasOrderKey,
 						saasOrderRemark : remark
 					})
-				});
+				}, empInfo));
 			};
 
 		}]

@@ -222,8 +222,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 
 	/*订单详情模态窗口控制器*/
 	app.controller('OrderDetailViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert',
-		function ($scope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get("SHOPINFO"),
@@ -390,14 +390,30 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			// 完成审核
 			$scope.doAudit = function () {
 				var callServer = OrderService.orderAudit();
-				callServer.success(function (data) {
+				var addAuthEMP = function () {
+					AppAuthEMP.add({
+						yesFn : function (empInfo) {
+							callServer = OrderService.orderAudit(empInfo);
+							callServer.success(successCallBack);
+						},
+						noFn : function () {
+
+						}
+					});
+				};
+				var successCallBack = function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
 						AppAlert.add('success', "完成审核");
 						$scope.reviewBy = $XP(data, 'data.reviewBy', '');
+					} else if (code == 'CS005') {
+						addAuthEMP();
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
+				};
+				callServer.success(function (data) {
+					successCallBack(data);
 				});
 			};
 			// 打开订单详情窗口
@@ -464,8 +480,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 
 	/*订单发票*/
 	app.controller('OrderInvoiceViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert',
-		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get("SHOPINFO"),
@@ -473,6 +489,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			var orderInfo = OrderService.getOrderData();
 			$scope.invoiceTitle = _.result(orderInfo, 'invoiceTitle', '');
 			$scope.invoiceAmount = _.result(orderInfo, 'invoiceAmount', '');
+			$scope.sendCouponAmount = _.result(orderInfo, 'sendCouponAmount', '');
+			$scope.sendCouponRemark = _.result(orderInfo, 'sendCouponRemark', '');
 			$scope.modifyRemark = '';
 			// 关闭窗口
 			$scope.close = function () {
@@ -481,26 +499,46 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 保存数据
 			$scope.save = function () {
-				var callServer = OrderService.updateOrderInvoice({
+				var postParams = {
 					invoiceTitle : $scope.invoiceTitle,
 					invoiceAmount : $scope.invoiceAmount,
-					modifyRemark : $scope.modifyRemark
-				});
-				callServer.success(function (data) {
+					modifyRemark : $scope.modifyRemark,
+					sendCouponAmount : $scope.sendCouponAmount,
+					sendCouponRemark : $scope.sendCouponRemark
+				};
+				var callServer = OrderService.updateOrderInvoice(postParams);
+				var addAuthEMP = function () {
+					AppAuthEMP.add({
+						yesFn : function (empInfo) {
+							callServer = OrderService.updateOrderInvoice(_.extend(postParams, empInfo));
+							callServer.success(successCallBack);
+						},
+						noFn : function () {
+
+						}
+					});
+				};
+				var successCallBack = function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
 						$scope.close();
+					} else if (code == 'CS005') {
+						addAuthEMP();
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
+				};
+				
+				callServer.success(function (data) {
+					successCallBack(data);
 				});
 			};
 		}
 	]);
 	/*账单作废操作*/
 	app.controller('AbolishOrderViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert',
-		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var orderInfo = OrderService.getOrderData();
@@ -513,15 +551,31 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			// 保存数据
 			$scope.save = function () {
 				var callServer = OrderService.abolishOrder($scope.saasOrderRemark);
-				callServer.success(function (data) {
+				var addAuthEMP = function () {
+					AppAuthEMP.add({
+						yesFn : function (empInfo) {
+							callServer = OrderService.abolishOrder($scope.saasOrderRemark, empInfo);
+							callServer.success(successCallBack);
+						},
+						noFn : function () {
+
+						}
+					});
+				};
+				var successCallBack = function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
 						$scope.close();
 						_scope.refreshParentLst();
 						_scope.close();
+					} else if (code == 'CS005') {
+						addAuthEMP();
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
+				};
+				callServer.success(function (data) {
+					successCallBack(data);
 				});
 			};
 		}
