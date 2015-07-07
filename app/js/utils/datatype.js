@@ -226,6 +226,8 @@
 		{value : 'GJ', label : '改价'},
 		{value : 'LSC', label : '临时菜'},
 		{value : 'ZDXQ', label : '账单详情'},
-		{value : 'XSPH', label : '销售排行'}
+		{value : 'XSPH', label : '销售排行'},
+		{value : 'DCRY', label : '点菜人员'},
+		{value : 'ZZRY', label : '制作人员'}
 	];
 })();
