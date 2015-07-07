@@ -26,6 +26,17 @@ define(['app'], function (app) {
                         // HC.TopTip.addTopTips($rootScope, data);
                     });
             };
+
+            $scope.inputKeyup = function ($event) {
+                if ($event.keyCode != 13) return;
+                var el = $($event.target);
+                var tabIdx = parseInt(el.attr('tabIndex'));
+                var nextEl = $('[tabIndex=' + (tabIdx + 1) + ']');
+                
+                el.blur();
+                (nextEl.length > 0 && !nextEl.is('.btn')) ? nextEl.focus() : $scope.submitForm();
+                
+            };
         }
     ]);
 });

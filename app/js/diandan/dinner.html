@@ -96,7 +96,7 @@
 						<div class="form-group">
 							<label for="" class="col-xs-3 control-label">菜品助记码</label>
 							<div class="col-xs-9">
-								<input type="text" class="form-control" ng-model="curSearchKey" ng-change="searchFood()" >
+								<input type="text" class="form-control" ng-model="curSearchKey" ng-change="searchFood()" autofocus="true"  >
 							</div>
 						</div>
 					</div>
@@ -123,7 +123,7 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">数量</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" />
+							<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" autofocus="true"/>
 							<span class="help-block">可以赠送数量：{{enableSendNumber}}</span>
 						</div>
 
@@ -165,7 +165,7 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">数量</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" />
+							<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" autofocus="true" />
 							<span class="help-block">可以退菜数量：{{enableCancelNumber}}</span>
 						</div>
 					</div>
@@ -206,7 +206,7 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">数量</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodCount" ng-model="foodCount" ng-focus="inputFocus($event)"/>
+							<input type="text" class="form-control" name="foodCount" ng-model="foodCount" ng-focus="inputFocus($event)" autofocus="true" />
 							<span class="help-block">当前菜品数量：{{curFoodCount}}</span>
 						</div>
 					</div>
@@ -237,7 +237,7 @@
 					<div class="form-horizontal clearfix">
 						<label for="" class="col-xs-3 control-label">价格</label>
 						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" ng-focus="inputFocus($event)"/>
+							<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" ng-focus="inputFocus($event)" autofocus="true" />
 							<span class="help-block">菜品当前价格：{{curFoodPrice}}</span>
 						</div>
 					</div>
@@ -580,7 +580,8 @@
 					<div class="form-group" ng-repeat="el in formCfg">
 						<label class="col-xs-4 control-label">{{el.label}}</label>
 						<div class="col-xs-8">
-							<input type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
+							<input ng-if="$index == 0" type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true"/>
+							<input ng-if="$index != 0" type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
 						</div>
 					</div>
 				</div>
@@ -600,7 +601,7 @@
 					<label class="col-xs-3 control-label">卡号</label>
 					<div class="col-xs-7">
 						<div class="input-group">
-							<input type="text" class="form-control" name="card_id" value="18910021580" placeholder="卡号/手机号" ng-focus="inputFocus($event)"/>
+							<input type="text" class="form-control" name="card_id" value="18910021580" placeholder="卡号/手机号" ng-focus="inputFocus($event)" autofocus="true"/>
 							<span class="input-group-btn">
 								<button class="btn btn-default" type="button" name="search" data-loading-text="查询中..." autocomplete="off" >查询</button>
 							</span>

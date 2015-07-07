@@ -6,7 +6,7 @@
 				<div class="form-group has-feedback">
 					<label for="shopID" class="col-xs-2 control-label">店铺ID</label>
 					<div class="col-xs-6" ng-class="{'has-class' : signupForm.shopID.$dirty && signupForm.shopID.$valid, 'has-error' : signupForm.shopID.$invalid}">
-						<input type="text" class="form-control" id="shopID" name="shopID" ng-model="signup.shopID" placeholder="请输入店铺ID" bv-notempty >
+						<input type="text" class="form-control" id="shopID" name="shopID" ng-model="signup.shopID" placeholder="请输入店铺ID" bv-notempty tabIndex="1" ng-keyup="inputKeyup($event)" autofocus="true">
 						<small class="help-block" ng-show="signupForm.shopID.$dirty && signupForm.shopID.$error.bvNotempty">请输入店铺ID</small>
 					</div>
 				</div>
@@ -14,7 +14,7 @@
 				<div class="form-group has-feedback">
 					<label for="shopSecret" class="col-xs-2 control-label">通讯密钥</label>
 					<div class="col-xs-6" ng-class="{'has-class' : signupForm.shopSecret.$dirty && signupForm.shopSecret.$valid, 'has-error' : signupForm.shopSecret.$invalid}">
-						<input type="password" class="form-control" id="shopSecret" name="shopSecret" ng-model="signup.shopSecret" placeholder="请输入通讯密钥" bv-notempty bv-strlength min=6 max=32 >
+						<input type="password" class="form-control" id="shopSecret" name="shopSecret" ng-model="signup.shopSecret" placeholder="请输入通讯密钥" bv-notempty bv-strlength min=6 max=32 tabIndex="2" ng-keyup="inputKeyup($event)">
 						<small class="help-block" ng-show="signupForm.shopSecret.$dirty && signupForm.shopSecret.$error.bvNotempty">请输入通讯密钥</small>
 						<small class="help-block" ng-show="signupForm.shopSecret.$dirty && signupForm.shopSecret.$error.bvStrlength">通讯密钥在6到32位之间</small>
 					</div>
@@ -31,7 +31,7 @@
 		<div class="panel-footer">
 			<div class="btn-group btn-group-justified" role="group">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-success btn-lg" ng-disabled="signupForm.$invalid || signupForm.$pristine" fm-submit="submitForm()">注册</button>
+					<button type="button" class="btn btn-success btn-lg" ng-disabled="signupForm.$invalid || signupForm.$pristine" fm-submit="submitForm()" tabIndex="3">注册</button>
 				</div>
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default btn-lg" ng-click="reset()" >取消</button>

@@ -19,7 +19,7 @@
 				<div class="form-group has-feedback">
 					<label for="empCode" class="col-xs-2 control-label">员工编号</label>
 					<div class="col-xs-6" ng-class="{'has-success' : loginForm.empCode.$dirty && loginForm.empCode.$valid, 'has-error' : loginForm.empCode.$invalid}">
-						<input type="text" id="empCode" class="form-control" name="empCode" ng-model="login.empCode" placeholder="员工编号" bv-notempty bv-strlength min="1" max="20">
+						<input type="text" id="empCode" class="form-control" name="empCode" ng-model="login.empCode" placeholder="员工编号" bv-notempty bv-strlength min="1" max="20" autofocus="true" tabIndex="1" ng-keyup="inputKeyup($event)">
 						<small class="help-block" ng-show="loginForm.empCode.$dirty && loginForm.empCode.$error.bvNotempty">请输入员工编号</small>
 						<small class="help-block" ng-show="loginForm.empCode.$dirty && loginForm.empCode.$error.bvStrlength">员工编号必须是1-20位字符</small>
 					</div>
@@ -27,7 +27,7 @@
 				<div class="form-group has-feedback">
 					<label for="empCode" class="col-xs-2 control-label">登录密码</label>
 					<div class="col-xs-6" ng-class="{'has-success' : loginForm.empCode.$dirty && loginForm.empPWD.$valid, 'has-error' : loginForm.empPWD.$invalid}">
-						<input type="password" id="empPWD" class="form-control" name="empPWD" ng-model="login.empPWD" placeholder="请输入登录密码" bv-notempty bv-strlength min="2" max="30">
+						<input type="password" id="empPWD" class="form-control" name="empPWD" ng-model="login.empPWD" placeholder="请输入登录密码" bv-notempty bv-strlength min="2" max="30" tabIndex="2" ng-keyup="inputKeyup($event)">
 						<small class="help-block" ng-show="loginForm.empPWD.$dirty && loginForm.empPWD.$error.bvNotempty">请输入登录密码</small>
 						<small class="help-block" ng-show="loginForm.empPWD.$dirty && loginForm.empPWD.$error.bvStrlength">密码必须在2-30位之间</small>
 					</div>
@@ -44,7 +44,7 @@
 		<div class="panel-footer">
 			<div class="btn-group btn-group-justified" role="group">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-success btn-lg" ng-disabled="loginForm.$invalid || loginForm.$pristine" fm-submit="submitForm()">登录</button>
+					<button type="button" class="btn btn-success btn-lg" ng-disabled="loginForm.$invalid || loginForm.$pristine" fm-submit="submitForm()" tabIndex="3">登录</button>
 				</div>
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default btn-lg" ng-click="reset()" >取消</button>

@@ -1032,4 +1032,20 @@ define(['app'], function (app) {
 
         }
     ]);
+
+    // 自动聚焦元素
+    app.directive('autofocus', [
+        "$timeout",
+        function ($timeout) {
+            return {
+                restrict : 'A',
+                link : function (scope, el, attr) {
+                    $timeout(function () {
+                        el[0].focus();
+                        el[0].select();
+                    })
+                }
+            };
+        }
+    ]);
 });

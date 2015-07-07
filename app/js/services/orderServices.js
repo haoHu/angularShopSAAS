@@ -981,7 +981,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					empName : empName,
 					bizModel : operationMode,
 					allFoodRemark : allFoodRemark
-				}, orderHeader, tmpEMP, {
+				}, orderHeader, {
 					foodLst : foodLst
 				}, (_.isEmpty(self.FJZFlag) ? {} : {FJZFlag : self.FJZFlag}));
 				if (actionType == 'JZ' || actionType == 'YJZ') {
@@ -994,7 +994,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					submitBatchNo : submitBatchNo
 				}, {
 					orderJson : JSON.stringify(orderJson)
-				});
+				}, _.isEmpty(tmpEMP) ? null : tmpEMP);
 				params = Hualala.Common.formatPostData(params);
 
 				IX.Debug.info("Current Post Order Data:");
