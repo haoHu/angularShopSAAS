@@ -1864,6 +1864,9 @@ body {
 .section-soldout .menu-plain {
   padding-bottom: 0;
 }
+.section-baobiao .tab-page {
+  width: 33.33333333%;
+}
 .section-baobiao .tab-cnt {
   position: absolute;
   top: 42px;
