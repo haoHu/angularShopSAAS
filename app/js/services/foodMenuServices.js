@@ -104,7 +104,7 @@ define(['app'], function (app) {
 			 * $$Food : {
 			 * 		foodCategoryNameAlias, foodCategoryName, foodCategoryCode, foodCategoryKey, foodSubjectKey, departmentKeyLst, 
 			 * 		foodKey, foodName, foodCode, isDiscount, minOrderCount, isNeedConfirmFoodNumber, description, tasteList, 
-			 * 		makingMethodList, hotTag, ZXJ, salesCount, takeawayTag, takeoutPackagingFee, isSetFood, 
+			 * 		makingMethodList, hotTag, ZXJ, salesCount, takeawayTag, takeoutPackagingFee, isSetFood, isTempFood,
 			 * 		setFoodDetailJson, __foodUnit : $$FoodUnit, __soldout : {qty}
 			 *   }
 			 * $$FoodUnit : {
@@ -125,7 +125,7 @@ define(['app'], function (app) {
 					foodSoldOutHT = new IX.IListManager();
 				var FoodDBKeys = ('foodCategoryNameAlias,foodCategoryName,foodCategoryCode,foodCategoryKey,foodSubjectKey,departmentKeyLst,'
 										+ 'foodKey,foodName,foodCode,isDiscount,minOrderCount,isNeedConfirmFoodNumber,description,tasteList,'
-										+ 'makingMethodList,hotTag,ZXJ,salesCount,takeawayTag,takeoutPackagingFee,isSetFood,'
+										+ 'makingMethodList,hotTag,ZXJ,salesCount,takeawayTag,takeoutPackagingFee,isSetFood,isTempFood,'
 										+ 'setFoodDetailJson,__foodUnit,__soldout,py').split(','),
 					FoodUnitKeys = 'unitKey,unit,originalPrice,price,vipPrice'.split(','),
 					FoodCategoryDBKeys = 'foodCategoryNameAlias,foodCategoryName,foodCategoryCode,foodCategoryKey,__foods'.split(',');
@@ -359,6 +359,17 @@ define(['app'], function (app) {
 				var food = self.foodHT.get(unitKey),
 					isSetFood = _.result(food, 'isSetFood', 0);
 				return isSetFood == 1 ? true : false;
+			};
+
+			/**
+			 * 判断菜品是否临时菜
+			 * @param  {[type]}  unitKey [description]
+			 * @return {Boolean}         [description]
+			 */
+			this.isTempFood = function (unitKey) {
+				var food = self.foodHT.get(unitKey),
+					isTempFood = _.result(food, 'isTempFood', 0);
+				return isTempFood == 1 ? true : false;
 			};
 
 		}]

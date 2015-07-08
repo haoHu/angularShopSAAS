@@ -189,6 +189,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var food = FoodMenuService.getFoodByUnitKey(unitKey),
 					soldout = _.result(food, '__soldout', null),
 					isSetFood = FoodMenuService.isSetFood(unitKey),
+					isTempFood = FoodMenuService.isTempFood(unitKey),
 					item = null;
 				var qty = _.result(soldout, 'qty', '');
 				if (!_.isEmpty(soldout)) {
@@ -205,6 +206,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					$scope.curSetFoodUnitKey = unitKey;
 					$scope.openSetFoodCfg();
 					// item = OrderService.insertSetFoodItem(food);
+				} else if (isTempFood) {
+					// 临时菜需要弹出配置临时菜的窗口
+					$scope.openTempFoodCfg(unitKey);
 				} else {
 					item = OrderService.insertCommonFoodItem(food);
 				}
@@ -373,6 +377,31 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					resolve = {
 						_scope : function () {
 							return $scope;
+						}
+					};
+
+				$modal.open({
+					size : modalSize,
+					windowClass : windowClass,
+					controller : controller,
+					templateUrl : templateUrl,
+					resolve : resolve,
+					backdrop : backdrop
+				});
+			};
+
+			// 打开临时菜配置窗口
+			$scope.openTempFoodCfg = function (unitKey) {
+				var modalSize = "md",
+					windowClass = "tempfood-modal",
+					backdrop = "static",
+					controller = "TempFoodSettingController",
+					templateUrl = "js/diandan/tempFoodSetting.html",
+					resolve = {
+						_scope : function () {
+							return _.extend($scope, {
+								curTempFoodUnitKey : unitKey
+							});
 						}
 					};
 
@@ -1091,6 +1120,48 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				$modalInstance.close();
 			};
 
+		}
+	]);
+
+	// 临时菜配置窗口
+	app.controller('TempFoodSettingController', [
+		'$scope', '$modalInstance', '$filter', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, AppAlert) {
+			IX.ns("Hualala");
+			var curTempFoodUnitKey = _scope.curTempFoodUnitKey;
+			var tempFoodData = IX.clone(FoodMenuService.getFoodByUnitKey(curTempFoodUnitKey));
+			$scope.foodName = _.result(tempFoodData, 'foodName', '');
+			$scope.foodPrice = $XP(tempFoodData, '__foodUnit.price', '0');
+			$scope.unit = $XP(tempFoodData, '__foodUnit.unit', '');
+			// 关闭窗口
+			$scope.close = function () {
+				$modalInstance.close();
+			};
+			// 提交并关闭窗口
+			$scope.save = function () {
+				tempFoodData.__foodUnit.unit = $scope.unit;
+				tempFoodData.__foodUnit.price = $scope.foodPrice;
+				tempFoodData.__foodUnit.originalPrice = $scope.foodPrice;
+				tempFoodData.__foodUnit.vipPrice = $scope.foodPrice;
+				tempFoodData.foodName = $scope.foodName;
+				OrderService.insertCommonFoodItem(tempFoodData);
+				_scope.refreshOrderList();
+				$modalInstance.close();
+			};
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly') && !curEl.attr('disabled')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
+			};
 		}
 	]);
 
