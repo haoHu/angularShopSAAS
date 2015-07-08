@@ -9,7 +9,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.FJZFlag = '';
 
 			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasOrderRemark,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate'.split(','),
-				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
+				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isTempFood,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
 				FoodItemTypes = {
 					"-1" : "NotExist",
 					"0" : "CommonFood",
