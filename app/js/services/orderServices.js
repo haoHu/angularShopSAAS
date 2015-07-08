@@ -273,6 +273,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					isNeedConfirmFoodNumber = _.result(food, 'isNeedConfirmFoodNumber', "0"),
 					isDiscount = _.result(food, 'isDiscount', "0"),
 					isSetFood = _.result(food, 'isSetFood', "0"),
+					isTempFood = _.result(food, 'isTempFood', "0"),
 					setFoodDetailJson = _.result(food, 'setFoodDetailJson', ''),
 					setFoodDetailLst = _.isEmpty(setFoodDetailJson) ? [] : _.result(setFoodDetailJson, 'foodLst');
 				var foodItemPostKeys = FoodItemKeys;
