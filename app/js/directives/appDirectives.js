@@ -981,6 +981,7 @@ define(['app'], function (app) {
                 template : [
                     '<div id="food_menu" class="foods" pager-list="common" pager-data="{{curFoods.length}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">',
                         '<div class="col-xs-2 btn cell-btn" ng-class="{\'soldouted\' : food.__soldout && food.__soldout.qty == 0, \'soldout-food\' : food.__soldout && food.__soldout.qty != 0}" unit-key="{{food.__foodUnit.unitKey}}" ng-repeat="food in curFoods" ng-click="insertFoodItem(food.__foodUnit.unitKey)">',
+                            '<span ng-if="food.ZXJ.length > 0" class="food-tag {{getFoodTag(food)}}"></span>',
                             '<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>',
                             '<p class="unit">',
                                 '{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}',

@@ -502,6 +502,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 			};
 
+			$scope.getFoodTag = function (food) {
+				var _ZXJ = _.result(food, 'ZXJ');
+				return _ZXJ == 'Z' ? 'zfood' : (_ZXJ == 'J' ? 'jfood' : 'xfood');
+			};
+
 		}
 	]);
 

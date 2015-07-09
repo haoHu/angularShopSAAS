@@ -331,6 +331,35 @@ body {
   background-color: #F0AD4E;
   border-color: #EEA236;
 }
+.section-diandan .menu-plain .foods > .cell-btn .food-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 16px;
+  text-align: left;
+  background-color: transparent;
+  background-size: 32px 32px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 0 0, 100% 100%, from(#ff6600), color-stop(0.5, #ff6600), color-stop(0.5, transparent), to(transparent));
+}
+.section-diandan .menu-plain .foods > .cell-btn .food-tag:after {
+  padding-left: 4px;
+  font-size: 1rem;
+  color: #fff;
+}
+.section-diandan .menu-plain .foods > .cell-btn .food-tag.zfood:after {
+  content: "招";
+}
+.section-diandan .menu-plain .foods > .cell-btn .food-tag.xfood:after {
+  content: "新";
+}
+.section-diandan .menu-plain .foods > .cell-btn .food-tag.jfood:after {
+  content: "荐";
+}
 .section-diandan .order-header > div {
   padding: .5rem;
 }

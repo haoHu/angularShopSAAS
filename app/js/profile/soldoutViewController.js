@@ -190,6 +190,10 @@ define(['app'], function (app) {
 					}
 				})
 			};
+			$scope.getFoodTag = function (food) {
+				var _ZXJ = _.result(food, 'ZXJ');
+				return _ZXJ == 'Z' ? 'zfood' : (_ZXJ == 'J' ? 'jfood' : 'xfood');
+			};
 			var _locationChangeStartEvt = $scope.$on('$locationChangeStart', function (ev, tarHref, curHref) {
 				console.info('locationChangeStart');
 				console.info(arguments);
