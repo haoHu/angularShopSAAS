@@ -1510,15 +1510,6 @@ body {
 .section-jiedan .serv-type {
   font-size: 3rem;
 }
-.section-jiedan p,
-.section-jiedan address {
-  margin: 0 0 3px;
-  padding: 0;
-  max-width: 20rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .section-jiedan .orderlst .table td {
   vertical-align: middle;
 }
@@ -1577,6 +1568,17 @@ body {
 .section-jiedan .order-info > .media {
   padding: .5rem;
 }
+.section-jiedan .orderlst-grid {
+  table-layout: fixed;
+}
+.section-jiedan .orderlst-grid tr > td:first-child,
+.section-jiedan .orderlst-grid tr > th:first-child {
+  width: 4rem;
+}
+.section-jiedan .orderlst-grid tr > td:last-child,
+.section-jiedan .orderlst-grid tr > th:last-child {
+  width: 8rem;
+}
 .section-jiedan .orderlst-grid .unreaded {
   font-weight: bold;
 }
@@ -1587,6 +1589,14 @@ body {
   background-color: #336699 !important;
   color: #ffffff;
 }
+.section-jiedan .orderlst-grid p,
+.section-jiedan .orderlst-grid address {
+  margin: 0 0 3px;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .section-jiedan .order-info .num,
 .section-jiedan .orderlst-body .num,
 .section-jiedan .order-info .date,
@@ -1596,9 +1606,7 @@ body {
 .section-jiedan .order-info .sex,
 .section-jiedan .orderlst-body .sex,
 .section-jiedan .order-info .mobile,
-.section-jiedan .orderlst-body .mobile,
-.section-jiedan .order-info .num,
-.section-jiedan .orderlst-body .num {
+.section-jiedan .orderlst-body .mobile {
   display: inline-block;
   margin-right: 1rem;
 }

@@ -56,7 +56,7 @@
 		.x-icon-32_helpself();
 	}
 	.serv-type {font-size: 3rem;}
-	p, address {margin: 0 0 3px; padding : 0; max-width : 20rem; white-space: nowrap; overflow: hidden; text-overflow : ellipsis;}
+	
 	.orderlst .table {
 		td {vertical-align: middle;}
 	}
@@ -93,15 +93,23 @@
 	}
 
 	.orderlst-grid {
+		table-layout: fixed;
+		tr > td:first-child, tr > th:first-child {
+			width : 4rem;
+		}
+		tr > td:last-child, tr > th:last-child {
+			width : 8rem;
+		}
 		.unreaded {font-weight: bold;}
 		.refunded {color : #3C763D!important;}
 		tr.active > td {
 			background-color: @xDarkBtnActiveBG!important; color : @xDarkBtnActiveColor;
 		}
+		p, address {margin: 0 0 3px; padding : 0;  white-space: nowrap; overflow: hidden; text-overflow : ellipsis;}
 	}
 
 	.order-info, .orderlst-body {
-		.num, .date, .name, .sex, .mobile, .num {
+		.num, .date, .name, .sex, .mobile {
 			display: inline-block; margin-right : 1rem;
 		}
 		.status + .date {
