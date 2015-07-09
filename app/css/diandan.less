@@ -542,12 +542,18 @@
 				color: @occupyColor;
 				background-color: @occupyBG;
 				border-color: #e6e6e6;
+				&.active, &:active {
+					background-color : darken(@occupyBG, 10%);
+				}
 			}
 			// 桌台空闲
 			&.idle {
 				color: @idleColor;
 				background-color: @idleBG;
 				border-color: #e6e6e6;
+				&.active, &:active {
+					background-color : darken(@idleBG, 10%);
+				}
 			}
 			// 桌台禁用
 			&.disabled {
@@ -555,9 +561,10 @@
 				background-color: @disabledBG;
 				border-color: @disabledBorder;
 			}
-			&.active, &:active {
-				background-color: darken(@xDarkBtnBG, 50%);
-			}
+			// 需求变更，桌台选择按钮选中状态时要根据桌台状态，设置背景色高亮
+			// &.active, &:active {
+			// 	background-color: darken(@xDarkBtnBG, 50%);
+			// }
 			p {
 				position : absolute; width : 100%; text-align: center;
 				font-weight: bold; font-size: 1rem;

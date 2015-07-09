@@ -1101,23 +1101,29 @@ body {
   background-color: #d9534f;
   border-color: #e6e6e6;
 }
+.section-table .table-menu .cell-btn.occupy.active,
+.table-ctrl .table-menu .cell-btn.occupy.active,
+.section-table .table-menu .cell-btn.occupy:active,
+.table-ctrl .table-menu .cell-btn.occupy:active {
+  background-color: #c9302c;
+}
 .section-table .table-menu .cell-btn.idle,
 .table-ctrl .table-menu .cell-btn.idle {
   color: #ffffff;
   background-color: #5cb85c;
   border-color: #e6e6e6;
 }
+.section-table .table-menu .cell-btn.idle.active,
+.table-ctrl .table-menu .cell-btn.idle.active,
+.section-table .table-menu .cell-btn.idle:active,
+.table-ctrl .table-menu .cell-btn.idle:active {
+  background-color: #449d44;
+}
 .section-table .table-menu .cell-btn.disabled,
 .table-ctrl .table-menu .cell-btn.disabled {
   color: #ffffff;
   background-color: #bdbcbb;
   border-color: #e6e6e6;
-}
-.section-table .table-menu .cell-btn.active,
-.table-ctrl .table-menu .cell-btn.active,
-.section-table .table-menu .cell-btn:active,
-.table-ctrl .table-menu .cell-btn:active {
-  background-color: #004c99;
 }
 .section-table .table-menu .cell-btn p,
 .table-ctrl .table-menu .cell-btn p {
