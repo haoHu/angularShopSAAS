@@ -391,12 +391,15 @@ define(['app'], function (app) {
 				items = _.map(items, function (food) {
 					var foodName =  _.result(food, 'foodName', ''),
 						unit = _.result(food, 'unit', ''),
+						number = _.result(food, 'number'),
 						addPrice = _.result(food, 'addPrice', 0),
 						selected = _.result(food, 'selected', 0),
 						unitKey = _.result(food, 'unitKey');
 					// selected == 1 && selectedFoods.push(unitKey);
 					
-					var txt = '<p>' + foodName + '/' + unit + '</p>';
+					var txt = '<p>' + foodName + '/' + unit 
+						+ (number != 1 ? (' x ' + number) : '')
+						+ '</p>';
 					if (parseFloat(addPrice) > 0) {
 						txt += '<p>加价￥' + addPrice + '</p>';
 					}
