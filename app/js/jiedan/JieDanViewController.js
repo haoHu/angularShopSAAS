@@ -213,9 +213,21 @@ define(['app'], function(app) {
 						if (acceptTime == 0) {
 							// CloudOrderLstService.updateOrder($scope.curOrderDetail);
 							// updateOrderLstData();
+							// 更新订单列表数据
 							$scope.queryOrderLst({
 								pageNo : $scope.curPageNo,
 								pageSize : $scope.pageSize
+							});
+							CloudOrderService.getOrderByOrderKey({
+								orderKey : _.result(order, 'orderKey', '')
+							}).success(function (data) {
+								var code = _.result(data, 'code');
+								if (code == '000') {
+									$scope.curOrderDetail = CloudOrderService.getOrderDetail();
+									updateOrderBtnsStatus();
+								} else {
+									AppAlert.add('danger', _.result(data, 'msg', ''));
+								}
 							});
 						}
 					} else {
