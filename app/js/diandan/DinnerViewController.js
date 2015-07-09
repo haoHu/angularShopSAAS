@@ -2284,8 +2284,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	
 	// 订单操作按钮组
 	app.directive('orderhandlebtns', [
-		"$modal", "$rootScope", "$filter", "OrderService", "OrderPayService", "AppAlert", "AppAuthEMP",
-		function ($modal, $rootScope, $filter, OrderService, OrderPayService, AppAlert, AppAuthEMP) {
+		"$modal", "$rootScope", "$filter", "storage", "OrderService", "OrderPayService", "AppAlert", "AppAuthEMP",
+		function ($modal, $rootScope, $filter, storage, OrderService, OrderPayService, AppAlert, AppAuthEMP) {
 			return {
 				restrict : 'E',
 				template : [
@@ -2303,6 +2303,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				replace : true,
 				link : function (scope, el, attr) {
 					var submitOrder = null;
+					var shopInfo = storage.get("SHOPINFO"),
+						operationMode = _.result(shopInfo, 'operationMode');
+					if (operationMode != 0) {
+						el.find('.btn[name=return]').attr('disabled', true);
+					}
 					el.on('click', '.btn-block', function (e) {
 						var btn = $(this), act = btn.attr('name');
 						var modalSize = "lg",
@@ -2333,6 +2338,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								scope.$apply("openCashBox()");
 								break;
 							case "return":
+								if (operationMode != 0) {
+									return;
+								}
 								scope.$apply("jumpToTablePage()");
 								break;
 						}
