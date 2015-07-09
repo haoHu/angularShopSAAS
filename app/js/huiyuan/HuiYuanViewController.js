@@ -113,6 +113,11 @@ define(['app'], function(app)
                 $scope.panel_userinfo.show();
             };
 
+            $scope.prtvipinfo = function() {
+
+                Hualala.DevCom.exeCmd('PrintOther', JSON.stringfy($scope.user));
+            };
+
             //打开日历
             $scope.openDatePicker = function ($event, n) {
                 $event.preventDefault();
@@ -455,7 +460,8 @@ define(['app'], function(app)
                                 '<li role="presentation" ng-repeat="el in rechargeplans" setid="{{el.saveMoneySetID}}">',
                                     '<div class="name">{{el.setName}}</div>',
                                     '<div class="savemoney">*储值金额：{{el.setSaveMoney}}元</div>',
-                                    '<div class="returnmoney">*送返金额：{{el.returnMoney}}元</div>',
+                                    '<div class="returnmoney" return="{{el.returnMoney}}">*送返金额：{{el.returnMoney}}元</div>',
+                                    '<div class="returnpoint" return="{{el.returnPoint}}">*送返积分：{{el.returnPoint}}元</div>',
                                 '</li>',
                             '</ul>',
                         '</div>',
@@ -483,6 +489,8 @@ define(['app'], function(app)
 
                         if(1 == newValue) {
                             $('.panel-rechargeplan').show();
+
+                            el.find('div[return="0.00"]').hide();
                         }else {
                             $('.panel-rechargeplan').hide();
                         }
@@ -517,6 +525,8 @@ define(['app'], function(app)
                             }).success(function(data) {
                                 if(data.code == '000') {
                                     scope.AA.add('success', '储值成功！');
+
+                                    Hualala.DevCom.exeCmd('PrintCRMTransBill', data.transReceiptsTxt);
                                     scope.panel_userinfo.hide();
                                     init();
                                 }else{
@@ -763,6 +773,8 @@ define(['app'], function(app)
                                 if(data.code == '000') {
                                     scope.AA.add('success', '消费成功！');
                                     scope.panel_userinfo.hide();
+
+                                    Hualala.DevCom.exeCmd('PrintCRMTransBill', data.transReceiptsTxt);
                                     init();
                                 }else{
                                     scope.AA.add('danger', data.msg);
@@ -1016,8 +1028,8 @@ define(['app'], function(app)
                                     '<tr role="presentation" ng-repeat="el in reportlist"><td>{{el.transIDFormat}}</td><td>{{el.cardNo}}</td><td>{{el.customerName}}</td><td>{{el.customerMobile}}</td><td>{{handletype[el.transType]}}</td><td>{{el.transTimeFormat}}</td><td>{{el.cunsumptionAmount}}</td><td>{{el.pointChange}}</td></tr>',
                                 '</table>',
                             '</div>',
-                            '<div class="panel-report-list" style="display:none;">{{reportprnstr}}',
-                            '</div>',
+                            '<textarea class="panel-report-list" style="display:none;width:564px;height:480px;">{{reportprnstr}}',
+                            '</textarea>',
                         '</div>',
                     '</div>'
                 ].join(''),
