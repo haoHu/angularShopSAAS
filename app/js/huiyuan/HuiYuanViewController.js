@@ -31,6 +31,8 @@ define(['app'], function(app)
 
             $scope.rechargeplans = [];
 
+            $scope.vipinfo = null;
+
             $scope.panel_userinfo = {
                 show: function() {
                     $('.userinfo').show();
@@ -110,11 +112,22 @@ define(['app'], function(app)
                     cardkey: d.cardKey
                 };
 
+                $scope.userorg = d;
+
                 $scope.panel_userinfo.show();
+
+                if(d.isMobileCard == 1 && d.transSafeLevel != '0') {
+                    $scope.ispwd = 1;
+                }
+
+                $scope.$watch('ispwd', function(n, o) {
+                    if(n == 1) {
+                        $('.formpwd').show();
+                    }
+                });
             };
 
             $scope.prtvipinfo = function() {
-
                 Hualala.DevCom.exeCmd('PrintOther', JSON.stringfy($scope.user));
             };
 
@@ -224,6 +237,16 @@ define(['app'], function(app)
                             '<div class="form-group">',
                                 '<label>手机号码</label>',
                                 '<input style="width:187px;" type="text" class="form-control phonenumber" ng-model="phonenumber">',
+                                '<input type="checkbox" ng-model="checkmobile" value="1">验证手机号',
+                            '</div>',
+                        '</div>',
+                        '<div style="display:none;margin-top:10px;" class="formcode">',
+                            '<div class="form-group">',
+                                '<label>验证码</label>',
+                                '<div class="input-group">',
+                                    '<input style="width: 107px;" type="text" ng-model="checkcode" class="form-control checkcode">',
+                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-sendcheckcode">发送验证码</button></span>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -296,6 +319,7 @@ define(['app'], function(app)
                         scope.cardfee = 0;
                         scope.birthday = null;
                         scope.cardpassword = '888888';
+                        scope.checkmobile = '0';
                     };
                     init();
 
@@ -318,6 +342,59 @@ define(['app'], function(app)
                             }
                         }else {
                             scope.AA.add('danger', data.msg);
+                        }
+                    });
+
+                    scope.$watch('checkmobile',function(n, o) {
+                        if(n == 1) {
+                            el.find('.formcode').show();
+                        }else {
+                            el.find('.formcode').hide();
+                        }
+                    });
+
+                    //获取验证码按钮
+
+                    var createCode = function() {
+                        var str = '0123456789';
+
+                        var code = '';
+
+                        for(var i = 0; i < 5; i ++) {
+                            code += str.charAt(Math.floor(Math.random() * 6));
+                        }
+
+                        return code;
+                    };
+
+                    var ti;
+                    el.on('click', '.btn-sendcheckcode', function() {
+                        if(scope.phonenumber) {
+                            var time = 60;
+                            var self = $(this);
+
+                            if(!self.hasClass('btn-disable')) {
+                                scope.CCS.sendCode({
+                                    customerMobile: scope.phonenumber,
+                                    SMSVerCode: createCode()
+                                }).success(function(data) {
+                                    if(data.code == '000') {
+                                        self.html('60秒后重新发送').addClass('btn-disable');
+
+                                        ti = setInterval(function() {
+                                            if(time > 0) {
+                                                time --;
+                                                self.html(time + '秒后重新发送')
+                                            }else{
+                                                clearInterval(ti);
+                                                self.html('获取验证码').removeClass('btn-disable');
+                                            }
+                                        }, 1000);
+                                    }else{
+                                        scope.AA.add('danger', data.msg);
+                                    }
+                                });
+                            }
                         }
                     });
 
@@ -363,7 +440,7 @@ define(['app'], function(app)
                             customerName: scope.username,
                             customerSex: scope.sex,
                             customerMobile: scope.phonenumber,
-                            isMobileChecked: '0',
+                            isMobileChecked: scope.checkmobile,
                             customerBirthday: IX.Date.getDateByFormat(scope.birthday, 'yyyy-MM-dd'),
                             birthdayType: '0',
                             oldSystemcardNO: scope.oldcardnumber,
@@ -589,10 +666,19 @@ define(['app'], function(app)
                             '<span><-现金支付那部分金额</span>',
                             '</div>',
                         '</div>',
+                        '<div style="display:none;margin-top:10px;" class="formpwd">',
+                            '<div class="form-group">',
+                                '<label>动态交易密码</label>',
+                                '<div class="input-group">',
+                                    '<input style="width: 107px;" type="text" ng-model="transpwd" class="form-control transpwd">',
+                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-sendtranspwd">发送动态交易密码</button></span>',
+                                '</div>',
+                            '</div>',
+                        '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>备注</label>',
-                                '<input style="width: 187px;" type="text" class="form-control remark">',
+                                '<input style="width: 187px;" type="text" class="form-control remark" ng-model="remark">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -636,8 +722,40 @@ define(['app'], function(app)
                             el: ''
                         }
                         scope.usevoucher = [];
+                        scope.ispwd = 0;
                     };
                     init();
+
+
+                    //获取验证码按钮
+
+                    var ti;
+                    el.on('click', '.btn-sendtranspwd', function() {
+                        var time = 60;
+                        var self = $(this);
+
+                        if(!self.hasClass('btn-disable')) {
+                            scope.CCS.sendTransPWD({
+                                cardID: scope.userorg.cardKey
+                            }).success(function(data) {
+                                if(data.code == '000') {
+                                    self.html('60秒后重新发送').addClass('btn-disable');
+
+                                    ti = setInterval(function() {
+                                        if(time > 0) {
+                                            time --;
+                                            self.html(time + '秒后重新发送')
+                                        }else{
+                                            clearInterval(ti);
+                                            self.html('获取验证码').removeClass('btn-disable');
+                                        }
+                                    }, 1000);
+                                }else{
+                                    scope.AA.add('danger', data.msg);
+                                }
+                            });
+                        }
+                    });
 
                     scope.$watch('usevoucher', function(newValue, oldValue) {
                         var sum = 0;
@@ -759,6 +877,8 @@ define(['app'], function(app)
                         if(!$(this).hasClass('disable')) {
                             scope.CCS.deductMoney({
                                 cardKey: scope.user.cardkey,
+                                cardTransPWD: scope.transpwd,
+                                isMobileCard: scope.userorg.isMobileCard,
                                 consumptionAmount: scope.group.consumeamount,
                                 consumptionPointAmount: scope.group.pointgetamount,
                                 deductGiftAmount: scope.group.usevoucheramount,
@@ -959,7 +1079,7 @@ define(['app'], function(app)
                     };
 
                     var createCode = function() {
-                        var str = '123456789';
+                        var str = '0123456789';
 
                         var code = '';
 
