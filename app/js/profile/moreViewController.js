@@ -111,6 +111,9 @@ define(['app'], function (app) {
 			$scope.appExit = function (e) {
 				Hualala.DevCom.exeCmd('AppExit');
 			};
+			$scope.isDevMode = function () {
+				return window.HualalaWorkMode == 'dev';
+			};
 		}
 	]);
 

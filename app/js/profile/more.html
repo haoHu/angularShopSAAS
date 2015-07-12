@@ -4,10 +4,10 @@
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appVersionSetting($event)">版本信息</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appModifyPWD($event)">修改密码</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appSetting($event)">站点设置</button>
-		<button class="btn btn-default col-xs-4" type="button" ng-click="appDebug($event)">调试</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appServerInfo($event)">服务器信息</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appLogout()">注销</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appExit($event)">退出</button>
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appDebug($event)" ng-if="isDevMode()">调试</button>
 	</div>
 	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 	
