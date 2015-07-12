@@ -300,9 +300,15 @@
 		<div class="modal-body">
 			<form class="form-horizontal" name="modifypwd" role="form" novalidate="novalidate">
 				<div class="form-group">
-					<label for="oldpwd" class="col-xs-3 control-label">旧密码</label>
-					<div class="col-xs-6" ng-class="{'has-success' : modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$valid, 'has-error' : modifypwd.empOldPWD.$invalid}">
-						
+					<label for="oldpwd" class="col-xs-3 control-label">员工编号</label>
+					<div class="col-xs-6" >
+						<p class="form-control-static" >{{formData.empCode}}</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="oldpwd" class="col-xs-3 control-label">员工姓名</label>
+					<div class="col-xs-6" >
+						<p class="form-control-static" >{{formData.empName}}</p>
 					</div>
 				</div>
 				<div class="form-group">

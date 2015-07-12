@@ -180,7 +180,9 @@ define(['app'], function (app) {
 				empOldPWD : '',
 				empNewPWD : '',
 				confirmPWD : '',
-				empKey : _.result(empInfo, 'empCode', '')
+				empKey : _.result(empInfo, 'empCode', ''),
+				empCode : _.result(empInfo, 'empCode', ''),
+				empName : _.result(empInfo, 'empName', '')
 			};
 			
 			// 关闭窗口
