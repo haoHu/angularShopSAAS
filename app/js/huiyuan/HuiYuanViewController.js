@@ -367,16 +367,18 @@ define(['app'], function(app)
                         return code;
                     };
 
-                    var ti;
+                    var ti, checkcode;
                     el.on('click', '.btn-sendcheckcode', function() {
                         if(scope.phonenumber) {
                             var time = 60;
                             var self = $(this);
 
                             if(!self.hasClass('btn-disable')) {
+                                checkcode = createCode();
+
                                 scope.CCS.sendCode({
                                     customerMobile: scope.phonenumber,
-                                    SMSVerCode: createCode()
+                                    SMSVerCode: checkcode
                                 }).success(function(data) {
                                     if(data.code == '000') {
                                         self.html('60秒后重新发送').addClass('btn-disable');
@@ -430,31 +432,34 @@ define(['app'], function(app)
 
                     //点击提交按钮时
                     el.on('click', '.btn-submit-join', function() {
-                        alert(scope.realcardnumber)
-                        scope.CCS.createVIPCard({
-                            shopName: null,
-                            cardNO: scope.realcardnumber,
-                            cardLevelID: scope.cardlevelid,
-                            cardFee: scope.cardfee,
-                            cardPWD: scope.cardpassword,
-                            customerName: scope.username,
-                            customerSex: scope.sex,
-                            customerMobile: scope.phonenumber,
-                            isMobileChecked: scope.checkmobile,
-                            customerBirthday: IX.Date.getDateByFormat(scope.birthday, 'yyyy-MM-dd'),
-                            birthdayType: '0',
-                            oldSystemcardNO: scope.oldcardnumber,
-                            oldCardMoneyBalnace: scope.oldrechargeamount,
-                            oldCardPointBalnace: scope.oldpointamount
-                        }).success(function(data) {
-                            if(data.code == '000') {
-                                scope.AA.add('success', '办卡成功！');
-                                scope.panel_userinfo.hide();
-                                init();
-                            }else{
-                                scope.AA.add('danger', data.msg);
-                            }
-                        });
+                        if(checkcode == scope.checkcode) {
+                            scope.CCS.createVIPCard({
+                                shopName: null,
+                                cardNO: scope.realcardnumber,
+                                cardLevelID: scope.cardlevelid,
+                                cardFee: scope.cardfee,
+                                cardPWD: scope.cardpassword,
+                                customerName: scope.username,
+                                customerSex: scope.sex,
+                                customerMobile: scope.phonenumber,
+                                isMobileChecked: scope.checkmobile,
+                                customerBirthday: IX.Date.getDateByFormat(scope.birthday, 'yyyy-MM-dd'),
+                                birthdayType: '0',
+                                oldSystemcardNO: scope.oldcardnumber,
+                                oldCardMoneyBalnace: scope.oldrechargeamount,
+                                oldCardPointBalnace: scope.oldpointamount
+                            }).success(function(data) {
+                                if(data.code == '000') {
+                                    scope.AA.add('success', '办卡成功！');
+                                    scope.panel_userinfo.hide();
+                                    init();
+                                }else{
+                                    scope.AA.add('danger', data.msg);
+                                }
+                            });
+                        }else {
+                            scope.AA.add('danger', '验证码错误！');
+                        }
                     });
                 }
             };
@@ -1027,16 +1032,17 @@ define(['app'], function(app)
                     });
 
                     //获取验证码按钮
-                    var ti;
+                    var ti,msgcode;
                     el.on('click', '.btn-getmsgcode', function() {
                         if(scope.sendcodephone) {
                             var time = 60;
                             var self = $(this);
 
                             if(!self.hasClass('btn-disable')) {
+                                msgcode = createCode();
                                 scope.CCS.sendCode({
                                     customerMobile: scope.sendcodephone,
-                                    SMSVerCode: createCode()
+                                    SMSVerCode: msgcode
                                 }).success(function(data) {
                                     if(data.code == '000') {
                                         self.html('60秒后重新发送').addClass('btn-disable');
@@ -1093,21 +1099,25 @@ define(['app'], function(app)
                     //点击提交按钮时
                     el.on('click', '.btn-submit-handle', function() {
                         if(!$(this).hasClass('disable')) {
-                            scope.CCS.cardOption({
-                                cardID: scope.user.cardkey,
-                                optionType: scope.handletype[scope.handler],
-                                remark: scope.remark,
-                                newCardNoOrMobile: getval(scope.handler),
-                                oldCardNoOrMobile: getval(scope.handler)
-                            }).success(function(data) {
-                                if(data.code == '000') {
-                                    scope.AA.add('success', '操作成功！');
-                                    scope.panel_userinfo.hide();
-                                    init();
-                                }else{
-                                    scope.AA.add('danger', data.msg);
-                                }
-                            });
+                            if(scope.handler == '绑定手机号' && msgcode != scope.msgcode) {
+                                scope.AA.add('danger', '验证码错误！');
+                            }else {
+                                scope.CCS.cardOption({
+                                    cardID: scope.user.cardkey,
+                                    optionType: scope.handletype[scope.handler],
+                                    remark: scope.remark,
+                                    newCardNoOrMobile: getval(scope.handler),
+                                    oldCardNoOrMobile: getval(scope.handler)
+                                }).success(function(data) {
+                                    if(data.code == '000') {
+                                        scope.AA.add('success', '操作成功！');
+                                        scope.panel_userinfo.hide();
+                                        init();
+                                    }else{
+                                        scope.AA.add('danger', data.msg);
+                                    }
+                                });
+                            }
                         }
                     });
                 }
