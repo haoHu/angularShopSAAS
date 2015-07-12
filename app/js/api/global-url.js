@@ -108,6 +108,8 @@ define(['IX'], function () {
         ,["reportDetail", "/crm/report/detail.ajax", "", "POST"]
         //发送验证码短信
         ,["sendCode", "/crm/mobile/code.ajax", "", "POST"]
+        //发送动态交易密码
+        ,["sendTransPWD", "/crm/card/sendTransPWD.ajax", "", "POST"]
 	];
 	Hualala.Global.AjaxMappingURLs = AjaxMappingURLs;
 	return AjaxMappingURLs;
