@@ -302,6 +302,12 @@
 				<div class="form-group">
 					<label for="oldpwd" class="col-xs-3 control-label">旧密码</label>
 					<div class="col-xs-6" ng-class="{'has-success' : modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$valid, 'has-error' : modifypwd.empOldPWD.$invalid}">
+						
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="oldpwd" class="col-xs-3 control-label">旧密码</label>
+					<div class="col-xs-6" ng-class="{'has-success' : modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$valid, 'has-error' : modifypwd.empOldPWD.$invalid}">
 						<input id="oldpwd" type="password" name="empOldPWD" class="form-control" ng-model="formData.empOldPWD" placeholder="请输入旧登录密码" bv-notempty bv-strlength min="2" max="30" autofocus="true">
 						<small class="help-block" ng-show="modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$error.bvNotempty">请输入旧登录密码</small>
 						<small class="help-block" ng-show="modifypwd.empOldPWD.$dirty && modifypwd.empOldPWD.$error.bvStrlength">密码必须在2-30位之间</small>

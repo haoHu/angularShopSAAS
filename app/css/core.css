@@ -260,6 +260,11 @@ body {
 .section-diandan .order-btngrp > .btn {
   height: 8.33333333%;
 }
+.section-diandan .order-btngrp > .btn.addfood {
+  height: 16.66666667%;
+  background-color: #f96;
+  color: #fff;
+}
 .section-diandan .menu-plain .cates,
 .section-diandan .menu-plain .foods {
   overflow: hidden;
@@ -359,6 +364,27 @@ body {
 }
 .section-diandan .menu-plain .foods > .cell-btn .food-tag.jfood:after {
   content: "荐";
+}
+.section-diandan .menu-plain .foods > .cell-btn .tmpfood-tag {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 16px;
+  text-align: right;
+  background-color: transparent;
+  background-size: 32px 32px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 100% 0, 0 100%, from(#ff6600), color-stop(0.5, #ff6600), color-stop(0.5, transparent), to(transparent));
+}
+.section-diandan .menu-plain .foods > .cell-btn .tmpfood-tag:after {
+  padding-right: 4px;
+  font-size: 1rem;
+  content: "临";
+  color: #fff;
 }
 .section-diandan .order-header > div {
   padding: .5rem;

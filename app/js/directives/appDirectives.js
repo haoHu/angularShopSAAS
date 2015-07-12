@@ -612,7 +612,7 @@ define(['app'], function (app) {
                 restrict : 'E',
                 template : [
                     '<div class="order-btngrp">',
-                        '<button class="btn btn-default btn-block" type="button" ng-disabled="!btn.active" ng-repeat="btn in OrderItemHandle" name="{{btn.name}}">',
+                        '<button class="btn btn-default btn-block {{btn.clz}}" type="button" ng-disabled="!btn.active" ng-repeat="btn in OrderItemHandle" name="{{btn.name}}">',
                             '{{btn.label}}',
                         '</button>',
                     '</div>'
@@ -691,6 +691,8 @@ define(['app'], function (app) {
                                 // 菜品换台
                             case "changeOrder":
                                 // 账单换台
+                            case "unionOrder":
+                                // 账单联台
                             case "mergeOrder":
                                 // 账单并台
                                 controller = "ChangeTableController";
@@ -982,6 +984,7 @@ define(['app'], function (app) {
                     '<div id="food_menu" class="foods" pager-list="common" pager-data="{{curFoods.length}}" page-size="34" item-selector=".cell-btn[unit-key]" btn-selector=".btn-prev,.btn-next" page-num="0">',
                         '<div class="col-xs-2 btn cell-btn" ng-class="{\'soldouted\' : food.__soldout && food.__soldout.qty == 0, \'soldout-food\' : food.__soldout && food.__soldout.qty != 0}" unit-key="{{food.__foodUnit.unitKey}}" ng-repeat="food in curFoods" ng-click="insertFoodItem(food.__foodUnit.unitKey)">',
                             '<span ng-if="food.ZXJ.length > 0" class="food-tag {{getFoodTag(food)}}"></span>',
+                            '<span ng-if="food.isTempFood == 1" class="tmpfood-tag"></span>',
                             '<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>',
                             '<p class="unit">',
                                 '{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}',

@@ -65,6 +65,9 @@
 		> .btn {
 			height: @btnHeight;
 		}
+		> .btn.addfood {
+			height : 2*@btnHeight; background-color: #f96; color: #fff;
+		}
 	}
 
 	// 菜单样式
@@ -142,6 +145,18 @@
 				}
 				&.jfood:after {
 					content : "荐";
+				}
+			}
+			.tmpfood-tag {
+				@size : 32px; @bg : #f60;
+				position : absolute; right : 0; top : 0;
+				display: block; width : @size; height : @size; line-height: @size / 2;text-align: right;
+				background-color : transparent; background-size : @size @size; background-position : 0 100%;
+				background-repeat : no-repeat;
+				background-image : -webkit-gradient(linear, 100% 0, 0 100%,from(@bg),color-stop(0.5, @bg),color-stop(0.5, transparent),to(transparent));
+				&:after {
+					padding-right : @size / 8;
+					font-size: 1rem;content : "临"; color : #fff;
 				}
 			}
 		}

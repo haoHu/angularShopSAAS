@@ -23,12 +23,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			});
 
 			$scope.OrderItemHandle = [
-				{name : "addFood", active : true, label : "点菜"},
+				{name : "addFood", clz : "addfood", active : true, label : "点菜"},
 				{name : "urgeFood", active : false, label : "催叫"},
 				// {name : "splitFood", active : false, label : "拆分"},
 				{name : "changeFood", active : false, label : "转菜"},
 				{name : "changeOrder", active : false, label : "换台"},
-				{name : "mergeOrder", active : false, label : "并台"}
+				{name : "mergeOrder", active : false, label : "并台"},
+				{name : "unionOrder", active : false, label : "联台"},
 				// {name : "selectAll", active : true, label : "全选"},
 				// {name : "selectNone", active : true, label : "取消选择"}
 			];
@@ -195,7 +196,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					var _tbl = TableService.getTableByItemID(tableKey),
 						tableStatus = _.result(_tbl, 'tableStatus'),
 						saasOrderKey = _.result(_tbl, 'saasOrderKey');
-					var activeBtns = ['addFood', 'changeOrder', 'mergeOrder'];
+					var activeBtns = ['addFood', 'changeOrder', 'mergeOrder', 'unionOrder'];
 					// 如果桌台为占用状态并且订单号不为空，加载选中桌台的订单
 					if (tableStatus == 1 && !_.isEmpty(saasOrderKey)) {
 						OrderService.getOrderByOrderKey({
@@ -352,9 +353,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				IX.Debug.info("Current Selected Order Items: ");
 				IX.Debug.info($scope.curSelectedOrderItems);
 				if ($scope.curSelectedOrderItems.length > 0) {
-					activeBtns = ['addFood', 'urgeFood', 'changeFood', 'changeOrder', 'mergeOrder'];
+					activeBtns = ['addFood', 'urgeFood', 'changeFood', 'changeOrder', 'mergeOrder', 'unionOrder'];
 				} else {
-					activeBtns = ['addFood', 'changeOrder', 'mergeOrder'];
+					activeBtns = ['addFood', 'changeOrder', 'mergeOrder', 'unionOrder'];
 				}
 				$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
 					var n = _.result(btn, 'name'),
@@ -425,7 +426,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 桌台名称搜索关键字
 			$scope.qTblName = '';
 			// 桌台状态过滤字段
-			$scope.qTblStatus = action == 'changeFood' ? '1' : (action == 'changeOrder' ? '0' : '-1');
+			$scope.qTblStatus = (action == 'changeFood' || action == 'unionOrder' || action == 'mergeOrder') ? '1' : (action == 'changeOrder' ? '0' : '-1');
 			
 			// 当前选中桌台区域名
 			$scope.curAreaName = '';
@@ -503,7 +504,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					var orderHeader = _scope.orderHeader,
 						fromTableName = _.result(orderHeader, 'tableName', ''),
 						foodItemKeyLst = _scope.curSelectedOrderItems || [];
-					var actionType = action == 'changeFood' ? 'CPHT' : (action == 'changeOrder' ? 'HT' : 'BT');
+					var actionType = action == 'changeFood' ? 'CPHT' : (action == 'changeOrder' ? 'HT' : (action == 'mergeOrder' ? 'BT' : 'LT'));
 					// var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
 					// if (con) {
 					// 	var callServer = OrderService.tableOperation(actionType, {
@@ -529,8 +530,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					// }
 
 					AppConfirm.add({
-						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作',
-						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？',
+						title : (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : (actionType == 'BT' ? '并台' : '联台'))) + '操作',
+						msg : "是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : (actionType == 'BT' ? '并台' : '联台'))) + '操作？',
 						yesFn : function () {
 							var postParams = {
 								fromTableName : fromTableName,

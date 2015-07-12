@@ -170,7 +170,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					var code = _.result(data, 'code');
 					if (code == '000') {
                         updateOrderLstData();
-                        AppAlert.add('success', "数据加载成功");
+                        // AppAlert.add('success', "数据加载成功");
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 						// HC.TopTip.addTopTips($rootScope, data);

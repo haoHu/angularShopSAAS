@@ -34,6 +34,8 @@ define(['app'], function(app)
 						var code = _.result(data, 'code');
 						var today = new Date(),
 							tonight = new Date();
+						today.setHours(0);
+						today.setMinutes(0);
 						tonight.setHours(23);
 						tonight.setMinutes(59);
 						if (code == '000') {
@@ -88,7 +90,7 @@ define(['app'], function(app)
 					if (code != '000') {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					} else {
-						AppAlert.add('success', "数据加载成功");
+						// AppAlert.add('success', "数据加载成功");
 						$scope.curLogLst = ShopLogService.getLogLst();
 					}
 				}).error(function (data) {
@@ -102,7 +104,7 @@ define(['app'], function(app)
 					if (code != '000') {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					} else {
-						AppAlert.add('success', "数据加载成功");
+						// AppAlert.add('success', "数据加载成功");
 						$scope.curBizData = ShopCurBizService.getDataLst();
 					}
 				}).error(function (data) {
@@ -135,7 +137,7 @@ define(['app'], function(app)
 					if (code != '000') {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					} else {
-						AppAlert.add('success', "数据加载成功");
+						// AppAlert.add('success', "数据加载成功");
 						$scope.compBizData = ShopCompositeBizService.parseReceiptInfo();
 					}
 				}).error(function (data) {

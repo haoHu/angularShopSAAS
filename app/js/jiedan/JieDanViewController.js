@@ -116,7 +116,7 @@ define(['app'], function(app) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
 						updateOrderLstData();
-						AppAlert.add('success', '数据加载成功');
+						// AppAlert.add('success', '数据加载成功');
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
@@ -207,7 +207,7 @@ define(['app'], function(app) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
 						// 构建订单详情渲染数据
-						AppAlert.add('success', '订单数据加载成功');
+						// AppAlert.add('success', '订单数据加载成功');
 						$scope.curOrderDetail = CloudOrderService.getOrderDetail();
 						updateOrderBtnsStatus();
 						if (acceptTime == 0) {
