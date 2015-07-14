@@ -27,7 +27,7 @@ define(['app'], function (app) {
 			// 登录操作
 			$scope.submitForm = function () {
 				IX.Debug.info($scope.login);
-				var progressbar = AppProgressbar.add('warning', '加载中...');
+				var progressbar = AppProgressbar.add('warning', '登录中...');
 				CommonCallServer.empLogin($scope.login)
 					.success(function (data, status) {
 						AppProgressbar.close(progressbar);
