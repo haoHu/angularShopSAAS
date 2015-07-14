@@ -78,6 +78,11 @@
 		<alert class="site-toptip" ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">
 			<span ng-bind-html="alert.msg"></span>
 		</alert>
+		<!-- 站点全局进度条UI组件 -->
+		<div class="site-loading" ng-repeat="progressbar in progresses">
+			<progressbar class="progress-striped active" type="{{progressbar.type}}" value="progressbar.curval" max="progressbar.max"></progressbar>
+			<p class="text-warning msg" ng-bind-html="progressbar.msg"></p>
+		</div>
 		
 		
 		<script type="text/javascript">

@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	app.controller('SigninViewController', [
-		'$rootScope', '$scope', '$location', 'storage', 'CommonCallServer', 'AppAlert',
-		function ($rootScope, $scope, $location, storage, CommonCallServer, AppAlert) {
+		'$rootScope', '$scope', '$location', 'storage', 'CommonCallServer', 'AppAlert', 'AppProgressbar',
+		function ($rootScope, $scope, $location, storage, CommonCallServer, AppAlert, AppProgressbar) {
 			IX.ns("Hualala.Common");
 			var HC = Hualala.Common;
 			
@@ -27,9 +27,10 @@ define(['app'], function (app) {
 			// 登录操作
 			$scope.submitForm = function () {
 				IX.Debug.info($scope.login);
+				var progressbar = AppProgressbar.add('warning', '加载中...');
 				CommonCallServer.empLogin($scope.login)
 					.success(function (data, status) {
-						
+						AppProgressbar.close(progressbar);
 						if ($XP(data, 'code') == '000') {
 							afterLogin(data);
 						} else {

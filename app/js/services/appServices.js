@@ -197,6 +197,7 @@ define(['app'], function (app) {
 		}
 	]);
 
+	// 权限校验
 	app.factory('AppAuthEMP', [
 		'$rootScope', '$timeout', '$sce', '$modal',
 		function ($rootScope, $timeout, $sce, $modal) {
@@ -304,6 +305,35 @@ define(['app'], function (app) {
 				}
 			};
 
+		}
+	]);
+
+	app.factory('AppProgressbar', [
+		'$rootScope', '$timeout', '$sce',
+		function ($rootScope, $timeout, $sce) {
+			var progressService;
+			$rootScope.progresses = [];
+			return progressService = {
+				add : function (type, msg) {
+					var _cfg = {
+						type : type || 'warning',
+						msg : $sce.trustAsHtml(msg),
+						curval : 100,
+						max : 100
+					};
+					$rootScope.progresses.push(_cfg);
+					return _cfg;
+				},
+				clear : function () {
+					$rootScope.progresses = [];
+				},
+				close : function (progress) {
+					return this.closeByIdx($rootScope.progresses.indexOf(progress));
+				},
+				closeByIdx : function (index) {
+					return $rootScope.progresses.splice(index, 1);
+				}
+			};
 		}
 	]);
 

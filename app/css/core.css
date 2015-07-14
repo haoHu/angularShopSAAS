@@ -113,6 +113,25 @@ body {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
+.site-loading {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.4);
+  z-index: 9999;
+  text-align: center;
+}
+.site-loading .progress-striped {
+  width: 300px;
+  margin: 20rem auto 0;
+}
+.site-loading .msg {
+  width: 300px;
+  margin: .5rem auto 0;
+  text-align: left;
+}
 .section-profile {
   position: relative;
   height: 100%;

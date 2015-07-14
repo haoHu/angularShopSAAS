@@ -14,9 +14,11 @@ define(['app'], function (app) {
             var HC = Hualala.Common;
 
             $scope.submitForm = function () {
+                var progressbar = AppProgressbar.add('warning', '注册中,可能需要几分钟事件，请稍后...');
                 CommonCallServer.shopRegister($scope.signup)
                     .success(function (data, status) {
                         var code = _.result(data, 'code');
+                        AppProgressbar.close(progressbar);
                         AppAlert.add(code == '000' ? "success" : "danger", _.result(data, 'msg', ''));
                         code == '000' && $location.path('/').replace();
                         
