@@ -946,7 +946,7 @@ body {
   margin-bottom: .5rem;
 }
 .pay-modal .pay-ctrl .pay-subject .vip-pay .help-block.info {
-  margin-top: 5px;
+  margin-top: 0px;
   margin-bottom: 3px;
   padding: 0;
   font-size: 1rem;
@@ -956,7 +956,10 @@ body {
   padding-left: 1rem;
 }
 .pay-modal .pay-ctrl .pay-subject .vip-pay .user-voucher {
-  margin-bottom: 15px;
+  margin-bottom: 5px;
+}
+.pay-modal .pay-ctrl .pay-subject .vip-pay .voucher-grp {
+  height: 10rem;
 }
 .setfood-modal .modal-dialog {
   position: absolute;
