@@ -1278,6 +1278,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var name = _.result(paySubjectGrp, 'name');
 				if ($scope.isDisabledPaySubjectGrp(paySubjectGrp)) return;
 				$scope.curPaySubjectGrpName = name;
+				$scope.formIsValid = true;
 			};
 			// 获取当前支付科目组的类型
 			$scope.getPayFormType = function (paySubjectGrp) {
@@ -1439,6 +1440,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				if (!_.isEmpty($scope.curVIPCard)) {
 					$scope.$broadcast('pay.setVIPCard', $scope.curVIPCard);
 				}
+			});
+
+			// 绑定支付科目表单校验结果事件
+			$scope.$on('pay.chkPayFormValid', function (d, valid) {
+				console.info(arguments);
+				$scope.formIsValid = valid == true ? true : false;
 			});
 
 			// 开钱箱
@@ -1684,6 +1691,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 						return;
 
+					};
+
+					scope.formElKeyup = function (invalid) {
+						scope.$emit('pay.chkPayFormValid', invalid == true ? false : true);
 					};
 
 					
@@ -1968,6 +1979,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 						return;
 
+					};
+
+					scope.formElKeyup = function (invalid) {
+						scope.$emit('pay.chkPayFormValid', invalid == true ? false : true);
 					};
 
 				}

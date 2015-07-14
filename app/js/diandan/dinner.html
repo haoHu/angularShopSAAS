@@ -597,10 +597,10 @@
 							<vippayform ng-if="getPayFormType(paySubjectGrp) == 'vip'" pay-subject-grp="paySubjectGrp"></vippayform>
 						</div>
 						<div class="panel-footer">
-							<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)">
+							<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">
 								确认收款
 							</button>
-							<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'vip'" ng-click="submitPayForm(paySubjectGrp)">
+							<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'vip'" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">
 								会员消费确认
 							</button>
 						</div>
@@ -630,8 +630,8 @@
 					<div class="form-group" ng-repeat="el in formCfg">
 						<label class="col-xs-4 control-label">{{el.label}}</label>
 						<div class="col-xs-8" ng-class="{'has-success' : com_pay.realPrice.$dirty && com_pay.realPrice.$valid, 'has-error' : com_pay.realPrice.$invalid}">
-							<input ng-if="$index == 0 && (paySubjectGrp.name == 'cashPay' || paySubjectGrp.name == 'remissionPay')" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum/>
-							<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay'" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0/>
+							<input ng-if="$index == 0 && (paySubjectGrp.name == 'cashPay' || paySubjectGrp.name == 'remissionPay')" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum ng-change="formElKeyup(com_pay.$invalid)" ng-blur="formElKeyup(com_pay.$invalid)"/>
+							<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay'" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0 ng-change="formElKeyup(com_pay.$invalid)" ng-blur="formElKeyup(com_pay.$invalid)"/>
 							<input ng-if="$index != 0" type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
 							<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvIsnum">必须是数字</small>
 							<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvGreaterthan">必须大于0</small>
@@ -682,7 +682,7 @@
 				<div class="form-group">
 					<label class="col-xs-3 control-label">使用积分</label>
 					<div class="col-xs-5" ng-class="{'has-success' : vip_pay.point_amount.$dirty && vip_pay.point_amount.$valid, 'has-error' : vip_pay.point_amount.$invalid}">
-						<input type="text" class="form-control" name="point_amount" ng-model="payByPoint" ng-focus="inputFocus($event)" bv-isnum/>
+						<input type="text" class="form-control" name="point_amount" ng-model="payByPoint" ng-focus="inputFocus($event)" bv-isnum ng-change="formElKeyup(vip_pay.$invalid)" ng-blur="formElKeyup(vip_pay.$invalid)"/>
 						<small class="help-block" ng-show="vip_pay.point_amount.$dirty && vip_pay.point_amount.$error.bvIsnum">必须是数字</small>
 					</div>
 					<div class="col-xs-4">
@@ -693,7 +693,7 @@
 				<div class="form-group">
 					<label class="col-xs-3 control-label">使用卡值</label>
 					<div class="col-xs-5" ng-class="{'has-success' : vip_pay.money_amount.$dirty && vip_pay.money_amount.$valid, 'has-error' : vip_pay.money_amount.$invalid}">
-						<input type="text" class="form-control" name="money_amount" ng-model="payByCash" ng-focus="inputFocus($event)" bv-isnum/>
+						<input type="text" class="form-control" name="money_amount" ng-model="payByCash" ng-focus="inputFocus($event)" bv-isnum ng-change="formElKeyup(vip_pay.$invalid)" ng-blur="formElKeyup(vip_pay.$invalid)"/>
 						<small class="help-block" ng-show="vip_pay.money_amount.$dirty && vip_pay.money_amount.$error.bvIsnum">必须是数字</small>
 					</div>
 					<div class="col-xs-4">
