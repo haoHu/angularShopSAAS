@@ -152,6 +152,21 @@ define(['app'], function (app) {
         };
     });
 
+    app.directive('bvPhone', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                ctrl.$parsers.unshift(function (viewValue) {
+                    var mobileReg = /^1[34579]\d{9}$/,
+                        phoneReg = /(^400\-{0,1}\d+\-{0,1}\d+$)|^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
+                    var va = viewValue.length == 0 ? true : (mobileReg.test(viewValue) || phoneReg.test(viewValue));
+                    ctrl.$setValidity('bvPhone', va);
+                    return va ? viewValue : undefined;
+                });
+            }
+        }
+    });
+
     app.directive('bvGreaterthan', function () {
         return {
             require : 'ngModel',
@@ -170,6 +185,44 @@ define(['app'], function (app) {
         };
     });
 
+    app.directive('bvBetween', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                var min = parseFloat(attrs.min) || null, inclusive = attrs.bvBetween == "true",
+                    max = parseFloat(attrs.max) || null;
+                ctrl.$parsers.unshift(function (viewValue) {
+                    var v = parseFloat(viewValue), va = false;
+                    if (!min && max) {
+                        va = inclusive ? (v <= max) : (v < max);
+                    } else if (min && !max) {
+                        va = inclusive ? (v >= min) : (v > min);
+                    } else if (!min && !max) {
+                        va = true;
+                    } else {
+                        va = inclusive ? (v <= max && v >= min) : (v < max && v > min);
+                    }
+                    ctrl.$setValidity('bvBetween', va);
+                    return va ? viewValue : undefined;
+                });
+
+            }
+        };
+    });
+
+    app.directive('bvIsint', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                ctrl.$parsers.unshift(function (viewValue) {
+                    var isInt = viewValue === '' ? true : /^(?:-?(?:0|[1-9][0-9]*))$/.test(viewValue);
+                    ctrl.$setValidity('bvIsint', isInt);
+                    return isInt ? viewValue : undefined;
+                });
+            }
+        };
+    });
+
     app.directive('bvIssame', function () {
         return {
             require : 'ngModel',
@@ -183,6 +236,19 @@ define(['app'], function (app) {
                 });
             }
         }
+    });
+
+    app.directive('bvIsnum', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                ctrl.$parsers.unshift(function (viewValue) {
+                    var isNum = _.isEmpty(viewValue) ? true : !isNaN(viewValue);
+                    ctrl.$setValidity('bvIsnum', isNum);
+                    return isNum ? viewValue : undefined;
+                });
+            }
+        };
     });
 
     /**

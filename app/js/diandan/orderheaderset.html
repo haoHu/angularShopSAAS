@@ -3,25 +3,30 @@
 	<h4 class="modal-title">单头信息（单号：{{fmels.saasOrderNo.slice(-4)}}）</h4>
 </div>
 <div class="modal-body">
-	<div class="row order-header">
+	<form class="row order-header" name="order_header" role="form" novalidate="novalidate">
 		<div class="col-xs-6">
 			<div class="form-horizontal">
-				<div class="form-group">
+				<div class="form-group has-feedback">
 					<label for="" class="col-xs-3 control-label">人数</label>
-					<div class="col-xs-8">
-						<input type="text" class="form-control" ng-model="fmels.person" ng-focus="inputFocus($event)" autofocus="true">
+					<div class="col-xs-8" ng-class="{'has-success' : order_header.person.$dirty && order_header.person.$valid, 'has-error' : order_header.person.$invalid}">
+						<input type="text" name="person" class="form-control" ng-model="fmels.person" ng-focus="inputFocus($event)" autofocus="true" bv-notempty bv-isint bv-between min="0" max="999" >
+						<small class="help-block" ng-show="order_header.person.$dirty && order_header.person.$error.bvNotempty">请输入人数</small>
+						<small class="help-block" ng-show="order_header.person.$dirty && order_header.person.$error.bvIsint">人数必须为整数</small>
+						<small class="help-block" ng-show="order_header.person.$dirty && order_header.person.$error.bvBetween">人数必须在0~999之间</small>
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group has-feedback">
 					<label for="" class="col-xs-3 control-label">台/牌号</label>
-					<div class="col-xs-8">
-						<input type="text" class="form-control" ng-readonly="{{tableNameIsReadOnly()}}" ng-model="fmels.tableName" ng-focus="inputFocus($event)">
+					<div class="col-xs-8" ng-class="{'has-success' : order_header.tableName.$dirty && order_header.tableName.$valid, 'has-error' : order_header.tableName.$invalid}">
+						<input type="text" name="tableName" class="form-control" ng-readonly="{{tableNameIsReadOnly()}}" ng-model="fmels.tableName" ng-focus="inputFocus($event)" bv-strlength min="1" max="20" >
+						<small class="help-block" ng-show="order_header.tableName.$dirty && order_header.tableName.$error.bvStrlength">台/牌号不能超过20个字符</small>
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group has-feedback">
 					<label for="" class="col-xs-3 control-label">备注</label>
-					<div class="col-xs-8">
-						<input type="text" class="form-control" ng-model="fmels.saasOrderRemark" ng-focus="inputFocus($event)">
+					<div class="col-xs-8" ng-class="{'has-success' : order_header.saasOrderRemark.$dirty && order_header.saasOrderRemark.$valid, 'has-error' : order_header.saasOrderRemark.$invalid}">
+						<input type="text" name="saasOrderRemark" class="form-control" ng-model="fmels.saasOrderRemark" ng-focus="inputFocus($event)" bv-strlength min="0" max="50">
+						<small class="help-block" ng-show="order_header.saasOrderRemark.$dirty && order_header.saasOrderRemark.$error.bvStrlength">备注不能超过50个字符</small>
 					</div>
 				</div>
 			</div>
@@ -31,20 +36,23 @@
 		</div>
 		<div class="col-xs-6">
 			<div class="takeout-box form-horizontal">
-				<div class="form-group">
+				<div class="form-group has-feedback">
 					<label for="" class="col-xs-2 control-label">姓名</label>
-					<div class="col-xs-4">
-						<input type="text" class="form-control" ng-model="fmels.userName" ng-focus="inputFocus($event)">
+					<div class="col-xs-4" ng-class="{'has-success' : order_header.userName.$dirty && order_header.userName.$valid, 'has-error' : order_header.userName.$invalid}">
+						<input name="userName" type="text" class="form-control" ng-model="fmels.userName" ng-focus="inputFocus($event)" bv-strlength min="0" max="20">
+						<small class="help-block" ng-show="order_header.userName.$dirty && order_header.userName.$error.bvStrlength">姓名不能超过20个字符</small>
 					</div>
 					<label for="" class="col-xs-2 control-label">电话</label>
-					<div class="col-xs-4">
-						<input type="text" class="form-control" ng-model="fmels.userMobile" ng-focus="inputFocus($event)">
+					<div class="col-xs-4" ng-class="{'has-success' : order_header.userMobile.$dirty && order_header.userMobile.$valid, 'has-error' : order_header.userMobile.$invalid}">
+						<input name="userMobile" type="text" class="form-control" ng-model="fmels.userMobile" ng-focus="inputFocus($event)" bv-phone>
+						<small class="help-block" ng-show="order_header.userMobile.$dirty && order_header.userMobile.$error.bvPhone">请输入手机或电话号码</small>
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group has-feedback">
 					<label for="" class="col-xs-2 control-label">地址</label>
-					<div class="col-xs-10">
-						<input type="text" class="form-control" ng-model="fmels.userAddress" ng-focus="inputFocus($event)">
+					<div class="col-xs-10" ng-class="{'has-success' : order_header.userAddress.$dirty && order_header.userAddress.$valid, 'has-error' : order_header.userAddress.$invalid}">
+						<input name="userAddress" type="text" class="form-control" ng-model="fmels.userAddress" ng-focus="inputFocus($event)" bv-strlength min="0" max="100">
+						<small class="help-block" ng-show="order_header.userAddress.$dirty && order_header.userAddress.$error.bvStrlength">地址不能超过100个字符</small>
 					</div>
 				</div>
 			</div>
@@ -70,13 +78,13 @@
 			</div>
 			
 		</div>
-	</div>
+	</form>
 	
 </div>
 <div class="modal-footer">
 	<div class="btn-group btn-group-justified" role="group">
 		<div class="btn-group" role="group">
-			<button type="button" class="btn btn-default btn-lg" ng-click="save()">保存</button>
+			<button type="button" class="btn btn-default btn-lg" ng-click="save()" ng-disabled="order_header.$invalid || order_header.$pristine">保存</button>
 		</div>
 		<div class="btn-group" role="group">
 			<button type="button" class="btn btn-default btn-lg" ng-click="close()" >取消</button>

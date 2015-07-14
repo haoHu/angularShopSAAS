@@ -470,32 +470,40 @@
 			<h4 class="modal-title">配置临时菜</h4>
 		</div>
 		<div class="modal-body">
-			<div class="form-horizontal">
+			<form class="form-horizontal" name="temp_food" role="form"  novalidate="novalidate">
 				<div class="form-group clearfix">
 					<label for="" class="col-xs-3 control-label">菜品名称</label>
-					<div class="col-xs-9">
-						<input type="text" class="form-control" name="foodName" ng-model="foodName" autofocus="true" />
+					<div class="col-xs-9" ng-class="{'has-success' : temp_food.foodName.$dirty && temp_food.foodName.$valid, 'has-error' : temp_food.foodName.$invalid}">
+						<input type="text" class="form-control" name="foodName" ng-model="foodName" autofocus="true" bv-notempty bv-strlength min="2" max="30" />
+						<small class="help-block" ng-show="temp_food.foodName.$dirty && temp_food.foodName.$error.bvNotempty">请输入菜品名称</small>
+						<small class="help-block" ng-show="temp_food.foodName.$dirty && temp_food.foodName.$error.bvStrlength">菜品名称必须是2-30位字符之间</small>
+
 					</div>
 				</div>
 				<div class="form-group clearfix">
 					<label for="" class="col-xs-3 control-label">菜品价格</label>
-					<div class="col-xs-9">
-						<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" ng-focus="inputFocus($event)" autofocus="true" />
+					<div class="col-xs-9" ng-class="{'has-success' : temp_food.foodPrice.$dirty && temp_food.foodPrice.$valid, 'has-error' : temp_food.foodPrice.$invalid}">
+						<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" ng-focus="inputFocus($event)" autofocus="true" bv-notempty bv-isnum bv-greaterthan="true" min="0"/>
+						<small class="help-block" ng-show="temp_food.foodPrice.$dirty && temp_food.foodPrice.$error.bvNotempty">请输入菜品价格</small>
+						<small class="help-block" ng-show="temp_food.foodPrice.$dirty && temp_food.foodPrice.$error.bvStrlength">菜品价格必须大于或等于0</small>
 					</div>
 				</div>
 				<div class="form-group clearfix">
 					<label for="" class="col-xs-3 control-label">菜品规格</label>
-					<div class="col-xs-9">
-						<input type="text" class="form-control" name="unit" ng-model="unit" />
+					<div class="col-xs-9" ng-class="{'has-success' : temp_food.unit.$dirty && temp_food.unit.$valid, 'has-error' : temp_food.unit.$invalid}">
+						<input type="text" class="form-control" name="unit" ng-model="unit" bv-notempty bv-strlength min="1" max="10"/>
+						<small class="help-block" ng-show="temp_food.unit.$dirty && temp_food.unit.$error.bvNotempty">请输入菜品规格</small>
+						<small class="help-block" ng-show="temp_food.unit.$dirty && temp_food.unit.$error.bvStrlength">菜品规格名称必须在1-10位字符之间</small>
+
 					</div>
 				</div>
 				<numkeyboard cur-target="focusInputEl"></numkeyboard>
-			</div>
+			</form>
 		</div>
 		<div class="modal-footer">
 			<div class="btn-group btn-group-justified" role="group">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default btn-lg" ng-click="save()">确定</button>
+					<button type="button" class="btn btn-default btn-lg" ng-click="save()" ng-disabled="temp_food.$invalid " >确定</button>
 				</div>
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default btn-lg" ng-click="close()">取消</button>

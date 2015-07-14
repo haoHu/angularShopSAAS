@@ -487,11 +487,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			var shopInfo = storage.get("SHOPINFO"),
 				operationMode = _.result(shopInfo, 'operationMode');
 			var orderInfo = OrderService.getOrderData();
-			$scope.invoiceTitle = _.result(orderInfo, 'invoiceTitle', '');
-			$scope.invoiceAmount = _.result(orderInfo, 'invoiceAmount', '');
-			$scope.sendCouponAmount = _.result(orderInfo, 'sendCouponAmount', '');
-			$scope.sendCouponRemark = _.result(orderInfo, 'sendCouponRemark', '');
-			$scope.modifyRemark = '';
+			$scope.fmEls = {
+				invoiceTitle : _.result(orderInfo, 'invoiceTitle', ''),
+				invoiceAmount : _.result(orderInfo, 'invoiceAmount', ''),
+				sendCouponAmount : _.result(orderInfo, 'sendCouponAmount', ''),
+				sendCouponRemark : _.result(orderInfo, 'sendCouponRemark', ''),
+				modifyRemark : ''
+			};
+			// $scope.invoiceTitle = _.result(orderInfo, 'invoiceTitle', '');
+			// $scope.invoiceAmount = _.result(orderInfo, 'invoiceAmount', '');
+			// $scope.sendCouponAmount = _.result(orderInfo, 'sendCouponAmount', '');
+			// $scope.sendCouponRemark = _.result(orderInfo, 'sendCouponRemark', '');
+			// $scope.modifyRemark = '';
 			// 关闭窗口
 			$scope.close = function () {
 				// _scope.modalIsOpen(false);
@@ -499,13 +506,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 保存数据
 			$scope.save = function () {
-				var postParams = {
-					invoiceTitle : $scope.invoiceTitle,
-					invoiceAmount : $scope.invoiceAmount,
-					modifyRemark : $scope.modifyRemark,
-					sendCouponAmount : $scope.sendCouponAmount,
-					sendCouponRemark : $scope.sendCouponRemark
-				};
+				// var postParams = {
+				// 	invoiceTitle : $scope.invoiceTitle,
+				// 	invoiceAmount : $scope.invoiceAmount,
+				// 	modifyRemark : $scope.modifyRemark,
+				// 	sendCouponAmount : $scope.sendCouponAmount,
+				// 	sendCouponRemark : $scope.sendCouponRemark
+				// };
+				var postParams = $scope.fmEls;
 				var callServer = OrderService.updateOrderInvoice(postParams);
 				var addAuthEMP = function () {
 					AppAuthEMP.add({

@@ -55,6 +55,11 @@ define(['app'], function (app) {
 				};
 			};
 
+			// 退出程序
+			$scope.appExit = function (e) {
+				Hualala.DevCom.exeCmd('AppExit');
+			};
+
 			$scope.inputKeyup = function ($event) {
 				if ($event.keyCode != 13) return;
 				var el = $($event.target);
