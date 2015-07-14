@@ -167,6 +167,20 @@ define(['app'], function (app) {
         }
     });
 
+    app.directive('bvMobile', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                ctrl.$parsers.unshift(function (viewValue) {
+                    var mobileReg = /^1[34579]\d{9}$/;
+                    var va = viewValue.length == 0 ? true : mobileReg.test(viewValue);
+                    ctrl.$setValidity('bvMobile', va);
+                    return va ? viewValue : undefined;
+                });
+            }
+        };
+    });
+
     app.directive('bvGreaterthan', function () {
         return {
             require : 'ngModel',
