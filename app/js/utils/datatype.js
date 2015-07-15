@@ -144,7 +144,8 @@
 		{name : "foodPrice", value : "60", label : "改价原因"},
 		{name : "orderChange", value : "70", label : "改单原因"},
 		{name : "orderCancel", value : "80", label : "预订退订原因"},
-		{name : "takeoutCancel", value : "90", label : "外卖退单原因"}
+		{name : "takeoutCancel", value : "90", label : "外卖退单原因"},
+		{name : "orderRefund", value : "100", label : "退款原因"}
 	];
 
 	/**
