@@ -118,11 +118,15 @@ define(['app'], function(app)
 
                 if(d.isMobileCard == 1 && d.transSafeLevel != '0') {
                     $scope.ispwd = 1;
+                }else{
+                    $scope.ispwd = 0;
                 }
 
                 $scope.$watch('ispwd', function(n, o) {
                     if(n == 1) {
                         $('.formpwd').show();
+                    }else {
+                        $('.formpwd').hide();
                     }
                 });
             };
