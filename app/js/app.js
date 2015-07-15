@@ -56,6 +56,15 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             } else {
                 // $scope.shopLogo = './img/blank.png';
             }
+            var urlParams = $location.search(),
+                deviceCode = _.result(urlParams, 'deviceCode', null),
+                deviceKey = _.result(urlParams, 'deviceKey', null),
+                deviceName = _.result(urlParams, 'deviceName', null);
+            if (deviceKey && deviceName) {
+                storage.set('deviceCode', deviceCode);
+                storage.set('deviceKey', deviceKey);
+                storage.set('deviceName', deviceName);
+            }
         });
         $scope.checkNavBtnActive = function (_curNav, _href) {
             var reg = new RegExp('^' + _href);

@@ -5,7 +5,10 @@ define(['app'], function (app) {
 			IX.ns("Hualala.Common");
 			var HC = Hualala.Common;
 			
-			var shopInfo = storage.get('SHOPINFO');
+			var shopInfo = storage.get('SHOPINFO'),
+				deviceName = storage.get('deviceName'),
+				deviceCode = storage.get('deviceCode'),
+				deviceKey = storage.get('deviceKey');
 			
 			// HC.TopTip.reset($rootScope);
 			// $scope.closeTopTip = function (index) {
@@ -50,7 +53,9 @@ define(['app'], function (app) {
 			$scope.reset = function () {
 				$scope.login = {
 					shopName : $XP(shopInfo, 'shopName', ''),
-					deviceCode : $XP(shopInfo, 'deviceCode', ''),
+					deviceCode : deviceCode,
+					deviceName : deviceName,
+					deviceKey : deviceKey,
 					empCode : "",
 					empPWD : ""
 				};
