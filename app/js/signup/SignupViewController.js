@@ -1,7 +1,7 @@
 define(['app'], function (app) {
     app.controller('SignupViewController', [
-        '$rootScope', '$scope', '$location', 'CommonCallServer', 'AppAlert',
-        function ($rootScope, $scope, $location, CommonCallServer, AppAlert) {
+        '$rootScope', '$scope', '$location', 'CommonCallServer', 'AppAlert', 'AppProgressbar',
+        function ($rootScope, $scope, $location, CommonCallServer, AppAlert, AppProgressbar) {
             $scope.reset = function () {
                 $scope.signup = {
                     shopID : '',
