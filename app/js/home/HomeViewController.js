@@ -16,7 +16,7 @@ define(['app'], function (app) {
 		var jumpPath = function (path) {
 			var p = $timeout(function() {
 				$location.path(path).replace();
-			}, 1000);
+			}, 5000);
 		};
 		
 		
