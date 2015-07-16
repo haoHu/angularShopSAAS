@@ -132,7 +132,7 @@ define(['app'], function(app)
             };
 
             $scope.prtvipinfo = function() {
-                Hualala.DevCom.exeCmd('PrintOther', JSON.stringfy($scope.user));
+                Hualala.DevCom.exeCmd('PrintOther', JSON.stringify($scope.user));
             };
 
             //打开日历

@@ -1,5 +1,5 @@
 define(['app'], function (app) {
-	app.controller('HomeViewController', ['$rootScope', '$scope', '$location', '$timeout', 'storage', 'CommonCallServer', function ($rootScope, $scope, $location, $timeout, storage, CommonCallServer) {
+	app.controller('HomeViewController', ['$rootScope', '$scope', '$location', '$timeout', 'storage', 'CommonCallServer', 'AppAlert', function ($rootScope, $scope, $location, $timeout, storage, CommonCallServer, AppAlert) {
 		// TODO 如何过场？
 		// 1.检测是否已注册（未注册->2;未登录->3;）
 		// 2.跳转注册模块
@@ -8,10 +8,10 @@ define(['app'], function (app) {
 		
 		IX.ns("Hualala.Common");
         var HC = Hualala.Common;
-        HC.TopTip.reset($rootScope);
-        $scope.closeTopTip = function (index) {
-            HC.TopTip.closeTopTip($rootScope, index);
-        };
+        // HC.TopTip.reset($rootScope);
+        // $scope.closeTopTip = function (index) {
+        //     HC.TopTip.closeTopTip($rootScope, index);
+        // };
 
 		var jumpPath = function (path) {
 			var p = $timeout(function() {
@@ -32,9 +32,10 @@ define(['app'], function (app) {
 					jumpPath('/signin');
 				}
 			}).error(function (data, status) {
-				HC.TopTip.addTopTips($rootScope, {
-					msg : Hualala.TypeDef.CommonErrorMsgs.connect_faild
-				});
+				// HC.TopTip.addTopTips($rootScope, {
+				// 	msg : Hualala.TypeDef.CommonErrorMsgs.connect_faild
+				// });
+				AppAlert.add('danger', Hualala.TypeDef.CommonErrorMsgs.connect_faild);
 			});
 		};
 

@@ -157,7 +157,7 @@ define(['app'], function (app) {
             require : 'ngModel',
             link : function (scope, el, attrs, ctrl) {
                 ctrl.$parsers.unshift(function (viewValue) {
-                    var mobileReg = /^1[34579]\d{9}$/,
+                    var mobileReg = /^1[345789]\d{9}$/,
                         phoneReg = /(^400\-{0,1}\d+\-{0,1}\d+$)|^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
                     var va = viewValue.length == 0 ? true : (mobileReg.test(viewValue) || phoneReg.test(viewValue));
                     ctrl.$setValidity('bvPhone', va);
@@ -172,7 +172,7 @@ define(['app'], function (app) {
             require : 'ngModel',
             link : function (scope, el, attrs, ctrl) {
                 ctrl.$parsers.unshift(function (viewValue) {
-                    var mobileReg = /^1[34579]\d{9}$/;
+                    var mobileReg = /^1[345789]\d{9}$/;
                     var va = viewValue.length == 0 ? true : mobileReg.test(viewValue);
                     ctrl.$setValidity('bvMobile', va);
                     return va ? viewValue : undefined;
