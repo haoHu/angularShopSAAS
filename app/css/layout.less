@@ -122,6 +122,40 @@ body {
 	}
 }
 
+// 欢迎页面
+.section-welcome {
+	position : relative; height : 100%; background: #65321d;
+	.welcome-logo {
+		position : absolute; left : 10%; top : 20%; width : 80%; height : 40%; text-align: center;
+		background : url(../img/start_logo.png) no-repeat 0 0; background-size : 100% auto;
+		-webkit-animation : flashinLeft .5s ease-out;
+	}
+	.service-call {
+		position : absolute; bottom : 15%; left : 40%; width : 20%; height : 10%; text-align: center;
+		background : url(../img/start_call.png) no-repeat 0 0; background-size : 100% auto;
+		-webkit-animation : flashinRight .5s ease-out;
+	}
+	.copyright {
+		position : absolute; bottom : 20px; right : 120px; color : #fff; font-size : 2rem; font-weight: bold;
+	}
+}
+@-webkit-keyframes flashinLeft {
+	0% {
+		left : 0%; top : 20%;
+	}
+	100% {
+		left : 20%; top : 20%;
+	}
+}
+@-webkit-keyframes flashinRight {
+	0% {
+		left : 100%; bottom : 15%;
+	}
+	100% {
+		left : 40%; bottom : 15%;
+	}
+}
+
 
 // 更多站点功能页面
 .section-profile {
