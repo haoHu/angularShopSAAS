@@ -22,6 +22,7 @@ define(['app'], function (app) {
 		
 		$scope.getShopInfo = function () {
 			CommonCallServer.getShopInfo({}).success(function (data, status) {
+				$('.section-welcome').addClass('loaded');
 				if (data.code == 'CS001') {
 					// 未注册，跳转注册页面
 					jumpPath('/signup');
@@ -40,6 +41,7 @@ define(['app'], function (app) {
 		};
 
 		$scope.getShopInfo();
+
 		
 
 
