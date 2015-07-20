@@ -341,12 +341,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							return $scope;
 						}
 					};
-				$modal.open({
+				Hualala.ModalCom.openModal($rootScope, $modal, {
 					size : modalSize,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve
 				});
+				// $modal.open({
+				// 	size : modalSize,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve
+				// });
 			};
 
 			// 打开套餐配置窗口
@@ -379,8 +385,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							return $scope;
 						}
 					};
-
-				$modal.open({
+				Hualala.ModalCom.openModal($rootScope, $modal, {
 					size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
@@ -388,6 +393,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					resolve : resolve,
 					backdrop : backdrop
 				});
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
 			};
 
 			// 打开临时菜配置窗口
@@ -405,7 +418,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 					};
 
-				$modal.open({
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
 					size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
@@ -2361,7 +2382,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 						if (act == "pickOrder") {
 							// 提餐操作，直接打开提单窗口
-							$modal.open({
+							// $modal.open({
+							// 	size : modalSize,
+							// 	windowClass : "",
+							// 	controller : controller,
+							// 	templateUrl : templateUrl,
+							// 	resolve : resolve
+							// });
+							Hualala.ModalCom.openModal($rootScope, $modal, {
 								size : modalSize,
 								windowClass : "",
 								controller : controller,
@@ -2400,7 +2428,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									scope.$apply();
 								} else {
 									OrderPayService.initOrderPay(function () {
-										$modal.open({
+										// $modal.open({
+										// 	size : modalSize,
+										// 	windowClass : "pay-modal",
+										// 	controller : controller,
+										// 	templateUrl : templateUrl,
+										// 	resolve : resolve,
+										// 	backdrop : "static"
+										// });
+										Hualala.ModalCom.openModal($rootScope, $modal, {
 											size : modalSize,
 											windowClass : "pay-modal",
 											controller : controller,

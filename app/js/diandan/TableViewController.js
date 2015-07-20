@@ -161,7 +161,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					saasOrderRemark : '',
 					tableName : $scope.curTableName
 				};
-				$modal.open({
+				// $modal.open({
+    //                 size : 'lg',
+    //                 controller : "OpenTableSetController",
+    //                 // templateUrl : "js/diandan/opentableset.html",
+    //                 templateUrl : "js/diandan/orderheaderset.html",
+    //                 resolve : {
+    //                     _scope : function () {
+    //                         return $scope;
+    //                     }
+    //                 }
+    //             });
+                Hualala.ModalCom.openModal($rootScope, $modal, {
                     size : 'lg',
                     controller : "OpenTableSetController",
                     // templateUrl : "js/diandan/opentableset.html",

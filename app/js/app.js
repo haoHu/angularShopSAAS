@@ -43,9 +43,20 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         $scope.isSignPage = false;
         $scope.ShopOperationMode = null;
         $scope.shopLogo = '';
+        if (!$rootScope.ModalLst) {
+            $rootScope.ModalLst = [];
+        }
         $rootScope.$on('$routeChangeSuccess', function (event) {
             // IX.Debug.info("Run Count: ");
             // IX.Debug.info(window.count++);
+            if ($rootScope.ModalLst && _.isArray($rootScope.ModalLst)) {
+                _.each($rootScope.ModalLst, function (modalinstance) {
+                    modalinstance && modalinstance.close();
+                });
+                _.reject($rootScope.ModalLst, function (modalinstance) {
+                    return _.isEmpty(modalinstance);
+                });
+            }
             $scope.curNav = $location.path();
             $scope.ShopOperationMode = $XP(storage.get('SHOPINFO'), 'operationMode');
             $scope.isSignPage = $scope.curNav == '/signin' || $scope.curNav == '/signup' ? true : false;

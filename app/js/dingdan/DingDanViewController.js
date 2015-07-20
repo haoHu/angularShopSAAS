@@ -113,14 +113,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 						}
 					};
 				$scope.modalIsOpen(true);
-				$modal.open({
-					size : modalSize,
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
+                    size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-				});
+                });
 			};
 			$scope.openDatePicker = function ($event) {
 				$event.preventDefault();
@@ -430,7 +438,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 						}
 					};
 				// $scope.modalIsOpen(true);
-				$modal.open(modalCfg);
+				// $modal.open(modalCfg);
+				Hualala.ModalCom.openModal($rootScope, $modal, modalCfg);
 			};
 			// 修改发票
 			$scope.modifyInvoice = function () {

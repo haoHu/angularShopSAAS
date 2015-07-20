@@ -363,3 +363,11 @@
 		
 	};
 })();
+(function () {
+	IX.ns("Hualala.ModalCom");
+	Hualala.ModalCom.openModal = function ($rootScope, $modal, cfg) {
+		var modalInstance = $modal.open(cfg);
+		$rootScope.ModalLst.push(modalInstance);
+		return modalInstance;
+	};
+})();

@@ -327,7 +327,17 @@ define(['app'], function (app) {
                 link : function (scope, el, attrs) {
                     el.on('click', function (e) {
                         if (el.hasClass('disabled')) return;
-                        $modal.open({
+                        // $modal.open({
+                        //     size : 'lg',
+                        //     controller : "OrderHeaderSetController",
+                        //     templateUrl : "js/diandan/orderheaderset.html",
+                        //     resolve : {
+                        //         _scope : function () {
+                        //             return scope;
+                        //         }
+                        //     }
+                        // });
+                        Hualala.ModalCom.openModal($rootScope, $modal, {
                             size : 'lg',
                             controller : "OrderHeaderSetController",
                             templateUrl : "js/diandan/orderheaderset.html",
@@ -792,7 +802,16 @@ define(['app'], function (app) {
                         }
                         var modalAction = _.indexOf('delete,addOne,subOne,waiting,urgent,addFood,urgeFood,splitFood'.split(','), act);
                         if (modalAction == -1) {
-                             $modal.open({
+                            //  $modal.open({
+                            //     size : modalSize,
+                            //     windowClass : windowClass,
+                            //     controller : controller,
+                            //     templateUrl : templateUrl,
+                            //     resolve : resolve,
+                            //     backdrop : backdrop
+                            // });
+
+                            Hualala.ModalCom.openModal($rootScope, $modal, {
                                 size : modalSize,
                                 windowClass : windowClass,
                                 controller : controller,
