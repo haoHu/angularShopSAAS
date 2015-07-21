@@ -230,8 +230,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 
 	/*订单详情模态窗口控制器*/
 	app.controller('OrderDetailViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get("SHOPINFO"),
