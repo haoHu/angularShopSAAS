@@ -689,7 +689,7 @@ define(['app'], function(app)
                                 if(data.code == '000') {
                                     scope.AA.add('success', '储值成功！');
 
-                                    Hualala.DevCom.exeCmd('PrintCRMTransBill', data.transReceiptsTxt);
+                                    Hualala.DevCom.exeCmd('PrintCRMTransBill', _.result(data.data, 'transReceiptsTxt', ''));
                                     scope.panel_userinfo.hide();
                                     init();
                                 }else{
