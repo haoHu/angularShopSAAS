@@ -676,7 +676,7 @@ define(['app'], function(app)
 
                     //点击提交按钮时
                     el.on('click', '.btn-submit-recharge', function() {
-                        if(!$(this).hasClass('disable')) {
+                        if(!$(this).hasClass('btn-disable')) {
                             scope.CCS.saveMoney({
                                 cardID: scope.user.cardkey,
                                 payWayName: scope.payway,
@@ -1048,7 +1048,7 @@ define(['app'], function(app)
 
                     //点击提交按钮时
                     el.on('click', '.btn-submit-consume', function() {
-                        if(!$(this).hasClass('disable')) {
+                        if(!$(this).hasClass('btn-disable')) {
                             scope.CCS.deductMoney({
                                 cardKey: scope.user.cardkey,
                                 cardTransPWD: scope.transpwd,
