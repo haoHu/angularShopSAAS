@@ -95,17 +95,17 @@
 				<div class="row filter-bar">
 					<div class="col-xs-6">
 						<div class="input-group">
-							<input type="text" class="form-control" placeholder="桌台名称" ng-model="qTblName" ng-keyup="quickSelectTable($event, qTblName)">
+							<input type="text" class="form-control input-lg" placeholder="桌台名称" ng-model="qTblName" ng-keyup="quickSelectTable($event, qTblName)">
 							<span class="input-group-btn">
-								<button class="btn btn-default" type="button" ng-click="quickSelectTable($event, qTblName)">进入桌台</button>
+								<button class="btn btn-default btn-lg" type="button" ng-click="quickSelectTable($event, qTblName)">选择桌台</button>
 							</span>
 						</div>
 					</div>
 					<div class="col-xs-6">
 						<div class="btn-group center-block clearfix">
-							<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio="'-1'" ng-click="queryTablesByStatus(-1)">全部</label>
-							<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio="'0'" ng-click="queryTablesByStatus(0)">空闲</label>
-							<label class="btn btn-default col-xs-4" ng-model="qTblStatus" btn-radio="'1'" ng-click="queryTablesByStatus(1)">占用</label>
+							<label class="btn btn-default btn-lg col-xs-4" ng-model="qTblStatus" btn-radio="'-1'" ng-click="queryTablesByStatus(-1)">全部</label>
+							<label class="btn btn-default btn-lg col-xs-4" ng-model="qTblStatus" btn-radio="'0'" ng-click="queryTablesByStatus(0)">空闲</label>
+							<label class="btn btn-default btn-lg col-xs-4" ng-model="qTblStatus" btn-radio="'1'" ng-click="queryTablesByStatus(1)">占用</label>
 						</div>
 					</div>
 				</div>
