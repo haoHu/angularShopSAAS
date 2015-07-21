@@ -57,7 +57,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {NULL} 
 			 */
 			this.initOrderFoodDB = function (data) {
-				self._OrderData = data;
+				self._OrderData = _.isEmpty(data) ? {} : data;
 				var _HT = self.OrderFoodHT,
 					foods = _.result(self._OrderData, 'foodLst', []);
 				_HT.clear();
@@ -1101,7 +1101,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 
 			 * @return {[type]} [description]
 			 */
-			this.suspendOrder = function () {
+			this.suspendOrder = function (successFn, failFn) {
 				var order = self._OrderData,
 					foodLst = self.OrderFoodHT.getAll();
 				
@@ -1126,10 +1126,14 @@ define(['app', 'uuid'], function (app, uuid) {
 						return el['__catchID'] == catchID;
 					});
 				}
+				if (ordersCatch.length == 3) {
+					failFn();
+					return ;
+				}
 				ordersCatch.push(order);
 				storage.set('OrderCatch', ordersCatch);
 				self.initOrderFoodDB();
-
+				successFn();
 			};
 
 			/**
@@ -1155,12 +1159,21 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 3.从本地缓存中删除提取出来的订单数据
 			 * @return {[type]} [description]
 			 */
-			this.pickOrder = function (catchID) {
+			this.pickOrder = function (catchID, successFn, failFn) {
 				var ordersCatch = storage.get('OrderCatch') || [];
-				var curOrderCatch = _.find(ordersCatch, function (el) {
-					return el['__catchID'] == catchID;
+				var curOrderCatch;
+				// var curOrderCatch = _.find(ordersCatch, function (el) {
+				// 	return el['__catchID'] == catchID;
+				// });
+				ordersCatch = _.filter(ordersCatch, function (el) {
+					var matched = el['__catchID'] == catchID;
+					if (matched == true) {
+						curOrderCatch = el;
+					}
+					return !matched;
 				});
-				self.suspendOrder();
+				storage.set('OrderCatch', ordersCatch);
+				self.suspendOrder(successFn, failFn);
 				self.initOrderFoodDB(curOrderCatch);
 				self.removeCurrentSuspendedOrder();
 			};

@@ -519,12 +519,15 @@
 			<h4 class="modal-title">提单操作</h4>
 		</div>
 		<div class="modal-body">
-			<ul class="row list-unstyled">
-				<li class="col-xs-4" ng-repeat="el in OrdersCatch" id="el.__catchID" ng-click="onOrderCatchClick(el.__catchID)">
+			<ul class="order-catch row list-unstyled">
+				<li class="col-xs-4 item" ng-repeat="el in OrdersCatch" id="el.__catchID" ng-click="onOrderCatchClick(el.__catchID)">
 					<p>订单号:{{el.saasOrderKey}}</p>
 					<p>时间:{{el.startTime | formatDateTimeStr:"yyyy-MM-dd HH:mm:ss"}}</p>
 					<p ng-repeat="food in el.foodLst" ng-if="$index < 4">
 						{{food.foodName}}
+					</p>
+					<p ng-if="el.foodLst.length > 4">
+						...
 					</p>
 				</li>
 			</ul>

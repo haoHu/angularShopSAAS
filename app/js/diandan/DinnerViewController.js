@@ -477,13 +477,21 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 挂单操作
 			$scope.suspendOrder = function () {
-				OrderService.suspendOrder();
+				OrderService.suspendOrder(function () {
+					AppAlert.add('success', '挂单成功!');
+				}, function () {
+					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
+				});
 				$scope.resetOrderInfo();
 			};
 
 			// 提单操作
 			$scope.pickOrder = function (catchID) {
-				OrderService.pickOrder(catchID);
+				OrderService.pickOrder(catchID, function () {
+					AppAlert.add('success', '当前订单挂单成功!');
+				}, function () {
+					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
+				});
 				$scope.resetOrderInfo();
 			};
 
