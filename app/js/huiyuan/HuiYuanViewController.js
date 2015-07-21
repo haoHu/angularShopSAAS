@@ -70,6 +70,9 @@ define(['app'], function(app)
                                 v.index = count ++;
                                 $scope.vouchers.push(v);
                             };
+                            if ($scope.curTabName == 'consume') {
+                                $scope.calculate('consumeamount');
+                            }
                         }else {
                             AppAlert.add('danger', data.msg)
                         }
@@ -105,7 +108,9 @@ define(['app'], function(app)
                     birthday: d.customerBirthday,
                     joindate: '2015-01-01 18:11:11',
                     cashaccount: d.cardCashBalance,
-                    pointaccount: d.cardPointBalance,
+                    // pointaccount: d.cardPointBalance,
+                    // 卡剩余积分所能抵扣的消费金额
+                    pointaccount : d.cardPointAsMoney,
                     pointrate: d.pointRate,
                     pointasmoneyrate: d.pointAsMoneyRate,
                     //joinplace: '哗啦啦体验店铺（中关村店）',
@@ -132,7 +137,8 @@ define(['app'], function(app)
             };
 
             $scope.prtvipinfo = function() {
-                Hualala.DevCom.exeCmd('PrintOther', JSON.stringify($scope.user));
+                // Hualala.DevCom.exeCmd('PrintOther', JSON.stringify($scope.user));
+                Hualala.DevCom.exeCmd('PrintOther', _.result($scope.user, 'customerPrnTxt', ''));
             };
 
             //打开日历
@@ -206,7 +212,7 @@ define(['app'], function(app)
 
                 var node = $('.tab-' + tabname);
                 node.show();
-
+                scope.curTabName = tabname;
                 if(tabname == 'join') {
                     scope.user = null;
                     scope.$apply();
@@ -664,55 +670,84 @@ define(['app'], function(app)
             return {
                 restrict : 'E',
                 template : [
-                    '<div class="tab tab-consume form-inline" style="display:none;">',
+                    '<form name="consume_form" class="tab tab-consume form-inline form-horizontal" style="display:none;">',
                         '<div style="display:block;">',
-                            '<div class="form-group">',
-                                '<label>卡号/手机号</label>',
+                            '<div class="form-group has-feedback">',
+                                '<label class="">卡号/手机号</label>',
                                 '<div class="input-group">',
                                     '<input style="width: 182px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber">',
                                     '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
                                 '</div>',
                             '</div>',
                         '</div>',
-                        '<div style="display:block;margin-top:10px;">',
-                            '<div class="form-group">',
-                                '<label>本次消费金额</label>',
-                                '<input style="width: 94px;" type="number" class="form-control input-lg group" ng-model="group.consumeamount" ng-change="calculate(\'consumeamount\')">',
-                                '<label style="width:30px;margin-left:1px;">单号</label>',
-                                '<input style="width: 86px;" type="number" class="form-control input-lg ordernumber" ng-model="ordernumber">',
+                        '<div class="row clearfix" style="display:block;margin-top:10px;">',
+                            '<div class="form-group col-xs-5">',
+                                '<label class="pull-left control-label">本次消费金额</label>',
+                                '<div class="pull-left" ng-class="{\'has-success\' : consume_form.consumeamount.$dirty && consume_form.consumeamount.$valid, \'has-error\' : consume_form.consumeamount.$invalid}">',
+                                    '<input name="consumeamount" style="width: 110px;" type="text" class="form-control input-lg group" ng-model="group.consumeamount" ng-change="calculate(\'consumeamount\')" bv-greaterthan="true" min="0" bv-isnum>',
+                                    '<small class="help-block" ng-show="consume_form.consumeamount.$dirty && consume_form.consumeamount.$error.bvIsnum">请输入正确金额</small>',
+                                    '<small class="help-block" ng-show="consume_form.consumeamount.$dirty && consume_form.consumeamount.$error.bvGreaterthan">必须大于或等于0</small>',
+                                    
+                                '</div>',
+                            '</div>',
+                            '<div class="form-group col-xs-6">',
+                                '<label class="pull-left control-label" style="width:30px;margin-left:1px;">单号</label>',
+                                '<div class="pull-left" ng-class="">',
+                                    '<input style="width: 86px;" type="text" class="form-control input-lg ordernumber" ng-model="ordernumber">',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                                '<label>代金券抵扣金额</label>',
-                                '<input style="width: 100px;" type="number" disabled class="form-control input-lg group usevoucheramount" ng-model="group.usevoucheramount" ng-change="calculate(\'usevoucheramount\')">',
+                                '<label class="pull-left control-label">代金券抵扣金额</label>',
+                                '<div class="pull-left">',
+                                    '<input style="width: 100px;" type="number" disabled class="form-control input-lg group usevoucheramount" ng-model="group.usevoucheramount" ng-change="calculate(\'usevoucheramount\')">',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                                '<label>积分抵扣金额</label>',
-                                '<input style="width: 100px;" type="number" class="form-control input-lg group" ng-model="group.pointamount" ng-change="calculate(\'pointamount\')">',
+                                '<label class="pull-left control-label">积分抵扣金额</label>',
+                                '<div class="pull-left" ng-class="{\'has-success\' : consume_form.pointamount.$dirty && consume_form.pointamount.$valid, \'has-error\' : consume_form.pointamount.$invalid}">',
+                                    '<input name="pointamount" style="width: 100px;" type="text" class="form-control input-lg group" ng-model="group.pointamount" ng-change="calculate(\'pointamount\')" bv-between="true" min="0" max="{{user.pointaccount || 0}}" bv-isnum>',
+                                    '<span>积分余额: {{user.pointaccount || 0}}</span>',
+                                    '<small class="help-block" ng-show="consume_form.pointamount.$dirty && consume_form.pointamount.$error.bvBetween">必须在0~{{user.pointaccount || 0}}</small>',
+                                    '<small class="help-block" ng-show="consume_form.pointamount.$dirty && consume_form.pointamount.$error.bvIsnum">请输入正确金额</small>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                                '<label>储值余额付款</label>',
-                                '<input style="width: 100px;" type="number" class="form-control input-lg group" ng-model="group.balanceamount" ng-change="calculate(\'balanceamount\')">',
+                                '<label class="pull-left control-label">储值余额付款</label>',
+                                '<div class="pull-left" ng-class="{\'has-success\' : consume_form.balanceamount.$dirty && consume_form.balanceamount.$valid, \'has-error\' : consume_form.balanceamount.$invalid}">',
+                                    '<input name="balanceamount" style="width: 100px;" type="text" class="form-control input-lg group" ng-model="group.balanceamount" ng-change="calculate(\'balanceamount\')" bv-between="true" min="0" max="{{user.cashaccount || 0}}" bv-isnum>',
+                                    '<span>储值余额: {{user.cashaccount || 0}}</span>',
+                                    '<small class="help-block" ng-show="consume_form.balanceamount.$dirty && consume_form.balanceamount.$error.bvGreaterthan">必须在0~{{user.cashaccount || 0}}</small>',
+                                    '<small class="help-block" ng-show="consume_form.balanceamount.$dirty && consume_form.balanceamount.$error.bvIsnum">请输入正确金额</small>',
+                                '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                            '<label>消费可积分金额</label>',
-                            '<input style="width: 100px;" type="number" class="form-control input-lg group" ng-model="group.pointgetamount" ng-change="calculate(\'pointgetamount\')">',
-                            '<span><-现金支付那部分金额</span>',
+                            '<label class="pull-left control-label">消费可积分金额</label>',
+                            '<div class="pull-left" >',
+                                '<div class="pull-left" ng-class="{\'has-success\' : consume_form.pointgetamount.$dirty && consume_form.pointgetamount.$valid, \'has-error\' : consume_form.pointgetamount.$invalid}">',
+                                    '<input name="pointgetamount" style="width: 100px;" type="text" class="form-control input-lg group" ng-model="group.pointgetamount" ng-change="calculate(\'pointgetamount\')" bv-greaterthan="true" min="0" bv-isnum>',
+                                    '<span><-现金支付那部分金额</span>',
+                                    '<small class="help-block" ng-show="consume_form.pointgetamount.$dirty && consume_form.pointgetamount.$error.bvGreaterthan">必须大于或等于0</small>',
+                                    '<small class="help-block" ng-show="consume_form.pointgetamount.$dirty && consume_form.pointgetamount.$error.bvIsnum">请输入正确金额</small>',
+                                '</div>',
+                            '</div>',
                             '</div>',
                         '</div>',
                         '<div style="display:none;margin-top:10px;" class="formpwd">',
                             '<div class="form-group">',
-                                '<label>动态交易密码</label>',
-                                '<div class="input-group">',
-                                    '<input style="width:90px;" type="text" ng-model="transpwd" class="form-control input-lg transpwd">',
-                                    '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-sendtranspwd">发送动态交易密码</button></span>',
+                                '<label class="pull-left control-label">动态交易密码</label>',
+                                '<div class="pull-left">',
+                                    '<div class="input-group">',
+                                        '<input style="width:90px;" type="text" ng-model="transpwd" class="form-control input-lg transpwd">',
+                                        '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-sendtranspwd">发送动态交易密码</button></span>',
+                                    '</div>',
                                 '</div>',
                             '</div>',
                         '</div>',
@@ -729,7 +764,7 @@ define(['app'], function(app)
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
-                                '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-consume btn-disable">提交储值</button>',
+                                '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-consume btn-disable">提交刷卡</button>',
                             '</div>',
                         '</div>',
                         '<div class="panel-vouchers" style="display:none;">',
@@ -746,10 +781,12 @@ define(['app'], function(app)
                                 '</li>',
                             '</ul>',
                         '</div>',
-                    '</div>'
+                    '</form>'
                 ].join(''),
                 replace : true,
                 link : function (scope, el, attr) {
+                    IX.ns('Hualala');
+                    var HCMath = Hualala.Common.Math;
                     el.find('.panel-vouchers ul').css('height', $(window).height() - 41);
 
                     var init = function() {
@@ -832,64 +869,121 @@ define(['app'], function(app)
                     });
 
                     //价格变动时的一些联动
-                    scope.calculate = function(name) {
-
-                        if(scope.user) {
-                            var ca, uva, pa, ba, pga;
-
-                            switch (name) {
-                                case 'consumeamount' : {
-                                    scope.usevoucher = [];
-                                    pa = ba = uva = 0;
-                                    ca = scope.group['consumeamount'];
-                                    pga = scope.group['consumeamount'];
-                                }break;
-
-                                case 'usevoucheramount' : {
-                                    pa = ba = 0;
-                                    uva = scope.group['usevoucheramount'];
-                                    ca = scope.group['consumeamount'];
-                                    pga = parseFloat(ca) - parseFloat(uva);
-                                    if(!pga) pga = 0;
-                                }break;
-
-                                case 'pointamount' : {
-                                    ba = 0;
-                                    pa = scope.group['pointamount'];
-                                    uva = scope.group['usevoucheramount'];
-                                    ca = scope.group['consumeamount'];
-                                    if(pa > ca - uva) {
-                                        pa = ca - uva;
-                                    }
-                                    if(pa > parseFloat(scope.user.pointaccount) * parseFloat(scope.user.pointasmoneyrate)) {
-                                        pa = parseFloat(scope.user.pointaccount) * parseFloat(scope.user.pointasmoneyrate);
-                                    }
-                                    pga = ca - uva - pa;
-                                    if(!pga) pga = 0;
-                                }break;
-
-                                case 'balanceamount' : {
-                                    ba = scope.group['balanceamount'];
-                                    pa = scope.group['pointamount'];
-                                    uva = scope.group['usevoucheramount'];
-                                    ca = scope.group['consumeamount'];
-                                    if(ba > ca - uva - pa) {
-                                        ba = ca - uva - pa;
-                                    }
-                                    if(ba > scope.user.cashaccount) {
-                                        ba = parseFloat(scope.user.cashaccount);
-                                    }
-                                    pga = ca - uva - pa - ba;
-                                    if(!pga) pga = 0;
-                                }break;
-
-                            }
-
-                            scope.group.pointamount = pa;
-                            scope.group.balanceamount = ba;
-                            scope.group.pointgetamount = pga;
+                    scope.calculate = function (name) {
+                        if (_.isEmpty(scope.user)) return;
+                        // ca:consumeamount;uva:usevoucheramount;pa:pointamount;ba:balanceamount;pga:pointgetamount
+                        var ca, uva, pa, ba, pga;
+                        var delta;
+                        switch(name) {
+                            case 'consumeamount' :
+                                scope.uservoucher = [];
+                                pa = ba = uva = 0;
+                                ca = parseFloat(scope.group['consumeamount']);
+                                // 如果消费金额小于等于会员卡积分余额，使用部分会员卡积分余额，否则使用全部积分余额
+                                pa = parseFloat(_.result(scope.user, 'pointaccount', 0));
+                                pa = ca < pa ? ca : pa;
+                                ba = parseFloat(HCMath.sub(ca, pa, uva));
+                                ba = ba >= parseFloat(_.result(scope.user, 'cashaccount')) ? parseFloat(_.result(scope.user, 'cashaccount')) : ba;
+                                break;
+                            case 'usevoucheramount' : 
+                                pa = ba = 0;
+                                ca = parseFloat(scope.group['consumeamount']);
+                                uva = parseFloat(scope.group['usevoucheramount']);
+                                delta = parseFloat(HCMath.sub(ca, uva));
+                                if (delta > 0) {
+                                    pa = parseFloat(_.result(scope.user, 'pointaccount', 0));
+                                    pa = delta < pa ? ca : pa;
+                                    ba = parseFloat(HCMath.sub(delta, pa));
+                                    ba = ba >= parseFloat(_.result(scope.user, 'cashaccount')) ? parseFloat(_.result(scope.user, 'cashaccount')) : ba;
+                                }
+                                break;
+                            case 'pointamount':
+                                ba = 0;
+                                ca = parseFloat(scope.group['consumeamount']);
+                                pa = parseFloat(_.result(scope.group, 'pointamount'));
+                                pa = parseFloat(_.result(scope.user, 'pointaccount', 0)) < pa ? parseFloat(_.result(scope.user, 'pointaccount', 0)) : pa;
+                                uva = parseFloat(scope.group['usevoucheramount']);
+                                delta = parseFloat(HCMath.sub(ca, uva, pa));
+                                if (delta > 0) {
+                                    ba = delta >= parseFloat(_.result(scope.user, 'cashaccount')) ? parseFloat(_.result(scope.user, 'cashaccount')) : delta;
+                                }
+                                break;
+                            case 'balanceamount':
+                                ca = parseFloat(scope.group['consumeamount']);
+                                pa = parseFloat(_.result(scope.group, 'pointamount'));
+                                uva = parseFloat(scope.group['usevoucheramount']);
+                                ba = parseFloat(_.result(scope.group, 'balanceamount', 0));
+                                delta = parseFloat(HCMath.sub(ca, uva, pa));
+                                ba = delta < ba ? delta : ba;
+                                break;
                         }
-                    }
+                        pga = parseFloat(HCMath.sub(ca, uva, pa, ba));
+
+                        scope.group.pointamount = pa;
+                        scope.group.balanceamount = ba;
+                        scope.group.pointgetamount = pga;
+                    };
+                    // scope.calculate = function(name) {
+
+                    //     if(scope.user) {
+                    //         var ca, uva, pa, ba, pga;
+
+                    //         switch (name) {
+                    //             case 'consumeamount' : {
+                    //                 scope.usevoucher = [];
+                    //                 pa = ba = uva = 0;
+                    //                 ca = parseFloat(scope.group['consumeamount']);
+                    //                 pga = parseFloat(scope.group['consumeamount']);
+                    //             }break;
+
+                    //             case 'usevoucheramount' : {
+                    //                 pa = ba = 0;
+                    //                 uva = parseFloat(scope.group['usevoucheramount']);
+                    //                 ca = parseFloat(scope.group['consumeamount']);
+                    //                 // pga = parseFloat(ca) - parseFloat(uva);
+                    //                 pga = parseFloat(HCMath.sub(ca, uva));
+                    //                 if(!pga) pga = 0;
+                    //             }break;
+
+                    //             case 'pointamount' : {
+                    //                 ba = 0;
+                    //                 pa = parseFloat(scope.group['pointamount']);
+                    //                 uva = parseFloat(scope.group['usevoucheramount']);
+                    //                 ca = parseFloat(scope.group['consumeamount']);
+                    //                 if (pa > (ca - uva)) {
+                    //                     pa = parseFloat(HCMath.sub(ca, uva));
+                    //                 }
+                    //                 if(pa > parseFloat(scope.user.pointaccount) * parseFloat(scope.user.pointasmoneyrate)) {
+                    //                     // pa = parseFloat(scope.user.pointaccount) * parseFloat(scope.user.pointasmoneyrate);
+                    //                     pa = parseFloat(HCMath.multi(scope.user.pointaccount, scope.user.pointasmoneyrate));
+                    //                 }
+
+                    //                 pga = parseFloat(HCMath.sub(ca, uva, pa));
+                    //                 if(!pga) pga = 0;
+                    //             }break;
+
+                    //             case 'balanceamount' : {
+                    //                 ba = parseFloat(scope.group['balanceamount']);
+                    //                 pa = parseFloat(scope.group['pointamount']);
+                    //                 uva = parseFloat(scope.group['usevoucheramount']);
+                    //                 ca = parseFloat(scope.group['consumeamount']);
+                    //                 if(ba > ca - uva - pa) {
+                    //                     ba = parseFloat(HCMath.sub(ca.toString(), uva.toString(), pa.toString()));
+                    //                 }
+                    //                 if(ba > parseFloat(scope.user.cashaccount)) {
+                    //                     ba = parseFloat(scope.user.cashaccount);
+                    //                 }
+                    //                 pga = parseFloat(HCMath.sub(ca.toString(), uva.toString(), pa.toString(), ba.toString()));
+                    //                 if(!pga) pga = 0;
+                    //             }break;
+
+                    //         }
+
+                    //         scope.group.pointamount = pa;
+                    //         scope.group.balanceamount = ba;
+                    //         scope.group.pointgetamount = pga;
+                    //     }
+                    // }
 
                     //点击储值套餐标签时
                     scope.changeVoucher =  function(index) {

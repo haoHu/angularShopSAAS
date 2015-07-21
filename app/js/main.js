@@ -92,6 +92,8 @@ require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'glo
 			// Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.140:8080';
 			// 朱敏机器
 			// Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.42:8080';
+			// local develop
+			// Hualala.Global.AJAX_DOMAIN = 'http://127.0.0.1:8080';
 			angular.bootstrap(document, ['app']);
 
 		});
