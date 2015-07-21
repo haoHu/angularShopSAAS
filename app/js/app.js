@@ -43,10 +43,13 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         $scope.isSignPage = false;
         $scope.ShopOperationMode = null;
         $scope.shopLogo = '';
+        $scope.empName = '';
         if (!$rootScope.ModalLst) {
             $rootScope.ModalLst = [];
         }
         $rootScope.$on('$routeChangeSuccess', function (event) {
+            var shopInfo = storage.get('SHOPINFO'),
+                empInfo = storage.get('EMPINFO');
             // IX.Debug.info("Run Count: ");
             // IX.Debug.info(window.count++);
             if ($rootScope.ModalLst && _.isArray($rootScope.ModalLst)) {
@@ -58,7 +61,8 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
                 });
             }
             $scope.curNav = $location.path();
-            $scope.ShopOperationMode = $XP(storage.get('SHOPINFO'), 'operationMode');
+            $scope.empName = _.result(empInfo, 'empName', '');
+            $scope.ShopOperationMode = $XP(shopInfo, 'operationMode');
             $scope.isSignPage = $scope.curNav == '/signin' || $scope.curNav == '/signup' ? true : false;
             $scope.isWelcomPage = $scope.curNav == '/' ? true : false;
             $scope.shopLogo = _.result(storage.get('SHOPINFO'), 'logoUrl', '');
