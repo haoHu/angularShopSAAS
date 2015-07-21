@@ -634,6 +634,7 @@ define(['app'], function(app)
                     el.find('.panel-rechargeplan ul').css('height', $(window).height() - 82);
 
                     var init = function() {
+                        scope.cardnumber = '';
                         scope.rechargeway = 0;
                         scope.rechargeamount = 0;
                         scope.rechargereturnamount = 0;
