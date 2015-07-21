@@ -378,6 +378,9 @@ define(['app'], function(app)
 
                     //初始值设定
                     var init = function() {
+                        scope.realcardnumber = '';
+                        scope.phonenumber = '';
+                        scope.username = '';
                         scope.sex = 0;
                         scope.cardfee = 0;
                         scope.birthday = null;
