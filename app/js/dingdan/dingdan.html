@@ -44,11 +44,12 @@
 							<th class="txt">台牌</th>
 							<th class="num">人数</th>
 							<th class="num">订单金额</th>
+							<th class="num">优惠金额</th>
 							<th class="num">实收金额</th>
 							<th class="txt">状态</th>
 							<th class="txt">收银员</th>
 							<th class="date">点餐时间</th>
-							<th class="date">就餐时间</th>
+							<!-- <th class="date">就餐时间</th> -->
 							<th class="date">结账时间</th>
 							<th class="txt">会员</th>
 						</tr>
@@ -69,11 +70,12 @@
 							<td class="txt">{{order.tableName}}</td>
 							<td class="num">{{order.person}}</td>
 							<td class="num">{{order.foodAmount | mycurrency:"￥"}}</td>
+							<td class="num">{{order.promotionAmount | mycurrency:"￥"}}</td>
 							<td class="num">{{order.paidAmount | mycurrency:"￥"}}</td>
 							<td class="txt">{{order.orderStatus == 20 ? '未结账' : order.orderStatus == 40 ? '已结账' : '废单'}}</td>
 							<td class="txt">{{order.checkoutBy}}</td>
 							<td class="date">{{order.startTime | formatDateTimeStr:"HH:mm"}}</td>
-							<td class="date">{{order.createTime | formatDateTimeStr:"HH:mm"}}</td>
+							<!-- <td class="date">{{order.createTime | formatDateTimeStr:"HH:mm"}}</td> -->
 							<td class="date">{{order.checkoutTime | formatDateTimeStr:"HH:mm"}}</td>
 							<td class="txt">{{order.cardNo.length > 0 ? '是' : ''}}</td>
 						</tr>
@@ -122,68 +124,76 @@
 								<!--<orderlist type="multiple"></orderlist>-->
 								<div class="table-responsive">
 									<table class="table table-bordered table-condensed ">
+									<!--表格各列顺序
+									 分类名称、品名、点菜数量、退菜数量、赠菜数量、规格、成交价(foodPayPrice)、成交金额(foodPayPriceReal)，套餐，套餐明细，临时菜、点菜时间（createTime）、点菜人员、
+   、退菜时间、退菜人员、退菜原因、赠菜时间、赠菜人员、赠菜原因、改价时间、改价人员、改价原因。
+									-->
 										<thead>
 											<tr>
 												<th>分类名称</th>
-												<th>收入科目</th>
-												<th>是否套餐</th>
-												<th>是否套餐明细</th>
-												<th>菜品Key</th>
 												<th>菜品名称</th>
 												<th>点菜数量</th>
 												<th>退菜数量</th>
 												<th>赠菜数量</th>
-												<th>退菜原因</th>
-												<th>退菜操作员</th>
-												<th>退菜时间</th>
-												<th>赠菜原因</th>
-												<th>赠菜操作员</th>
-												<th>赠菜时间</th>
-												<th>是否临时菜</th>
 												<th>菜品规格</th>
-												<th>是否参与打折</th>
 												<th>成交价格</th>
 												<th>实收价格</th>
-												<th>点菜要求</th>
-												<th>改价原因</th>
-												<th>改价操作员</th>
-												<th>改价时间</th>
+												<th>是否套餐</th>
+												<th>是否套餐明细</th>
+												<th>是否临时菜</th>
+												<th>记录创建时间</th>
 												<th>点菜人员</th>
+												<th>退菜时间</th>
+												<th>退菜操作员</th>
+												<th>退菜原因</th>
+												<th>赠菜时间</th>
+												<th>赠菜操作员</th>
+												<th>赠菜原因</th>
+												<th>改价时间</th>
+												<th>改价操作员</th>
+												<th>改价原因</th>
+
+												<th>收入科目</th>
+												<th>是否参与打折</th>
+												<th>点菜要求</th>
 												<th>制作状态</th>
 												<th>上菜时间</th>
-												<th>记录创建时间</th>
+												
+												<!--<th>菜品Key</th>-->
 											</tr>
 										</thead>
 										<tbody>
 											<tr ng-repeat="el in curOrderItems">
 												<td class="txt">{{el.foodCategoryName}}</td>
-												<td class="txt">{{el.foodSubjectName}}</td>
-												<td class="txt">{{el.isSetFood == 1 && el.isSFDetail == 1 ? '是' : '否'}}</td>
-												<td class="txt">{{el.isSFDetail == 1 ? '是' : '否'}}</td>
-												<td class="txt">{{el.foodKey}}</td>
 												<td class="txt">{{el.foodName}}</td>
 												<td class="num">{{el.foodNumber}}</td>
 												<td class="num">{{el.foodCancelNumber}}</td>
 												<td class="num">{{el.foodSendNumber}}</td>
-												<td class="txt">{{el.cancelReason}}</td>
-												<td class="txt">{{el.cancelBy}}</td>
-												<td class="date">{{el.cancelTime | formatDateTimeStr}}</td>
-												<td class="txt">{{el.sendReason}}</td>
-												<td class="txt">{{el.sendBy}}</td>
-												<td class="date">{{el.sendTime}}</td>
-												<td class="txt">{{el.isTempFood == 1 ? '是' : '否'}}</td>
 												<td class="txt">{{el.unit}}</td>
-												<td class="txt">{{el.isDiscount == 1 ? '是' : '否'}}</td>
 												<td class="num">{{el.foodPayPrice | mycurrency:'￥'}}</td>
 												<td class="num">{{el.foodPayPriceReal | mycurrency:'￥'}}</td>
-												<td class="txt">{{el.foodRemark}}</td>
-												<td class="txt">{{el.modifyReason}}</td>
-												<td class="txt">{{el.modifyBy}}</td>
-												<td class="date">{{el.modifyTime}}</td>
+												<td class="txt">{{el.isSetFood == 1 && el.isSFDetail == 1 ? '是' : '否'}}</td>
+												<td class="txt">{{el.isSFDetail == 1 ? '是' : '否'}}</td>
+												<td class="txt">{{el.isTempFood == 1 ? '是' : '否'}}</td>
+												<td class="date">{{el.createTime | formatDateTimeStr}}</td>
 												<td class="txt">{{el.orderBy}}</td>
+												<td class="date">{{el.cancelTime | formatDateTimeStr}}</td>
+												<td class="txt">{{el.cancelBy}}</td>
+												<td class="txt">{{el.cancelReason}}</td>
+												<td class="date">{{el.sendTime}}</td>
+												<td class="txt">{{el.sendBy}}</td>
+												<td class="txt">{{el.sendReason}}</td>
+												<td class="date">{{el.modifyTime}}</td>
+												<td class="txt">{{el.modifyBy}}</td>
+												<td class="txt">{{el.modifyReason}}</td>
+
+												<td class="txt">{{el.foodSubjectName}}</td>
+												<td class="txt">{{el.isDiscount == 1 ? '是' : '否'}}</td>
+												<td class="txt">{{el.foodRemark}}</td>
 												<td class="txt">{{el.makeStatus == 0 ? '等叫' : (el.makeStatus == 1 ? '即起' : (el.makeStatus == 2 ? '加急' : '已上菜'))}}</td>
 												<td class="date">{{el.makedTime | formatDateTimeStr}}</td>
-												<td class="date">{{el.createTime | formatDateTimeStr}}</td>
+												
+												<!--<td class="txt">{{el.foodKey}}</td>-->
 											</tr>
 										</tbody>
 									</table>
@@ -263,8 +273,8 @@
 							</div>
 							<div class="row">
 								<div class="col-xs-6 item">
-									<label class="col-xs-7 text-right">菜品金额:</label>
-									<p class="col-xs-5 text-left cash">
+									<label class="col-xs-7 text-right text-success">菜品金额合计:</label>
+									<p class="col-xs-5 text-left cash text-success">
 										{{getOrderFoodAmount() | mycurrency:"￥"}}
 									</p>
 								</div>
@@ -291,7 +301,7 @@
 					<button type="button" class="btn btn-default btn-lg" ng-disabled="checkOrderIsVoided()" ng-click="abolishOrder()">作废</button>
 				</div>
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default btn-lg" ng-disabled="checkOrderIsVoided()" ng-click="counterSettlingAccount()">反结账</button>
+					<button type="button" class="btn btn-default btn-lg" ng-disabled="checkOrderIsVoided()" ng-click="counterSettlingAccount()">修改订单</button>
 				</div>
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-default btn-lg" ng-click="close()" >返回</button>
