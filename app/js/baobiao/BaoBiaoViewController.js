@@ -51,7 +51,7 @@ define(['app'], function(app)
 								checkoutBy : '全部',
 								timeName : '全部',
 								areaName : '全部',
-								queryRangeLst : _.pluck($scope.QueryRangeLst, 'value')
+								queryRangeLst : _.pluck($scope.QueryRangeLst, 'value').slice(0,1)
 							};
 							$scope.QueryRangeLst = _.map($scope.QueryRangeLst, function (el) {
 								var v = _.result(el, 'value');
