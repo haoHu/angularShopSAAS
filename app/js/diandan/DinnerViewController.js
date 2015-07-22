@@ -1598,6 +1598,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						mapPaySubjectOptsCfg();
 						// 整理支付表单数据
 						mapFormCfg();
+						scope.$emit('pay.chkPayFormValid', true);
 						
 					};
 					initPayForm();
@@ -1689,6 +1690,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									debitAmount : realPay,
 									subjectCode : curSubCode
 								});
+								if (_.isEmpty(curSubCode)) {
+									AppAlert.add('danger', '请选择科目');
+								}
 
 								break;
 							// 折扣方案选择
@@ -1722,10 +1726,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 					};
 
-					scope.formElKeyup = function (invalid) {
-						scope.$emit('pay.chkPayFormValid', invalid == true ? false : true);
+					scope.formElKeyup = function (invalid, dirty) {
+						scope.$emit('pay.chkPayFormValid', (invalid == true && dirty == true) ? false : true);
 					};
-
 					
 				}
 			}
