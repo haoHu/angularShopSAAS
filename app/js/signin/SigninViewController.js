@@ -77,6 +77,21 @@ define(['app'], function (app) {
 				
 			};
 
+			// 输入框聚焦事件
+			// 告诉软键盘当前操作控件
+			$scope.inputFocus = function ($event) {
+				console.info($event);
+				console.info(arguments);
+				var curEl = $($event.target);
+				if (!curEl.attr('readonly')) {
+					$scope.focusInputEl = curEl;
+				} else {
+					$scope.focusInputEl = null;
+				}
+				return;
+
+			};
+
 			$scope.reset();
 		}
 	]);

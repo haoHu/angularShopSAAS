@@ -12,9 +12,9 @@ define(['app'], function(app)
 
             $scope.tabs =
             [
-                {class: 'active', active: true, label: '入会办卡', tabname: 'join'},
+                {class: '', active: true, label: '入会办卡', tabname: 'join'},
                 {class: '', active: true, label: '储值', tabname: 'recharge'},
-                {class: '', active: true, label: '消费刷卡', tabname: 'consume'},
+                {class: 'active', active: true, label: '消费刷卡', tabname: 'consume'},
                 {class: '', active: true, label: '卡操作', tabname: 'cardhandle'},
                 {class: '', active: true, label: '报表', tabname: 'report'}
             ];
@@ -262,7 +262,7 @@ define(['app'], function(app)
             return {
                 restrict : 'E',
                 template : [
-                    '<form class="tab tab-join form-inline form-horizontal" name="join_form" role="form" novalidate="novalidate">',
+                    '<form class="tab tab-join form-inline form-horizontal" name="join_form" role="form" novalidate="novalidate" style="display:none;">',
                         '<div style="display:block;">',
                             '<div class="form-group has-feedback">',
                                 '<label class="pull-left control-label">实体卡卡号</label>',
@@ -709,7 +709,7 @@ define(['app'], function(app)
             return {
                 restrict : 'E',
                 template : [
-                    '<form name="consume_form" class="tab tab-consume form-inline form-horizontal" style="display:none;">',
+                    '<form name="consume_form" class="tab tab-consume form-inline form-horizontal">',
                         '<div style="display:block;">',
                             '<div class="form-group has-feedback">',
                                 '<label class="">卡号/手机号</label>',
