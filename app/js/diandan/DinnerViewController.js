@@ -1647,7 +1647,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 					// 选择打折方案
 					scope.onDiscountChange = function (discountRule) {
-						var params = _.object('discountRate,discountRange,isVipPrice'.split(','), discountRule.split(';'));
+						var params = _.object('_id,discountRate,discountRange,isVipPrice'.split(','), discountRule.split(';'));
 						console.info("current discount rule:");
 						console.info(params);
 						curDiscountRule = discountRule;
@@ -1697,7 +1697,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								break;
 							// 折扣方案选择
 							case "discountPay" :
-								var params = _.object('discountRate,discountRange,isVipPrice'.split(','), curDiscountRule.split(';'));
+								var params = _.object('_id,discountRate,discountRange,isVipPrice'.split(','), curDiscountRule.split(';'));
 								OrderPayService.updatePaySubjectItem(curName, params);
 								break;
 						}

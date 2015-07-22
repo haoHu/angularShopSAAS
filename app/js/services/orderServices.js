@@ -2598,7 +2598,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					return _.extend(el, {
 						label : txt,
 						// 默认顺序：折扣率；折扣范围；是否执行会员价
-						value : discountRate + ';' + discountRange + ';' + isVipPrice
+						value : IX.id() + ';' + discountRate + ';' + discountRange + ';' + isVipPrice
 					});
 				});
 			};
