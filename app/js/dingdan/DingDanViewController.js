@@ -554,8 +554,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 	]);
 	/*账单作废操作*/
 	app.controller('AbolishOrderViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppConfirm', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppConfirm, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var orderInfo = OrderService.getOrderData();
@@ -567,7 +567,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 保存数据
 			$scope.save = function () {
-				var callServer = OrderService.abolishOrder($scope.saasOrderRemark);
+				var callServer;
 				var addAuthEMP = function () {
 					AppAuthEMP.add({
 						yesFn : function (empInfo) {
@@ -591,8 +591,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
 				};
-				callServer.success(function (data) {
-					successCallBack(data);
+				AppConfirm.add({
+					title : "订单作废",
+					msg : '是否将此订单作废?',
+					yesFn : function () {
+						callServer = OrderService.abolishOrder($scope.saasOrderRemark);
+						callServer.success(function (data) {
+							successCallBack(data);
+						});
+					},
+					noFn : function () {
+						e.stopPropagation();
+						return;
+					}
 				});
 			};
 		}
