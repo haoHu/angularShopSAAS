@@ -80,7 +80,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
                 $scope.totalSize = _.result(pageParams, 'totalSize');
 			};
 			// 跳转点菜页面
-			var jumpToDinnerPage = function (saasOrderKey, tableName) {
+			var jumpToDinnerPage = function (saasOrderKey, tableName, hisFlag) {
 				var shopInfo = storage.get("SHOPINFO"),
 					operationMode = _.result(shopInfo, 'operationMode');
 				var search = {
@@ -91,7 +91,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					'qKeyword' : $scope.qKeyword,
 					'qReportDate' : _.isDate($scope.qReportDate) ? IX.Date.getDateByFormat($scope.qReportDate, 'yyyyMMdd') : '',
 					'curPageNo' : $scope.curPageNo,
-					'pageSize' : $scope.pageSize
+					'pageSize' : $scope.pageSize,
+					'hisFlag' : hisFlag
 				};
 				if (operationMode == 0) {
 					$location.path('/dinner/' + tableName).search(search);
@@ -200,16 +201,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				var saasOrderKey = _.result(order, 'saasOrderKey'),
 					orderStatus = _.result(order, 'orderStatus'),
 					orderSubType = _.result(order, 'orderSubType'),
-					tableName = _.result(order, 'tableName');
+					tableName = _.result(order, 'tableName'),
+					hisFlag = _.result(order, 'his', 0);
 				if (orderStatus == 20) {
 					// 跳转点单页面
-					jumpToDinnerPage(saasOrderKey, tableName);
+					jumpToDinnerPage(saasOrderKey, tableName, hisFlag);
 				} else {
 					// 打开窗口加载订单
 					console.info(getOrderCallServer);
 					if (!_.isEmpty(getOrderCallServer)) return;
 					getOrderCallServer = OrderService.getOrderByOrderKey({
-						saasOrderKey : saasOrderKey
+						saasOrderKey : saasOrderKey,
+						hisFlag : hisFlag
 					}).success(function (data) {
 						var code = _.result(data, 'code');
 						if (code == '000') {
@@ -304,7 +307,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 
 			// 跳转点菜页面
-			var jumpToDinnerPage = function (saasOrderKey, tableName) {
+			var jumpToDinnerPage = function (saasOrderKey, tableName, hisFlag) {
 				var shopInfo = storage.get("SHOPINFO"),
 					operationMode = _.result(shopInfo, 'operationMode');
 				var search = {
@@ -316,7 +319,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					'qKeyword' : _scope.qKeyword,
 					'qReportDate' : _.isDate(_scope.qReportDate) ? IX.Date.getDateByFormat(_scope.qReportDate, 'yyyyMMdd') : '',
 					'curPageNo' : _scope.curPageNo,
-					'pageSize' : _scope.pageSize
+					'pageSize' : _scope.pageSize,
+					'hisFlag' : hisFlag
 				};
 				if (operationMode == 0) {
 					$location.path('/dinner/' + tableName).search(search);
@@ -392,7 +396,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			// 反结账
 			$scope.counterSettlingAccount = function () {
 				var orderData = OrderService.getOrderData();
-				jumpToDinnerPage(_.result(orderData, 'saasOrderKey'), _.result(orderData, 'tableName'));
+				jumpToDinnerPage(_.result(orderData, 'saasOrderKey'), _.result(orderData, 'tableName'), _.result(orderData, 'his', 0));
 				$scope.close();
 			};
 			// 完成审核
