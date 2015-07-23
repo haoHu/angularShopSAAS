@@ -28,9 +28,19 @@
 	}
 	.order-item {
 		position : relative; padding : 3px; height : 50%; overflow : hidden; z-index: 99;
+		&.collapse {display: block;}
+		.panel-title {
+			white-space: nowrap; overflow: hidden; text-overflow : ellipsis;
+		}
 		.order-box {
-			max-height : 100%; overflow: hidden; border-radius : 5px;
+			-webkit-transition : all .5s ease-in-out;
+			height : auto; max-height : 100%; overflow: hidden; border-radius : 5px;
 			.pager {display: none;}
+		}
+		&.offset-md, &.offset-lg {
+			> .order-box {
+				// -webkit-transition : -webkit-transform .5s ease-in-out;
+			}
 		}
 		&.active > .order-box {
 			border : 3px solid @itemFocusBorder; border-radius: 8px;
@@ -79,6 +89,19 @@
 				}
 			}
 		}
+		
+	}
+	@media screen and (min-width: 992px) {
+		.order-item.popup.offset-md > .order-box {
+			-webkit-transform: translate3d(0, -50%, 0);
+			transform : translate3D(0, -50%, 0);
+		}
+	}
+	@media screen and (min-widht: 1200px) {
+		.order-item.popup.offset-lg > .order-box {
+			-webkit-transform: translate3d(0, -50%, 0);
+			transform : translate3D(0, -50%, 0);
+		}
 	}
 	
 
@@ -119,6 +142,14 @@
 			background-color: @bgWarning;
 		}
 	}
-	
+
+	@-webkit-keyframes ordercollapse {
+		0% {
+			overflow: visible;
+		}
+		100% {
+			overflow: hidden;
+		}
+	}
 
 }

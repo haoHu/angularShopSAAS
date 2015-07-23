@@ -22,8 +22,8 @@
 	</header>
 	<div class="chupin-body row">
 		<!-- 订单处理状态，订单是否被选中，订单是否被展开 -->
-		<div class="col-md-4 col-lg-3 order-item {{order.orderDealStatus}}" ng-class="{active : isSelectedOrder(order), popup : isPopupOrder(order), hidden : order.hidden}" ng-repeat="order in OrderLst" ng-click="selectOrder(order)" id="{{order.saasOrderKey}}">
-			<div class="order-box">
+		<div class="col-md-4 col-lg-3 order-item {{order.orderDealStatus}}" ng-class="{active : isSelectedOrder(order),  'offset-md' : isOffsetItem($index, 6), 'offset-lg' : isOffsetItem($index, 8), hidden : order.hidden}" ng-repeat="order in OrderLst" id="{{order.saasOrderKey}}" item-idx="{{$index}}">
+			<div class="order-box" ng-click="selectOrder(order)">
 				<div class="panel panel-default">
 					<div class="panel-heading row">
 						<!-- 订单桌台号(订单单号)， -->
@@ -41,7 +41,7 @@
 					</div>
 					<div class="food-box clearfix">
 						<ul class="list-group food-lst">
-							<li class="list-group-item food-item row {{getFoodMakeStatusStyle(order, food)}}" ng-repeat="food in order.foodLst" ng-click="toggleFood($event, order, food)" ng-class="{active : food.selected == true}">
+							<li class="list-group-item food-item row {{getFoodMakeStatusStyle(order, food)}}" ng-repeat="food in order.foodLst" ng-click="toggleFood($event, order, food)" ng-class="{active : food.selected == true}" item-key="{{food.itemKey}}">
 								<!-- 菜品制作状态 -->
 								<div class="col-xs-3 status">{{getFoodMakeStatusStr(order, food)}}</div>
 								<!-- 菜品数量 -->
@@ -54,7 +54,7 @@
 						</ul>
 					</div>
 					<div class="pager">
-						<div class="btn-grp btn-group-justified " order-pager="{{curFoodItems.length}}">
+						<div class="btn-grp btn-group-justified " food-pager="{{order.saasOrderKey}}">
 							<div class="btn-group" role="group">
 								<button class="btn btn-default btn-block btn-lg btn-prev" type="button" pager-act="prev">上页</button>
 							</div>

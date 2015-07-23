@@ -2549,7 +2549,7 @@ IX.Util.Date = function(timeInSecond) {
 		},
 		toTimer : function (tsInSec) {
 			var _date = tsInSec?(new Date(tsInSec*1000)) :(new Date());  
-			var v = _date.getTime()/1000-timeInSecond; 
+			var v = Math.abs(_date.getTime()/1000-timeInSecond); 
 			var hourSecs = 3600, minuSecs = 60;
 			var h, m, s;
 			h = Math.floor(v / hourSecs);

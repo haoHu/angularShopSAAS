@@ -20,6 +20,9 @@ body {
 .row > div[class*="col-"] {
   padding: 0;
 }
+.has-feedback .form-control {
+  padding-right: 12px;
+}
 .modal .modal-footer {
   padding: 0;
 }
@@ -73,7 +76,7 @@ body {
 }
 .site-nav .logo {
   display: block;
-  margin: 1.5rem auto 6rem;
+  margin: 1.5rem auto .5rem;
   width: 5rem;
   height: 5rem;
 }
@@ -82,6 +85,12 @@ body {
   width: 100%;
   height: 100%;
   border: 0 none;
+}
+.site-nav .empname {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 auto 4rem;
 }
 .site-nav .nav > li:last-child {
   position: absolute;
@@ -212,6 +221,9 @@ body {
 }
 .section-profile .site-btngrp > .btn {
   height: 25%;
+}
+.signin-panel .panel-body {
+  height: 300px;
 }
 [class^="icon-"],
 [class*=" icon-"],
@@ -438,7 +450,7 @@ body {
 }
 .section-diandan .menu-plain .foods > .cell-btn .food-tag:after {
   padding-left: 4px;
-  font-size: 1rem;
+  font-size: 12px;
   color: #fff;
 }
 .section-diandan .menu-plain .foods > .cell-btn .food-tag.zfood:after {
@@ -467,7 +479,7 @@ body {
 }
 .section-diandan .menu-plain .foods > .cell-btn .tmpfood-tag:after {
   padding-right: 4px;
-  font-size: 1rem;
+  font-size: 12px;
   content: "临";
   color: #fff;
 }
@@ -648,6 +660,50 @@ body {
 }
 .section-diandan .btns-plain .col-xs-2:first-of-type > .btn {
   background-color: #f96;
+}
+.btngrp-box.btngrp-1x3 {
+  position: relative;
+  width: 100%;
+  height: 7rem;
+  background-color: #e6f2fd;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-1x3 > .btn-group {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.btngrp-box.btngrp-1x3 > .btn-group .btn-radio,
+.btngrp-box.btngrp-1x3 > .btn-group .btn-checkbox {
+  display: block;
+  width: 33.33333333%;
+  height: 100%;
+  margin: 0;
+  padding: 5px;
+  border-radius: 0;
+  background-color: #e6f2fd;
+  border: 1px solid #e6e6e6;
+  white-space: normal;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-1x3 > .btn-group .btn-radio p,
+.btngrp-box.btngrp-1x3 > .btn-group .btn-checkbox p {
+  margin: 0 0 5px;
+}
+.btngrp-box.btngrp-1x3 > .btn-group .btn-radio.active,
+.btngrp-box.btngrp-1x3 > .btn-group .btn-checkbox.active {
+  background-color: #99ccff;
+}
+.btngrp-box.btngrp-1x3 .btn-pager {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  width: 33.33333333%;
+  height: 100%;
+  background-color: #e6f2fd;
+  border-radius: 0;
 }
 .btngrp-box.btngrp-3x3 {
   position: relative;
@@ -946,7 +1002,7 @@ body {
 }
 .pay-modal .pay-ctrl .pay-schema p {
   padding: 0 0.5rem 0 1rem;
-  font-size: 1rem;
+  font-size: 12px;
 }
 .pay-modal .pay-ctrl .pay-schema label,
 .pay-modal .pay-ctrl .pay-schema p.sum {
@@ -1034,11 +1090,11 @@ body {
   margin-top: 0px;
   margin-bottom: 3px;
   padding: 0;
-  font-size: 1rem;
+  font-size: 12px;
 }
 .pay-modal .pay-ctrl .pay-subject .vip-pay .help-block.info > span {
   padding: 0;
-  padding-left: 1rem;
+  padding-left: 12px;
 }
 .pay-modal .pay-ctrl .pay-subject .vip-pay .user-voucher {
   margin-bottom: 5px;
@@ -1261,6 +1317,7 @@ body {
   width: 50%;
   bottom: 0;
   font-weight: normal;
+  font-size: 1em;
 }
 .section-table .table-menu .cell-btn p.time,
 .table-ctrl .table-menu .cell-btn p.time {
@@ -1359,6 +1416,21 @@ body {
   right: 0;
   top: 0;
   bottom: 0;
+}
+.order-catch {
+  border: 1px solid #ccc;
+}
+.order-catch .item {
+  padding-top: 10px;
+  height: 230px;
+  border-right: 1px solid #ccc;
+  cursor: pointer;
+}
+.order-catch .item:active {
+  background: #eee;
+}
+.order-catch .item:hover {
+  background: #eee;
 }
 .section-orderlst {
   position: relative;
@@ -1471,6 +1543,12 @@ body {
   background-position: -72px -48px;
   -webkit-transform: scale(0.8);
 }
+@media screen and (max-width: 1199px) {
+  .section-orderlst .filter-bar > div[class*=col-] {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
 .orderdetail-modal .modal-dialog {
   position: absolute;
   left: 6rem;
@@ -1520,8 +1598,7 @@ body {
 }
 .orderdetail-modal .modal-dialog .section-diandan .order-plain .table td,
 .orderdetail-modal .modal-dialog .section-diandan .order-plain .table th {
-  min-width: 8rem;
-  font-size: 1rem;
+  min-width: 8em;
 }
 .orderdetail-modal .modal-dialog .section-diandan .order-plain .order-footer {
   height: 5rem;
@@ -1557,11 +1634,11 @@ body {
   margin-bottom: 5px;
 }
 .orderdetail-modal .modal-dialog .section-diandan .detail-plain .order-detail {
-  height: 60%;
+  height: 80%;
   border-bottom: 1px solid #e6e6e6;
 }
 .orderdetail-modal .modal-dialog .section-diandan .detail-plain .paylst-plain {
-  height: 40%;
+  height: 20%;
 }
 .orderdetail-modal .modal-dialog .section-diandan .detail-plain header > h4 {
   padding: 0 1.5rem;
@@ -1783,8 +1860,8 @@ body {
 }
 .section-huiyuan .tab-join .panel-viplevel {
   position: absolute;
-  right: -100px;
-  top: -62px;
+  right: -120px;
+  top: -21px;
   background: white;
 }
 .section-huiyuan .tab-join .panel-viplevel .header {
@@ -1813,8 +1890,8 @@ body {
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan {
   position: absolute;
-  right: -100px;
-  top: -62px;
+  right: -200px;
+  top: -21px;
   background: white;
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan .header {
@@ -1841,8 +1918,8 @@ body {
 }
 .section-huiyuan .tab-consume .panel-vouchers {
   position: absolute;
-  right: -100px;
-  top: -62px;
+  right: -200px;
+  top: -21px;
   background: white;
 }
 .section-huiyuan .tab-consume .panel-vouchers .header {
@@ -1886,9 +1963,8 @@ body {
 .section-huiyuan .userinfo {
   position: absolute;
   right: 0px;
-  top: 0px;
-  border-left: 1px solid #c1c1c1;
-  border-right: 1px solid #c1c1c1;
+  top: 41px;
+  border: 1px solid #c1c1c1;
   height: 100%;
   width: 300px;
   background: white;
@@ -1922,6 +1998,10 @@ body {
 .section-huiyuan .btn-disable :hover {
   background: #c1c1c1 !important;
   cursor: not-allowed !important;
+}
+.section-huiyuan .btn-submit {
+  height: 60px;
+  width: 500px;
 }
 .server-modal .modal-dialog {
   position: absolute;
@@ -2068,14 +2148,14 @@ body {
 .section-baobiao .tab-comp .receipt-box p {
   margin: 0;
   padding: 0;
-  line-height: 1.5rem;
-  font-size: 1rem;
+  line-height: 1.5em;
+  font-size: 1em;
 }
 .section-baobiao .tab-comp .receipt-box p.font-1x {
-  font-size: 1rem;
+  font-size: 1em;
 }
 .section-baobiao .tab-comp .receipt-box p.font-2x {
-  font-size: 1.5rem;
+  font-size: 1.5em;
 }
 .section-baobiao .tab-comp .receipt-box p.bold {
   font-weight: 700;
@@ -2128,7 +2208,17 @@ body {
   overflow: hidden;
   z-index: 99;
 }
+.section-chupin .order-item.collapse {
+  display: block;
+}
+.section-chupin .order-item .panel-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .section-chupin .order-item .order-box {
+  -webkit-transition: all 0.5s ease-in-out;
+  height: auto;
   max-height: 100%;
   overflow: hidden;
   border-radius: 5px;
@@ -2219,6 +2309,18 @@ body {
   display: block;
   margin: 0;
 }
+@media screen and (min-width: 992px) {
+  .section-chupin .order-item.popup.offset-md > .order-box {
+    -webkit-transform: translate3d(0, -50%, 0);
+    transform: translate3D(0, -50%, 0);
+  }
+}
+@media screen and (min-widht: 1200px) {
+  .section-chupin .order-item.popup.offset-lg > .order-box {
+    -webkit-transform: translate3d(0, -50%, 0);
+    transform: translate3D(0, -50%, 0);
+  }
+}
 .section-chupin .food-lst .food-item {
   border-left: 3px solid transparent;
   border-right: 0;
@@ -2252,5 +2354,13 @@ body {
   }
   50% {
     background-color: #ffff66;
+  }
+}
+@-webkit-keyframes ordercollapse {
+  0% {
+    overflow: visible;
+  }
+  100% {
+    overflow: hidden;
   }
 }

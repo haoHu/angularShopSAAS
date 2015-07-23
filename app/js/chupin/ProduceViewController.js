@@ -65,6 +65,11 @@ define(['app'], function (app) {
 			var cancelPollingOrderDealInterval = function () {
 				return $interval.cancel($scope.oInterval);
 			};
+			// 判断订单元素展开时是否需要偏移
+			$scope.isOffsetItem = function (idx, pageSize) {
+				var itemIdx = idx % pageSize;
+				return itemIdx >= (pageSize / 2) ? true : false;
+			};
 			// 关键字搜索
 			$scope.queryByKeyword = function ($event) {
 				var evtType = $event.type,
@@ -104,10 +109,7 @@ define(['app'], function (app) {
 				var saasOrderKey = _.result(order, 'saasOrderKey');
 				return _.isEmpty($scope.curFocusOrder) ? false : (_.result($scope.curFocusOrder, 'saasOrderKey') == saasOrderKey);
 			};
-			// 订单是否展开
-			$scope.isPopupOrder = function (order) {
-
-			};
+			
 			// 订单类型
 			$scope.getOrderSubType = function (order) {
 				var orderSubType = _.result(order, 'orderSubType');
@@ -150,15 +152,31 @@ define(['app'], function (app) {
 			};
 			// 选择当前操作订单
 			$scope.selectOrder = function (order) {
-				if (!_.isEmpty($scope.curFocusOrder)) {
+				var saasOrderKey = _.result(order, 'saasOrderKey'),
+					itemEl = $('#' + saasOrderKey),
+					orderTitleH = itemEl.find('panel-title').height(),
+					orderBoxH = itemEl.find('.order-box').height(),
+					foodLstEl = itemEl.find('.food-lst'),
+					foodLstH = foodLstEl.height();
+				if (foodLstH - orderBoxH + orderTitleH > 0) {
+					itemEl.removeClass('collapse').addClass('popup');
+				}
+				// if (!_.isEmpty($scope.curFocusOrder)) {
+				// 	$('#' + _.result($scope.curFocusOrder, 'saasOrderKey')).addClass('collapse').removeClass('popup');
+				// 	cleanCurFocusFoods();
+				// }
+				if (!_.isEmpty($scope.curFocusOrder) && $scope.curFocusOrder.saasOrderKey != saasOrderKey) {
+					$('#' + _.result($scope.curFocusOrder, 'saasOrderKey')).addClass('collapse').removeClass('popup');
 					cleanCurFocusFoods();
 				}
 				$scope.curFocusOrder = order;
 			};
 			// 选择/取消选择菜品
 			$scope.toggleFood = function ($event, order, food) {
-				var saasOrderKey = _.result(order, 'saasOrderKey');
+				var saasOrderKey = _.result(order, 'saasOrderKey'),
+					srcOrderItemEl = $('#' + _.result($scope.curFocusOrder, 'saasOrderKey'));
 				if (_.result($scope.curFocusOrder, 'saasOrderKey') !== saasOrderKey) {
+					srcOrderItemEl.addClass('collapse').removeClass('popup');
 					cleanCurFocusOrderData();
 					$scope.curFocusOrder = order;
 				}
@@ -169,7 +187,7 @@ define(['app'], function (app) {
 					food.selected = true;
 					addCurFocusFood(food);
 				}
-				$event.stopPropagation();
+				// $event.stopPropagation();
 			};
 			// 菜品出品状态操作
 			$scope.foodOperate = function (actionType) {
@@ -225,6 +243,93 @@ define(['app'], function (app) {
 			};
 			$scope.queryFoodMakeStatusLst();
 			pollingOrderDealInterval();
+		}
+	]);
+	app.directive('foodPager', [
+		"$rootScope", "$filter", "ProduceOrderService",
+		function ($rootScope, $filter, ProduceOrderService) {
+			return {
+				restrict : 'A',
+				link : function (scope, el, attr) {
+					// 获取下一页开始条目
+					var getNextPageStartItem = function () {
+						var saasOrderKey = attr.foodPager,
+							order = ProduceOrderService.getOrderItem(saasOrderKey),
+							jItem = $("#" + saasOrderKey);
+						var itemLst = _.result(order, 'foodLst'),
+							jBox = jItem.find('.food-box'), jlst = jItem.find('.food-lst');
+						var listRect = jBox[0].getBoundingClientRect();
+						var nextItem = _.find(itemLst, function (item) {
+							var itemKey = _.result(item, 'itemKey'),
+								itemSelector = '.food-item[item-key=' + itemKey + ']',
+								jItem = $(itemSelector),
+								itemRect = jItem[0].getBoundingClientRect();
+							var ret = null;
+							if (listRect.bottom - parseFloat(jBox.css('paddingBottom')) - itemRect.top >= 0
+								&& listRect.bottom - parseFloat(jBox.css('paddingBottom')) - itemRect.bottom < 0) {
+								// 当前条目一部分在显示范围内，一部分在显示范围外
+								ret = itemKey;
+							} else if (listRect.bottom - parseFloat(jBox.css('paddingBottom')) - itemRect.bottom < 0) {
+								ret = itemKey;
+							}
+							return ret;
+						});
+						return nextItem;
+					};
+					// 获取上一页开始条目
+					var getPrevPageStartItem = function () {
+						var saasOrderKey = attr.foodPager,
+							order = ProduceOrderService.getOrderItem(saasOrderKey),
+							jItem = $("#" + saasOrderKey);
+						var itemLst = _.result(order, 'foodLst'),
+							jBox = jItem.find('.food-box'), jlst = jItem.find('.food-lst');
+						var listRect = jBox[0].getBoundingClientRect();
+						var nextItem = _.find(_.clone(itemLst).reverse(), function (item) {
+							var itemKey = _.result(item, 'itemKey'),
+								itemSelector = '.food-item[item-key=' + itemKey + ']',
+								jItem = $(itemSelector),
+								itemRect = jItem[0].getBoundingClientRect();
+							var ret = null;
+							if (listRect.top - itemRect.top > listRect.height - parseFloat(jBox.css('paddingBottom'))) {
+								// 当前条目不全在可视区域内
+								ret = jItem;
+							}
+							return ret;
+						});
+						if (!nextItem) {
+							nextItem = itemLst[0];
+						}
+						return nextItem;
+					};
+					
+					el.on('click', '.btn-prev, .btn-next', function (e) {
+                        IX.ns("Hualala.Common");
+                        var saasOrderKey = attr.foodPager,
+							order = ProduceOrderService.getOrderItem(saasOrderKey),
+							jItem = $("#" + saasOrderKey);
+                        var jBtn = $(this),
+                            HC = Hualala.Common;
+                        var direct = jBtn.attr('pager-act');
+                        var nextItem = null, jNextItem = null;
+                        var jBox = jItem.find('.food-box'),
+                        	jlst = jItem.find('.food-lst');
+
+                        nextItem = (direct == 'next') ? getNextPageStartItem() : getPrevPageStartItem();
+                        if (!nextItem) {
+                        	jBtn.attr('disabled', false);
+                        	return;
+                        }
+                        jNextItem = jlst.find('.food-item').filter('[item-key=' + _.result(nextItem, 'itemKey') + ']');
+                        jBox.animate(
+                        	{scrollTop : jNextItem.offset().top - jBox.find('.food-item:first').offset().top},
+                        	400, 'swing',
+                        	function () {
+                        		jBtn.attr('disabled', false);
+                        	}
+                        );
+                    });
+				}
+			}
 		}
 	]);
 });
