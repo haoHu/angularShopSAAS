@@ -200,7 +200,8 @@ define(['app'], function(app) {
 					});
 				} else {
 					callServer = CloudOrderService.getOrderByOrderKey({
-						orderKey : _.result(order, 'orderKey', '')
+						orderKey : _.result(order, 'orderKey', ''),
+						hisFlag : _.result(order, 'his', 0)
 					});
 				}
 				callServer.success(function (data) {
@@ -219,7 +220,8 @@ define(['app'], function(app) {
 								pageSize : $scope.pageSize
 							});
 							CloudOrderService.getOrderByOrderKey({
-								orderKey : _.result(order, 'orderKey', '')
+								orderKey : _.result(order, 'orderKey', ''),
+								hisFlag : _.result(order, 'his', 0)
 							}).success(function (data) {
 								var code = _.result(data, 'code');
 								if (code == '000') {
@@ -392,9 +394,11 @@ define(['app'], function(app) {
 			// 重新渲染接单页面的View层
 			$scope.refreshPage = function (cbFn) {
 				var curOrder = $scope.curOrderDetail,
-					orderKey = _.result(curOrder, 'orderKey');
+					orderKey = _.result(curOrder, 'orderKey'),
+					hisFlag = _.result(curOrder, 'his', 0);
 				var callServer = CloudOrderService.getOrderByOrderKey({
-					orderKey : orderKey
+					orderKey : orderKey,
+					hisFlag : hisFlag
 				});
 				$scope.queryOrderLst({
 					pageNo : $scope.curPageNo,

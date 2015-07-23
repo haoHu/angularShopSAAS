@@ -117,13 +117,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				callServer.success(function (data) {
 					var _tbl = TableService.getTableByItemID($scope.curTableID),
 						tableStatus = _.result(_tbl, 'tableStatus'),
-						saasOrderKey = _.result(_tbl, 'saasOrderKey');
+						saasOrderKey = _.result(_tbl, 'saasOrderKey'),
+						hisFlag = _.result(_tbl, 'his', 0);
 					if (actionType == 'HT') {
 						OrderService.clear();
 						$scope.resetOrderInfo();
 					} else {
 						OrderService.getOrderByOrderKey({
-							saasOrderKey : saasOrderKey
+							saasOrderKey : saasOrderKey,
+							hisFlag : hisFlag
 						}, function (data) {
 							$scope.resetOrderInfo();
 						}, function (data) {
@@ -206,12 +208,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					getCurTables();
 					var _tbl = TableService.getTableByItemID(tableKey),
 						tableStatus = _.result(_tbl, 'tableStatus'),
-						saasOrderKey = _.result(_tbl, 'saasOrderKey');
+						saasOrderKey = _.result(_tbl, 'saasOrderKey'),
+						hisFlag = _.result(_tbl, 'his', 0);
 					var activeBtns = ['addFood', 'changeOrder', 'mergeOrder', 'unionOrder'];
 					// 如果桌台为占用状态并且订单号不为空，加载选中桌台的订单
 					if (tableStatus == 1 && !_.isEmpty(saasOrderKey)) {
 						OrderService.getOrderByOrderKey({
-							saasOrderKey : saasOrderKey
+							saasOrderKey : saasOrderKey,
+							hisFlag : hisFlag
 						}, function (data) {
 							$scope.resetOrderInfo();
 						}, function (data) {
@@ -263,14 +267,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					getCurTables();
 					var _tbl = TableService.getTableByItemID(tableKey),
 						tableStatus = _.result(_tbl, 'tableStatus'),
-						saasOrderKey = _.result(_tbl, 'saasOrderKey');
+						saasOrderKey = _.result(_tbl, 'saasOrderKey'),
+						hisFlag = _.result(_tbl, 'his', 0);
 						if (tableStatus == 0) {
 							// 空闲桌台，进行开台操作
 							initOpenTableModal();
 						} else {
 							// 进入点菜
 							OrderService.getOrderByOrderKey({
-								saasOrderKey : saasOrderKey
+								saasOrderKey : saasOrderKey,
+								hisFlag : hisFlag
 							}, function (data) {
 								$scope.resetOrderInfo();
 								$scope.jumpToDinnerPage();

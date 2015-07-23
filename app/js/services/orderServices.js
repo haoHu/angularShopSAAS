@@ -8,7 +8,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.OrderFoodHT = null;
 			this.FJZFlag = '';
 
-			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasOrderRemark,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate'.split(','),
+			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasOrderRemark,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate,his'.split(','),
 				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isTempFood,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
 				FoodItemTypes = {
 					"-1" : "NotExist",
@@ -1058,7 +1058,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					actionType : actionType,
 					saasOrderKey : saasOrderKey,
 					// foodLst : foodLst
-					foodLst : JSON.stringify(Hualala.Common.formatPostData({foodLst : foodLst}))
+					foodLst : JSON.stringify(Hualala.Common.formatPostData({foodLst : foodLst})),
+					hisFlag : _.result(self._OrderData, 'his', 0)
 				};
 				if (!_.isEmpty(self.FJZFlag)) {
 					_.extend(postData, {
@@ -1220,7 +1221,8 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.orderAudit = function (empInfo) {
 				return CommonCallServer.orderAudit(_.extend({
-					saasOrderKey : _.result(self._OrderData, 'saasOrderKey')
+					saasOrderKey : _.result(self._OrderData, 'saasOrderKey'),
+					hisFlag : _.result(self._OrderData, 'his', 0)
 				}, empInfo));
 			};
 
@@ -1230,7 +1232,8 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.updateOrderInvoice = function (params) {
 				return CommonCallServer.updateOrderInvoice(_.extend({
-					saasOrderKey : _.result(self._OrderData, 'saasOrderKey')
+					saasOrderKey : _.result(self._OrderData, 'saasOrderKey'),
+					hisFlag : _.result(self._OrderData, 'his', 0)
 				}, params));
 			};
 

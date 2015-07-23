@@ -269,7 +269,7 @@ define(['app'], function(app)
                                 '<div class="pull-left" ng-class="{\'has-success\' : join_form.realcardnumber.$dirty && join_form.realcardnumber.$valid, \'has-error\' : join_form.realcardnumber.$invalid}">',
                                     '<div class="input-group">',
                                         '<input name="realcardnumber" style="width: 250px;" type="text" class="form-control input-lg realcardnumber" ng-model="realcardnumber" bv-isnum>',
-                                        '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-viplevel">{{level.cardLevelName}}</button></span>',
+                                        '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-viplevel">{{level.cardLevelName || "&nbsp;"}}</button></span>',
                                     '</div>',
                                     '<small class="help-block" ng-show="join_form.realcardnumber.$dirty && join_form.realcardnumber.$error.bvIsnum">必须为数字</small>',
                                 '</div>',
@@ -385,7 +385,7 @@ define(['app'], function(app)
                         scope.cardfee = 0;
                         scope.birthday = null;
                         scope.cardpassword = '888888';
-                        scope.checkmobile = '0';
+                        scope.checkmobile = false;
                     };
                     init();
 
@@ -412,7 +412,7 @@ define(['app'], function(app)
                     });
 
                     scope.$watch('checkmobile',function(n, o) {
-                        if(n == 1) {
+                        if(n == true) {
                             el.find('.formcode').show();
                         }else {
                             el.find('.formcode').hide();
@@ -508,7 +508,7 @@ define(['app'], function(app)
                                 customerName: scope.username,
                                 customerSex: scope.sex,
                                 customerMobile: scope.phonenumber,
-                                isMobileChecked: scope.checkmobile,
+                                isMobileChecked: scope.checkmobile == true ? 1 : 0,
                                 customerBirthday: IX.Date.getDateByFormat(scope.birthday, 'yyyy-MM-dd'),
                                 birthdayType: '0',
                                 oldSystemcardNO: scope.oldcardnumber,
