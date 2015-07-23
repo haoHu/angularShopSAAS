@@ -370,14 +370,22 @@ define(['app'], function(app) {
 						break;
 				}
 				if (!_.isEmpty(controller)) {
-					$modal.open({
-						size : modalSize,
+					// $modal.open({
+					// 	size : modalSize,
+					// 	windowClass : windowClass,
+					// 	controller : controller,
+					// 	templateUrl : templateUrl,
+					// 	resolve : resolve,
+					// 	backdrop : backdrop
+					// });
+					Hualala.ModalCom.openModal($rootScope, $modal, {
+	                    size : modalSize,
 						windowClass : windowClass,
 						controller : controller,
 						templateUrl : templateUrl,
 						resolve : resolve,
 						backdrop : backdrop
-					});
+	                });
 				}
 
 			};

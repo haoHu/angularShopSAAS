@@ -173,8 +173,18 @@ define(['app'], function (app) {
 								}
 							}
 						};
-					$modal.open({
-						size : modalSize,
+					// $modal.open({
+					// 	size : modalSize,
+					// 	windowClass : windowClass,
+					// 	// scope : $rootScope,
+					// 	controller : controller,
+					// 	// templateUrl : templateUrl,
+					// 	template : template,
+					// 	resolve : resolve,
+					// 	backdrop : backdrop
+					// });
+					Hualala.ModalCom.openModal($rootScope, $modal, {
+	                    size : modalSize,
 						windowClass : windowClass,
 						// scope : $rootScope,
 						controller : controller,
@@ -182,7 +192,7 @@ define(['app'], function (app) {
 						template : template,
 						resolve : resolve,
 						backdrop : backdrop
-					});
+	                });
 				},
 				closeConfirm : function (confirmSet) {
 					return this.closeConfirmIdx($rootScope.confirmSets.indexOf(confirmSet));
@@ -283,8 +293,18 @@ define(['app'], function (app) {
 								};
 							}
 						};
-					$modal.open({
-						size : modalSize,
+					// $modal.open({
+					// 	size : modalSize,
+					// 	windowClass : windowClass,
+					// 	// scope : $rootScope,
+					// 	controller : controller,
+					// 	// templateUrl : templateUrl,
+					// 	template : template,
+					// 	resolve : resolve,
+					// 	backdrop : backdrop
+					// });
+					Hualala.ModalCom.openModal($rootScope, $modal, {
+	                    size : modalSize,
 						windowClass : windowClass,
 						// scope : $rootScope,
 						controller : controller,
@@ -292,7 +312,7 @@ define(['app'], function (app) {
 						template : template,
 						resolve : resolve,
 						backdrop : backdrop
-					});
+	                });
 				},
 				closeAuth : function (authSet) {
 					return this.closeAuthIdx($rootScope.authSets.indexOf(authSet));

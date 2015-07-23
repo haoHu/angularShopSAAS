@@ -57,7 +57,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {NULL} 
 			 */
 			this.initOrderFoodDB = function (data) {
-				self._OrderData = data;
+				self._OrderData = _.isEmpty(data) ? {} : data;
 				var _HT = self.OrderFoodHT,
 					foods = _.result(self._OrderData, 'foodLst', []);
 				_HT.clear();
@@ -1101,7 +1101,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 
 			 * @return {[type]} [description]
 			 */
-			this.suspendOrder = function () {
+			this.suspendOrder = function (successFn, failFn) {
 				var order = self._OrderData,
 					foodLst = self.OrderFoodHT.getAll();
 				
@@ -1126,10 +1126,14 @@ define(['app', 'uuid'], function (app, uuid) {
 						return el['__catchID'] == catchID;
 					});
 				}
+				if (ordersCatch.length == 3) {
+					failFn();
+					return ;
+				}
 				ordersCatch.push(order);
 				storage.set('OrderCatch', ordersCatch);
 				self.initOrderFoodDB();
-
+				successFn();
 			};
 
 			/**
@@ -1155,12 +1159,21 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * 3.从本地缓存中删除提取出来的订单数据
 			 * @return {[type]} [description]
 			 */
-			this.pickOrder = function (catchID) {
+			this.pickOrder = function (catchID, successFn, failFn) {
 				var ordersCatch = storage.get('OrderCatch') || [];
-				var curOrderCatch = _.find(ordersCatch, function (el) {
-					return el['__catchID'] == catchID;
+				var curOrderCatch;
+				// var curOrderCatch = _.find(ordersCatch, function (el) {
+				// 	return el['__catchID'] == catchID;
+				// });
+				ordersCatch = _.filter(ordersCatch, function (el) {
+					var matched = el['__catchID'] == catchID;
+					if (matched == true) {
+						curOrderCatch = el;
+					}
+					return !matched;
 				});
-				self.suspendOrder();
+				storage.set('OrderCatch', ordersCatch);
+				self.suspendOrder(successFn, failFn);
 				self.initOrderFoodDB(curOrderCatch);
 				self.removeCurrentSuspendedOrder();
 			};
@@ -1263,7 +1276,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			// 包括：条目ID(itemKey)、点菜数量(foodNumber)、退菜数量(foodCancelNumber)、赠菜数量(foodSendNumber)、
 			// 是否打折(isDiscount)、售价(foodProPrice)、会员价(foodVipPrice)、成交价(foodPayPrice)	
 			var OrderItemBaseKeys = ("itemKey,foodKey,foodName,foodNumber,foodCancelNumber,foodSendNumber,isDiscount,"
-							+ "foodProPrice,foodVipPrice,foodPayPrice").split(',');
+							+ "foodProPrice,foodVipPrice,foodPayPrice,isSFDetail,isSetFood,isTempFood").split(',');
 			// 订单条目金额小计字段
 			// 点菜金额小计(foodProSubTotal)、赠菜优惠小计(sendFoodPromotionSubTotal)、会员价优惠小计(vipFoodPromotionSubTotal)、
 			// 打折优惠小计(discountPromotionSubTotal)、实收小计(realSubTotal)
@@ -1378,9 +1391,11 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.calcFoodProSubTotal = function (item) {
 				var foodNumber = parseFloat(_.result(item, 'foodNumber')),
 					foodCancelNumber = parseFloat(_.result(item, 'foodCancelNumber')),
-					foodProPrice = parseFloat(_.result(item, 'foodProPrice'));
+					foodProPrice = parseFloat(_.result(item, 'foodProPrice')),
+					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice')),
+					isSFDetail = _.result(item, 'isSFDetail');
 				// 初始计算结果(float)
-				var v = HCMath.multi(HCMath.sub(foodNumber - foodCancelNumber), foodProPrice);
+				var v = HCMath.multi(HCMath.sub(foodNumber - foodCancelNumber), (isSFDetail == "1" ? foodPayPrice : foodProPrice));
 				// 精确到小数点后4位
 				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
 				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
@@ -1396,9 +1411,11 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.calcSendFoodPromotionSubTotal = function (item) {
 				var foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0)),
-					foodProPrice = parseFloat(_.result(item, 'foodProPrice', 0));
+					foodProPrice = parseFloat(_.result(item, 'foodProPrice', 0)),
+					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice', 0)),
+					isSFDetail = _.result(item, 'isSFDetail');
 				// 初始计算结构（float）
-				var v = HCMath.multi(foodSendNumber, foodProPrice);
+				var v = HCMath.multi(foodSendNumber, isSFDetail == "1" ? foodPayPrice : foodProPrice);
 				// 精确到小数点后4位
 				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
 				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
@@ -1418,9 +1435,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice', 0)),
 					foodNumber = parseFloat(_.result(item, 'foodNumber', 0)),
 					foodCancelNumber = parseFloat(_.result(item, 'foodCancelNumber', 0)),
-					foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0));
+					foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0)),
+					isSFDetail = _.result(item, 'isSFDetail');
 				var deltaPrice = isVipPrice == 1 
-					? parseFloat(HCMath.sub(foodProPrice, foodPayPrice))
+					? parseFloat(HCMath.sub((isSFDetail == "1" ? foodPayPrice : foodProPrice), foodPayPrice))
 					: parseFloat(HCMath.sub(foodProPrice, foodProPrice)),
 					deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber));
 				var v = HCMath.multi(deltaPrice, deltaNumber);
@@ -1444,7 +1462,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice', 0)),
 					isDiscount = parseFloat(_.result(item, 'isDiscount', 0)),
 					discountRange = parseFloat(self.discountRange),
-					discountRate = parseFloat(self.discountRate);
+					discountRate = parseFloat(self.discountRate),
+					isSFDetail = _.result(item, 'isSFDetail');
 				var deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber)),
 					deltaRate = HCMath.sub(1, 
 						(isDiscount == 1 ? discountRate 
@@ -1495,9 +1514,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					var _item = {}, _subtotal = {};
 					_.each(OrderItemBaseKeys, function (k) {
 						// 如果self.isVipPrice == 1, foodPayPrice = foodVipPrice,否则foodPayPrice = foodProPrice
-						_item[k] = (k == 'foodPayPrice') 
-							? _.result(item, (self.isVipPrice == 1 ? 'foodVipPrice' : 'foodProPrice'), "0")
-							: _.result(item, k, "0");
+						// _item[k] = (k == 'foodPayPrice') 
+						// 	? _.result(item, (self.isVipPrice == 1 ? 'foodVipPrice' : 'foodProPrice'), "0")
+						// 	: _.result(item, k, "0");
+						_item[k] = _.result(item, k, "0");
 					});
 					_.each(OrderItemSubTotalKeys, function (k) {
 						var fnName = 'calc' + k.slice(0, 1).toUpperCase() + k.slice(1);
@@ -2578,7 +2598,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					return _.extend(el, {
 						label : txt,
 						// 默认顺序：折扣率；折扣范围；是否执行会员价
-						value : discountRate + ';' + discountRange + ';' + isVipPrice
+						value : IX.id() + ';' + discountRate + ';' + discountRange + ';' + isVipPrice
 					});
 				});
 			};

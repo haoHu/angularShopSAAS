@@ -113,14 +113,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 						}
 					};
 				$scope.modalIsOpen(true);
-				$modal.open({
-					size : modalSize,
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
+                    size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-				});
+                });
 			};
 			$scope.openDatePicker = function ($event) {
 				$event.preventDefault();
@@ -222,8 +230,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 
 	/*订单详情模态窗口控制器*/
 	app.controller('OrderDetailViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get("SHOPINFO"),
@@ -430,7 +438,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 						}
 					};
 				// $scope.modalIsOpen(true);
-				$modal.open(modalCfg);
+				// $modal.open(modalCfg);
+				Hualala.ModalCom.openModal($rootScope, $modal, modalCfg);
 			};
 			// 修改发票
 			$scope.modifyInvoice = function () {
@@ -545,8 +554,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 	]);
 	/*账单作废操作*/
 	app.controller('AbolishOrderViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppConfirm', 'AppAuthEMP',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppConfirm, AppAuthEMP) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var orderInfo = OrderService.getOrderData();
@@ -558,7 +567,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 保存数据
 			$scope.save = function () {
-				var callServer = OrderService.abolishOrder($scope.saasOrderRemark);
+				var callServer;
 				var addAuthEMP = function () {
 					AppAuthEMP.add({
 						yesFn : function (empInfo) {
@@ -582,8 +591,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
 				};
-				callServer.success(function (data) {
-					successCallBack(data);
+				AppConfirm.add({
+					title : "订单作废",
+					msg : '是否将此订单作废?',
+					yesFn : function () {
+						callServer = OrderService.abolishOrder($scope.saasOrderRemark);
+						callServer.success(function (data) {
+							successCallBack(data);
+						});
+					},
+					noFn : function () {
+						e.stopPropagation();
+						return;
+					}
 				});
 			};
 		}

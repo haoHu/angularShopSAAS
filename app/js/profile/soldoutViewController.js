@@ -123,14 +123,22 @@ define(['app'], function (app) {
 				if ($scope.modalIsOpen()) return;
 
 				$scope.modalIsOpen(true);
-				$modal.open({
-					size : modalSize,
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
+                    size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-				});
+                });
 			};
 			// 为沽清列表插入菜品条目
 			// 1. 弹出配置沽清菜品表单的模态窗

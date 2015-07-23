@@ -216,19 +216,19 @@
 
 	Hualala.TypeDef.CompBizQueryRangeLst = [
 		{value : 'ZH', label : '综合'},
-		{value : 'QD', label : '渠道'},
+		{value : 'QD', label : '渠道占比'},
+		{value : 'YYSD', label : '营业时段'},
+		{value : 'ZTQY', label : '桌台区域'},
+		{value : 'ZDXQ', label : '账单详情'},
 		{value : 'SYRY', label : '收银人员'},
 		{value : 'DCRY', label : '点菜人员'},
 		{value : 'ZZRY', label : '制作人员'},
-		{value : 'YYSD', label : '营业时段'},
-		{value : 'ZTQY', label : '桌台区域'},
-		{value : 'CPFL', label : '菜品分类'},
-		{value : 'CPKM', label : '菜品科目'},
 		{value : 'TC', label : '退菜'},
 		{value : 'ZC', label : '赠菜'},
 		{value : 'GJ', label : '改价'},
 		{value : 'LSC', label : '临时菜'},
-		{value : 'ZDXQ', label : '账单详情'},
+		{value : 'CPFL', label : '菜品分类'},
+		{value : 'CPKM', label : '菜品科目'},
 		{value : 'XSPH', label : '销售排行'}
 	];
 })();

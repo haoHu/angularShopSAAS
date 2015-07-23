@@ -65,6 +65,13 @@
 	}
 	
 }
+@media screen and (max-width: 1199px) {
+	.section-orderlst .filter-bar {
+		> div[class*=col-] {
+			padding-left : 5px; padding-right : 5px;
+		}
+	}
+}
 
 .orderdetail-modal {
 	.modal-dialog {
@@ -87,7 +94,7 @@
 				.order-list .table-responsive {
 				}
 				.table td, .table th {
-					min-width:8rem; font-size: 1rem;
+					min-width:8em;
 				}
 				.order-footer {
 					height : 5rem;
@@ -104,10 +111,10 @@
 					}
 				}
 				.order-detail {
-					height: 60%; border-bottom: 1px solid @xBaseBorderColor;
+					height: 80%; border-bottom: 1px solid @xBaseBorderColor;
 				}
 				.paylst-plain {
-					height : 40%;
+					height : 20%;
 				}
 				header > h4 {padding : 0 1.5rem;}
 				.paylst-grid .row:last-child > .cash {color : #f00; font-weight: bold;}

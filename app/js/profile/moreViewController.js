@@ -24,14 +24,22 @@ define(['app'], function (app) {
 						}
 					};
 				$scope.modalIsOpen(true);
-				$modal.open({
-					size : modalSize,
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
+                    size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-				});
+                });
 			};
 			// 设置/获取当前是否打开了详情模态窗口
 			$scope.modalIsOpen = function (b) {
@@ -54,14 +62,22 @@ define(['app'], function (app) {
 						}
 					};
 				$scope.modalIsOpen(true);
-				$modal.open({
-					size : modalSize,
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
+                    size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-				});
+                });
 			};
 			// app设置
 			$scope.appSetting = function (e) {
@@ -85,14 +101,22 @@ define(['app'], function (app) {
 						}
 					};
 				$scope.modalIsOpen(true);
-				$modal.open({
-					size : modalSize,
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
+                    size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-				});
+                });
 			};
 			// 注销
 			$scope.appLogout = function (e) {

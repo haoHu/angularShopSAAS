@@ -341,12 +341,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							return $scope;
 						}
 					};
-				$modal.open({
+				Hualala.ModalCom.openModal($rootScope, $modal, {
 					size : modalSize,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve
 				});
+				// $modal.open({
+				// 	size : modalSize,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve
+				// });
 			};
 
 			// 打开套餐配置窗口
@@ -379,8 +385,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							return $scope;
 						}
 					};
-
-				$modal.open({
+				Hualala.ModalCom.openModal($rootScope, $modal, {
 					size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
@@ -388,6 +393,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					resolve : resolve,
 					backdrop : backdrop
 				});
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
 			};
 
 			// 打开临时菜配置窗口
@@ -405,7 +418,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 					};
 
-				$modal.open({
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
 					size : modalSize,
 					windowClass : windowClass,
 					controller : controller,
@@ -456,13 +477,21 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 挂单操作
 			$scope.suspendOrder = function () {
-				OrderService.suspendOrder();
+				OrderService.suspendOrder(function () {
+					AppAlert.add('success', '挂单成功!');
+				}, function () {
+					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
+				});
 				$scope.resetOrderInfo();
 			};
 
 			// 提单操作
 			$scope.pickOrder = function (catchID) {
-				OrderService.pickOrder(catchID);
+				OrderService.pickOrder(catchID, function () {
+					AppAlert.add('success', '当前订单挂单成功!');
+				}, function () {
+					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
+				});
 				$scope.resetOrderInfo();
 			};
 
@@ -1569,6 +1598,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						mapPaySubjectOptsCfg();
 						// 整理支付表单数据
 						mapFormCfg();
+						scope.$emit('pay.chkPayFormValid', true);
 						
 					};
 					initPayForm();
@@ -1617,7 +1647,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 					// 选择打折方案
 					scope.onDiscountChange = function (discountRule) {
-						var params = _.object('discountRate,discountRange,isVipPrice'.split(','), discountRule.split(';'));
+						var params = _.object('_id,discountRate,discountRange,isVipPrice'.split(','), discountRule.split(';'));
 						console.info("current discount rule:");
 						console.info(params);
 						curDiscountRule = discountRule;
@@ -1660,11 +1690,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									debitAmount : realPay,
 									subjectCode : curSubCode
 								});
+								if (_.isEmpty(curSubCode)) {
+									AppAlert.add('danger', '请选择科目');
+								}
 
 								break;
 							// 折扣方案选择
 							case "discountPay" :
-								var params = _.object('discountRate,discountRange,isVipPrice'.split(','), curDiscountRule.split(';'));
+								var params = _.object('_id,discountRate,discountRange,isVipPrice'.split(','), curDiscountRule.split(';'));
 								OrderPayService.updatePaySubjectItem(curName, params);
 								break;
 						}
@@ -1693,10 +1726,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 					};
 
-					scope.formElKeyup = function (invalid) {
-						scope.$emit('pay.chkPayFormValid', invalid == true ? false : true);
+					scope.formElKeyup = function (invalid, dirty) {
+						scope.$emit('pay.chkPayFormValid', (invalid == true && dirty == true) ? false : true);
 					};
-
 					
 				}
 			}
@@ -2361,7 +2393,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 						if (act == "pickOrder") {
 							// 提餐操作，直接打开提单窗口
-							$modal.open({
+							// $modal.open({
+							// 	size : modalSize,
+							// 	windowClass : "",
+							// 	controller : controller,
+							// 	templateUrl : templateUrl,
+							// 	resolve : resolve
+							// });
+							Hualala.ModalCom.openModal($rootScope, $modal, {
 								size : modalSize,
 								windowClass : "",
 								controller : controller,
@@ -2400,7 +2439,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									scope.$apply();
 								} else {
 									OrderPayService.initOrderPay(function () {
-										$modal.open({
+										// $modal.open({
+										// 	size : modalSize,
+										// 	windowClass : "pay-modal",
+										// 	controller : controller,
+										// 	templateUrl : templateUrl,
+										// 	resolve : resolve,
+										// 	backdrop : "static"
+										// });
+										Hualala.ModalCom.openModal($rootScope, $modal, {
 											size : modalSize,
 											windowClass : "pay-modal",
 											controller : controller,

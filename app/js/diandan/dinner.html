@@ -96,7 +96,7 @@
 						<div class="form-group">
 							<label for="" class="col-xs-3 control-label">菜品助记码</label>
 							<div class="col-xs-9">
-								<input type="text" class="form-control" ng-model="curSearchKey" ng-change="searchFood()" autofocus="true"  >
+								<input type="text" class="form-control input-lg" ng-model="curSearchKey" ng-change="searchFood()" autofocus="true"  >
 							</div>
 						</div>
 					</div>
@@ -519,12 +519,15 @@
 			<h4 class="modal-title">提单操作</h4>
 		</div>
 		<div class="modal-body">
-			<ul class="row list-unstyled">
-				<li class="col-xs-4" ng-repeat="el in OrdersCatch" id="el.__catchID" ng-click="onOrderCatchClick(el.__catchID)">
+			<ul class="order-catch row list-unstyled">
+				<li class="col-xs-4 item" ng-repeat="el in OrdersCatch" id="el.__catchID" ng-click="onOrderCatchClick(el.__catchID)">
 					<p>订单号:{{el.saasOrderKey}}</p>
 					<p>时间:{{el.startTime | formatDateTimeStr:"yyyy-MM-dd HH:mm:ss"}}</p>
 					<p ng-repeat="food in el.foodLst" ng-if="$index < 4">
 						{{food.foodName}}
+					</p>
+					<p ng-if="el.foodLst.length > 4">
+						...
 					</p>
 				</li>
 			</ul>
@@ -630,8 +633,8 @@
 					<div class="form-group" ng-repeat="el in formCfg">
 						<label class="col-xs-4 control-label">{{el.label}}</label>
 						<div class="col-xs-8" ng-class="{'has-success' : com_pay.realPrice.$dirty && com_pay.realPrice.$valid, 'has-error' : com_pay.realPrice.$invalid}">
-							<input ng-if="$index == 0 && (paySubjectGrp.name == 'cashPay' || paySubjectGrp.name == 'remissionPay')" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum ng-change="formElKeyup(com_pay.$invalid)" ng-blur="formElKeyup(com_pay.$invalid)"/>
-							<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay'" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0 ng-change="formElKeyup(com_pay.$invalid)" ng-blur="formElKeyup(com_pay.$invalid)"/>
+							<input ng-if="$index == 0 && (paySubjectGrp.name == 'cashPay' || paySubjectGrp.name == 'remissionPay')" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
+							<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay'" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0 ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
 							<input ng-if="$index != 0" type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
 							<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvIsnum">必须是数字</small>
 							<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvGreaterthan">必须大于0</small>
@@ -686,8 +689,8 @@
 						<small class="help-block" ng-show="vip_pay.point_amount.$dirty && vip_pay.point_amount.$error.bvIsnum">必须是数字</small>
 					</div>
 					<div class="col-xs-4">
-						<p class="help-block info">使用积分:{{vipInfo.cardPointBalance}}</p>
-						<p class="help-block info">可抵金额:{{vipInfo.cardPointAsMoney | mycurrency:"￥"}}</p>
+						<p class="help-block info">使用积分:{{vipInfo.cardPointBalance || 0}}</p>
+						<p class="help-block info">可抵金额:{{vipInfo.cardPointAsMoney || 0 | mycurrency:"￥"}}</p>
 					</div>
 				</div>
 				<div class="form-group">
@@ -697,7 +700,7 @@
 						<small class="help-block" ng-show="vip_pay.money_amount.$dirty && vip_pay.money_amount.$error.bvIsnum">必须是数字</small>
 					</div>
 					<div class="col-xs-4">
-						<p class="help-block info">使用余额:{{vipInfo.cardCashBalance | mycurrency:"￥"}}</p>
+						<p class="help-block info">使用余额:{{vipInfo.cardCashBalance || 0 | mycurrency:"￥"}}</p>
 					</div>
 				</div>
 			</div>

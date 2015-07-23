@@ -425,6 +425,7 @@ define(['app'], function (app) {
 
 			// 初始化套餐搭配菜品分类字典数据
 			var initFoodHT = function (foodLst) {
+				SetFoodDetailHT.clear();
 				_.each(foodLst, function (cate) {
 					var name = _.result(cate, 'foodCategoryName'),
 						data = mapSetFoodCateItems(cate);
