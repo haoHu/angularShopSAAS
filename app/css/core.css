@@ -1594,7 +1594,8 @@ body {
 .orderdetail-modal .modal-dialog .section-diandan .order-plain .order-list {
   overflow: auto;
   padding-bottom: 0;
-  height: initial;
+  /*height : initial;*/
+  height: -webkit-calc(6%);
 }
 .orderdetail-modal .modal-dialog .section-diandan .order-plain .table td,
 .orderdetail-modal .modal-dialog .section-diandan .order-plain .table th {

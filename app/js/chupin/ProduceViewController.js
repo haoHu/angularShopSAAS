@@ -75,7 +75,7 @@ define(['app'], function (app) {
 				var evtType = $event.type,
 					keyCode = $event.keyCode;
 				if (evtType == 'keyup' && keyCode != 13) return;
-				console.info('qKeyword:' + $scope.qform.keyword);
+				console.info('qKeyword:' + $scope.qform.qKeyword);
 				$scope.queryFoodMakeStatusLst();
 			};
 			// 过滤条件查询
@@ -89,7 +89,7 @@ define(['app'], function (app) {
 				cleanCurFocusOrderData();
 				var callServer = ProduceOrderService.loadFoodMakeStatusLst({
 					actionType : $scope.qform.qActionType,
-					keyword : $scope.qform.keyword
+					keyword : $scope.qform.qKeyword
 				});
 				callServer.success(function (data) {
 					var code = _.result(data, 'code');
