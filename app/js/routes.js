@@ -69,6 +69,17 @@ define([], function () {
 					'filters/appFilters'
 				]
 			},
+			'/chupin' : {
+				templateUrl : 'js/chupin/chupin.html',
+				dependencies : [
+					'directives/appDirectives',
+					'services/appServices',
+					'services/orderServices',
+					'services/produceServices',
+					'filters/appFilters',
+					'chupin/ProduceViewController'
+				]
+			},
 			'/huiyuan' : {
 				templateUrl : 'js/huiyuan/huiyuan.html',
 				dependencies : [

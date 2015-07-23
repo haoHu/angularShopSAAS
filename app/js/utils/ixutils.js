@@ -2547,6 +2547,18 @@ IX.Util.Date = function(timeInSecond) {
 			strs.push(_formatStr(time[4]));	
 			return strs.join("");
 		},
+		toTimer : function (tsInSec) {
+			var _date = tsInSec?(new Date(tsInSec*1000)) :(new Date());  
+			var v = _date.getTime()/1000-timeInSecond; 
+			var hourSecs = 3600, minuSecs = 60;
+			var h, m, s;
+			h = Math.floor(v / hourSecs);
+			m = Math.floor(v % hourSecs / minuSecs);
+			s = Math.floor(v % hourSecs % minuSecs);
+			return (h < 10 ? ('0' + h.toString()) : h.toString())
+				+ ':' + (m < 10 ? ('0' + m.toString()) : m.toString())
+				+ ':' + (s < 10 ? ('0' + s.toString()) : s.toString());
+		},
 		toInterval : function(tsInSec){
 			var _date = tsInSec?(new Date(tsInSec*1000)) :(new Date());  
 			var v = _date.getTime()/1000-timeInSecond;

@@ -132,6 +132,72 @@ body {
   margin: .5rem auto 0;
   text-align: left;
 }
+.section-welcome {
+  position: relative;
+  height: 100%;
+  background: #65321d;
+}
+.section-welcome .welcome-logo {
+  -webkit-transition: left 1s ease-out;
+  position: absolute;
+  left: 0;
+  top: 20%;
+  width: 80%;
+  height: 40%;
+  text-align: center;
+  background-image: url(../img/start_logo.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% auto;
+}
+.section-welcome .service-call {
+  position: absolute;
+  bottom: 0;
+  left: 40%;
+  margin-bottom: 0;
+  width: 20%;
+  height: 10%;
+  text-align: center;
+  background-image: url(../img/start_call.png);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% auto;
+  -webkit-transition: bottom 1s ease-out;
+}
+.section-welcome .copyright {
+  position: absolute;
+  bottom: 20px;
+  right: 120px;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.section-welcome.loaded .welcome-logo {
+  left: 10%;
+}
+.section-welcome.loaded .service-call {
+  bottom: 20%;
+}
+@-webkit-keyframes flashinLeft {
+  0% {
+    left: 0%;
+    top: 20%;
+  }
+  100% {
+    left: 20%;
+    top: 20%;
+  }
+}
+@-webkit-keyframes flashinRight {
+  0% {
+    left: 100%;
+    bottom: 15%;
+  }
+  100% {
+    left: 40%;
+    bottom: 15%;
+  }
+}
 .section-profile {
   position: relative;
   height: 100%;
@@ -1700,31 +1766,11 @@ body {
   font-size: 1rem;
 }
 .section-huiyuan .form-inline label {
-  width: 100px;
+  width: 120px;
 }
 .section-huiyuan label {
   text-align: right;
   margin-right: 10px;
-}
-.section-huiyuan .nav {
-  border: none !important;
-}
-.section-huiyuan .nav li {
-  background: #fde9c9;
-  cursor: pointer;
-}
-.section-huiyuan .nav li a {
-  color: #6f3e26 !important;
-  font-weight: bolder;
-  background: none;
-  border: none;
-}
-.section-huiyuan .nav li a:hover {
-  background: inherit !important;
-  border: none;
-}
-.section-huiyuan .nav .active {
-  background: #e6b073;
 }
 .section-huiyuan .panel-heading {
   background: none;
@@ -1735,33 +1781,16 @@ body {
 .section-huiyuan .tab {
   position: relative;
 }
-.section-huiyuan .tab .btn-submit {
-  background: #f7d66b !important;
-  padding: 20px 50px;
-  color: #6f3e26 !important;
-  font-weight: bolder;
-  border-radius: 0px !important;
-  border: none !important;
-  font-size: 18px;
-}
-.section-huiyuan .tab .btn-disable {
-  color: white !important;
-  background: #c1c1c1 !important;
-  cursor: not-allowed !important;
-}
-.section-huiyuan .tab .btn-disable :hover {
-  background: #c1c1c1 !important;
-  cursor: not-allowed !important;
-}
 .section-huiyuan .tab-join .panel-viplevel {
   position: absolute;
-  right: -20px;
-  top: -59px;
+  right: -100px;
+  top: -62px;
+  background: white;
 }
 .section-huiyuan .tab-join .panel-viplevel .header {
   font-size: 18px;
   padding: 7px 10px;
-  border-bottom: 1px solid #c1c1c1;
+  border: 1px solid #c1c1c1;
   margin-bottom: -1px;
 }
 .section-huiyuan .tab-join .panel-viplevel ul {
@@ -1784,13 +1813,14 @@ body {
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan {
   position: absolute;
-  right: -20px;
-  top: -59px;
+  right: -100px;
+  top: -62px;
+  background: white;
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan .header {
   font-size: 18px;
   padding: 7px 10px;
-  border-bottom: 1px solid #c1c1c1;
+  border: 1px solid #c1c1c1;
   margin-bottom: -1px;
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan ul {
@@ -1811,13 +1841,14 @@ body {
 }
 .section-huiyuan .tab-consume .panel-vouchers {
   position: absolute;
-  right: -20px;
-  top: -59px;
+  right: -100px;
+  top: -62px;
+  background: white;
 }
 .section-huiyuan .tab-consume .panel-vouchers .header {
   font-size: 18px;
   padding: 7px 10px;
-  border-bottom: 1px solid #c1c1c1;
+  border: 1px solid #c1c1c1;
   margin-bottom: -1px;
 }
 .section-huiyuan .tab-consume .panel-vouchers ul {
@@ -1854,12 +1885,13 @@ body {
 }
 .section-huiyuan .userinfo {
   position: absolute;
-  left: 669px;
+  right: 0px;
   top: 0px;
   border-left: 1px solid #c1c1c1;
   border-right: 1px solid #c1c1c1;
   height: 100%;
   width: 300px;
+  background: white;
 }
 .section-huiyuan .userinfo .header {
   font-size: 18px;
@@ -1879,7 +1911,7 @@ body {
 .section-huiyuan .userinfo .btn-prtvipinfo {
   position: fixed;
   bottom: 0px;
-  left: 741px;
+  right: 0px;
   width: 300px;
   height: 50px;
 }
@@ -2054,4 +2086,171 @@ body {
 }
 .section-baobiao .tab-comp .receipt-filter {
   padding: 0 15px;
+}
+.section-chupin {
+  height: 100%;
+}
+.section-chupin .chupin-header,
+.section-chupin .chupin-footer {
+  position: fixed;
+  z-index: 99;
+  background-color: #f1f1f1;
+}
+.section-chupin .chupin-header {
+  top: 0;
+  height: 46px;
+}
+.section-chupin .chupin-footer {
+  bottom: 0;
+  height: 5rem;
+}
+.section-chupin .chupin-footer .btn {
+  height: 5rem;
+}
+.section-chupin .chupin-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46px;
+  bottom: 5rem;
+  z-index: 1;
+  padding: 3px;
+  background-color: #000000;
+  overflow: hidden;
+}
+.section-chupin .chupin-body.row > .order-item {
+  padding: 3px;
+}
+.section-chupin .order-item {
+  position: relative;
+  padding: 3px;
+  height: 50%;
+  overflow: hidden;
+  z-index: 99;
+}
+.section-chupin .order-item .order-box {
+  max-height: 100%;
+  overflow: hidden;
+  border-radius: 5px;
+}
+.section-chupin .order-item .order-box .pager {
+  display: none;
+}
+.section-chupin .order-item.active > .order-box {
+  border: 3px solid #ffff00;
+  border-radius: 8px;
+}
+.section-chupin .order-item.warning .panel-heading {
+  background: #ffff66;
+}
+.section-chupin .order-item.danger .panel-heading {
+  background-color: #ff0000;
+  -webkit-animation: blink 1s infinite ease-in-out;
+}
+.section-chupin .order-item .panel {
+  margin: 0;
+}
+.section-chupin .order-item .panel-heading .num,
+.section-chupin .order-item .panel-heading .time {
+  font-size: 16px;
+  vertical-align: middle;
+}
+.section-chupin .order-item .order-type {
+  display: inline-block;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.section-chupin .order-item .icon-tangshi,
+.section-chupin .order-item .icon-waimai,
+.section-chupin .order-item .icon-ziti {
+  width: 32px;
+  height: 32px;
+  -webkit-transform: scale(0.5);
+  position: absolute;
+  left: -8px;
+  top: -8px;
+}
+.section-chupin .order-item .icon-tangshi {
+  /*width: 32px; height:32px;*/
+  background-position: -120px -40px;
+}
+.section-chupin .order-item .icon-waimai {
+  /*width: 32px; height:32px;*/
+  background-position: -200px -120px;
+}
+.section-chupin .order-item .icon-ziti {
+  /*width: 32px; height:32px;*/
+  background-position: -240px 0px;
+}
+.section-chupin .order-item.popup {
+  overflow: visible;
+  z-index: 100;
+}
+.section-chupin .order-item.popup .order-box {
+  position: absolute;
+  height: 200%;
+  max-height: 200%;
+  top: 0;
+  bottom: 0;
+  left: 0px;
+  right: 0px;
+  overflow: hidden;
+}
+.section-chupin .order-item.popup .order-box > .panel {
+  position: relative;
+  height: 100%;
+}
+.section-chupin .order-item.popup .order-box .food-box {
+  position: absolute;
+  top: 43px;
+  bottom: 43px;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+.section-chupin .order-item.popup .order-box .pager {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  margin: 0;
+}
+.section-chupin .food-lst .food-item {
+  border-left: 3px solid transparent;
+  border-right: 0;
+  cursor: pointer;
+}
+.section-chupin .food-lst .food-item.call > .status {
+  color: #669900;
+}
+.section-chupin .food-lst .food-item.hangup > .status {
+  color: #ff4a22;
+}
+.section-chupin .food-lst .food-item.done > .num,
+.section-chupin .food-lst .food-item.done > .txt {
+  color: #d2d2d2;
+}
+.section-chupin .food-lst .food-item.active {
+  border: 1px solid #669900;
+  border-left-width: 3px;
+  border-right-width: 0;
+  background-color: #fff;
+  color: #333333;
+}
+.section-chupin .food-lst .food-item.disabled {
+  color: #cccccc;
+  background-color: #fff;
+}
+@-webkit-keyframes blink {
+  0%,
+  100% {
+    background-color: #ff0000;
+  }
+  50% {
+    background-color: #ffff66;
+  }
 }

@@ -90,7 +90,11 @@ define(['IX'], function () {
 		// 更新基本信息
 		["updateBaseInfo", "/saas/base/downloadBaseInfo.ajax", "", "POST"],
 		// 获取报表查询字典
-		["getReportDictionary", "/saas/order/getReportDictionary.ajax", "", "POST"]
+		["getReportDictionary", "/saas/order/getReportDictionary.ajax", "", "POST"],
+		// 菜品出品状态操作
+		["foodMakeStatusOperation", "/saas/order/foodMakeStatusOperation.ajax", "", "POST"],
+		// 菜品出品状态列表
+		["getFoodMakeStatusLst", "/saas/order/getFoodMakeStatusLst.ajax", "", "POST"]
 
         // 会员入会办卡
         ,["createVIPCard", "/crm/card/create.ajax", "", "POST"]

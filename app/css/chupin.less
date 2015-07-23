@@ -1,0 +1,124 @@
+.section-chupin {
+	@secHeadHeight : 46px;
+	@secFootHeight : 5rem;
+	@bgBody : #000;
+	@bgBar : @xPageHeaderBG;
+	@itemFocusBorder : darken(#ff6, 20%);
+	@bgWarning : #ff6;
+	@bgDanger : #f00;
+	@foodItemFocusBorder : #690;
+	@foodItemCall : #690;
+	@foodItemHangup : #ff4a22;
+	@foodDisabledColor : #ccc;
+	height : 100%;
+	.chupin-header, .chupin-footer {
+		position : fixed; z-index: 99; background-color: @bgBar;
+	}
+	.chupin-header {
+		top : 0; height : @secHeadHeight;
+	}
+	.chupin-footer {
+		bottom : 0; height : @secFootHeight; 
+		.btn {height : @secFootHeight;}
+	}
+	.chupin-body {
+		position : absolute; left : 0; right : 0; top : @secHeadHeight; bottom : @secFootHeight; z-index: 1;
+		padding : 3px; background-color: @bgBody; overflow: hidden;
+		&.row > .order-item {padding : 3px;}
+	}
+	.order-item {
+		position : relative; padding : 3px; height : 50%; overflow : hidden; z-index: 99;
+		.order-box {
+			max-height : 100%; overflow: hidden; border-radius : 5px;
+			.pager {display: none;}
+		}
+		&.active > .order-box {
+			border : 3px solid @itemFocusBorder; border-radius: 8px;
+		}
+		&.warning .panel-heading{
+			background : @bgWarning;
+		}
+		&.danger .panel-heading{
+			background-color: @bgDanger;
+			-webkit-animation: blink 1s infinite ease-in-out;
+		}
+		.panel {
+			margin : 0;
+		}
+		.panel-heading {
+			.num, .time {
+				font-size: 16px; vertical-align: middle;
+			}
+		}
+		.order-type {
+			display: inline-block; position: relative; width : 16px; height : 16px; overflow: hidden; vertical-align: middle;
+		}
+		.icon-tangshi, .icon-waimai, .icon-ziti {
+			width : 32px; height : 32px; -webkit-transform: scale(0.5);
+			position: absolute; left : -8px; top : -8px;
+		}
+		.icon-tangshi {
+			.x-icon-32_dingzuo();
+		}
+		.icon-waimai {
+			.x-icon-32_waimai();
+		}
+		.icon-ziti {
+			.x-icon-32_ziti();
+		}
+		&.popup {
+			overflow: visible; z-index: 100;
+			.order-box {
+				position : absolute; height : 200%; max-height: 200%; top : 0; bottom : 0; left : 0px; right : 0px; overflow: hidden;
+				> .panel {position : relative; height : 100%;}
+				.food-box {
+					position : absolute; top : 43px; bottom : 43px; left : 0; right : 0; overflow: hidden;
+				}
+				.pager {
+					position : absolute; bottom : 0; left : 0; right : 0; display: block; margin : 0;
+				}
+			}
+		}
+	}
+	
+
+	.food-lst {
+		.food-item {
+			border-left : 3px solid transparent; border-right : 0; cursor : pointer;
+			&.call > .status{
+				color : @foodItemCall;
+			}
+			&.hangup > .status{
+				color : @foodItemHangup;
+			}
+			&.done > .num, &.done > .txt {
+				color : #d2d2d2;
+			}
+			.num {
+
+			}
+			.txt {
+
+			}
+			&.active {
+				border : 1px solid @foodItemFocusBorder; border-left-width : 3px; border-right-width : 0; background-color: #fff; color : @xBaseColor;
+			}
+			&.disabled {
+				color : @foodDisabledColor; background-color: #fff;
+			}
+		}
+		
+	}
+	
+
+	@-webkit-keyframes blink {
+		0%, 100% {
+			background-color : @bgDanger;
+		}
+		50% {
+			background-color: @bgWarning;
+		}
+	}
+	
+
+}
