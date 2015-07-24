@@ -87,7 +87,8 @@
 <div class="modal-footer">
 	<div class="btn-group btn-group-justified" role="group">
 		<div class="btn-group" role="group">
-			<button type="button" class="btn btn-default btn-lg" ng-click="save()" ng-disabled="order_header.$invalid || order_header.$pristine" ng-if="tableNameIsReadOnly()">保存</button>
+			<button type="button" class="btn btn-default btn-lg"  ng-if="!(tableNameIsReadOnly())" ng-click="save()" ng-disabled="order_header.$invalid || order_header.$pristine" ng-if="tableNameIsReadOnly()">保存</button>
+			<button type="button" class="btn btn-default btn-lg"  ng-if="tableNameIsReadOnly()" ng-click="save()" ng-disabled="order_header.$invalid" ng-if="tableNameIsReadOnly()">保存</button>
 			<button type="button" class="btn btn-default btn-lg" ng-click="save()" ng-disabled="order_header.$invalid" ng-if="!(tableNameIsReadOnly())">保存</button>
 		</div>
 		<div class="btn-group" role="group">
