@@ -41,6 +41,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         $scope.curNav = $location.path();
         $scope.isWelcomPage = false;
         $scope.isSignPage = false;
+        $scope.isFoodMakeStatusActive = _.result(storage.get('SHOPINFO'), 'isFoodMakeStatusActive', 0);
         $scope.ShopOperationMode = null;
         $scope.shopLogo = '';
         $scope.empName = '';
