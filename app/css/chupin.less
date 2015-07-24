@@ -29,9 +29,15 @@
 	.order-item {
 		position : relative; padding : 3px; height : 50%; overflow : hidden; z-index: 99;
 		&.collapse {display: block;}
-		.panel-title {
-			white-space: nowrap; overflow: hidden; text-overflow : ellipsis;
+		.panel-heading {
+			.amount, .time, .panel-title {
+				line-height: 24px; vertical-align: middle;
+			}
+			.panel-title {
+				white-space: nowrap; overflow: hidden; text-overflow : ellipsis; font-weight: bold; font-size: 2rem;
+			}
 		}
+		
 		.order-box {
 			-webkit-transition : all .5s ease-in-out;
 			height : auto; max-height : 100%; overflow: hidden; border-radius : 5px;

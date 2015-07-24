@@ -174,11 +174,16 @@ define(['app'], function (app) {
 			// 选择/取消选择菜品
 			$scope.toggleFood = function ($event, order, food) {
 				var saasOrderKey = _.result(order, 'saasOrderKey'),
+					itemKey = _.result(food, 'itemKey'),
 					srcOrderItemEl = $('#' + _.result($scope.curFocusOrder, 'saasOrderKey'));
+				var foodMakeStatus = ProduceOrderService.getOrderFoodMakeStatus(saasOrderKey, itemKey);
 				if (_.result($scope.curFocusOrder, 'saasOrderKey') !== saasOrderKey) {
 					srcOrderItemEl.addClass('collapse').removeClass('popup');
 					cleanCurFocusOrderData();
 					$scope.curFocusOrder = order;
+				}
+				if (foodMakeStatus.name == 'done') {
+					return true;
 				}
 				if (_.result(food, 'selected')) {
 					food.selected = false;
