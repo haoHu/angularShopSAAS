@@ -583,7 +583,7 @@ define(['app'], function(app)
                                     '</div>',
                                     '<div style="display:block;margin-top:10px;">',
                                         '<div class="form-group">',
-                                            '<label class="control-label pull-left">储值返积分额</label>',
+                                            '<label class="control-label pull-left">储值返积分</label>',
                                             '<div class="pull-left" ng-class="{\'has-success\' : recharge_form.rechargereturnpoint.$dirty && recharge_form.rechargereturnpoint.$valid, \'has-error\' : recharge_form.rechargereturnpoint.$invalid}">',
                                                 '<input name="rechargereturnpoint" style="width: 240px;" type="text" class="form-control input-lg rechargereturnpoint" ng-model="rechargereturnpoint" bv-isnum bv-greaterthan="true" min="0">',
                                                 '<small class="help-block" ng-show="recharge_form.rechargereturnpoint.$dirty && recharge_form.rechargereturnpoint.$error.bvIsnum">请输入数字</small>',
