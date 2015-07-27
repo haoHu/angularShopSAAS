@@ -126,11 +126,15 @@ define(['app'], function (app) {
         return {
             require : 'ngModel',
             link : function (scope, el, attrs, ctrl) {
-                var min = parseInt(attrs.min) || 0, max = parseInt(attrs.max) || null;
+                var min = parseInt(attrs.min) || 0, max = parseInt(attrs.max) || null,
+                    isCanBeEmpty = attrs.bvStrlength == "true" ? false : true;
                 ctrl.$parsers.unshift(function (viewValue) {
-
                     var l = IX.isEmpty(viewValue) ? 0 : viewValue.length;
                     var v = false;
+                    if (_.isEmpty(viewValue) && isCanBeEmpty) {
+                        ctrl.$setValidity('bvStrlength', true);
+                        return viewValue;
+                    }
                     if (max === null) {
                         v = l >= min;
                     } else if (max == min) {
