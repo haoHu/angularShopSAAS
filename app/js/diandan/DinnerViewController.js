@@ -459,6 +459,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						$scope.resetOrderInfo();
 					} else if (code == 'CS005') {
 						addAuthEMP();
+					} else {
+						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
 				};
 				callServer.success(function (data, status, headers, config) {
