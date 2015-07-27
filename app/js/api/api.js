@@ -3,6 +3,13 @@ define(['app'], function(app){
 
 	var ajaxEngine = Hualala.ajaxEngine;
 	var AjaxMappingURLs = Hualala.Global.AjaxMappingURLs;
+	var pendingRequests = {};
+	var storePendingRequest = function (name, pdata, apiCfg) {
+		pendingRequests[name] = {
+			pdata : pdata,
+			apiCfg : apiCfg
+		};
+	};
 	// var AjaxDomain = window.HualalaWorkMode == 'dev' ? 'http://10.10.2.15:8080' : Hualala.Global.AJAX_DOMAIN;
 
 	// /**
@@ -47,6 +54,12 @@ define(['app'], function(app){
 				var transFn = function (data) {
 					return $.param(data);
 				};
+				// 防止重复ajax请求
+				if (_.isEmpty(pendingRequests[name])) {
+					storePendingRequest(name, pdata, apiCfg);
+				} else {
+					return null;
+				}
 				return $http({
 					method : type,
 					url : ajaxUrl,
@@ -62,9 +75,12 @@ define(['app'], function(app){
 					withCredentials : true
 				}).success(function (data) {
 					var code = _.result(data, 'code');
+					pendingRequests[name] = null;
 					if (code == 'CS002') {
 						$location.path('/signin');
 					}
+				}).error(function (data) {
+					pendingRequests[name] = null;
 				});
 			};
 			_.each(ajaxAPICfgs, function (apiCfg) {
