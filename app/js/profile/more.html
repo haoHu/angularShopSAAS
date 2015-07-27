@@ -255,25 +255,25 @@
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">服务器运行时长</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localMonitor.HttpServerStartTickCount}}</p>
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.HttpServerStartTickCount)}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">监控程序运行时长</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localMonitor.MonitorThreadLastTickCount}}</p>
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.MonitorThreadLastTickCount)}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">消息程序运行时长</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localMonitor.MsgThreadLastTickCount}}</p>
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.MsgThreadLastTickCount)}}</p>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="" class="col-xs-4 control-label">厨打程序运行时长</label>
 								<div class="col-xs-8">
-									<p class="form-control-static">{{localMonitor.PrintThreadLastTickCount}}</p>
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.PrintThreadLastTickCount)}}</p>
 								</div>
 							</div>
 						</div>

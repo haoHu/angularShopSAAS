@@ -300,6 +300,24 @@
 
 	Hualala.Date = IX.Util.Date;
 
+	var formatTimeInterval = function (secTick) {
+		var secs = parseInt(secTick),
+			start = parseInt( ( (new Date() ).getTime() - secs  * 1000) / 1000),
+			o = Hualala.Date(start),
+			timeInterval = o.toTimer().split(':'),
+			h = timeInterval[0],
+			m = timeInterval[1],
+			s = timeInterval[2],
+			d = Math.floor(parseInt(h) / 24),
+			h = parseInt(h) % 24;
+		return (d < 10 ? ('0' + d) : d) + '天'
+			+ (h < 10 ? ('0' + h) : h) + '小时'
+			+ m + '分钟' + s + '秒';
+	};
+	Hualala.Common.formatTimeInterval = formatTimeInterval;
+
+	
+
 	/**
 	 * 格式化Ajax返回给前端的日期时间数据
 	 * 后端返回前端时间日期数据格式为：yyyyMMddHHmmss，

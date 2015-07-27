@@ -144,6 +144,8 @@ define(['app'], function (app) {
 	app.controller('LocalServerInfoModalController', [
 		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'SAASLocalServerInfo', 'AppAlert',
 		function ($scope, $modalInstance, $filter, $location, _scope, storage, SAASLocalServerInfo, AppAlert) {
+			IX.ns("Hualala");
+			var HC = Hualala.Common;
 			$scope.shopInfo = null;
 			$scope.HLLServiceTel = '';
 			$scope.cloudServer = null;
@@ -195,6 +197,10 @@ define(['app'], function (app) {
 			$scope.close = function () {
 				_scope.modalIsOpen(false);
 				$modalInstance.close();
+			};
+			$scope.formatTimeInterval = function (timeTick) {
+				if (_.isEmpty(timeTick)) return '';
+				return HC.formatTimeInterval(Math.floor(parseInt(timeTick) / 1000));
 			};
 		}
 	]);
