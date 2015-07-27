@@ -1207,14 +1207,21 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 		function ($scope, $modalInstance, $filter, _scope, storage, OrderNoteService, OrderService, FoodMenuService, AppAlert) {
 			IX.ns("Hualala");
 			$scope.OrdersCatch = storage.get('OrderCatch');
+			$scope.disabled = false;
 			// 关闭窗口
 			$scope.close = function () {
 				$modalInstance.close();
 			};
 			// 选择要提取的订单
-			$scope.onOrderCatchClick = function (catchID) {
+			$scope.onOrderCatchClick = function ($event, catchID) {
+				var $tar = $($event.target);
+				if ($scope.disabled) return;
+				$scope.disabled = true;
+				// console.info('pick up order ' + catchID);
 				_scope.pickOrder(catchID);
 				$modalInstance.close();
+				$event.preventDefault();
+				return ;
 			};
 		}
 	]);
