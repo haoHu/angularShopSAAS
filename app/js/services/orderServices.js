@@ -1435,13 +1435,22 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.calcVipFoodPromotionSubTotal = function (item) {
 				var isVipPrice = parseFloat(self.isVipPrice),
 					foodProPrice = parseFloat(_.result(item, 'foodProPrice', 0)),
+					foodVipPrice = parseFloat(_.result(item, 'foodVipPrice', 0)),
 					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice', 0)),
 					foodNumber = parseFloat(_.result(item, 'foodNumber', 0)),
 					foodCancelNumber = parseFloat(_.result(item, 'foodCancelNumber', 0)),
 					foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0)),
 					isSFDetail = _.result(item, 'isSFDetail');
-				var deltaPrice = isVipPrice == 1 
+				// 根据算法公式为：(isVipPrice == 1 ? (foodProPrice - foodPayPrice) : (foodProPrice - foodProPrice)) * (foodNumber - foodCancelNumber - foodSendNumber)
+				/*var deltaPrice = isVipPrice == 1 
 					? parseFloat(HCMath.sub((isSFDetail == "1" ? foodPayPrice : foodProPrice), foodPayPrice))
+					: parseFloat(HCMath.sub(foodProPrice, foodProPrice)),
+					deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber));*/
+				// 需求更改，根据新的需求（2015/7/27邮件中的需求更改）
+				// 计算公式更改为：
+				// (isVipPrice == 1 ? (foodProPrice - foodVipPrice) : (foodProPrice - foodProPrice)) * (foodNumber - foodCancelNumber - foodSendNumber)
+				var deltaPrice = isVipPrice == 1 
+					? parseFloat(HCMath.sub((isSFDetail == "1" ? foodPayPrice : foodProPrice), foodVipPrice))
 					: parseFloat(HCMath.sub(foodProPrice, foodProPrice)),
 					deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber));
 				var v = HCMath.multi(deltaPrice, deltaNumber);
