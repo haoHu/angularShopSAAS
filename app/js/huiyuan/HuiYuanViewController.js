@@ -830,6 +830,9 @@ define(['app'], function(app)
                     el.find('.panel-vouchers ul').css('height', $(window).height() - 82);
 
                     var init = function() {
+                        scope.cardnumber = '';
+                        scope.ordernumber = '';
+                        scope.transpwd = '';
                         scope.group = {
                             consumeamount: 0,
                             usevoucheramount: 0,
