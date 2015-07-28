@@ -1448,9 +1448,9 @@ define(['app', 'uuid'], function (app, uuid) {
 					deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber));*/
 				// 需求更改，根据新的需求（2015/7/27邮件中的需求更改）
 				// 计算公式更改为：
-				// (isVipPrice == 1 ? (foodProPrice - foodVipPrice) : (foodProPrice - foodProPrice)) * (foodNumber - foodCancelNumber - foodSendNumber)
-				var deltaPrice = isVipPrice == 1 
-					? parseFloat(HCMath.sub((isSFDetail == "1" ? foodPayPrice : foodProPrice), foodVipPrice))
+				// (isSFDetail == 1 ? 0 : (isVipPrice == 1 ? (foodProPrice - foodVipPrice) : (foodProPrice - foodProPrice))) * (foodNumber - foodCancelNumber - foodSendNumber)
+				var deltaPrice = isVipPrice == 1
+					? (isSFDetail == "1" ? 0 : parseFloat(HCMath.sub(foodProPrice, foodVipPrice)))
 					: parseFloat(HCMath.sub(foodProPrice, foodProPrice)),
 					deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber));
 				var v = HCMath.multi(deltaPrice, deltaNumber);
