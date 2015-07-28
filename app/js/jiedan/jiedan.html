@@ -146,7 +146,7 @@
 					</header>
 					<div class="paylst-grid">
 						<div class="row" ng-repeat="pay in curOrderDetail.payLst">
-							<label class="col-xs-5 text-right">{{pay.payName}}:</label>
+							<label class="col-xs-5 text-right">{{pay.payName}}/{{pay.payDetailName}}:</label>
 							<p class="col-xs-7 text-left">
 								{{pay.payAmount | mycurrency:"￥"}}
 							</p>
