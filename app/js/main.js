@@ -80,6 +80,7 @@ require.config({
 });
 
 require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'global-url', 'api', 'matcher', 'uuid'], function (app, _) {
+	IX.ns("Hualala");
 	if (window.HualalaWorkMode == 'dev') {
 		// require(['global-dev-url', 'api'], function () {
 		// 	angular.bootstrap(document, ['app']);
@@ -102,5 +103,20 @@ require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'glo
 			angular.bootstrap(document, ['app']);
 		});
 	}
-	
+	// 全局禁止鼠标右键菜单
+	$(document).bind('contextmenu', function (e) {
+		if (!Hualala.Common.isTagName(e, ['INPUT', 'TEXTAREA'])) {
+			e.preventDefault();
+			return false;
+		}
+		return true;
+	});
+	// 选择性全局屏蔽双击触发选中事件
+	$(':not(input, select, textarea)').disableSelection().on('doubleclick', function (e) {
+		if (!Hualala.Common.isTagName(e, ['INPUT', 'TEXTAREA'])) {
+			e.preventDefault();
+			return false;
+		}
+		return true;
+	});
 });

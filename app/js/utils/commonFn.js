@@ -370,6 +370,17 @@
 		});
 		return htm.join('');
 	};
+
+	Hualala.Common.isTagName = function (evt, whitelists) {
+		evt = $.event.fix(evt);
+		whitelists = _.isEmpty(whitelists) ? ["A", "INPUT", "TEXTAREA"] : whitelists;
+		var isTag = true;
+		var target = evt.target || evt.srcElement;
+		if (whitelists && $.inArray(target.tagName.toString().toUpperCase(), whitelists) == -1) {
+			isTag = false;
+		}
+		return isTag;
+	};
 })(jQuery);
 
 (function () {
@@ -426,3 +437,33 @@
 		return modalInstance;
 	};
 })();
+(function ($) {
+	$.fn.ctrlCmd = function (key) {
+		var allowDefault = true;
+		if (!$.isArray(key)) {
+			key = [key];
+		}
+		return this.keydown(function (e) {
+			_.each(key, function (_k) {
+				if (e.keyCode === _k.toUpperCase().charCodeAt(0) && e.metaKey) {
+					allowDefault = false;
+				}
+			});
+			return allowDefault;
+		});
+	};
+	$.fn.disableSelection = function () {
+		this.ctrlCmd('');
+		return this.attr('unselectable', 'on')
+			.css({
+				'-moz-user-select' : '-moz-none',
+				'-moz-user-select' : 'none',
+				'-o-user-select' : 'none',
+				'-khtml-user-select' : 'none',
+				'-webkit-user-select' : 'none',
+				'-ms-user-select' : 'none',
+				'user-select' : 'none'
+			})
+			.bind('selectstart', false);
+	};
+})(jQuery);
