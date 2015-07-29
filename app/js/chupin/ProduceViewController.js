@@ -212,6 +212,8 @@ define(['app'], function (app) {
 					if (code == '000') {
 						cleanCurFocusFoods();
 						// $scope.OrderLst = ProduceOrderService.getOrderLst();
+						// 刷新当前页面
+						$scope.queryFoodMakeStatusLst();
 					} else {
 						AppAlert.add('danger', _,result(data, 'msg', ''));
 					}
