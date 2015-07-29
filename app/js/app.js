@@ -67,6 +67,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             $scope.isSignPage = $scope.curNav == '/signin' || $scope.curNav == '/signup' ? true : false;
             $scope.isWelcomPage = $scope.curNav == '/' ? true : false;
             $scope.shopLogo = _.result(storage.get('SHOPINFO'), 'logoUrl', '');
+            $scope.isFoodMakeStatusActive = _.result(storage.get('SHOPINFO'), 'isFoodMakeStatusActive', 0);
             if (!_.isEmpty($scope.shopLogo)) {
                 $scope.shopLogo = Hualala.Global.AJAX_DOMAIN + '/' + $scope.shopLogo;
             } else {
