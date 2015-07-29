@@ -2,9 +2,9 @@ define(['app'], function(app)
 {
 	app.controller('HuiYuanViewController',
     [
-        '$scope','CommonCallServer', 'AppAlert', 'HuiYuanTabsService',
+        '$scope',  '$sce', 'CommonCallServer', 'AppAlert', 'HuiYuanTabsService',
 
-        function($scope, CommonCallServer, AppAlert, HuiYuanTabsService)
+        function($scope, $sce, CommonCallServer, AppAlert, HuiYuanTabsService)
         {
             $scope.CCS = CommonCallServer;
             $scope.AA = AppAlert;
@@ -44,6 +44,10 @@ define(['app'], function(app)
                     $('.panel-vouchers').hide();
                     $scope.user = null;
                 }
+            };
+            // html解析
+            $scope.parseSnippet = function (v) {
+                return $sce.trustAsHtml(v);
             };
 
             //点击查询按钮时打开会员信息面板
@@ -117,6 +121,7 @@ define(['app'], function(app)
                     //joinplace: '哗啦啦体验店铺（中关村店）',
                     cardkey: d.cardKey
                 };
+                $scope.prntUserInfo = Hualala.Common.formatPrintTxt2Html(_.result(d, 'customerPrnTxt', ''));
 
                 $scope.userorg = d;
 
@@ -375,7 +380,7 @@ define(['app'], function(app)
                 replace : true,
                 link : function (scope, el, attr) {
                     el.find('.panel-viplevel ul').css('height', $(window).height() - 82);
-
+                    var ti, checkcode;
                     //初始值设定
                     var init = function() {
                         scope.realcardnumber = '';
@@ -386,6 +391,9 @@ define(['app'], function(app)
                         scope.birthday = null;
                         scope.cardpassword = '888888';
                         scope.checkmobile = false;
+                        scope.checkcode = '';
+                        clearInterval(ti);
+                        $('.btn-sendcheckcode', el).html('获取验证码').removeClass('btn-disable');
                     };
                     init();
 
@@ -433,7 +441,7 @@ define(['app'], function(app)
                         return code;
                     };
 
-                    var ti, checkcode;
+                    
                     el.on('click', '.btn-sendcheckcode', function() {
                         if(scope.phonenumber) {
                             var time = 60;

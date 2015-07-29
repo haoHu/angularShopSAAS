@@ -333,6 +333,43 @@
 		}
 		return v.replace(/([\d]{4})([\d]{2})([\d]{2})([\d]{2})([\d]{2})([\d]{2})/g, '$1/$2/$3 $4:$5:$6');
 	};
+
+	/**
+	 * 将打印文字格式化为html
+	 * @param  {[type]} prntTxt [description]
+	 * @return {[type]}         [description]
+	 */
+	Hualala.Common.formatPrintTxt2Html = function (prntTxt) {
+		var txt = decodeURIComponent(prntTxt || '');
+		var matchFontStyle = function (line) {
+			var reg = /^\<(HLLFONT)\-(\d)\-(\d)\-(\d)\>/,
+				m, fontSize, fontBold, fontBG, fontStyle, txt;
+			if (_.isEmpty(line)) return '';
+			m = line.match(reg);
+			if (m && _.isArray(m) && m.length == 5) {
+				fontSize = 'font-' + m[2] + 'x';
+				fontBold = m[3] == '0' ? '' : 'bold';
+				fontBG = m[4] == '0' ? '' : 'highlight';
+				fontStyle = [fontSize, fontBold, fontBG].join(' ');
+			} else {
+				fontStyle = '';
+			}
+			txt = line.replace(reg, '').replace(/\s/g, '&nbsp;');
+			return {
+				txt : txt,
+				fontStyle : fontStyle
+			};
+		};
+		if (_.isEmpty(txt)) return '';
+		var arr = txt.split('\n');
+		var htm = _.map(arr, function (line) {
+			var t = matchFontStyle(line),
+				s = '';
+			s = '<p class="' + _.result(t, 'fontStyle') + '"><span>' + _.result(t, 'txt', '') + '</span></p>';
+			return s;
+		});
+		return htm.join('');
+	};
 })(jQuery);
 
 (function () {

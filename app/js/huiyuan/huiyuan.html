@@ -14,7 +14,7 @@
 
     <div class="userinfo" style="display:none;">
         <div class="header">会员信息</div>
-        <div class="body">
+        <!-- <div class="body">
             <div>
                 <div><span class="label">等级：</span><span>{{user.level}}</span></div>
                 <div><span class="label">状态：</span><span>{{user.status}}</span></div>
@@ -45,6 +45,8 @@
             <div>
                 <div><span class="label">查询时间：</span><span></span></div>
             </div>
+        </div> -->
+        <div class="body receipt-cnt"  ng-bind-html="parseSnippet(prntUserInfo)">
         </div>
         <button type="button" class="btn btn-default btn-prtvipinfo btn-success" ng-click="prtvipinfo">打印会员信息</button>
     </div>
