@@ -35,6 +35,7 @@
 										<span class="num">{{order.orderTotal | mycurrency:'￥'}}</span>
 										<span class="date">{{order.orderTime | formatDateTimeStr: 'yyyy/MM/dd HH:mm'}}</span>
 										<span class="num">{{order.person || 0}}人</span>
+										<span class="num">凭证号:{{order.shopOrderKey || ''}}</span>
 									</p>
 									<address ng-if="order.takeoutAddress.length > 0"><strong>配送地址:</strong>{{order.takeoutAddress}}</address>
 									<p ng-if="order.orderRemark.length > 0">{{order.orderRemark}}</p>
@@ -104,6 +105,9 @@
 							<span class="mobile">{{curOrderDetail.userMobile}}</span>
 							<span class="num">{{curOrderDetail.person || 0}}人</span>
 						</p>
+						<p class="col-xs-12" ng-if="hasOrderDetail(curOrderDetail)">凭证号:
+							<span class="num">{{curOrderDetail.shopOrderKey || ""}}</span>
+						</p>
 						<address class="col-xs-12 bg-primary" ng-if="curOrderDetail.takeoutAddress.length > 0"><strong>配送地址:</strong>{{curOrderDetail.takeoutAddress}}</address>
 						<p class="col-xs-12" ng-if="curOrderDetail.orderRemark">{{curOrderDetail.orderRemark}}</p>
 					</div>
@@ -146,8 +150,8 @@
 					</header>
 					<div class="paylst-grid">
 						<div class="row" ng-repeat="pay in curOrderDetail.payLst">
-							<label class="col-xs-5 text-right">{{pay.payName}}/{{pay.payDetailName}}:</label>
-							<p class="col-xs-7 text-left">
+							<label class="col-xs-7 text-right txt">{{pay.payName}}/{{pay.payDetailName}}:</label>
+							<p class="col-xs-5 text-left cash">
 								{{pay.payAmount | mycurrency:"￥"}}
 							</p>
 						</div>
@@ -159,8 +163,8 @@
 						</div>
 						 -->
 						<div class="row">
-							<label class="col-xs-5 text-right">菜品金额:</label>
-							<p class="col-xs-7 text-left cash">
+							<label class="col-xs-7 text-right txt">菜品金额:</label>
+							<p class="col-xs-5 text-left cash">
 								{{(curOrderDetail.orderTotalAmount || 0) | mycurrency:"￥"}}
 								<span class="text-danger" ng-if="!curOrderDetail.payLst || curOrderDetail.payLst.length == 0">(未付款)</span>
 							</p>

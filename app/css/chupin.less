@@ -10,9 +10,9 @@
 	@foodItemCall : #690;
 	@foodItemHangup : #ff4a22;
 	@foodDisabledColor : #ccc;
-	height : 100%;
+	height : 100%; position: relative;
 	.chupin-header, .chupin-footer {
-		position : fixed; z-index: 99; background-color: @bgBar;
+		position : absolute; z-index: 99; background-color: @bgBar; left : 0; right : 0;
 	}
 	.chupin-header {
 		top : 0; height : @secHeadHeight;

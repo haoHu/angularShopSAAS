@@ -2,7 +2,7 @@
 	<div class="panel panel-primary signin-panel">
 		<div class="panel-heading">哗啦啦O2O餐饮管理系统</div>
 		<div class="panel-body">
-			<form action="" name="loginForm" class="form-horizontal" role="form" novalidate="novalidate" >
+			<form action="" name="loginForm" class="col-xs-8 col-xs-push-2 form-horizontal" role="form" novalidate="novalidate" >
 				<div class="form-group" >
 					<label for="" class="col-xs-2 control-label">店铺名称</label>
 					<div class="col-xs-6">
@@ -41,6 +41,10 @@
 				</div>-->
 				
 			</form>
+			<div class="col-xs-4 col-xs-pull-1">
+				<!-- 软键盘 -->
+				<numkeyboard cur-target="focusInputEl"></numkeyboard>
+			</div>
 		</div>
 		<div class="panel-footer">
 			<div class="btn-group btn-group-justified" role="group">
@@ -56,8 +60,7 @@
 			</div>
 		</div>
 	</div>
-	<!-- 软键盘 -->
-	<numkeyboard cur-target="focusInputEl"></numkeyboard>
+	
 	
 	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
 </section>
