@@ -39,6 +39,10 @@ define(['app'], function (app) {
                 (nextEl.length > 0 && !nextEl.is('.btn')) ? nextEl.focus() : $scope.submitForm();
                 
             };
+            // 退出程序
+            $scope.appExit = function (e) {
+                Hualala.DevCom.exeCmd('AppExit');
+            };
         }
     ]);
 });
