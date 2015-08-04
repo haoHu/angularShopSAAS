@@ -39,34 +39,10 @@ define(['app'], function (app) {
 				AppAlert.add('danger', Hualala.TypeDef.CommonErrorMsgs.connect_faild);
 			});
 		};
-
-		$scope.getShopInfo();
-
 		
 
-
-		// CommonCallServer.getShopInfo($scope.login)
-  //       .success(function (data, status) {
-  //           console.info(data);
-  //           if (data.code == 'CS001') {
-  //           	// TODO 跳转注册页面
-  //           	$location.path('/signup');
-  //           } else if (data.code == '000') {
-  //           	// TODO 跳转到登录
-  //           	$location.path('/signin');
-  //           	// TODO 将返回店铺信息保存到localStorage
-  //           	storage.set('shopInfo', data.records[0]);
-  //           }
-            
-  //       })
-  //       .error(function (data, status) {
-  //           console.info(data);
-  //       });
-
-
-		// var p = $timeout(function(){
-			
-			
-		// }, 1500);
+		$scope.getShopInfo();
+		
+		
 	}]);
 });

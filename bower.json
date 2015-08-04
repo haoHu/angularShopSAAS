@@ -18,7 +18,8 @@
     "requirejs-domready": "*",
     "angularLocalStorage": "*",
     "node-uuid": "1.4.2",
-    "bootstrap-datetimepicker": "*"
+    "bootstrap-datetimepicker": "*",
+    "jquery.qrcode" : "*"
   },
   "resolutions": {
     "angular": "#1.2.28",

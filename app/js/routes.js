@@ -134,6 +134,16 @@ define([], function () {
 					'services/orderServices',
 					'services/foodMenuServices'
 				]
+			},
+			'/puppet' : {
+				templateUrl : 'js/puppet/subscrn.html',
+				dependencies : [
+					'puppet/subscrnViewController',
+					'services/appServices',
+					'directives/appDirectives',
+					'filters/appFilters',
+					'services/orderServices'
+				]
 			}
 		}
 	};

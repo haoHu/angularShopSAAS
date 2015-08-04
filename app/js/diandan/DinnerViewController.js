@@ -63,6 +63,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 获取订单数据
 			OrderService.getOrderByOrderKey(urlParams, function (data) {
 				$scope.resetOrderInfo();
+				// 反结账标记
 				var _FJZFlag = _.result(urlParams, 'FJZFlag', '');
 				OrderService.updateFJZFlag(_FJZFlag);
 			}, function (data) {
@@ -214,6 +215,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 				var t = (OrderService.getOrderFoodItemsHT()).getAll();
 				$scope.curOrderItems = t;
+				
 			};
 
 			/**
@@ -457,6 +459,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					if (code == '000') {
 						OrderService.initOrderFoodDB(ret);
 						$scope.resetOrderInfo();
+						// 向子窗口推送新加菜品的消息
+						Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
 					} else if (code == 'CS005') {
 						addAuthEMP();
 					} else {
@@ -481,6 +485,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.suspendOrder = function () {
 				OrderService.suspendOrder(function () {
 					AppAlert.add('success', '挂单成功!');
+					// 向子窗口推送新加菜品的消息
+					Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
 				}, function () {
 					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
 				});
@@ -491,8 +497,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.pickOrder = function (catchID) {
 				OrderService.pickOrder(catchID, function () {
 					AppAlert.add('success', '当前订单挂单成功!');
+					// 向子窗口推送新加菜品的消息
+					Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
 				}, function () {
 					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
+					// 向子窗口推送新加菜品的消息
+					Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
 				});
 				$scope.resetOrderInfo();
 			};
@@ -1415,6 +1425,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						_scope.resetOrderInfo();
 						// 3. 打印结账清单
 						Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
+						// 向子窗口推送新加菜品的消息
+						Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
 						if (operationMode == 0) {
 							$scope.jumpToTablePage();
 						}

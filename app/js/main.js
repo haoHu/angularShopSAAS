@@ -17,13 +17,15 @@ require.config({
 		'IX' : 'utils/ixutils',
 		'commonFn' : 'utils/commonFn',
 		'datatype' : 'utils/datatype',
+		'pubsub' : 'utils/pubsub',
 		'global-const' : 'api/global-const',
 		// 'global-dev-url' : 'api/global-dev-url',
 		'global-url' : 'api/global-url',
 		'angularLocalStorage' : 'vendor/angularLocalStorage/angularLocalStorage',
 		'pymatch' : 'utils/pymatch',
 		'matcher' : 'utils/matcher',
-		'uuid' : 'vendor/node-uuid/uuid'
+		'uuid' : 'vendor/node-uuid/uuid',
+		'qrcode' : 'vendor/jquery.qrcode/jquery.qrcode'
 	},
 	shim : {
 		'angular' : {
@@ -60,6 +62,10 @@ require.config({
 			exports : 'commonFn',
 			deps : ['IX', 'jquery']
 		},
+		'pubsub' : {
+			exports : 'pubsub',
+			deps : ['IX']
+		},
 		'matcher' : {
 			deps : ['IX', 'pymatch']
 		},
@@ -75,11 +81,14 @@ require.config({
 		},
 		'angular-cookies' : {
 			deps : ['angular']
+		},
+		'qrcode' : {
+			deps : ['jquery']
 		}
 	}
 });
 
-require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'global-url', 'api', 'matcher', 'uuid'], function (app, _) {
+require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'pubsub', 'global-const', 'global-url', 'api', 'matcher', 'uuid', 'qrcode'], function (app, _) {
 	IX.ns("Hualala");
 	if (window.HualalaWorkMode == 'dev') {
 		// require(['global-dev-url', 'api'], function () {
@@ -105,6 +114,7 @@ require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'glo
 	}
 	// 全局禁止鼠标右键菜单
 	$(document).bind('contextmenu', function (e) {
+		if (window.IXDEBUG) return true;
 		if (!Hualala.Common.isTagName(e, ['INPUT', 'TEXTAREA'])) {
 			e.preventDefault();
 			return false;
@@ -113,6 +123,7 @@ require(['app', 'underscore', 'IX', 'commonFn', 'datatype', 'global-const', 'glo
 	});
 	// 选择性全局屏蔽双击触发选中事件
 	$(':not(input, select, textarea)').disableSelection().on('doubleclick', function (e) {
+		if (window.IXDEBUG) return true;
 		if (!Hualala.Common.isTagName(e, ['INPUT', 'TEXTAREA'])) {
 			e.preventDefault();
 			return false;

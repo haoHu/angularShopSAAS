@@ -1,0 +1,43 @@
+<section class="section section-diandan section-puppet" ng-class="{noorder : isNoOrder()}" ng-controller="SubscrnViewController">
+	<div class="order-plain">
+		<div class="order-box">
+			<div class="order-body grid-box">
+				<!-- 订单条目头 -->
+				<div class="row grid-header">
+					<span class="col-xs-1 grid-cell txt"></span>
+					<span class="col-xs-4 grid-cell txt">品名</span>
+					<span class="col-xs-2 grid-cell num">数量</span>
+					<span class="col-xs-2 grid-cell unit">规格</span>
+					<span class="col-xs-3 grid-cell price">小计</span>
+				</div>
+				<div class="order-list">
+					<orderlist></orderlist>
+				</div>
+			</div>
+			<footer class="order-footer">
+				<!-- 订单单注 -->
+				<div class="order-remark clearfix">
+					<div class="col-xs-7">
+						<label for="">账单合计</label>
+						<span class="dollar">￥</span>
+						<span class="cash">{{calcOrderAmount()}}</span>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+	<div class="ad-plain">
+		<div class="placeholder">
+			<!-- 占位元素，用来作为居中元素参照物 -->
+		</div>
+		<div class="ad-box">
+			<!-- <img src="http://www.wired.com/wp-content/uploads/2014/10/ff_disneybaymax10_g.jpeg"/> -->
+			<img ng-src="{{adSrc}}" width="{{adWidth}}" height="{{adHeight}}" ng-load>
+		</div>
+		<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}">
+			<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
+			<p>请扫描二维码进行结账</p>
+		</div>
+		
+	</div>
+</section>

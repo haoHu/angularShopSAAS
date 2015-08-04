@@ -1,0 +1,47 @@
+.section-puppet {
+	@orderPlainW : 292px;
+	position : relative; height : 100%; width : 100%; overflow: hidden;
+	// 订单模块，广告位模块基本布局样式
+	.order-plain, .ad-plain {
+		position : absolute; margin : 0; padding : 0; left : 0; right : 0; top : 0; bottom : 0; overflow: hidden;
+	}
+	.order-plain {
+		width : @orderPlainW; border : 1px solid @xBaseBorderColor; 
+		// outline: 1px solid red;
+	}
+	.ad-plain {
+		margin-left : @orderPlainW; 
+		// outline : 1px solid blue;
+	}
+	// 无订单状态页面布局样式
+	&.noorder {
+		> .order-plain {width : 0;}
+		> .ad-plain {margin-left : 0;}
+	}
+
+	// 广告/二维码模块内部布局,广告/二维码栏垂直居中于屏幕
+	.ad-plain {
+		height : 100%; text-align: center; font-size : 0;
+		// 占位空元素
+		.placeholder, .ad-box {
+			vertical-align : middle; display: inline-block;
+		}
+		.placeholder {
+			overflow: hidden; position : relative; width : 0; min-height: inherit; height : inherit;
+		}
+		.ad-box {
+			width : 80%; height : 80%; background-color: #333;
+			> img {
+				display : block; height : 100%; width : 100%;
+			}
+		}
+		.qrcode-box {
+			position : absolute; left : 50%; top : 50%; z-index : 99; margin-top : -200px; margin-left : -200px; text-align: center; 
+			background: #fff;
+			p {font-size : 24px;}
+		}
+		#qrcode {
+			width : 400px; height : 400px; 
+		}
+	}
+}

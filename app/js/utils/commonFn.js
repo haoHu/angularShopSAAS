@@ -431,6 +431,7 @@
 })();
 (function () {
 	IX.ns("Hualala.ModalCom");
+	// 弹窗
 	Hualala.ModalCom.openModal = function ($rootScope, $modal, cfg) {
 		var modalInstance = $modal.open(cfg);
 		$rootScope.ModalLst.push(modalInstance);
@@ -438,6 +439,7 @@
 	};
 })();
 (function ($) {
+	// 屏蔽选中文字
 	$.fn.ctrlCmd = function (key) {
 		var allowDefault = true;
 		if (!$.isArray(key)) {
@@ -467,3 +469,55 @@
 			.bind('selectstart', false);
 	};
 })(jQuery);
+(function () {
+	// 弹出子窗体
+	IX.ns("Hualala.SecondScreen");
+	var H = Hualala,
+		loc = document.location,
+		origin = loc.origin,
+		pathname = loc.pathname,
+		link = origin + pathname + '#/puppet',
+		subWinName = 'secondScreen',
+		subWin = null;
+	// 获取子窗口对象
+	var getSubWin = function () {
+		return subWin;
+	};
+	// 打开子窗体
+	var open = function () {
+		subWin = window.open(link, subWinName, 'top=0,left=0,fullscreen=1');
+		return subWin;
+	};
+	// 关闭子窗体
+	var close = function () {
+		subWin.close();
+		subWin = null;
+	};
+	// 订阅向子窗体推送消息
+	var postMsgService = function (topic, data) {
+		IX.Debug.info("Topic:" + topic);
+		IX.Debug.info("postData:" + data);
+		var postMsg = {
+			// subWin : subWin,
+			topic : topic,
+			post : data
+		};
+		subWin && subWin.postMessage(JSON.stringify(postMsg), link);
+	};
+
+	var subcribePostMsg = function (topic) {
+		return H.PubSub.subcribe(topic, postMsgService);
+	};
+
+	var publishPostMsg = function (topic, args) {
+		return H.PubSub.publish(topic, args);
+	};
+
+	H.SecondScreen = {
+		open : open,
+		close : close,
+		getSubWin : getSubWin,
+		subcribePostMsg : subcribePostMsg,
+		publishPostMsg : publishPostMsg
+	};
+})();

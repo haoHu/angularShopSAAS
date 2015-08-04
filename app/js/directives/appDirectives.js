@@ -1155,4 +1155,32 @@ define(['app'], function (app) {
             };
         }
     ]);
+
+    // 二维码
+    app.directive('qrcode', [
+        "$timeout",
+        function ($timeout) {
+            return {
+                restrict : "A",
+                scope : {
+                    text : "=",
+                    options : "="
+                },
+                link : function (scope, el, attr) {
+                    var $el, options;
+                    $el = $(el);
+                    options = {
+                        size : $el.width()
+                    };
+                    _.extend(options, scope.options);
+                    scope.$watch('text', function (newText) {
+                        if (newText) {
+                            options.text = newText;
+                            $el.empty().qrcode(options);
+                        }
+                    });
+                }
+            }
+        }
+    ]);
 });

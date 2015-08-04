@@ -511,6 +511,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					firstKey = _.result(firstItem, 'itemKey', '');
 				self.OrderFoodHT.register(itemKey, item);
 				self.OrderFoodHT.insertBefore(itemKey, firstKey);
+				// 向子窗口推送新加菜品的消息
+				Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
 				return item;
 			};
 
@@ -550,6 +552,8 @@ define(['app', 'uuid'], function (app, uuid) {
 						}
 					});
 				});
+				// 向子窗口推送新加菜品的消息
+				Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
 				return item;
 			};
 
@@ -590,6 +594,8 @@ define(['app', 'uuid'], function (app, uuid) {
 				var item = mapFoodMethodItemData(itemKey, item, pItem);
 				self.OrderFoodHT.register(itemKey, item);
 				self.OrderFoodHT.insertAfter(itemKey, pItemKey);
+				// 向子窗口推送新加菜品的消息
+				Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
 			};
 
 
@@ -662,6 +668,8 @@ define(['app', 'uuid'], function (app, uuid) {
 				_.each(childItems, function (el) {
 					self.OrderFoodHT.remove(_.result(el, 'itemKey'));
 				});
+				// 向子窗口推送新加菜品的消息
+				Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
 			};
 
 			/**
@@ -677,6 +685,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					printStatus = _.result(item, 'printStatus', "0"),
 					isNeedConfirmFoodNumber = _.result(item, 'isNeedConfirmFoodNumber', "0");
 				var callServer = null;
+				var publishMsg = function () {
+					// 向子窗口推送新加菜品的消息
+					Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
+				};
 				step = parseFloat(step);
 				count = parseFloat(count);
 				if (printStatus != 0 && isNeedConfirmFoodNumber == 0) return;
@@ -738,7 +750,13 @@ define(['app', 'uuid'], function (app, uuid) {
 						}
 					}
 				});
-				
+				if (!_.isEmpty(callServer)) {
+					callServer.success(function (data) {
+						publishMsg();
+					});
+				} else {
+					publishMsg();
+				}
 				
 				return _.isEmpty(callServer) ? item : {
 					callServer : callServer,
@@ -798,6 +816,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', 0);
 				var callServer = null;
+				var publishMsg = function () {
+					// 向子窗口推送新加菜品的消息
+					Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
+				};
 				if (itemType.isFoodMethod || itemType.isNotExist) return;
 				item.foodSendNumber = sendNumber;
 				item.sendReason = sendReason;
@@ -805,6 +827,14 @@ define(['app', 'uuid'], function (app, uuid) {
 					// TODO 已落单菜品修改赠送， 更新数据字典后，要直接提交，并刷新订单数据
 					callServer = self.foodOperation('ZC', [itemKey], empInfo);
 				}
+				if (callServer) {
+					callServer.success(function (data) {
+						publishMsg();
+					});
+				} else {
+					publishMsg();
+				}
+
 				return callServer;
 			};
 
@@ -820,12 +850,23 @@ define(['app', 'uuid'], function (app, uuid) {
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', 0); 
 				var callServer = null;
+				var publishMsg = function () {
+					// 向子窗口推送新加菜品的消息
+					Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
+				};
 				if (itemType.isFoodMethod || itemType.isNotExist) return;
 				item.foodCancelNumber = cancelNumber;
 				item.cancelReason = cancelReason;
 				if (printStatus != 0) {
 					// TODO 已落单菜品修改退菜， 更新数据字典后，要直接提交，并刷新订单数据
 					callServer = self.foodOperation('TC', [itemKey], empInfo);
+				}
+				if (callServer) {
+					callServer.success(function (data) {
+						publishMsg();
+					});
+				} else {
+					publishMsg();
 				}
 				return callServer;
 			};
@@ -842,7 +883,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					printStatus = _.result(item, 'printStatus', 0); 
 				if (itemType.isFoodMethod || itemType.isNotExist) return;
 				item['foodRemark'] = foodRemark;
-				
+				// 向子窗口推送新加菜品的消息
+				Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
 			};
 
 			
@@ -883,6 +925,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					self.deleteOrderItem(_.result(_methodItem, 'itemKey'));
 				}
 				self.insertFoodMethodItem(methodSetting, item);
+				// 向子窗口推送新加菜品的消息
+				Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
 			};
 
 			/**
@@ -897,6 +941,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					itemType = self.orderFoodItemType(itemKey),
 					printStatus = _.result(item, 'printStatus', "0"); 
 				var callServer = null;
+				var publishMsg = function () {
+					// 向子窗口推送新加菜品的消息
+					Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
+				};
 				if (itemType.isNotExist) return;
 				// 更新菜品modifyReason字段作为改价原因；更新菜品foodPayPrice作为修改后价格
 				item.modifyReason = priceNote;
@@ -906,6 +954,13 @@ define(['app', 'uuid'], function (app, uuid) {
 				if (printStatus != 0) {
 					// TODO 已落单菜品改价，更新菜品数据字典后，要直接提交，并刷新订单数据
 					callServer = self.foodOperation('GJ', [itemKey], empInfo);
+				}
+				if (callServer) {
+					callServer.success(function (data) {
+						publishMsg();
+					});
+				} else {
+					publishMsg();
 				}
 				return callServer;
 			};
@@ -936,6 +991,20 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.updateOrderRemark = function (allFoodRemark) {
 				self._OrderData['allFoodRemark'] = allFoodRemark;
+			};
+
+			/**
+			 * 获取发布给子屏幕的订单数据
+			 * @return {[type]} [description]
+			 */
+			this.getOrderPublishData = function () {
+				var saasOrderKey = self.getSaasOrderKey(),
+					foodLst = self.OrderFoodHT.getAll(),
+					orderHeader = self.getOrderHeaderData();
+				return _.extend({
+					saasOrderKey : saasOrderKey,
+					foodLst : foodLst
+				}, orderHeader);
 			};
 
 			/**

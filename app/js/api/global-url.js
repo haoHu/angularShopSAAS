@@ -38,6 +38,8 @@ define(['IX'], function () {
 		["getPaySubjectLst", "/saas/base/getPaySubjectLst.ajax", "", "POST"],
 		// 获取订单打折方案列表
 		["getDiscountRuleLst", "/saas/base/getDiscountRuleLst.ajax", "", "POST"],
+		// 获取订单移动支付二维码
+		["getOrderCheckoutQRCode", "/saas/order/getOrderCheckoutQRCode.ajax", "", "POST"],
 
 		// 获取会员卡信息
 		["getVIPCardInfo", "/crm/card/get.ajax", "", "POST"],

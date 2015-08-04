@@ -38,9 +38,11 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
     ]);
 
     app.controller('AppController', ['$scope', '$rootScope', '$location', 'storage', function ($scope, $rootScope, $location, storage) {
+        IX.ns("Hualala");
         $scope.curNav = $location.path();
         $scope.isWelcomPage = false;
         $scope.isSignPage = false;
+        $scope.isPuppet = false;
         $scope.isFoodMakeStatusActive = _.result(storage.get('SHOPINFO'), 'isFoodMakeStatusActive', 0);
         $scope.ShopOperationMode = null;
         $scope.shopLogo = '';
@@ -65,6 +67,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             $scope.empName = _.result(empInfo, 'empName', '');
             $scope.ShopOperationMode = $XP(shopInfo, 'operationMode');
             $scope.isSignPage = $scope.curNav == '/signin' || $scope.curNav == '/signup' ? true : false;
+            $scope.isPuppet = $scope.curNav == '/puppet' ? true : false;
             $scope.isWelcomPage = $scope.curNav == '/' ? true : false;
             $scope.shopLogo = _.result(storage.get('SHOPINFO'), 'logoUrl', '');
             $scope.isFoodMakeStatusActive = _.result(storage.get('SHOPINFO'), 'isFoodMakeStatusActive', 0);
@@ -77,22 +80,56 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
                 deviceCode = _.result(urlParams, 'deviceCode', null),
                 deviceKey = _.result(urlParams, 'deviceKey', null),
                 deviceName = _.result(urlParams, 'deviceName', null);
+            var screen2Exists = _.result(urlParams, 'Screen2Exists', 0),
+                screen2Left = _.result(urlParams, 'Screen2Left', 0),
+                screen2Top = _.result(urlParams, 'Screen2Top', 0),
+                screen2Width = _.result(urlParams, 'Screen2Width', 0),
+                screen2Height = _.result(urlParams, 'Screen2Height', 0);
             if (deviceKey && deviceName) {
                 storage.set('deviceCode', deviceCode);
                 storage.set('deviceKey', deviceKey);
                 storage.set('deviceName', deviceName);
             }
+            if (screen2Exists == 1) {
+                storage.set('screen2Exists', screen2Exists);
+                storage.set('screen2Left', screen2Left);
+                storage.set('screen2Top', screen2Top);
+                storage.set('screen2Width', screen2Width);
+                storage.set('screen2Height', screen2Height);
+            }
+            
+            $scope.openSecondScreen();
         });
         $scope.checkNavBtnActive = function (_curNav, _href) {
             var reg = new RegExp('^' + _href);
             return reg.test(_curNav);
         };
-        IX.ns("Hualala");
-        var HC = Hualala.Common;
-        HC.TopTip.reset($rootScope);
-        $scope.closeTopTip = function (index) {
-            HC.TopTip.closeTopTip($rootScope, index);
+        /**
+         * 打开子屏幕页面
+         * 1. 生成子屏幕页面链接
+         * 2. 打开子窗口，加载子屏幕页面
+         * 3. 订阅子屏幕页面需要的消息
+         * @return {[type]} [description]
+         */
+        $scope.openSecondScreen = function () {
+            var HSS = Hualala.SecondScreen,
+                subWin = HSS.getSubWin();
+            if (storage.get('screen2Exists') != 1 || !_.isEmpty(subWin)) return;
+            subWin = Hualala.SecondScreen.open();
+            // 订阅订单条目postMsg
+            Hualala.SecondScreen.subcribePostMsg('OrderDetail');
+            // 订阅订单付款二维码postMsg
+            Hualala.SecondScreen.subcribePostMsg('PayQRCode');
+            // 订阅广告postMsg
+            Hualala.SecondScreen.subcribePostMsg('AD');
         };
+        
+        
+        // var HC = Hualala.Common;
+        // HC.TopTip.reset($rootScope);
+        // $scope.closeTopTip = function (index) {
+        //     HC.TopTip.closeTopTip($rootScope, index);
+        // };
     }]);
 
 
