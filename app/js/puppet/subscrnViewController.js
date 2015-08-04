@@ -6,7 +6,7 @@ define(['app'], function (app) {
 			var HC = Hualala.Common;
 			$scope.curOrderItems = null;
 			$scope.curQRCode = null;
-			$scope.adSrc = "http://www.wired.com/wp-content/uploads/2014/10/ff_disneybaymax10_g.jpeg";
+			$scope.adSrc = "";
 			$scope.isNoOrder = function () {
 				return _.isEmpty($scope.curOrderItems);
 			};
