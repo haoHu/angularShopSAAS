@@ -15,12 +15,15 @@ define(['app'], function (app) {
 
 		var jumpPath = function (path) {
 			var p = $timeout(function() {
+				var screen2AdImageLst = _.result(storage.get('SHOPINFO'), 'screen2AdImageLst', ['http://images7.alphacoders.com/555/555837.jpg', 'http://ec4.images-amazon.com/images/I/918Th61HzWL._SL1500_.jpg', 'http://fc08.deviantart.net/fs70/f/2014/319/2/b/iron_baymax_by_harousel-d86isrh.jpg']);
+                Hualala.SecondScreen.publishPostMsg('AD', {screen2AdImageLst : screen2AdImageLst});
 				$location.path(path).replace();
 			}, 5000);
 		};
 		
 		
 		$scope.getShopInfo = function () {
+			$scope.openSecondScreen();
 			CommonCallServer.getShopInfo({}).success(function (data, status) {
 				$('.section-welcome').addClass('loaded');
 				if (data.code == 'CS001') {
@@ -30,6 +33,7 @@ define(['app'], function (app) {
 					// 已注册，跳转登录页面
 					// storage.set('SHOPINFO', data.data.records[0]);
 					storage.set('SHOPINFO', _.result(data, 'data', {}));
+					
 					jumpPath('/signin');
 				}
 			}).error(function (data, status) {
@@ -39,6 +43,26 @@ define(['app'], function (app) {
 				AppAlert.add('danger', Hualala.TypeDef.CommonErrorMsgs.connect_faild);
 			});
 		};
+
+		/**
+         * 打开子屏幕页面
+         * 1. 生成子屏幕页面链接
+         * 2. 打开子窗口，加载子屏幕页面
+         * 3. 订阅子屏幕页面需要的消息
+         * @return {[type]} [description]
+         */
+        $scope.openSecondScreen = function () {
+            var HSS = Hualala.SecondScreen,
+                subWin = HSS.getSubWin();
+            if (storage.get('screen2Exists') != 1 || !_.isEmpty(_.result(subWin, 'window', null))) return;
+            subWin = Hualala.SecondScreen.open();
+            // 订阅订单条目postMsg
+            Hualala.SecondScreen.subcribePostMsg('OrderDetail');
+            // 订阅订单付款二维码postMsg
+            Hualala.SecondScreen.subcribePostMsg('PayQRCode');
+            // 订阅广告postMsg
+            Hualala.SecondScreen.subcribePostMsg('AD');
+        };
 		
 
 		$scope.getShopInfo();

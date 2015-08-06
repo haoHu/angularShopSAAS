@@ -30,13 +30,23 @@
 		<div class="placeholder">
 			<!-- 占位元素，用来作为居中元素参照物 -->
 		</div>
-		<div class="ad-box">
+		<div class="ad-box" id="ad_box" ng-class="{invisible : hasQRCode()}">
 			<!-- <img src="http://www.wired.com/wp-content/uploads/2014/10/ff_disneybaymax10_g.jpeg"/> -->
-			<img ng-src="{{adSrc}}" width="{{adWidth}}" height="{{adHeight}}" ng-load>
+			<!-- <img ng-src="{{adSrc}}" width="{{adWidth}}" height="{{adHeight}}" ng-load> -->
+			<carousel interval="adInterval" no-wrap="adNoWrapSlides" ng-if="ADLst.length > 0">
+				<slide ng-repeat="ad in ADLst" active="ad.active">
+					<img ng-src="{{ad.imgSrc}}" style="margin:auto;" width="" height="" id="{{ad.id}}"/>
+					<div class="carousel-caption invisible">
+						<h4>{{ad.title}}</h4>
+						<p>{{ad.text}}</p>
+					</div>
+				</slide>
+			</carousel>
+			
 		</div>
 		<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}">
 			<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
-			<p>请扫描二维码进行结账</p>
+			<p>{{curQRCodeLabel}}</p>
 		</div>
 		
 	</div>

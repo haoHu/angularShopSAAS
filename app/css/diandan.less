@@ -216,7 +216,7 @@
 			}
 			// 即起 -- 1
 			&[title="1"] {
-				background-color: @immediateBG; color : @immediateColor;
+				background-color: @immediateBG; color : @immediateColor; visibility: hidden;
 				&:after {content : "即";}
 			}
 			// 加急 -- 2
@@ -438,6 +438,13 @@
 				}
 				.form-horizontal .form-group {
 					margin-bottom : .5rem;
+				}
+				.hll-paytype {
+					margin-top : 20px;
+				}
+				.qrcode-box {
+					position : absolute; width : 200px; height : 240px; top : 56px; left : 50%; margin-left : -100px;
+					p {text-align: center;}
 				}
 			}
 

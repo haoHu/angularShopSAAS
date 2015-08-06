@@ -1525,8 +1525,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 通用支付科目表单
 	app.directive('commonpayform', [
-		"$rootScope", "$filter", "OrderService", "OrderPayService", "AppAlert",
-		function ($rootScope, $filter, OrderService, OrderPayService, AppAlert) {
+		"$rootScope", "$filter", "CommonCallServer", "OrderService", "OrderPayService", "AppAlert",
+		function ($rootScope, $filter, CommonCallServer, OrderService, OrderPayService, AppAlert) {
 			return {
 				restrict : 'E',
 				templateUrl : 'js/diandan/commonpayform.html',
@@ -1559,6 +1559,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 										el.value = 0;
 									}
 								});
+								if (curPayGrpName == 'hualalaPay') {
+									scope.payType = '';
+								}
 							case "hangingPay":
 							case "groupBuyPay":
 							case "bankCardPay":
@@ -1749,6 +1752,60 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 					scope.formElKeyup = function (invalid, dirty) {
 						scope.$emit('pay.chkPayFormValid', (invalid == true && dirty == true) ? false : true);
+					};
+
+					// 生成支付二维码
+					scope.genQRCode = function (type) {
+						var saasOrderKey = OrderService.getSaasOrderKey(),
+							QRCodeType = type,
+							QRCodeSize = 300,
+							defaultQRCodeLabels = {
+								'HLL' : '请使用哗啦啦扫描二维码支付',
+								'ALIPAY' : '请使用支付宝扫描二维码支付',
+								'WECHAT' : '请使用微信扫描二维码支付',
+								'BAIDU' : '请使用百度扫描二维码支付'
+							};
+						scope.payType = type;
+						scope.curQRCode = null;
+						scope.curQRCodeOpt = null;
+						scope.curQRCodeLabel = null;
+						if (!type) {
+							// 推送二维码消息
+							Hualala.SecondScreen.publishPostMsg('PayQRCode', '');
+							return;
+						}
+						var genQRCode = function (data, qrcodeType) {
+							var remark = _.result(data, 'remark', null);
+							scope.curQRCode = _.result(data, 'QRCodeTxt', null);
+							scope.curQRCodeLabel = remark || defaultQRCodeLabels[qrcodeType];
+
+							scope.curQRCodeOpt = {
+								render : 'image',
+								size : QRCodeSize,
+								fill : '#000',
+								background : '#fff',
+								label : scope.curQRCode
+							};
+						};
+						// 推送二维码消息
+						Hualala.SecondScreen.publishPostMsg('PayQRCode', {saasOrderKey : saasOrderKey, QRCodeType : QRCodeType});
+						// 生成二维码
+						callServer = CommonCallServer.getOrderCheckoutQRCode({
+							saasOrderKey : saasOrderKey,
+							QRCodeType : QRCodeType
+						}).success(function (data) {
+							var code = _.result(data, 'code');
+							if (code == "000") {
+								genQRCode(_.result(data, 'data'), QRCodeType);
+							} else {
+								AppAlert.add('danger', _.result(data, 'msg', ''));
+							}
+						}).error(function (data) {
+							AppAlert.add('danger', "通信失败");
+						});
+					};
+					scope.hasQRCode = function () {
+						return !_.isEmpty(scope.curQRCode);
 					};
 					
 				}

@@ -25,14 +25,30 @@ define(['app'], function (app) {
 			// 初始化支付二维码
 			// data = {saasOrderKey, QRCodeType: HLL|ALIPAY|WECHAT|BAIDU}
 			var initPayQRCode = function (data) {
+				if (_.isEmpty(data)) {
+					$scope.curQRCode = null;
+					$scope.curQRCodeLabel = null;
+					$scope.curQRCodeOpt = null;
+					return ;
+				}
 				var saasOrderKey = _.result(data, 'saasOrderKey', null),
 					QRCodeType = _.result(data, 'QRCodeType', null),
-					callServer = null;
-				var genQRCode = function (data) {
+					QRCodeSize = 280;
+					callServer = null,
+					defaultQRCodeLabels = {
+						'HLL' : '请使用哗啦啦扫描二维码支付',
+						'ALIPAY' : '请使用支付宝扫描二维码支付',
+						'WECHAT' : '请使用微信扫描二维码支付',
+						'BAIDU' : '请使用百度扫描二维码支付'
+					};
+
+				var genQRCode = function (data, qrcodeType) {
+					var remark = _.result(data, 'remark', null);
 					$scope.curQRCode = _.result(data, 'QRCodeTxt', null);
+					$scope.curQRCodeLabel = remark || defaultQRCodeLabels[qrcodeType];
 					$scope.curQRCodeOpt = {
 						render : 'image',
-						size : 400,
+						size : QRCodeSize,
 						fill : '#000',
 						background : '#fff',
 						label : $scope.curQRCode
@@ -51,7 +67,7 @@ define(['app'], function (app) {
 				}).success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == "000") {
-						genQRCode(_.result(data, 'data'));
+						genQRCode(_.result(data, 'data'), QRCodeType);
 					} else {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					}
@@ -62,21 +78,40 @@ define(['app'], function (app) {
 
 			// 初始化广告
 			var initAD = function (data) {
-				$scope.adSrc = _.result(data, 'adSrc', '');
-				var img = new Image(),
-					$adBox = $('.ad-box');
-				img.src = $scope.adSrc;
-				$(img).on('load', function (e) {
-					var w = img.naturalWidth, 
-						h = img.naturalHeight,
-						bw = $adBox.width(),
-						bh = $adBox.height(),
-						whp = parseFloat(w, h);
-					bh = bw / whp;
-					$scope.adWidth = bw;
-					$scope.adHeight = bh;
-					$scope.$apply();
+				var adLst = _.result(data, 'screen2AdImageLst', []),
+					len = adLst.length,
+					count = 0,
+					$adBox = $('#ad_box');
+				// 格式化广告图片数据
+				adLst = _.map(adLst, function (el, i) {
+					var ad = {}, imgSrc = el,
+						id = 'ad_' + i;
+						img = new Image();
+					// 预加载图片
+					img.src = imgSrc;
+					img.id = id;
+					$(img).on('load', function (e) {
+						var w = this.naturalWidth, h = this.naturalHeight,
+							bw = $adBox.width(), bh = $adBox.height(),
+							whp = parseFloat(w / h),
+							id = this.id;
+						bw = bh * whp;
+						$('#' + id, $adBox).width(bw).height(bh);
+					});
+					ad = _.extend(ad, {
+						id : id,
+						active : i == 0 ? true : false,
+						imgSrc : imgSrc,
+						title : '广告' + i,
+						text : '广告' + i,
+						imgObj : img
+					});
+					return ad;
 				});
+				$scope.ADLst = adLst;
+				$scope.adNoWrapSlides = false;
+				$scope.adInterval = 2000;
+				$scope.$apply();
 			};
 
 			// 计算订单列表中的菜品小计金额

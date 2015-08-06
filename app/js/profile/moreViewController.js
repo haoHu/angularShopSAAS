@@ -133,6 +133,7 @@ define(['app'], function (app) {
 			};
 			// 退出
 			$scope.appExit = function (e) {
+				storage.clearAll();
 				Hualala.DevCom.exeCmd('AppExit');
 			};
 			$scope.isDevMode = function () {
