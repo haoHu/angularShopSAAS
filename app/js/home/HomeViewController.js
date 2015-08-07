@@ -23,7 +23,6 @@ define(['app'], function (app) {
 		
 		
 		$scope.getShopInfo = function () {
-			$scope.openSecondScreen();
 			CommonCallServer.getShopInfo({}).success(function (data, status) {
 				$('.section-welcome').addClass('loaded');
 				if (data.code == 'CS001') {
@@ -44,25 +43,7 @@ define(['app'], function (app) {
 			});
 		};
 
-		/**
-         * 打开子屏幕页面
-         * 1. 生成子屏幕页面链接
-         * 2. 打开子窗口，加载子屏幕页面
-         * 3. 订阅子屏幕页面需要的消息
-         * @return {[type]} [description]
-         */
-        $scope.openSecondScreen = function () {
-            var HSS = Hualala.SecondScreen,
-                subWin = HSS.getSubWin();
-            if (storage.get('screen2Exists') != 1 || !_.isEmpty(_.result(subWin, 'window', null))) return;
-            subWin = Hualala.SecondScreen.open();
-            // 订阅订单条目postMsg
-            Hualala.SecondScreen.subcribePostMsg('OrderDetail');
-            // 订阅订单付款二维码postMsg
-            Hualala.SecondScreen.subcribePostMsg('PayQRCode');
-            // 订阅广告postMsg
-            Hualala.SecondScreen.subcribePostMsg('AD');
-        };
+		
 		
 
 		$scope.getShopInfo();

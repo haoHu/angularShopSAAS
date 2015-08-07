@@ -1321,6 +1321,23 @@ define(['app', 'uuid'], function (app, uuid) {
 				}, empInfo));
 			};
 
+			/**
+			 * 订单其他操作
+			 * @param  {String} actionType 操作类型：DYYJD 打印预结账单；CKZDZT	查看订单状态
+			 * @return {Object}            Promise
+			 */
+			this.orderOtherOperation = function (actionType) {
+				var saasOrderKey = self.getSaasOrderKey();
+				// 如果是查看订单状态，
+				// 返回数据：
+				// orderStatus--20：待结账；30：已作废；40：已结账
+				// isCanCheckout--0:不能；1：能
+				// cannotCheckoutRemark--账单不能结账说明
+				return CommonCallServer.orderOtherOperation({
+					saasOrderKey : saasOrderKey,
+					actionType : actionType
+				});
+			};
 		}]
 	);
 

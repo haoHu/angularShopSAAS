@@ -628,6 +628,15 @@
 					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 				</div>
 			</div>
+			<div class="col-xs-12 hll-paytype" ng-if="paySubjectGrp.name == 'hualalaPay'">
+				<div class="btn-group btn-group-justified">
+					<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="''" ng-click="genQRCode()">哗啦啦手工输入</label>
+					<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual">哗啦啦扫码支付</label>
+					<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'WECHAT'" ng-click="genQRCode('WECHAT')" ng-disabled="onlyHLLPayManual">微信扫码支付</label>
+					<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'ALIPAY'" ng-click="genQRCode('ALIPAY')" ng-disabled="onlyHLLPayManual">支付宝扫码支付</label>
+					
+				</div>
+			</div>
 			<div class="col-xs-8" ng-if="paySubjectGrp.name != 'discountPay'" ng-class="{invisible : !!payType}">
 				<div class="form-horizontal">
 					<div class="form-group" ng-repeat="el in formCfg">
@@ -645,15 +654,7 @@
 					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 			</div>
-			<div class="col-xs-12 hll-paytype" ng-if="paySubjectGrp.name == 'hualalaPay'">
-				<div class="btn-group btn-group-justified">
-					<label class="btn btn-warning btn-lg col-xs-3" ng-model="payType" btn-radio="''" ng-click="genQRCode()">哗啦啦手工输入</label>
-					<label class="btn btn-warning btn-lg col-xs-3" ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')">哗啦啦扫码支付</label>
-					<label class="btn btn-warning btn-lg col-xs-3" ng-model="payType" btn-radio="'WECHAT'" ng-click="genQRCode('WECHAT')">微信扫码支付</label>
-					<label class="btn btn-warning btn-lg col-xs-3" ng-model="payType" btn-radio="'ALIPAY'" ng-click="genQRCode('ALIPAY')">支付宝扫码支付</label>
-					
-				</div>
-			</div>
+			
 			<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}" ng-if="paySubjectGrp.name == 'hualalaPay'">
 				<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
 				<p>{{curQRCodeLabel}}</p>

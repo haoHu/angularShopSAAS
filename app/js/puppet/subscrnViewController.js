@@ -25,12 +25,7 @@ define(['app'], function (app) {
 			// 初始化支付二维码
 			// data = {saasOrderKey, QRCodeType: HLL|ALIPAY|WECHAT|BAIDU}
 			var initPayQRCode = function (data) {
-				if (_.isEmpty(data)) {
-					$scope.curQRCode = null;
-					$scope.curQRCodeLabel = null;
-					$scope.curQRCodeOpt = null;
-					return ;
-				}
+				
 				var saasOrderKey = _.result(data, 'saasOrderKey', null),
 					QRCodeType = _.result(data, 'QRCodeType', null),
 					QRCodeSize = 280;
@@ -58,6 +53,8 @@ define(['app'], function (app) {
 				};
 				if (!saasOrderKey || !QRCodeType) {
 					$scope.curQRCode = null;
+					$scope.curQRCodeLabel = null;
+					$scope.curQRCodeOpt = null;
 					$scope.$apply();
 					return;
 				}

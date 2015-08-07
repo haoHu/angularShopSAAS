@@ -1484,6 +1484,21 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				
 			};
 
+			// 绑定扫码支付成功时触发的事件
+			$scope.$on('scanPay.done', function () {
+				$scope.$broadcast('pay.upVIPCard', null);
+				OrderService.initOrderFoodDB({});
+				_scope.resetOrderInfo();
+				// 3. 打印结账清单
+				Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
+				// 向子窗口推送新加菜品的消息
+				Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
+				if (operationMode == 0) {
+					$scope.jumpToTablePage();
+				}
+				$scope.close();
+			});
+
 			// 绑定更新支付详情事件
 			$scope.$on('pay.detailUpdate', function () {
 				$scope.orderPayDetail = OrderPayService.mapOrderPayDetail();
@@ -1541,6 +1556,67 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					var curPayGrpName = scope.paySubjectGrp.name;
 					scope.discountRuleLst = OrderPayService.getDiscountRules();
 					scope.curDiscountRule = OrderPayService.getCurDiscountRule();
+					// 普通单一支付科目组的提交
+					var singlePaySubjectSubmit = function (curName) {
+						var realPriceEl = el.find('input[name=realPrice]');
+						var prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName(curName));
+						var realPay = parseFloat(realPriceEl.val());
+						var delta = HCMath.sub(prePayAmount, realPay);
+						var payRemark = '';
+						if (delta < 0 && curName == 'cashPay') {
+							payRemark = '实收:' + realPay + ';找零:' + delta;
+							realPay = prePayAmount;
+						}
+						OrderPayService.updatePaySubjectItem(curName, {
+							debitAmount : realPay,
+							payRemark : payRemark
+						});
+					};
+					// 多支付科目组的提交
+					var multiPaySubjectSubmit = function (curName) {
+						// 找出scope.optCfg.selectedSubjects队列末尾的支付科目，为当前操作支付科目
+						var realPriceEl = el.find('input[name=realPrice]');
+						var realPay = parseFloat(realPriceEl.val());
+						var selectedSubCodes = scope.optCfg.selectedSubjects;
+						var curSubCode = selectedSubCodes[selectedSubCodes.length - 1];
+						OrderPayService.updatePaySubjectItem(curName, {
+							debitAmount : realPay,
+							subjectCode : curSubCode
+						});
+						if (_.isEmpty(curSubCode)) {
+							AppAlert.add('danger', '请选择科目');
+						}
+					};
+					// 扫描二维码账单支付提交
+					var scanQRCodePaySubmit = function () {
+						var callServer = OrderService.orderOtherOperation('CKZDZT');
+						callServer.success(function (data) {
+							var code = _.result(data, 'code'),
+								res = _.result(data, 'data'),
+								orderStatus = _.result(res, 'orderStatus'),
+								isCanCheckout = _.result(res, 'isCanCheckout', 0),
+								cannotCheckoutRemark = _.result(res, 'cannotCheckoutRemark', '');
+							if (code == '000') {
+								// if (!_.isEmpty(cannotCheckoutRemark)) {
+								// 	AppAlert.add('danger', cannotCheckoutRemark);
+								// }
+								// 扫码付款付款完成
+								if (orderStatus == 40) {
+									// 推送消息，清空副屏幕的二维码
+									Hualala.SecondScreen.publishPostMsg('PayQRCode', '');
+									// 关闭支付窗口，重置订单页面
+									scope.$emit('scanPay.done');
+								} else {
+									AppAlert.add('danger', "该账单未支付完成");
+								}
+							} else {
+								AppAlert.add('danger', _.result(data, 'msg', ''));
+							}
+						}).error(function (data) {
+							AppAlert.add('danger', "服务器通信失败");
+						});
+					};
+
 					// 格式化支付操作表单元素数据
 					var mapFormCfg = function () {
 						var formCfg = scope.formCfg;
@@ -1561,7 +1637,27 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								});
 								if (curPayGrpName == 'hualalaPay') {
 									scope.payType = '';
+									var curPayDetail = OrderPayService.mapOrderPayDetail(),
+										payGrp = _.result(curPayDetail, 'payGrps', []),
+										onlyHLLPayManual = false,
+										testArr = 'cashPay,hualalaPay,voucherPay,vipCardPay,bankCardPay,groupBuyPay,hangingPay'.split(',');
+									IX.Debug.info('当前支付科目明细:');
+									IX.Debug.info(payGrp);
+									var hasPayGrps = _.reject(payGrp, function (el) {
+										return _.result(el, 'amount') == 0;
+									});
+									IX.Debug.info('当前已使用支付科目:');
+									IX.Debug.info(hasPayGrps);
+									_.each(hasPayGrps, function (el) {
+										var grpName = _.result(el, 'name');
+										if (_.find(testArr, function (el) {return grpName == el;})) {
+											onlyHLLPayManual = true;
+											return;
+										}
+									});
+									scope.onlyHLLPayManual = onlyHLLPayManual;
 								}
+								break;
 							case "hangingPay":
 							case "groupBuyPay":
 							case "bankCardPay":
@@ -1677,6 +1773,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						curDiscountRule = discountRule;
 					};
 
+
 					// 结账提交
 					scope.$on('pay.submit', function (d, targetPaySubjectGrp) {
 						var curName = scope.paySubjectGrp.name,
@@ -1687,36 +1784,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							case "remissionPay":
 							case "voucherPay":
 							case "hualalaPay":
-								var realPriceEl = el.find('input[name=realPrice]');
-								var prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName(curName));
-								var realPay = parseFloat(realPriceEl.val());
-								var delta = HCMath.sub(prePayAmount, realPay);
-								var payRemark = '';
-								if (delta < 0 && curName == 'cashPay') {
-									payRemark = '实收:' + realPay + ';找零:' + delta;
-									realPay = prePayAmount;
+								if (curName == 'hualalaPay' &&  !!scope.payType) {
+									scanQRCodePaySubmit();
+									return;
+								} else {
+									singlePaySubjectSubmit(curName);
 								}
-								OrderPayService.updatePaySubjectItem(curName, {
-									debitAmount : realPay,
-									payRemark : payRemark
-								});
 								break;
 							// 挂账，团购支付，银行卡支付
 							case "hangingPay":
 							case "groupBuyPay":
 							case "bankCardPay":
-								// 找出scope.optCfg.selectedSubjects队列末尾的支付科目，为当前操作支付科目
-								var realPriceEl = el.find('input[name=realPrice]');
-								var realPay = parseFloat(realPriceEl.val());
-								var selectedSubCodes = scope.optCfg.selectedSubjects;
-								var curSubCode = selectedSubCodes[selectedSubCodes.length - 1];
-								OrderPayService.updatePaySubjectItem(curName, {
-									debitAmount : realPay,
-									subjectCode : curSubCode
-								});
-								if (_.isEmpty(curSubCode)) {
-									AppAlert.add('danger', '请选择科目');
-								}
+								multiPaySubjectSubmit(curName);
 
 								break;
 							// 折扣方案选择
@@ -1793,7 +1872,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						callServer = CommonCallServer.getOrderCheckoutQRCode({
 							saasOrderKey : saasOrderKey,
 							QRCodeType : QRCodeType
-						}).success(function (data) {
+						});
+						callServer.success(function (data) {
 							var code = _.result(data, 'code');
 							if (code == "000") {
 								genQRCode(_.result(data, 'data'), QRCodeType);
