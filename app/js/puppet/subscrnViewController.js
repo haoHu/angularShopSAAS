@@ -20,6 +20,12 @@ define(['app'], function (app) {
 				OrderService.initOrderFoodDB(data);
 				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
 				$scope.$apply();
+				setTimeout(function () {
+					var imgs = $('#ad_box').find('img');
+					imgs.each(function () {
+						calcImgSize(this);
+					});
+				}, 200);
 			};
 
 			// 初始化支付二维码
@@ -73,6 +79,21 @@ define(['app'], function (app) {
 				});
 			};
 
+			// 计算广告图片宽高
+			var calcImgSize = function (img) {
+				var $adBox = $('#ad_box'),
+					w = img.naturalWidth, h = img.naturalHeight,
+					bw = $adBox.width(), bh = $adBox.height(),
+					whp = parseFloat(w / h),
+					id = img.id;
+				if (bw > bh) {
+					bw = bh * whp;
+				} else {
+					bh = bw / whp;
+				}
+				$('#' + id, $adBox).width(bw).height(bh);
+			};
+
 			// 初始化广告
 			var initAD = function (data) {
 				var adLst = _.result(data, 'screen2AdImageLst', []),
@@ -88,12 +109,18 @@ define(['app'], function (app) {
 					img.src = imgSrc;
 					img.id = id;
 					$(img).on('load', function (e) {
-						var w = this.naturalWidth, h = this.naturalHeight,
-							bw = $adBox.width(), bh = $adBox.height(),
-							whp = parseFloat(w / h),
-							id = this.id;
-						bw = bh * whp;
-						$('#' + id, $adBox).width(bw).height(bh);
+						// var w = this.naturalWidth, h = this.naturalHeight,
+						// 	bw = $adBox.width(), bh = $adBox.height(),
+						// 	whp = parseFloat(w / h),
+						// 	id = this.id;
+						// if (bw > bh) {
+						// 	bw = bh * whp;
+						// } else {
+						// 	bh = bw / whp;
+						// }
+						
+						// $('#' + id, $adBox).width(bw).height(bh);
+						calcImgSize(this);
 					});
 					ad = _.extend(ad, {
 						id : id,

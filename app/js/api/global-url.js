@@ -65,7 +65,7 @@ define(['IX'], function () {
 		["rejectCloudOrder", "/saas/order/reject.ajax", "", "POST"],
 		// 验单（下单）
 		["submitCloudOrder", "/saas/order/submit.ajax", "", "POST"],
-		// 
+		// 订单其他操作
 		["orderOtherOperation", "/saas/order/orderOtherOperation.ajax", "", "POST"],
 		// 退款
 		["refundCloudOrder", "/saas/order/refund.ajax", "", "POST"],
