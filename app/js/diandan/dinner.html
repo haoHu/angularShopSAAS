@@ -637,7 +637,7 @@
 					
 				</div>
 			</div>
-			<div class="col-xs-8" ng-if="paySubjectGrp.name != 'discountPay'" ng-class="{invisible : !!payType}">
+			<div class="col-xs-8" ng-if="paySubjectGrp.name != 'discountPay'" ng-class="{hidden : !!payType}">
 				<div class="form-horizontal">
 					<div class="form-group" ng-repeat="el in formCfg">
 						<label class="col-xs-4 control-label">{{el.label}}</label>

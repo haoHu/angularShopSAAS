@@ -1844,6 +1844,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								'WECHAT' : '请使用微信扫描二维码支付',
 								'BAIDU' : '请使用百度扫描二维码支付'
 							};
+						var qrcodeCallServer, precheckoutCallServer;
 						scope.payType = type;
 						scope.curQRCode = null;
 						scope.curQRCodeOpt = null;
@@ -1866,22 +1867,32 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								label : scope.curQRCode
 							};
 						};
-						// 推送二维码消息
-						Hualala.SecondScreen.publishPostMsg('PayQRCode', {saasOrderKey : saasOrderKey, QRCodeType : QRCodeType});
-						// 生成二维码
-						callServer = CommonCallServer.getOrderCheckoutQRCode({
-							saasOrderKey : saasOrderKey,
-							QRCodeType : QRCodeType
-						});
-						callServer.success(function (data) {
-							var code = _.result(data, 'code');
-							if (code == "000") {
-								genQRCode(_.result(data, 'data'), QRCodeType);
+
+						precheckoutCallServer = OrderService.submitOrder('YJZ', OrderPayService.getOrderPayParams());
+						precheckoutCallServer.success(function (data) {
+							var c = _.result(data, 'code');
+							if (c == '000') {
+								// 生成二维码并推送给副屏幕
+								// 推送二维码消息
+								Hualala.SecondScreen.publishPostMsg('PayQRCode', {saasOrderKey : saasOrderKey, QRCodeType : QRCodeType});
+								// 生成二维码
+								qrcodeCallServer = CommonCallServer.getOrderCheckoutQRCode({
+									saasOrderKey : saasOrderKey,
+									QRCodeType : QRCodeType
+								});
+								qrcodeCallServer.success(function (data) {
+									var code = _.result(data, 'code');
+									if (code == "000") {
+										genQRCode(_.result(data, 'data'), QRCodeType);
+									} else {
+										AppAlert.add('danger', _.result(data, 'msg', ''));
+									}
+								}).error(function (data) {
+									AppAlert.add('danger', "通信失败");
+								});
 							} else {
 								AppAlert.add('danger', _.result(data, 'msg', ''));
 							}
-						}).error(function (data) {
-							AppAlert.add('danger', "通信失败");
 						});
 					};
 					scope.hasQRCode = function () {

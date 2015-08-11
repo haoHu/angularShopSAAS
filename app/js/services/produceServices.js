@@ -7,6 +7,9 @@ define(['app', 'uuid'], function (app, uuid) {
 			var self = this;
 			var _OrderLst = [],
 				OrderHT = new IX.IListManager();
+			self.JZXOrderCount = 0;
+			self.PDZOrderCount = 0;
+			self.YGQOrderCount = 0;
 			// 清空数据源
 			this.clearOrderLst = function () {
 				_OrderLst = [];
@@ -26,6 +29,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				c.success(function (data) {
 					var data = _.result(data, 'data', {}),
 						records = _.result(data, 'records', []);
+					self.JZXOrderCount = _.result(data, 'JZXOrderCount', 0);
+					self.PDZOrderCount = _.result(data, 'PDZOrderCount', 0);
+					self.YGQOrderCount = _.result(data, 'YGQOrderCount', 0);
 					self.clearOrderLst();
 					self.initOrderLst(records);
 				});
@@ -92,6 +98,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					name : statusName,
 					str : statusStr
 				};
+			};
+			// 获取进行中、排队中、挂起中订单数
+			this.getBadgeCountByType = function (type) {
+				return self[type] || 0;
 			};
 		}
 	]);

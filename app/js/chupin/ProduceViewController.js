@@ -8,6 +8,9 @@ define(['app'], function (app) {
 				isFoodMakeStatusActive = _.result(shopInfo, 'isFoodMakeStatusActive'),
 				foodMakeWarningTimeout = parseInt(_.result(shopInfo, 'foodMakeWarningTimeout', 300)),
 				foodMakeDangerTimeout = parseInt(_.result(shopInfo, 'foodMakeDangerTimeout', 600));
+			$scope.JZXOrderCount = 0;
+			$scope.PDZOrderCount = 0;
+			$scope.YGQOrderCount = 0;
 			$scope.curFocusOrder = null;
 			$scope.curFocusFoods = [];
 			$scope.orderPageNo = 1;
@@ -99,6 +102,9 @@ define(['app'], function (app) {
 						$scope.OrderLst = ProduceOrderService.getOrderLst();
 						pollingOrderDealInterval();
 					}
+					$scope.JZXOrderCount = ProduceOrderService.getBadgeCountByType('JZXOrderCount');
+					$scope.PDZOrderCount = ProduceOrderService.getBadgeCountByType('PDZOrderCount');
+					$scope.YGQOrderCount = ProduceOrderService.getBadgeCountByType('YGQOrderCount');
 				}).error(function (data) {
 					AppAlert.add('danger', '请求失败');
 				});
@@ -247,6 +253,10 @@ define(['app'], function (app) {
 					}
 				});
 				$scope.orderPageNo = nextNo;
+			};
+			// 隐藏徽章
+			$scope.hideBadge = function (type) {
+				return !($scope[type] > 0);
 			};
 			$scope.queryFoodMakeStatusLst();
 			pollingOrderDealInterval();
