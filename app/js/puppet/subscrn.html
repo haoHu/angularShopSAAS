@@ -35,7 +35,7 @@
 			<!-- <img ng-src="{{adSrc}}" width="{{adWidth}}" height="{{adHeight}}" ng-load> -->
 			<carousel interval="adInterval" no-wrap="adNoWrapSlides" ng-if="ADLst.length > 0">
 				<slide ng-repeat="ad in ADLst" active="ad.active">
-					<img ng-src="{{ad.imgSrc}}" style="margin:auto;" width="" height="" id="{{ad.id}}"/>
+					<img ng-src="{{genImgSrc(ad.imgSrc)}}" style="margin:auto;" width="" height="" id="{{ad.id}}"/>
 					<div class="carousel-caption invisible">
 						<h4>{{ad.title}}</h4>
 						<p>{{ad.text}}</p>

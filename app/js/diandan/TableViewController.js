@@ -159,7 +159,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			/*创建开台配置窗口*/
 			var initOpenTableModal = function () {
 				$scope.fmels = {
-					person : '',
+					person : '2',
 					saasOrderRemark : '',
 					tableName : $scope.curTableName
 				};

@@ -106,7 +106,7 @@ define(['app'], function (app) {
 						id = 'ad_' + i;
 						img = new Image();
 					// 预加载图片
-					img.src = imgSrc;
+					img.src = Hualala.Global.AJAX_DOMAIN + '/' + imgSrc;
 					img.id = id;
 					$(img).on('load', function (e) {
 						// var w = this.naturalWidth, h = this.naturalHeight,
@@ -160,6 +160,11 @@ define(['app'], function (app) {
 					amount = math.add(amount, $scope.calcFoodAmount(item));
 				});
 				return math.standardPrice(amount);
+			};
+
+			$scope.genImgSrc = function (imgSrc) {
+				// return Hualala.Global.AJAX_DOMAIN + '/' + imgSrc;
+				return imgSrc;
 			};
 
 			$(window).on('message', function (evt) {

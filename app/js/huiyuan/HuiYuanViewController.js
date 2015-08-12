@@ -212,6 +212,46 @@ define(['app'], function(app)
                 str += '打印店铺:' + $scope.user.pointrate;
                 return str;
             };
+
+            // 输入框聚焦事件
+            // 告诉软键盘当前操作控件
+            $scope.inputFocus = function ($event) {
+                console.info($event);
+                console.info(arguments);
+                var curEl = $($event.target);
+                var wrapEl = curEl.parents('.tab-wrapper'),
+                    formGrpEl = curEl.parents('.form-group'),
+                    wrapRect = wrapEl[0].getBoundingClientRect(),
+                    inputGrpRect = formGrpEl[0].getBoundingClientRect();
+                var keyboard = $('.site-numkeyboard');
+                if (!curEl.attr('readonly')) {
+                    $scope.focusInputEl = curEl;
+                } else {
+                    $scope.focusInputEl = null;
+                }
+                keyboard.css({
+                    display : 'block',
+                    position : 'fixed',
+                    top : inputGrpRect.top,
+                    left : wrapRect.right,
+                    'z-index' : 99
+                });
+                return;
+            };
+            $('body').on('click', function (e) {
+                var tar = $(e.target);
+                var keyboard = $('.site-numkeyboard');
+                if (!tar.is(':text, .site-numkeyboard .btn')) {
+                    keyboard.css({
+                        display : 'none',
+                        position : 'relative',
+                        top : 0,
+                        left : 0
+                    });
+                }
+                return false;
+            }).trigger('click');
+
         }
     ]);
 
@@ -273,7 +313,7 @@ define(['app'], function(app)
                                 '<label class="pull-left control-label">实体卡卡号</label>',
                                 '<div class="pull-left" ng-class="{\'has-success\' : join_form.realcardnumber.$dirty && join_form.realcardnumber.$valid, \'has-error\' : join_form.realcardnumber.$invalid}">',
                                     '<div class="input-group">',
-                                        '<input name="realcardnumber" style="width: 250px;" type="text" class="form-control input-lg realcardnumber" ng-model="realcardnumber" bv-isnum>',
+                                        '<input name="realcardnumber" style="width: 250px;" type="text" class="form-control input-lg realcardnumber" ng-model="realcardnumber" bv-isnum  ng-focus="inputFocus($event)">',
                                         '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-viplevel">{{level.cardLevelName || "&nbsp;"}}</button></span>',
                                     '</div>',
                                     '<small class="help-block" ng-show="join_form.realcardnumber.$dirty && join_form.realcardnumber.$error.bvIsnum">必须为数字</small>',
@@ -284,7 +324,7 @@ define(['app'], function(app)
                             '<div class="form-group has-feedback">',
                                 '<label class="pull-left control-label">实体卡密码</label>',
                                 '<div class="pull-left" ng-class="{\'has-success\' : join_form.cardpassword.$dirty && join_form.cardpassword.$valid, \'has-error\' : join_form.cardpassword.$invalid}">',
-                                    '<input name="cardpassword" style="width: 320px;" type="text" class="form-control input-lg cardpassword" value="888888" ng-model="cardpassword"  bv-strlength="false" min="6" max="32">',
+                                    '<input name="cardpassword" style="width: 320px;" type="text" class="form-control input-lg cardpassword" value="888888" ng-model="cardpassword"  bv-strlength="false" min="6" max="32"  ng-focus="inputFocus($event)">',
                                     // '<small class="help-block" ng-show="join_form.cardpassword.$dirty && join_form.cardpassword.$error.bvNotempty">不能为空</small>',
                                     '<small class="help-block" ng-show="join_form.cardpassword.$dirty && join_form.cardpassword.$error.bvStrlength">密码必须在6-32位之间</small>',
                                 '</div>',
@@ -294,7 +334,7 @@ define(['app'], function(app)
                             '<div class="form-group has-feedback">',
                                 '<label class="pull-left control-label">手机号码</label>',
                                 '<div class="pull-left"  ng-class="{\'has-success\' : join_form.phonenumber.$dirty && join_form.phonenumber.$valid, \'has-error\' : join_form.phonenumber.$invalid}">',
-                                    '<input name="phonenumber" style="width:240px;" type="text" class="form-control input-lg phonenumber" ng-model="phonenumber" bv-notempty bv-mobile>',
+                                    '<input name="phonenumber" style="width:240px;" type="text" class="form-control input-lg phonenumber" ng-model="phonenumber" bv-notempty bv-mobile  ng-focus="inputFocus($event)">',
                                     '<input type="checkbox" ng-model="checkmobile" value="1">验证手机号',
                                     '<small class="help-block" ng-show="join_form.phonenumber.$dirty && join_form.phonenumber.$error.bvNotempty">不能为空</small>',
                                     '<small class="help-block" ng-show="join_form.phonenumber.$dirty && join_form.phonenumber.$error.bvMobile">请输入正确手机号</small>',
@@ -307,7 +347,7 @@ define(['app'], function(app)
                                 '<label class="pull-left control-label">验证码</label>',
                                 '<div class="pull-left" >',
                                     '<div class="input-group">',
-                                        '<input style="width: 198px;" type="text" ng-model="checkcode" class="form-control input-lg checkcode">',
+                                        '<input style="width: 198px;" type="text" ng-model="checkcode" class="form-control input-lg checkcode"  ng-focus="inputFocus($event)">',
                                         '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-sendcheckcode">发送验证码</button></span>',
                                     '</div>',
                                 '</div>',
@@ -317,7 +357,7 @@ define(['app'], function(app)
                             '<div class="form-group">',
                                 '<label class="pull-left control-label">姓名</label>',
                                 '<div class="pull-left" ng-class="{\'has-success\' : join_form.username.$dirty && join_form.username.$valid, \'has-error\' : join_form.username.$invalid}">',
-                                    '<input name="username" style="width:240px;" type="text" class="form-control input-lg username" ng-model="username" bv-notempty bv-strlength min="2" max="50">',
+                                    '<input name="username" style="width:240px;" type="text" class="form-control input-lg username" ng-model="username" bv-notempty bv-strlength min="2" max="50"  ng-focus="inputFocus($event)">',
                                     '<input type="radio" name="sex" checked value="0" ng-model="sex">女士',
                                     '<input type="radio" name="sex" value="1" ng-model="sex">先生',
                                     '<small class="help-block" ng-show="join_form.username.$dirty && join_form.username.$error.bvNotempty">请输入姓名</small>',
@@ -348,15 +388,15 @@ define(['app'], function(app)
                             '<div style="display:block;margin-top:10px;">',
                                 '<div class="form-group">',
                                     '<label>原系统卡号</label>',
-                                    '<input style="width:187px;" type="text" class="form-control input-lg oldcardnumber" ng-model="oldcardnumber">',
+                                    '<input style="width:187px;" type="text" class="form-control input-lg oldcardnumber" ng-model="oldcardnumber"  ng-focus="inputFocus($event)">',
                                 '</div>',
                             '</div>',
                             '<div style="display:block;margin-top:10px;">',
                                 '<div class="form-group">',
                                     '<label>储值余额</label>',
-                                    '<input style="width: 58px;" type="number" class="form-control input-lg oldrechargeamount" ng-model="oldrechargeamount">',
+                                    '<input style="width: 58px;" type="number" class="form-control input-lg oldrechargeamount" ng-model="oldrechargeamount"  ng-focus="inputFocus($event)">',
                                     '<label style="width:60px;margin-left:1px;">积分余额</label>',
-                                    '<input style="width: 58px;" type="number" class="form-control input-lg oldpointamount" ng-model="oldpointamount">',
+                                    '<input style="width: 58px;" type="number" class="form-control input-lg oldpointamount" ng-model="oldpointamount"  ng-focus="inputFocus($event)">',
                                 '</div>',
                             '</div>',
                         '</div>',
@@ -552,7 +592,7 @@ define(['app'], function(app)
                                 '<label class="control-label pull-left">卡号/手机号</label>',
                                 '<div class="pull-left">',
                                     '<div class="input-group">',
-                                        '<input style="width: 250px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber">',
+                                        '<input style="width: 250px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber"  ng-focus="inputFocus($event)">',
                                         '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
                                     '</div>',
                                 '</div>',
@@ -573,7 +613,7 @@ define(['app'], function(app)
                                         '<div class="form-group">',
                                             '<label class="control-label pull-left">储值金额</label>',
                                             '<div class="pull-left" ng-class="{\'has-success\' : recharge_form.rechargeamount.$dirty && recharge_form.rechargeamount.$valid, \'has-error\' : recharge_form.rechargeamount.$invalid}">',
-                                                '<input name="rechargeamount" style="width: 240px;" type="text" class="form-control input-lg rechargeamount" ng-model="rechargeamount" bv-isnum bv-greaterthan min="0">',
+                                                '<input name="rechargeamount" style="width: 240px;" type="text" class="form-control input-lg rechargeamount" ng-model="rechargeamount" bv-isnum bv-greaterthan min="0"  ng-focus="inputFocus($event)">',
                                                 '<small class="help-block" ng-show="recharge_form.rechargeamount.$dirty && recharge_form.rechargeamount.$error.bvIsnum">请输入数字</small>',
                                                 '<small class="help-block" ng-show="recharge_form.rechargeamount.$dirty && recharge_form.rechargeamount.$error.bvGreaterthan">必须大于0</small>',
                                             '</div>',
@@ -583,7 +623,7 @@ define(['app'], function(app)
                                         '<div class="form-group">',
                                             '<label class="control-label pull-left">储值返金额</label>',
                                             '<div class="pull-left" ng-class="{\'has-success\' : recharge_form.rechargereturnamount.$dirty && recharge_form.rechargereturnamount.$valid, \'has-error\' : recharge_form.rechargereturnamount.$invalid}">',
-                                                '<input name="rechargereturnamount" style="width: 240px;" type="text" class="form-control input-lg rechargereturnamount" ng-model="rechargereturnamount" bv-isnum bv-greaterthan="true" min=0>',
+                                                '<input name="rechargereturnamount" style="width: 240px;" type="text" class="form-control input-lg rechargereturnamount" ng-model="rechargereturnamount" bv-isnum bv-greaterthan="true" min=0  ng-focus="inputFocus($event)">',
                                                 '<small class="help-block" ng-show="recharge_form.rechargereturnamount.$dirty && recharge_form.rechargereturnamount.$error.bvIsnum">请输入数字</small>',
                                                 '<small class="help-block" ng-show="recharge_form.rechargereturnamount.$dirty && recharge_form.rechargereturnamount.$error.bvGreaterthan">必须大于0</small>',
                                             '</div>',
@@ -593,7 +633,7 @@ define(['app'], function(app)
                                         '<div class="form-group">',
                                             '<label class="control-label pull-left">储值返积分</label>',
                                             '<div class="pull-left" ng-class="{\'has-success\' : recharge_form.rechargereturnpoint.$dirty && recharge_form.rechargereturnpoint.$valid, \'has-error\' : recharge_form.rechargereturnpoint.$invalid}">',
-                                                '<input name="rechargereturnpoint" style="width: 240px;" type="text" class="form-control input-lg rechargereturnpoint" ng-model="rechargereturnpoint" bv-isnum bv-greaterthan="true" min="0">',
+                                                '<input name="rechargereturnpoint" style="width: 240px;" type="text" class="form-control input-lg rechargereturnpoint" ng-model="rechargereturnpoint" bv-isnum bv-greaterthan="true" min="0"  ng-focus="inputFocus($event)">',
                                                 '<small class="help-block" ng-show="recharge_form.rechargereturnpoint.$dirty && recharge_form.rechargereturnpoint.$error.bvIsnum">请输入数字</small>',
                                                 '<small class="help-block" ng-show="recharge_form.rechargereturnpoint.$dirty && recharge_form.rechargereturnpoint.$error.bvGreaterthan">必须大于0</small>',
                                             '</div>',
@@ -616,7 +656,7 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>备注</label>',
-                                '<input style="width: 260px;" type="text" class="form-control input-lg remark" ng-model="remark">',
+                                '<input style="width: 260px;" type="text" class="form-control input-lg remark" ng-model="remark"  ng-focus="inputFocus($event)">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -722,7 +762,7 @@ define(['app'], function(app)
                             '<div class="form-group has-feedback">',
                                 '<label class="">卡号/手机号</label>',
                                 '<div class="input-group">',
-                                    '<input style="width:250px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber">',
+                                    '<input style="width:250px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber"  ng-focus="inputFocus($event)">',
                                     '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
                                 '</div>',
                             '</div>',
@@ -731,16 +771,16 @@ define(['app'], function(app)
                             '<div class="form-group col-xs-6">',
                                 '<label class="pull-left control-label">本次消费金额</label>',
                                 '<div class="pull-left" ng-class="{\'has-success\' : consume_form.consumeamount.$dirty && consume_form.consumeamount.$valid, \'has-error\' : consume_form.consumeamount.$invalid}">',
-                                    '<input name="consumeamount" style="width: 120px;" type="text" class="form-control input-lg group" ng-model="group.consumeamount" ng-change="calculate(\'consumeamount\')" bv-greaterthan="true" min="0" bv-isnum>',
+                                    '<input name="consumeamount" style="width: 120px;" type="text" class="form-control input-lg group" ng-model="group.consumeamount" ng-change="calculate(\'consumeamount\')" bv-greaterthan="true" min="0" bv-isnum  ng-focus="inputFocus($event)">',
                                     '<small class="help-block" ng-show="consume_form.consumeamount.$dirty && consume_form.consumeamount.$error.bvIsnum">请输入正确金额</small>',
                                     '<small class="help-block" ng-show="consume_form.consumeamount.$dirty && consume_form.consumeamount.$error.bvGreaterthan">必须大于或等于0</small>',
                                     
                                 '</div>',
                             '</div>',
-                            '<div class="form-group col-xs-6">',
+                            '<div class="form-group col-xs-4">',
                                 '<label class="pull-left control-label" style="width:30px;margin-left:1px;">单号</label>',
                                 '<div class="pull-left" ng-class="">',
-                                    '<input style="width: 86px;" type="text" class="form-control input-lg ordernumber" ng-model="ordernumber">',
+                                    '<input style="width: 86px;" type="text" class="form-control input-lg ordernumber" ng-model="ordernumber"  ng-focus="inputFocus($event)">',
                                 '</div>',
                             '</div>',
                         '</div>',
@@ -748,7 +788,7 @@ define(['app'], function(app)
                             '<div class="form-group">',
                                 '<label class="pull-left control-label">代金券抵扣金额</label>',
                                 '<div class="pull-left">',
-                                    '<input style="width: 300px;" type="number" disabled class="form-control input-lg group usevoucheramount" ng-model="group.usevoucheramount" ng-change="calculate(\'usevoucheramount\')">',
+                                    '<input style="width: 300px;" type="text" disabled class="form-control input-lg group usevoucheramount" ng-model="group.usevoucheramount" ng-change="calculate(\'usevoucheramount\')"  ng-focus="inputFocus($event)">',
                                 '</div>',
                             '</div>',
                         '</div>',
@@ -756,7 +796,7 @@ define(['app'], function(app)
                             '<div class="form-group">',
                                 '<label class="pull-left control-label">积分抵扣金额</label>',
                                 '<div class="pull-left" ng-class="{\'has-success\' : consume_form.pointamount.$dirty && consume_form.pointamount.$valid, \'has-error\' : consume_form.pointamount.$invalid}">',
-                                    '<input name="pointamount" style="width: 160px;" type="text" class="form-control input-lg group" ng-model="group.pointamount" ng-change="calculate(\'pointamount\')" bv-between="true" min="0" max="{{user.pointaccount || 0}}" bv-isnum>',
+                                    '<input name="pointamount" style="width: 160px;" type="text" class="form-control input-lg group" ng-model="group.pointamount" ng-change="calculate(\'pointamount\')" bv-between="true" min="0" max="{{user.pointaccount || 0}}" bv-isnum  ng-focus="inputFocus($event)">',
                                     '<span>积分可抵扣金额: {{user.pointaccount || 0 | mycurrency: "￥"}}</span>',
                                     '<small class="help-block" ng-show="consume_form.pointamount.$dirty && consume_form.pointamount.$error.bvBetween">必须在0~{{user.pointaccount || 0}}</small>',
                                     '<small class="help-block" ng-show="consume_form.pointamount.$dirty && consume_form.pointamount.$error.bvIsnum">请输入正确金额</small>',
@@ -767,7 +807,7 @@ define(['app'], function(app)
                             '<div class="form-group">',
                                 '<label class="pull-left control-label">储值余额付款</label>',
                                 '<div class="pull-left" ng-class="{\'has-success\' : consume_form.balanceamount.$dirty && consume_form.balanceamount.$valid, \'has-error\' : consume_form.balanceamount.$invalid}">',
-                                    '<input name="balanceamount" style="width: 160px;" type="text" class="form-control input-lg group" ng-model="group.balanceamount" ng-change="calculate(\'balanceamount\')" bv-between="true" min="0" max="{{user.cashaccount || 0}}" bv-isnum>',
+                                    '<input name="balanceamount" style="width: 160px;" type="text" class="form-control input-lg group" ng-model="group.balanceamount" ng-change="calculate(\'balanceamount\')" bv-between="true" min="0" max="{{user.cashaccount || 0}}" bv-isnum  ng-focus="inputFocus($event)">',
                                     '<span>可用余额: {{user.cashaccount || 0 | mycurrency: "￥"}}</span>',
                                     '<small class="help-block" ng-show="consume_form.balanceamount.$dirty && consume_form.balanceamount.$error.bvGreaterthan">必须在0~{{user.cashaccount || 0}}</small>',
                                     '<small class="help-block" ng-show="consume_form.balanceamount.$dirty && consume_form.balanceamount.$error.bvIsnum">请输入正确金额</small>',
@@ -779,7 +819,7 @@ define(['app'], function(app)
                             '<label class="pull-left control-label">消费可积分金额</label>',
                             '<div class="pull-left" >',
                                 '<div class="pull-left" ng-class="{\'has-success\' : consume_form.pointgetamount.$dirty && consume_form.pointgetamount.$valid, \'has-error\' : consume_form.pointgetamount.$invalid}">',
-                                    '<input name="pointgetamount" style="width: 160px;" type="text" class="form-control input-lg group" ng-model="group.pointgetamount" ng-change="calculate(\'pointgetamount\')" bv-greaterthan="true" min="0" bv-isnum>',
+                                    '<input name="pointgetamount" style="width: 160px;" type="text" class="form-control input-lg group" ng-model="group.pointgetamount" ng-change="calculate(\'pointgetamount\')" bv-greaterthan="true" min="0" bv-isnum  ng-focus="inputFocus($event)">',
                                     '<span><-现金支付那部分金额</span>',
                                     '<small class="help-block" ng-show="consume_form.pointgetamount.$dirty && consume_form.pointgetamount.$error.bvGreaterthan">必须大于或等于0</small>',
                                     '<small class="help-block" ng-show="consume_form.pointgetamount.$dirty && consume_form.pointgetamount.$error.bvIsnum">请输入正确金额</small>',
@@ -792,7 +832,7 @@ define(['app'], function(app)
                                 '<label class="pull-left control-label">动态交易密码</label>',
                                 '<div class="pull-left"  ng-class="{\'has-success\' : consume_form.transpwd.$dirty && consume_form.transpwd.$valid, \'has-error\' : consume_form.transpwd.$invalid}">',
                                     '<div class="input-group">',
-                                        '<input name="transpwd" style="width:123px;" type="text" ng-model="transpwd" class="form-control input-lg transpwd" bv-notempty>',
+                                        '<input name="transpwd" style="width:123px;" type="text" ng-model="transpwd" class="form-control input-lg transpwd" bv-notempty  ng-focus="inputFocus($event)">',
                                         '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-sendtranspwd">发送动态交易密码</button></span>',
                                     '</div>',
                                     '<small class="help-block" ng-show="consume_form.transpwd.$dirty && consume_form.transpwd.$error.bvNotempty">请输入动态交易密码</small>',
@@ -802,7 +842,7 @@ define(['app'], function(app)
                         '<div style="display:block;margin-top:10px;">',
                             '<div class="form-group">',
                                 '<label>备注</label>',
-                                '<input style="width: 300px;" type="text" class="form-control input-lg remark" ng-model="remark">',
+                                '<input style="width: 300px;" type="text" class="form-control input-lg remark" ng-model="remark"  ng-focus="inputFocus($event)">',
                             '</div>',
                         '</div>',
                         '<div style="display:block;margin-top:10px;">',
@@ -1104,7 +1144,7 @@ define(['app'], function(app)
                             '<div class="form-group">',
                                 '<label>卡号/手机号</label>',
                                 '<div class="input-group">',
-                                    '<input style="width: 250px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber">',
+                                    '<input style="width: 250px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber"  ng-focus="inputFocus($event)">',
                                     '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
                                 '</div>',
                             '</div>',
@@ -1168,7 +1208,7 @@ define(['app'], function(app)
                             '<div class="form-group col-xs-6 row">',
                                 '<span class="col-xs-4 control-label">手机号</span>',
                                 '<div class="col-xs-8"  ng-class="{\'has-success\' : form1.sendcodephone.$dirty && form1.sendcodephone.$valid, \'has-error\' : form1.sendcodephone.$invalid}">',
-                                    '<input name="sendcodephone" style="width: 187px;" type="text" ng-model="sendcodephone" class="form-control input-lg phonenumber" bv-mobile>',
+                                    '<input name="sendcodephone" style="width: 187px;" type="text" ng-model="sendcodephone" class="form-control input-lg phonenumber" bv-mobile  ng-focus="inputFocus($event)">',
                                     '<small class="help-block" ng-show="form1.sendcodephone.$dirty && form1.sendcodephone.$error.bvMobile">请输入正确手机号</small>',
                                 '</div>',
                             '</div>',
@@ -1176,7 +1216,7 @@ define(['app'], function(app)
                                 '<span class="col-xs-5 control-label">短信验证码</span>',
                                 '<div class="col-xs-7" ng-class="{\'has-success\' : form1.msgcode.$dirty && form1.msgcode.$valid, \'has-error\' : form1.msgcode.$invalid}">',
                                     '<div class="input-group">',
-                                        '<input name="msgcode" style="width: 100px;" type="text" ng-model="msgcode" class="form-control input-lg msgcode" bv-notempty>',
+                                        '<input name="msgcode" style="width: 100px;" type="text" ng-model="msgcode" class="form-control input-lg msgcode" bv-notempty  ng-focus="inputFocus($event)">',
                                         '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-getmsgcode">获取手机验证码</button></span>',
                                     '</div>',
                                     '<small class="help-block" ng-show="form1.msgcode.$dirty && form1.msgcode.$error.bvNotempty">请输入手机验证码</small>',
@@ -1187,7 +1227,7 @@ define(['app'], function(app)
                             '<div class="form-group col-xs-6 row">',
                                 '<span class="col-xs-4 control-label">卡号</span>',
                                 '<div class="col-xs-8"  ng-class="{\'has-success\' : form2.getrealcard.$dirty && form2.getrealcard.$valid, \'has-error\' : form2.getrealcard.$invalid}">',
-                                    '<input name="getrealcard" style="width: 187px;" type="text" ng-model="getrealcard" class="form-control input-lg getrealcard" bv-notempty>',
+                                    '<input name="getrealcard" style="width: 187px;" type="text" ng-model="getrealcard" class="form-control input-lg getrealcard" bv-notempty  ng-focus="inputFocus($event)">',
                                     '<small class="help-block" ng-show="form2.getrealcard.$dirty && form2.getrealcard.$error.bvNotempty">请输入卡号</small>',
                                 '</div>',
                             '</div>',
@@ -1196,7 +1236,7 @@ define(['app'], function(app)
                             '<div class="form-group col-xs-6 row">',
                                 '<span class="col-xs-4 control-label">新卡号</span>',
                                 '<div class="col-xs-8"  ng-class="{\'has-success\' : form3.getnewcard.$dirty && form3.getnewcard.$valid, \'has-error\' : form3.getnewcard.$invalid}">',
-                                    '<input name="getnewcard" style="width: 187px;" type="text" ng-model="getnewcard" class="form-control input-lg getnewcard" bv-notempty>',
+                                    '<input name="getnewcard" style="width: 187px;" type="text" ng-model="getnewcard" class="form-control input-lg getnewcard" bv-notempty  ng-focus="inputFocus($event)">',
                                     '<small class="help-block" ng-show="form3.getnewcard.$dirty && form3.getnewcard.$error.bvNotempty">请输入卡号</small>',
                                 '</div>',
                             '</div>',
