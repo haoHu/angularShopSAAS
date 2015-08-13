@@ -212,9 +212,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					$scope.openTempFoodCfg(unitKey);
 				} else {
 					item = OrderService.insertCommonFoodItem(food);
+					var t = (OrderService.getOrderFoodItemsHT()).getAll();
+					$scope.curOrderItems = t;
+					$timeout((function (itemKey) {
+						return function () {
+							$('.order-list .food-item[item-key=' + itemKey + ']').trigger('click');
+						};
+					})(item.itemKey), 0);
 				}
-				var t = (OrderService.getOrderFoodItemsHT()).getAll();
-				$scope.curOrderItems = t;
+				
 				
 			};
 
@@ -1085,8 +1091,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 新版套餐搭配操作控制器
 	app.controller('SetFoodSettingController', [
-		'$scope', '$modalInstance', '$filter', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'SetFoodService', 'AppAlert',
-		function ($scope, $modalInstance, $filter, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, SetFoodService, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '$timeout', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'SetFoodService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, $timeout, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, SetFoodService, AppAlert) {
 			IX.ns("Hualala");
 			var curUnitKey = _scope.curSetFoodUnitKey;
 			var setFoodData = IX.clone(FoodMenuService.getFoodByUnitKey(curUnitKey));
@@ -1161,9 +1167,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 提交并关闭窗口
 			$scope.save = function () {
 				// 向订单插入套餐配置信息
-				OrderService.insertSetFoodItem(SetFoodService.getSetFoodSetting());
+				var item = OrderService.insertSetFoodItem(SetFoodService.getSetFoodSetting());
 				_scope.refreshOrderList();
 				$modalInstance.close();
+				$timeout((function (itemKey) {
+					return function () {
+						$('.order-list .food-item[item-key=' + itemKey + ']').trigger('click');
+					};
+				})(item.itemKey), 0);
 			};
 
 		}
@@ -1171,8 +1182,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 临时菜配置窗口
 	app.controller('TempFoodSettingController', [
-		'$scope', '$modalInstance', '$filter', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'AppAlert',
-		function ($scope, $modalInstance, $filter, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, AppAlert) {
+		'$scope', '$modalInstance', '$filter', '$timeout', '_scope', "$sce", 'OrderNoteService', 'OrderService', 'FoodMenuService', 'AppAlert',
+		function ($scope, $modalInstance, $filter, $timeout, _scope, $sce, OrderNoteService, OrderService, FoodMenuService, AppAlert) {
 			IX.ns("Hualala");
 			var curTempFoodUnitKey = _scope.curTempFoodUnitKey;
 			var tempFoodData = IX.clone(FoodMenuService.getFoodByUnitKey(curTempFoodUnitKey));
@@ -1185,14 +1196,20 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};
 			// 提交并关闭窗口
 			$scope.save = function () {
+				var item ;
 				tempFoodData.__foodUnit.unit = $scope.unit;
 				tempFoodData.__foodUnit.price = $scope.foodPrice;
 				tempFoodData.__foodUnit.originalPrice = $scope.foodPrice;
 				tempFoodData.__foodUnit.vipPrice = $scope.foodPrice;
 				tempFoodData.foodName = $scope.foodName;
-				OrderService.insertCommonFoodItem(tempFoodData);
+				item = OrderService.insertCommonFoodItem(tempFoodData);
 				_scope.refreshOrderList();
 				$modalInstance.close();
+				$timeout((function (itemKey) {
+					return function () {
+						$('.order-list .food-item[item-key=' + itemKey + ']').trigger('click');
+					};
+				})(item.itemKey), 0);
 			};
 			// 输入框聚焦事件
 			// 告诉软键盘当前操作控件
@@ -1486,13 +1503,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 绑定扫码支付成功时触发的事件
 			$scope.$on('scanPay.done', function () {
+				var shopInfo = storage.get("SHOPINFO"),
+				operationMode = _.result(shopInfo, 'operationMode');
 				$scope.$broadcast('pay.upVIPCard', null);
 				OrderService.initOrderFoodDB({});
 				_scope.resetOrderInfo();
 				// 3. 打印结账清单
-				Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
+				// Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
 				// 向子窗口推送新加菜品的消息
 				Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
+				
 				if (operationMode == 0) {
 					$scope.jumpToTablePage();
 				}
@@ -1513,6 +1533,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				$scope.formIsValid = valid == true ? true : false;
 			});
 
+			// 更新扫码支付相关参数
+			$scope.$on('pay.updateQRCodeParams', function (d, params) {
+				console.info(arguments);
+				$scope.curQRCode = params.curQRCode || '';
+				$scope.curQRCodeTitle = params.curQRCodeTitle || '';
+				$scope.curQRCodeLabel = params.curQRCodeLabel || '';
+			});
+
 			// 开钱箱
 			$scope.openCashBox = function () {
 				Hualala.DevCom.exeCmd("OpenCashbox");
@@ -1522,7 +1550,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				// TODO 
 				// 1. 提交订单（actionType=YJZ）
 				// 2. 提交成功后发送硬件指令
-				var callServer = OrderService.submitOrder('YJZ', OrderPayService.getOrderPayParams());
+				var callServer = OrderService.submitOrder('YJZ', _.extend(OrderPayService.getOrderPayParams(), {
+					payQRCodeTitle : $scope.curQRCodeTitle,
+					payQRCodeTxt : $scope.curQRCode,
+					payQRCodeRemark : $scope.curQRCodeLabel
+				}));
 				callServer.success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
@@ -1837,7 +1869,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					scope.genQRCode = function (type) {
 						var saasOrderKey = OrderService.getSaasOrderKey(),
 							QRCodeType = type,
-							QRCodeSize = 300,
+							QRCodeSize = 250,
 							defaultQRCodeLabels = {
 								'HLL' : '请使用哗啦啦扫描二维码支付',
 								'ALIPAY' : '请使用支付宝扫描二维码支付',
@@ -1849,14 +1881,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						scope.curQRCode = null;
 						scope.curQRCodeOpt = null;
 						scope.curQRCodeLabel = null;
+						scope.curQRCodeTitle = null;
 						if (!type) {
 							// 推送二维码消息
 							Hualala.SecondScreen.publishPostMsg('PayQRCode', '');
+							scope.$emit('pay.updateQRCodeParams', {
+								curQRCode : scope.curQRCode,
+								curQRCodeTitle : scope.curQRCodeTitle,
+								curQRCodeLabel : scope.curQRCodeLabel
+							});
 							return;
 						}
 						var genQRCode = function (data, qrcodeType) {
-							var remark = _.result(data, 'remark', null);
+							var remark = _.result(data, 'remark', null),
+								title = _.result(data, 'title', null);
 							scope.curQRCode = _.result(data, 'QRCodeTxt', null);
+							scope.curQRCodeTitle = title;
 							scope.curQRCodeLabel = remark || defaultQRCodeLabels[qrcodeType];
 
 							scope.curQRCodeOpt = {
@@ -1866,9 +1906,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								background : '#fff',
 								label : scope.curQRCode
 							};
+							scope.$emit('pay.updateQRCodeParams', {
+								curQRCode : scope.curQRCode,
+								curQRCodeTitle : scope.curQRCodeTitle,
+								curQRCodeLabel : scope.curQRCodeLabel
+							});
 						};
 
-						precheckoutCallServer = OrderService.submitOrder('YJZ', OrderPayService.getOrderPayParams());
+						precheckoutCallServer = OrderService.submitOrder('YJZ', _.extend(OrderPayService.getOrderPayParams(), {
+							payQRCodeTitle : scope.curQRCodeTitle,
+							payQRCodeTxt : scope.curQRCode,
+							payQRCodeRemark : scope.curQRCodeLabel
+						}));
 						precheckoutCallServer.success(function (data) {
 							var c = _.result(data, 'code');
 							if (c == '000') {

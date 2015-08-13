@@ -868,6 +868,12 @@ define(['app'], function (app) {
                 ].join(''),
                 replace : true,
                 link : function (scope, el, attr) {
+                    scope.$on('orderlst.active', function (d, itemKey) {
+                        el.find('.food-item[item-key=' + itemKey + ']').addClass('active');
+                        if (attr.type != 'multiple') {
+                            el.find('.food-item, .food-child-item').removeClass('active');
+                        }
+                    });
                     el.on('click', '.food-item, .food-child-item', function (e) {
                         var itemEl = $(this);
                         if (attr.type == 'multiple') {
@@ -1167,15 +1173,17 @@ define(['app'], function (app) {
                     options : "="
                 },
                 link : function (scope, el, attr) {
-                    var $el, options;
+                    var $el, options = {};
                     $el = $(el);
-                    options = {
-                        size : $el.width()
-                    };
-                    _.extend(options, scope.options);
+                    // options = {
+                    //     size : $el.width()
+                    // };
+                    
                     scope.$watch('text', function (newText) {
+                        options = _.extend(options, scope.options);
                         if (newText) {
                             options.text = newText;
+                            console.info("qrcode text is :" + newText);
                             $el.empty().qrcode(options);
                         }
                     });

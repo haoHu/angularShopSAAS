@@ -397,7 +397,7 @@
 				<section class="ctrl-schema col-xs-8" setfood-pager=".cate-item">
 					<header class="schema-header">
 						<h4>套餐搭配</h4>
-						<button class="btn btn-default btn-close" ng-click="close()">返回</button>
+						<button class="btn btn-default btn-close btn-lg" ng-click="close()">返回</button>
 					</header>
 					<section class="schema-body">
 						<div id="food_list" class="opt-box">
@@ -547,7 +547,7 @@
 				<section class="pay-schema">
 					<header class="schema-header">
 						<h4>结账</h4>
-						<button class="btn btn-default btn-close" ng-click="close()">返回</button>
+						<button class="btn btn-default btn-close btn-lg" ng-click="close()">返回</button>
 						<div class="row disabeld">
 							<label class="col-xs-5 control-label">菜品金额</label>
 							<p class="col-xs-7 sum">{{orderPayDetail.foodAmount | currency:"￥"}}</p>
@@ -656,6 +656,7 @@
 			</div>
 			
 			<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}" ng-if="paySubjectGrp.name == 'hualalaPay'">
+				<h4>{{curQRCodeTitle}}</h4>
 				<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
 				<p>{{curQRCodeLabel}}</p>
 			</div>

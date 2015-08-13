@@ -238,7 +238,7 @@ define(['app'], function(app)
                 });
                 return;
             };
-            $('body').on('click', function (e) {
+            $('.section-huiyuan').on('click', function (e) {
                 var tar = $(e.target);
                 var keyboard = $('.site-numkeyboard');
                 if (!tar.is(':text, .site-numkeyboard .btn')) {
@@ -249,7 +249,6 @@ define(['app'], function(app)
                         left : 0
                     });
                 }
-                return false;
             }).trigger('click');
 
         }

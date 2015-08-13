@@ -45,7 +45,11 @@
 			
 		</div>
 		<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}">
-			<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
+			<h4>{{curQRCodeTitle}}</h4>
+			<div class="qrcode-wrap">
+				<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
+				<img class="qrcode-type" data-paytype="{{curQRCodeType}}" ng-src="{{curPayType}}">
+			</div>
 			<p>{{curQRCodeLabel}}</p>
 		</div>
 		

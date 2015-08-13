@@ -34,7 +34,7 @@ define(['app'], function (app) {
 				
 				var saasOrderKey = _.result(data, 'saasOrderKey', null),
 					QRCodeType = _.result(data, 'QRCodeType', null),
-					QRCodeSize = 280;
+					QRCodeSize = 250,
 					callServer = null,
 					defaultQRCodeLabels = {
 						'HLL' : '请使用哗啦啦扫描二维码支付',
@@ -44,9 +44,13 @@ define(['app'], function (app) {
 					};
 
 				var genQRCode = function (data, qrcodeType) {
-					var remark = _.result(data, 'remark', null);
+					var remark = _.result(data, 'remark', null),
+						title = _.result(data, 'title', '');
 					$scope.curQRCode = _.result(data, 'QRCodeTxt', null);
 					$scope.curQRCodeLabel = remark || defaultQRCodeLabels[qrcodeType];
+					$scope.curQRCodeTitle = title;
+					$scope.curQRCodeType = qrcodeType;
+					$scope.curPayType = $scope.genPayTypeImg(qrcodeType);
 					$scope.curQRCodeOpt = {
 						render : 'image',
 						size : QRCodeSize,
@@ -165,6 +169,12 @@ define(['app'], function (app) {
 			$scope.genImgSrc = function (imgSrc) {
 				// return Hualala.Global.AJAX_DOMAIN + '/' + imgSrc;
 				return imgSrc;
+			};
+
+			$scope.genPayTypeImg = function (type) {
+				if (_.isEmpty(type)) return '';
+				var imgPath = 'img/ic_' + type.toLowerCase() + '.png';
+				return imgPath;
 			};
 
 			$(window).on('message', function (evt) {
