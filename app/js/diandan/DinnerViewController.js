@@ -1558,7 +1558,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				callServer.success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
-						var msg = _.result(data, 'data');
+						var msg = _.extend(_.result(data, 'data'), {
+							payQRCodeTitle : $scope.curQRCodeTitle,
+							payQRCodeTxt : $scope.curQRCode,
+							payQRCodeRemark : $scope.curQRCodeLabel 
+						});
 						// var msg = _.pick(_.result(data, 'data'), ['discountRate', 'discountRange', 'isVipPrice', 'moneyWipeZeroType', 'payLst'])
 						Hualala.DevCom.exeCmd("PrintCheckoutPreBill", JSON.stringify(msg));
 					} else {
