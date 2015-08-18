@@ -1554,20 +1554,45 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]}      [description]
 			 */
 			this.calcDiscountPromotionSubTotal = function (item) {
-				var foodNumber = parseFloat(_.result(item, 'foodNumber', 0)),
+				var isVipPrice = parseFloat(self.isVipPrice),
+					foodNumber = parseFloat(_.result(item, 'foodNumber', 0)),
+					foodKey = _.result(item, 'foodKey', ''),
 					foodCancelNumber = parseFloat(_.result(item, 'foodCancelNumber', 0)),
 					foodSendNumber = parseFloat(_.result(item, 'foodSendNumber', 0)),
+					foodProPrice = parseFloat(_.result(item, 'foodProPrice', 0)),
+					foodVipPrice = parseFloat(_.result(item, 'foodVipPrice', 0)),
 					foodPayPrice = parseFloat(_.result(item, 'foodPayPrice', 0)),
 					isDiscount = parseFloat(_.result(item, 'isDiscount', 0)),
 					discountRange = parseFloat(self.discountRange),
 					discountRate = parseFloat(self.discountRate),
 					isSFDetail = _.result(item, 'isSFDetail');
+				// 需求变更，计算公式发生变化，原来的公式作废，采用新的公式计算菜品打折优惠小计
+				// var deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber)),
+				// 	deltaRate = HCMath.sub(1, 
+				// 		(isDiscount == 1 ? discountRate 
+				// 			: (discountRange == 1 ? discountRate : 1))
+				// 	);
+				// var v = HCMath.multi(deltaNumber, foodPayPrice, deltaRate);
+
+				/*
+					新公式算法
+					total( (foodNumber-foodCancelNumber-foodSendNumber)*(case when ifnull(isSFDetail,0)=1 then foodPayPrice else case when isVipPrice=1 then foodVipPrice else foodProPrice end end)*
+					(case when isDiscount=1 or discountRange=1 then 1-discountRate else 0 end )
+					where foodKey not in('FK_DN_SERVICE_FEE','FK_WS_SERVICE_FEE','FK_PACK_FEE')
+				 */
 				var deltaNumber = parseFloat(HCMath.sub(foodNumber, foodCancelNumber, foodSendNumber)),
+					deltaRate, price, v;
+				if (foodKey == 'FK_DN_SERVICE_FEE' || foodKey == 'FK_WS_SERVICE_FEE' || foodKey == 'FK_PACK_FEE') {
+					deltaRate = 0;
+				} else {
 					deltaRate = HCMath.sub(1, 
-						(isDiscount == 1 ? discountRate 
-							: (discountRange == 1 ? discountRate : 1))
+						((isDiscount == 1 || discountRange == 1) ? discountRate : 1)
 					);
-				var v = HCMath.multi(deltaNumber, foodPayPrice, deltaRate);
+				}
+				price = isSFDetail == 1 ? foodPayPrice : (isVipPrice == 1 ? foodVipPrice : foodProPrice);
+				v = HCMath.multi(deltaNumber, price, deltaRate);
+
+
 				// 精确到小数点后4位
 				// 将初始计算结果放大10000倍(小数点向右移动4位)，然后向下取整，最后缩小10000倍(小数点向左移动4位)
 				v = parseFloat(Math.floor(v.toString().movePointRight(4)).toString().movePointLeft(4));
