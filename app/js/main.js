@@ -7,6 +7,8 @@ require.config({
 		'angular-resource' : 'vendor/angular-resource/angular-resource',
 		'angular-cookies' : 'vendor/angular-cookies/angular-cookies',
 		'angular-sanitize' : 'vendor/angular-sanitize/angular-sanitize',
+		'angular-mocks' : 'vendor/angular-mocks/angular-mocks',
+		'angular-socket-io' : 'vendor/angular-socket-io/socket.js',
 		'ui.bootstrap' : 'vendor/angular-bootstrap/ui-bootstrap-tpls',
 		'bootstrap' : 'vendor/bootstrap/bootstrap',
         'bootstrap-datetimepicker' : 'vendor/bootstrap-datetimepicker/bootstrap-datetimepicker.min',
@@ -25,7 +27,8 @@ require.config({
 		'pymatch' : 'utils/pymatch',
 		'matcher' : 'utils/matcher',
 		'uuid' : 'vendor/node-uuid/uuid',
-		'qrcode' : 'vendor/jquery.qrcode/jquery.qrcode'
+		'qrcode' : 'vendor/jquery.qrcode/jquery.qrcode',
+		'socket.io-client' : 'vendor/socket.io-client/socket.io'
 	},
 	shim : {
 		'angular' : {
@@ -42,6 +45,9 @@ require.config({
 		},
 		'angular-sanitize' : {
 			deps : ['angular']
+		},
+		'angular-socket-io' : {
+			deps : ['angular-mocks', 'socket.io-client']
 		},
 		'bootstrap' : {
 			deps : ['jquery']

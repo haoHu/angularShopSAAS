@@ -1,1 +1,180 @@
 <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta id="site_viewport" name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="js/vendor/bootstrap/bootstrap.css" type="text/css">
+		<link rel="stylesheet" href="css/core.css" type="text/css">
+		<script src="js/vendor/jquery/jquery.js"></script>
+		<title>Pickup Window</title>
+	</head>
+	<body>
+		<section class="section section-pickupwindow">
+			<header class="header">
+				<div class="advertise-wrap">
+					<div id="advertise_info" class="advertise-info">
+						<p>
+							<!-- 推荐菜品：星冰乐  榛果拿铁  夏美奶冻星  香草拿铁  拿铁 星冰乐  榛果拿铁  夏美奶冻星  香草拿铁  拿铁   -->
+						</p>
+					</div>
+				</div>
+			</header>
+			
+			<div id="current_pickup" class="current-pickup">
+				<!-- <div class="info">
+					<img src="/img/ic_wechat.png" alt="" class="img-circle">
+					<span class="num">0391</span>
+				</div>
+				<div class="remark">
+					焦糖咖啡星冰乐×2
+				</div> -->
+			</div>
+			<footer class="footer">
+				<div class="pickup-wrap">
+					<ul id="pickup_list" class="list-inline pickup-list">
+						<!-- <li class="pickup-item col-xs-3">0391</li>
+						<li class="pickup-item col-xs-3">0392</li>
+						<li class="pickup-item col-xs-3">0393</li>
+						<li class="pickup-item col-xs-3">0394</li> -->
+					</ul>
+				</div>
+			</footer>
+		</section>
+
+		<script src="js/vendor/bootstrap/bootstrap.js"></script>
+		<script src="js/utils/ixutils.js"></script>
+		<script src="js/vendor/underscore/underscore.js"></script>
+		<script src="js/vendor/socket.io-client/socket.io.js"></script>
+		<script type="text/javascript">
+			IX.ns("Hualala.Global");
+			window.count = 0;
+			<!--(if target dev)><!-->
+			window.IXDEBUG = true;
+			window.HualalaWorkMode = "dev";
+			<!--<!(endif)-->
+			<!--(if target mu)>
+			window.IXDEBUG = true;
+			window.HualalaWorkMode = "mu";
+			<!(endif)-->
+			<!--(if target dohko)>
+			window.IXDEBUG = true;
+			window.HualalaWorkMode = "dohko";
+			<!(endif)-->
+			<!--(if target dist)>
+			window.HualalaWorkMode = "release";
+			<!(endif)-->
+			if (window.HualalaWorkMode == 'dev') {
+				// 测试服务器
+				// Hualala.Global.AJAX_DOMAIN = 'http://hualalasaas.oicp.net:15220';
+				Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.166:8080';
+				// 丁工机器
+				// Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.140:8080';
+				// 朱敏机器
+				// Hualala.Global.AJAX_DOMAIN = 'http://10.10.2.42:8080';
+				// local develop
+				// Hualala.Global.AJAX_DOMAIN = 'http://127.0.0.1:8080';
+			} else {
+				Hualala.Global.AJAX_DOMAIN = document.location.origin;
+			}
+		</script>
+		<script type="text/javascript">
+			jQuery(document).ready(function ($) {
+				var initSocketConnect = function (webSocketServerPort) {
+					var ajaxDomainName = Hualala.Global.AJAX_DOMAIN.split(':')[1];
+					var wsUri = 'ws:' + ajaxDomainName + ':' + webSocketServerPort,
+						path = '/saas/order/getLastCallFoodOrderLst.ajax',
+						socket;
+					if (!window.WebSocket) {
+						throw("不支持WebSocket通讯");
+					}
+					socket = new WebSocket(wsUri);
+					socket.onopen = function (evt) {
+						onOpen(evt);
+					};
+					socket.onclose = function (evt) {
+						onClose(evt);
+					};
+					socket.onmessage = function (evt) {
+						onMessage(evt);
+					};
+					return socket;
+				};
+				// 渲染页头信息
+				var renderAdvertiseInfo = function (title) {
+					var advertiseInfoEl = $('#advertise_info');
+					advertiseInfoEl.html('<p>' + title || '' + '</p>');
+				};
+				// 渲染当前取餐信息
+				var renderCurrentPickupInfo = function (curPickup) {
+					var currentPickupEl = $('#current_pickup');
+					var tpl = [
+							'<div class="info {{hidden}}">',
+								'<img class="img-circle" alt="" src="{{image}}" />',
+								'<span class="num">{{No}}</span>',
+							'</div>',
+							'<div class="remark">',
+								'{{remark}}',
+							'</div>'
+						].join(''),
+						htm = '';
+					if (_.isEmpty(curPickup)) {
+						htm = tpl.replace('{{hidden}}', 'hidden').replace('{{remark}}', '当前没有叫号信息');
+					} else {
+						htm = tpl;
+						_.each(curPickup, function (v, k) {
+							if (k == 'image' && _.isEmpty(v)) {
+								v = 'img/blank.png';
+							}
+							htm = htm.replace('{{' + k + '}}', v);
+						});
+					}
+					currentPickupEl.html(htm);
+				};
+				// 渲染取餐队列信息
+				var renderPickupList = function (callNoLst) {
+					var pickupListEl = $('#pickup_list'),
+						tpl = '<li class="pickup-item col-xs-3">{{No}}</li>',
+						htm = '';
+					_.each(callNoLst, function (el) {
+						var No = _.result(el, 'No', '');
+						htm += tpl.replace('{{No}}', No);
+					});
+					pickupListEl.html(htm);
+				};
+				var refreshPage = function (data) {
+					var title = _.result(data, 'title', ''),
+						callNoLst = _.result(data, 'callNoLst', []);
+					renderAdvertiseInfo(title);
+					renderCurrentPickupInfo(callNoLst[0]);
+					renderPickupList(callNoLst);
+				};
+				var onOpen = function (evt) {
+					console.info('Connected');
+				};
+				var onClose = function (evt) {
+					console.info('Disconnected');
+				};
+				var onMessage = function (evt) {
+					console.info('Response message');
+					var oriData = JSON.parse(evt.data);
+					var msgType = _.result(oriData, 'msgType'),
+						msgData = _.result(oriData, 'msgData', {}),
+						msgEvent = _.result(oriData, 'msgEvent');
+					if (msgType == "HLL_SAAS_MSG_CALL_TAKE_FOOD") {
+						refreshPage(msgData);	
+					}
+				};
+				$.ajax({
+					url : Hualala.Global.AJAX_DOMAIN + '/saas/base/getShopInfo.ajax',
+					method : "POST"
+				}).done(function (data) {
+					var _data = _.result(data, 'data'),
+						webSocketServerPort = _.result(_data, 'webSocketServerPort', '8082');
+					initSocketConnect(webSocketServerPort);
+				});
+				
+			});
+		</script>
+		
+	</body>
+</html>

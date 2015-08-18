@@ -235,22 +235,26 @@ module.exports = function (grunt) {
 		targethtml : {
 			dev : {
 				files : {
-					'.tmp/index.html' : '<%= config.src %>/index.html'
+					'.tmp/index.html' : '<%= config.src %>/index.html',
+					'.tmp/pickup_screen.html' : '<%= config.src %>/pickup_screen.html'
 				}
 			},
 			mu : {
 				files : {
-					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html'
+					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html',
+					'<%= config.dist %>/pickup_screen.html' : '<%= config.src %>/pickup_screen.html'
 				}
 			},
 			dohko : {
 				files : {
-					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html'
+					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html',
+					'<%= config.dist %>/pickup_screen.html' : '<%= config.src %>/pickup_screen.html'
 				}
 			},
 			dist : {
 				files : {
-					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html'
+					'<%= config.dist %>/index.html' : '<%= config.src %>/index.html',
+					'<%= config.dist %>/pickup_screen.html' : '<%= config.src %>/pickup_screen.html'
 				}
 			}
 		},
