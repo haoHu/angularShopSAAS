@@ -168,6 +168,9 @@
 					url : Hualala.Global.AJAX_DOMAIN + '/saas/base/getShopInfo.ajax',
 					method : "POST"
 				}).done(function (data) {
+					if (_.isString(data)) {
+						data = JSON.parse(data);
+					}
 					var _data = _.result(data, 'data'),
 						webSocketServerPort = _.result(_data, 'webSocketServerPort', '8082');
 					initSocketConnect(webSocketServerPort);

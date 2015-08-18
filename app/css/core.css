@@ -76,7 +76,7 @@ body {
 }
 .site-nav .logo {
   display: block;
-  margin: 1.5rem auto .5rem;
+  margin: .5rem auto .5rem;
   width: 5rem;
   height: 5rem;
 }
@@ -90,19 +90,35 @@ body {
   text-align: center;
   font-size: 14px;
   font-weight: bold;
-  margin: 0 auto 4rem;
+  margin: 0 auto 2rem;
 }
 .site-nav .nav > li:last-child {
   position: absolute;
   bottom: 5rem;
   width: 100%;
 }
+@media screen and (max-height: 768px) {
+  #site_header .nav-pills .glyphicon {
+    font-size: 2.5rem;
+  }
+  .site-nav .empname {
+    margin-bottom: 0rem;
+  }
+  .site-nav .nav > li > a {
+    padding: 5px 15px;
+  }
+  .site-nav .nav > li:last-child {
+    bottom: .5rem;
+  }
+}
 .welcome #site_header,
-.sign #site_header {
+.sign #site_header,
+.puppet #site_header {
   display: none;
 }
 .welcome #site_body,
-.sign #site_body {
+.sign #site_body,
+.puppet #site_body {
   margin-left: 0;
 }
 .site-toptip {
@@ -421,7 +437,7 @@ body {
 }
 .section-diandan .menu-plain .foods > .cell-btn.active,
 .section-diandan .menu-plain .foods > .cell-btn:active {
-  background-color: #99ccff;
+  background-color: #cee6fb;
 }
 .section-diandan .menu-plain .foods > .cell-btn.soldouted {
   background-color: #D9534F;
@@ -553,6 +569,7 @@ body {
 .section-diandan .order-body .make-status[title="1"] {
   background-color: #2aabd2;
   color: #ffffff;
+  visibility: hidden;
 }
 .section-diandan .order-body .make-status[title="1"]:after {
   content: "即";
@@ -702,6 +719,50 @@ body {
   z-index: 10;
   width: 33.33333333%;
   height: 100%;
+  background-color: #e6f2fd;
+  border-radius: 0;
+}
+.btngrp-box.btngrp-4x3 {
+  position: relative;
+  width: 100%;
+  height: 28rem;
+  background-color: #e6f2fd;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-4x3 > .btn-group {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.btngrp-box.btngrp-4x3 > .btn-group .btn-radio,
+.btngrp-box.btngrp-4x3 > .btn-group .btn-checkbox {
+  display: block;
+  width: 33.33333333%;
+  height: 25%;
+  margin: 0;
+  padding: 5px;
+  border-radius: 0;
+  background-color: #e6f2fd;
+  border: 1px solid #e6e6e6;
+  white-space: normal;
+  overflow: hidden;
+}
+.btngrp-box.btngrp-4x3 > .btn-group .btn-radio p,
+.btngrp-box.btngrp-4x3 > .btn-group .btn-checkbox p {
+  margin: 0 0 5px;
+}
+.btngrp-box.btngrp-4x3 > .btn-group .btn-radio.active,
+.btngrp-box.btngrp-4x3 > .btn-group .btn-checkbox.active {
+  background-color: #99ccff;
+}
+.btngrp-box.btngrp-4x3 .btn-pager {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  width: 33.33333333%;
+  height: 25%;
   background-color: #e6f2fd;
   border-radius: 0;
 }
@@ -1085,6 +1146,26 @@ body {
 }
 .pay-modal .pay-ctrl .pay-subject > .panel .form-horizontal .form-group {
   margin-bottom: .5rem;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel .hll-paytype {
+  margin: 20px 0;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel .hll-paytype .btn {
+  height: 64px;
+  white-space: normal;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel .qrcode-box {
+  position: relative;
+  margin: 64px auto 0;
+  width: 300px;
+  height: 300px;
+  text-align: center;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel .qrcode-box h4 {
+  font-size: 1.5rem;
+}
+.pay-modal .pay-ctrl .pay-subject > .panel .qrcode-box p {
+  text-align: center;
 }
 .pay-modal .pay-ctrl .pay-subject .vip-pay .help-block.info {
   margin-top: 0px;
@@ -1763,7 +1844,7 @@ body {
   -webkit-box-align: stretch;
 }
 .section-jiedan .order-info .order-header {
-  max-height: 10rem;
+  max-height: 13rem;
 }
 .section-jiedan .order-info .order-body {
   -webkit-box-flex: 1;
@@ -1842,6 +1923,17 @@ body {
   margin: 0;
   text-align: center;
   font-size: 1rem;
+}
+.section-jiedan .paylst-grid .txt,
+.section-jiedan .paylst-grid .cash {
+  padding: 0 .5rem 0 0;
+}
+.section-huiyuan {
+  postion: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 .section-huiyuan .form-inline label {
   width: 120px;
@@ -2004,6 +2096,25 @@ body {
   height: 60px;
   width: 500px;
 }
+.section-huiyuan .receipt-cnt p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5em;
+  font-size: 1em;
+}
+.section-huiyuan .receipt-cnt p.font-1x {
+  font-size: 1em;
+}
+.section-huiyuan .receipt-cnt p.font-2x {
+  font-size: 1.5em;
+}
+.section-huiyuan .receipt-cnt p.bold {
+  font-weight: 700;
+}
+.section-huiyuan .receipt-cnt p.highlight > span {
+  background-color: #111;
+  color: #fff;
+}
 .server-modal .modal-dialog {
   position: absolute;
   left: 6rem;
@@ -2035,6 +2146,7 @@ body {
   position: absolute;
   bottom: 0;
   padding: 0;
+  width: 100%;
 }
 .server-modal .form-group {
   margin-bottom: 0;
@@ -2170,16 +2282,22 @@ body {
 }
 .section-chupin {
   height: 100%;
+  position: relative;
 }
 .section-chupin .chupin-header,
 .section-chupin .chupin-footer {
-  position: fixed;
+  position: absolute;
   z-index: 99;
   background-color: #f1f1f1;
+  left: 0;
+  right: 0;
 }
 .section-chupin .chupin-header {
   top: 0;
   height: 46px;
+}
+.section-chupin .filter-bar .badge {
+  background-color: #ff0000;
 }
 .section-chupin .chupin-footer {
   bottom: 0;
@@ -2212,10 +2330,18 @@ body {
 .section-chupin .order-item.collapse {
   display: block;
 }
-.section-chupin .order-item .panel-title {
+.section-chupin .order-item .panel-heading .amount,
+.section-chupin .order-item .panel-heading .time,
+.section-chupin .order-item .panel-heading .panel-title {
+  line-height: 24px;
+  vertical-align: middle;
+}
+.section-chupin .order-item .panel-heading .panel-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: bold;
+  font-size: 2rem;
 }
 .section-chupin .order-item .order-box {
   -webkit-transition: all 0.5s ease-in-out;
@@ -2310,13 +2436,13 @@ body {
   display: block;
   margin: 0;
 }
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 992px) and (max-width: 1200px) {
   .section-chupin .order-item.popup.offset-md > .order-box {
     -webkit-transform: translate3d(0, -50%, 0);
     transform: translate3D(0, -50%, 0);
   }
 }
-@media screen and (min-widht: 1200px) {
+@media screen and (min-width: 1200px) {
   .section-chupin .order-item.popup.offset-lg > .order-box {
     -webkit-transform: translate3d(0, -50%, 0);
     transform: translate3D(0, -50%, 0);
@@ -2364,4 +2490,193 @@ body {
   100% {
     overflow: hidden;
   }
+}
+.section-puppet {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.section-puppet .order-plain,
+.section-puppet .ad-plain {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+.section-puppet .order-plain {
+  width: 292px;
+  border: 1px solid #e6e6e6;
+}
+.section-puppet .ad-plain {
+  margin-left: 292px;
+}
+.section-puppet.noorder > .order-plain {
+  width: 0;
+}
+.section-puppet.noorder > .ad-plain {
+  margin-left: 0;
+}
+.section-puppet .ad-plain {
+  height: 100%;
+  text-align: center;
+  font-size: 0;
+}
+.section-puppet .ad-plain .placeholder,
+.section-puppet .ad-plain .ad-box {
+  vertical-align: middle;
+  display: inline-block;
+}
+.section-puppet .ad-plain .placeholder {
+  overflow: hidden;
+  position: relative;
+  width: 0;
+  min-height: inherit;
+  height: inherit;
+}
+.section-puppet .ad-plain .ad-box {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+.section-puppet .ad-plain .ad-box > img {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.section-puppet .ad-plain .ad-box .carousel-control {
+  background-image: none;
+}
+.section-puppet .ad-plain .qrcode-box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 99;
+  margin-top: -150px;
+  margin-left: -150px;
+  text-align: center;
+  width: 300px;
+  height: 300px;
+  background: #fff;
+}
+.section-puppet .ad-plain .qrcode-box p {
+  font-size: 24px;
+}
+.section-puppet .ad-plain .qrcode-box .qrcode-wrap {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+}
+.section-puppet .ad-plain .qrcode-box .qrcode-wrap .qrcode-type {
+  position: absolute;
+  display: block;
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  left: 50%;
+  margin-top: -20px;
+  margin-left: -20px;
+}
+.section-puppet .ad-plain #qrcode {
+  width: auto;
+  height: auto;
+}
+.section-pickupwindow {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+.section-pickupwindow .header,
+.section-pickupwindow .footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 20%;
+  width: 100%;
+  text-align: center;
+}
+.section-pickupwindow .header {
+  top: 0;
+  background-color: #fc6622;
+  color: #ffffff;
+}
+.section-pickupwindow .footer {
+  bottom: 0;
+  background-color: #ffffff;
+  color: #040404;
+}
+.section-pickupwindow .advertise-wrap,
+.section-pickupwindow .pickup-wrap {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.section-pickupwindow .advertise-wrap .advertise-info,
+.section-pickupwindow .pickup-wrap .advertise-info,
+.section-pickupwindow .advertise-wrap .pickup-list,
+.section-pickupwindow .pickup-wrap .pickup-list {
+  position: relative;
+  top: 50%;
+  display: block;
+  vertical-align: middle;
+  padding: 0 20px;
+  margin-top: -18px;
+  border-left: 20px none;
+  border-right: 20px none;
+}
+.section-pickupwindow .advertise-wrap .advertise-info > p,
+.section-pickupwindow .pickup-wrap .advertise-info > p,
+.section-pickupwindow .advertise-wrap .pickup-list .pickup-item,
+.section-pickupwindow .pickup-wrap .pickup-list .pickup-item {
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 1em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.section-pickupwindow .advertise-wrap .advertise-info > p,
+.section-pickupwindow .pickup-wrap .advertise-info > p {
+  margin: 0;
+}
+.section-pickupwindow .current-pickup {
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  top: 50%;
+  left: 0;
+  margin-top: -100px;
+}
+.section-pickupwindow .current-pickup .info,
+.section-pickupwindow .current-pickup .remark {
+  height: 50%;
+  font-size: 64px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #fc6622;
+  text-align: center;
+}
+.section-pickupwindow .current-pickup .info > img {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  margin-right: .3em;
+  vertical-align: middle;
+}
+.section-pickupwindow .current-pickup .info .num {
+  vertical-align: middle;
 }
