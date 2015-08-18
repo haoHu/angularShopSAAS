@@ -1590,7 +1590,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					);
 				}
 				price = isSFDetail == 1 ? foodPayPrice : (isVipPrice == 1 ? foodVipPrice : foodProPrice);
-				v = HCMath.multi(deltaNumber, foodPayPrice, deltaRate);
+				v = HCMath.multi(deltaNumber, price, deltaRate);
 
 
 				// 精确到小数点后4位
