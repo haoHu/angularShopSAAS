@@ -79,6 +79,11 @@
 		</script>
 		<script type="text/javascript">
 			jQuery(document).ready(function ($) {
+				var socket,
+					webSocketServerPort,
+					reconnectTimeout = 3 * 60 * 1000,
+					closeConnect = true;
+					reconnectTimer = null;
 				var initSocketConnect = function (webSocketServerPort) {
 					var ajaxDomainName = Hualala.Global.AJAX_DOMAIN.split(':')[1];
 					var wsUri = 'ws:' + ajaxDomainName + ':' + webSocketServerPort,
@@ -110,7 +115,7 @@
 					var tpl = [
 							'<div class="info {{hidden}}">',
 								'<img class="img-circle" alt="" src="{{image}}" />',
-								'<span class="num">{{No}}</span>',
+								'<span class="num">{{No}}号,  请取餐!</span>',
 							'</div>',
 							'<div class="remark">',
 								'{{remark}}',
@@ -150,9 +155,12 @@
 				};
 				var onOpen = function (evt) {
 					console.info('Connected');
+					initReconnectTimer();
 				};
 				var onClose = function (evt) {
 					console.info('Disconnected');
+					// 重新连接通道
+					initSocketConnect(webSocketServerPort);
 				};
 				var onMessage = function (evt) {
 					console.info('Response message');
@@ -161,8 +169,26 @@
 						msgData = _.result(oriData, 'msgData', {}),
 						msgEvent = _.result(oriData, 'msgEvent');
 					if (msgType == "HLL_SAAS_MSG_CALL_TAKE_FOOD") {
-						refreshPage(msgData);	
+						refreshPage(msgData);
+						initReconnectTimer();
 					}
+				};
+				var initReconnectTimer = function () {
+					if (!reconnectTimer) {
+						reconnectTimer = setTimeout(function () {
+							if (closeConnect) {
+								clearTimeout(reconnectTimer);
+								reconnectTimer = null;
+								socket && socket.close();
+							}
+						}, reconnectTimeout);
+						closeConnect = true;
+					} else {
+						clearTimeout(reconnectTimer);
+						reconnectTimer = null;
+						initReconnectTimer();
+					}
+					
 				};
 				$.ajax({
 					url : Hualala.Global.AJAX_DOMAIN + '/saas/base/getShopInfo.ajax',
@@ -171,9 +197,9 @@
 					if (_.isString(data)) {
 						data = JSON.parse(data);
 					}
-					var _data = _.result(data, 'data'),
-						webSocketServerPort = _.result(_data, 'webSocketServerPort', '8082');
-					initSocketConnect(webSocketServerPort);
+					var _data = _.result(data, 'data');
+					webSocketServerPort = _.result(_data, 'webSocketServerPort', '8082');
+					socket = initSocketConnect(webSocketServerPort);
 				});
 				
 			});

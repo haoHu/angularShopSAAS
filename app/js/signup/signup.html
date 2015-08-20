@@ -2,11 +2,14 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading">哗啦啦O2O餐饮管理系统</div>
 		<div class="panel-body">
-			<form action="" name="signupForm" class="form-horizontal" role="form" novalidate="novalidate">
+			<form action="" name="signupForm" class="col-xs-7 col-xs-push-1 form-horizontal" role="form" novalidate="novalidate">
+				<div class="form-group has-feedback">
+					<p class="col-xs-12 form-control-static text-danger">如果您还没有店铺ID或通讯密钥请联系哗啦啦客服4006-527-557（9:00-21:00 7x24）</p>
+				</div>
 				<div class="form-group has-feedback">
 					<label for="shopID" class="col-xs-2 control-label">店铺ID</label>
 					<div class="col-xs-6" ng-class="{'has-class' : signupForm.shopID.$dirty && signupForm.shopID.$valid, 'has-error' : signupForm.shopID.$invalid}">
-						<input type="text" class="form-control" id="shopID" name="shopID" ng-model="signup.shopID" placeholder="请输入店铺ID" bv-notempty tabIndex="1" ng-keyup="inputKeyup($event)" autofocus="true">
+						<input type="text" class="form-control" id="shopID" name="shopID" ng-model="signup.shopID" placeholder="请输入店铺ID" bv-notempty tabIndex="1" ng-keyup="inputKeyup($event)" autofocus="true"  ng-focus="inputFocus($event)">
 						<small class="help-block" ng-show="signupForm.shopID.$dirty && signupForm.shopID.$error.bvNotempty">请输入店铺ID</small>
 					</div>
 				</div>
@@ -14,7 +17,7 @@
 				<div class="form-group has-feedback">
 					<label for="shopSecret" class="col-xs-2 control-label">通讯密钥</label>
 					<div class="col-xs-6" ng-class="{'has-class' : signupForm.shopSecret.$dirty && signupForm.shopSecret.$valid, 'has-error' : signupForm.shopSecret.$invalid}">
-						<input type="password" class="form-control" id="shopSecret" name="shopSecret" ng-model="signup.shopSecret" placeholder="请输入通讯密钥" bv-notempty bv-strlength min=6 max=32 tabIndex="2" ng-keyup="inputKeyup($event)">
+						<input type="password" class="form-control" id="shopSecret" name="shopSecret" ng-model="signup.shopSecret" placeholder="请输入通讯密钥" bv-notempty bv-strlength min=6 max=32 tabIndex="2" ng-keyup="inputKeyup($event)"  ng-focus="inputFocus($event)">
 						<small class="help-block" ng-show="signupForm.shopSecret.$dirty && signupForm.shopSecret.$error.bvNotempty">请输入通讯密钥</small>
 						<small class="help-block" ng-show="signupForm.shopSecret.$dirty && signupForm.shopSecret.$error.bvStrlength">通讯密钥在6到32位之间</small>
 					</div>
@@ -27,6 +30,10 @@
 					</div>
 				</div>-->
 			</form>
+			<div class="col-xs-4 col-xs-push-1">
+				<!-- 软键盘 -->
+				<numkeyboard cur-target="focusInputEl"></numkeyboard>
+			</div>
 		</div>
 		<div class="panel-footer">
 			<div class="btn-group btn-group-justified" role="group">
