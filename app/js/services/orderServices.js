@@ -9,7 +9,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.FJZFlag = '';
 
 			var OrderHeaderKeys = 'saasOrderKey,saasOrderNo,saasOrderRemark,saasDeviceOrderNo,timeNameStart,timeNameCheckout,tableName,selfWay,channelKey,channelName,channelOrderKey,cardNo,orderSubType,person,createBy,startTime,userName,userAddress,userMobile,reportDate,his'.split(','),
-				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isTempFood,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber'.split(','),
+				FoodItemKeys = 'itemKey,itemType,isSetFood,isSFDetail,isTempFood,isDiscount,isNeedConfirmFoodNumber,foodKey,foodName,foodNumber,foodSendNumber,sendReason,unit,foodProPrice,foodPayPrice,foodVipPrice,foodRemark,modifyReason,parentFoodFromItemKey,makeStatus,unitAdjuvant,unitAdjuvantNumber,makingMethodList,tasteList'.split(','),
 				FoodItemTypes = {
 					"-1" : "NotExist",
 					"0" : "CommonFood",
@@ -2621,6 +2621,87 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.getOrderRefundNotes = function () {
 				return self.getOrderNotesByNotesType(100);
+			};
+
+			/**
+			 * merge order notes data
+			 * @return {Array} merge后的字典数据
+			 */
+			this.mergeOrderNotes = function (origData, mergeData) {
+				var notesType = _.result(origData, 'value', '').toString();
+				var mergeFoodMethods = function (oData, mData) {
+					var oItems = _.result(oData, 'items', []),
+						_notesType = _.result(oData, 'value'),
+						mItems;
+					var items;
+					mItems = _.map(mData, function (val) {
+						// 固定加价@G5.0；按数量加价@S55.0; 按人数加价@R5.0
+						var tmp = val.split('@'),
+							notesName = tmp[0],
+							s = tmp[1],
+							addPriceType, addPriceValue, txt;
+						var addPriceTypes = 'GSR';
+						addPriceType = _.isEmpty(s) ? null : s.charAt(0).toUpperCase();
+						addPriceType = addPriceTypes.indexOf(addPriceType) + 1;
+						addPriceValue = _.isEmpty(s) ? 0 : parseFloat(s.slice(1)); 
+						txt = '<p>' + notesName + '</p>';
+						if (addPriceType == 1) {
+							txt += '<p>加价￥' + addPriceValue + '</p>';
+						} else if (addPriceType == 2) {
+							txt += '<p>加价￥' + addPriceValue + '/份</p>';
+						} else if (addPriceType == 3) {
+							txt += '<p>加价￥' + addPriceValue + '/人</p>';
+						}
+						return {
+							notesName : notesName,
+							notesType : _notesType,
+							addPriceType : addPriceType,
+							addPriceValue : addPriceValue,
+							label : txt,
+							value : notesName
+						};
+
+					});
+					items = _.uniq(mItems.concat(oItems), function (el) {
+						return el.notesName;
+					});
+					return _.extend(oData, {
+						items : items
+					});
+				};
+				var mergeFoodRemarks = function (oData, mData) {
+					var oItems = _.result(oData, 'items', []),
+						_notesType = _.result(oData, 'value', []),
+						mItems;
+					var items;
+					mItems = _.map(mData, function (val) {
+						var notesName = val;
+						return {
+							notesType : _notesType,
+							notesName : notesName,
+							label : notesName,
+							addPriceType : 0,
+							addPriceValue : 0,
+							value : notesName
+						};
+					});
+					items = _.uniq(oItems.slice(0, 1).concat(mItems).concat(oItems.slice(1)), function (el) {
+						return el.notesName;
+					});
+					return _.extend(oData, {
+						items : items
+					});
+				};
+				if (_.isEmpty(mergeData)) return origData;
+				mergeData = mergeData.split(',');
+				switch(notesType) {
+					case '20' : 
+						return mergeFoodMethods(origData, mergeData);
+						break;
+					case '30' :
+						return mergeFoodRemarks(origData, mergeData);
+						break;
+				}
 			};
 		}
 	]);
