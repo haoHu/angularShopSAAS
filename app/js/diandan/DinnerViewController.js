@@ -878,7 +878,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			IX.ns("Hualala");
 			var methodData = OrderNoteService.getFoodMethodNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
-				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey);
+				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey),
+				makingMethodList = _.result(curItem, 'makingMethodList', '');
+			// 需求变更，菜品数据中包含菜品本身自带作法，需要与系统的菜品作法字典进行merge，去除重复作法，
+			// 将作法选项最终呈现在作法选择组件中。
+			methodData = OrderNoteService.mergeOrderNotes(methodData, makingMethodList);
 			$scope.FoodMethods = _.result(methodData, 'items', []);
 			$scope.foodMethod = '';
 			$scope.curFoodName = _.result(curItem, 'foodName', '');
@@ -915,7 +919,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			IX.ns("Hualala");
 			var remarkData = OrderNoteService.getFoodRemarkNotes();
 			var curItemKey = _scope.curFocusOrderItemKey,
-				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey);
+				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey),
+				tasteList = _.result(curItem, 'tasteList', '');
+
+			// 需求变更，菜品数据中包含菜品本身自带口味，需要与系统的菜品口味字典进行merge，去除重复口味
+			// 将口味选项最终呈现在作法选择组件中。
+			remarkData = OrderNoteService.mergeOrderNotes(remarkData, tasteList);
 			$scope.FoodRemarks = _.result(remarkData, 'items', []);
 			$scope.foodRemark = '';
 			$scope.curFoodName = _.result(curItem, 'foodName', '');
