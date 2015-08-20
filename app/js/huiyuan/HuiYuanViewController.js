@@ -2,9 +2,9 @@ define(['app'], function(app)
 {
 	app.controller('HuiYuanViewController',
     [
-        '$scope',  '$sce', 'CommonCallServer', 'AppAlert', 'HuiYuanTabsService',
+        '$scope', '$rootScope',  '$sce', 'CommonCallServer', 'AppAlert', 'HuiYuanTabsService',
 
-        function($scope, $sce, CommonCallServer, AppAlert, HuiYuanTabsService)
+        function($scope, $rootScope, $sce, CommonCallServer, AppAlert, HuiYuanTabsService)
         {
             $scope.CCS = CommonCallServer;
             $scope.AA = AppAlert;
@@ -112,7 +112,7 @@ define(['app'], function(app)
                     name: d.userName,
                     birthday: d.customerBirthday,
                     joindate: '2015-01-01 18:11:11',
-                    cashaccount: d.cardCashBalance,
+                    cashaccount: parseFloat(Hualala.Common.Math.add(d.cardCashBalance, d.cardGiveBalance)),
                     // pointaccount: d.cardPointBalance,
                     // 卡剩余积分所能抵扣的消费金额
                     pointaccount : d.cardPointAsMoney,
@@ -302,7 +302,8 @@ define(['app'], function(app)
 
     //会员导航栏入会办卡
     app.directive('jointab', [
-        function () {
+        '$rootScope', '$sce', 'CommonCallServer', 'AppAlert',
+        function ($rootScope, $sce, CommonCallServer, AppAlert) {
             return {
                 restrict : 'E',
                 template : [
@@ -545,7 +546,7 @@ define(['app'], function(app)
 
                     //点击提交按钮时
                     el.on('click', '.btn-submit-join', function() {
-                        if(checkcode == scope.checkcode) {
+                        if((scope.checkmobile && checkcode == scope.checkcode) || !scope.checkmobile) {
                             scope.CCS.createVIPCard({
                                 shopName: null,
                                 cardNO: scope.realcardnumber,
@@ -563,15 +564,16 @@ define(['app'], function(app)
                                 oldCardPointBalnace: scope.oldpointamount
                             }).success(function(data) {
                                 if(data.code == '000') {
-                                    scope.AA.add('success', '办卡成功！');
+                                    AppAlert.add('success', '办卡成功！');
                                     scope.panel_userinfo.hide();
                                     init();
                                 }else{
-                                    scope.AA.add('danger', data.msg);
+                                    AppAlert.add('danger', data.msg);
                                 }
                             });
                         }else {
-                            scope.AA.add('danger', '验证码错误！');
+                            AppAlert.add('danger', '验证码错误！');
+                            scope.$apply();
                         }
                     });
                 }
