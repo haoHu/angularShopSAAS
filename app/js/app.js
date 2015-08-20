@@ -126,9 +126,9 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
                 storage.set('screen2Height', screen2Height);
             }
             
-        
-            $scope.openSecondScreen();
-            
+            if ($scope.isWelcomPage) {
+                $scope.openSecondScreen();
+            }
         });
         $scope.checkNavBtnActive = function (_curNav, _href) {
             var reg = new RegExp('^' + _href);
