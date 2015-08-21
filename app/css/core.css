@@ -1937,10 +1937,13 @@ body {
 }
 .section-huiyuan .form-inline label {
   width: 120px;
-}
-.section-huiyuan label {
   text-align: right;
   margin-right: 10px;
+}
+.section-huiyuan label[class*=col-],
+.section-huiyuan div[class*=col-] {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .section-huiyuan .panel-heading {
   background: none;
@@ -2010,10 +2013,12 @@ body {
   background: #ddecff;
 }
 .section-huiyuan .tab-consume .panel-vouchers {
-  position: absolute;
-  right: -200px;
-  top: -21px;
+  position: fixed;
+  right: 300px;
+  top: 42px;
+  bottom: 0;
   background: white;
+  width: 300px;
 }
 .section-huiyuan .tab-consume .panel-vouchers .header {
   font-size: 18px;
@@ -2021,37 +2026,85 @@ body {
   border: 1px solid #c1c1c1;
   margin-bottom: -1px;
 }
-.section-huiyuan .tab-consume .panel-vouchers ul {
-  width: 300px;
-  padding: 0px;
-  margin: 0px;
-  overflow-y: auto;
-}
-.section-huiyuan .tab-consume .panel-vouchers ul li {
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers {
   display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li {
+  display: block;
+  position: relative;
   height: 80px;
-  padding: 10px;
-  margin: -1px 0px;
+  margin: 0;
+  padding: 0;
   border: 1px solid #c1c1c1;
   cursor: pointer;
-  position: relative;
 }
-.section-huiyuan .tab-consume .panel-vouchers ul li .left {
-  position: absolute;
-  display: inline-block;
-  width: 80px;
-  padding: 10px;
-  height: 80px;
-  left: 0px;
-  top: 0px;
-  font-size: 20px;
-  font-weight: bold;
-}
-.section-huiyuan .tab-consume .panel-vouchers ul li .right {
-  margin-left: 80px;
-}
-.section-huiyuan .tab-consume .panel-vouchers ul .active {
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li.active {
   background: #ddecff;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .left,
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .right {
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  text-align: center;
+  font-size: 0;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .left > .placeholder,
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .right > .placeholder,
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .left > .text-box,
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .right > .text-box {
+  vertical-align: middle;
+  display: inline-block;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .left > .placeholder,
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .right > .placeholder {
+  position: relative;
+  width: 0;
+  overflow: hidden;
+  min-height: inherit;
+  height: inherit;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .left {
+  left: 0;
+  width: 80px;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .left > .text-box {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .right {
+  left: 80px;
+  right: 0;
+}
+.section-huiyuan .tab-consume .panel-vouchers .table-vouchers > li .right > .text-box {
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+}
+@media screen and (max-width: 1024px) {
+  .section-huiyuan .tab-consume {
+    width: 500px;
+  }
+  .section-huiyuan .tab-consume .panel-vouchers {
+    width: 250px;
+  }
+  .section-huiyuan .tab-consume .panel-vouchers .header,
+  .section-huiyuan .tab-consume .panel-vouchers ul {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .section-huiyuan .tab-consume .onumber {
+    margin-left: -2em;
+  }
 }
 .section-huiyuan .userinfo {
   position: absolute;
@@ -2093,8 +2146,17 @@ body {
   cursor: not-allowed !important;
 }
 .section-huiyuan .btn-submit {
+  margin-top: 20px;
   height: 60px;
-  width: 500px;
+}
+.section-huiyuan .receipt-cnt {
+  position: absolute;
+  top: 40px;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  overflow: auto;
+  padding-bottom: 50px;
 }
 .section-huiyuan .receipt-cnt p {
   margin: 0;

@@ -3,12 +3,13 @@
     .form-inline{
         label{
             width: 120px;
+            text-align: right;
+            margin-right: 10px;
         }
     }
 
-    label{
-        text-align: right;
-        margin-right: 10px;
+    label[class*=col-], div[class*=col-] {
+        padding-left : 5px; padding-right : 5px;
     }
 
     .panel-heading{
@@ -97,10 +98,16 @@
 
     .tab-consume{
         .panel-vouchers{
-            position: absolute;
-            right: -200px;
-            top: -21px;
+            // position: absolute;
+            // right: -200px;
+            // top: -21px;
+            position : fixed;
+            right : 300px;
+            top : 42px;
+            bottom : 0;
             background: white;
+            width : 300px;
+            // overflow : auto;
 
             .header{
                 font-size: 18px;
@@ -109,41 +116,106 @@
                 margin-bottom: -1px;
             }
 
-            ul{
-                width: 300px;
-                padding: 0px;
-                margin: 0px;
-                overflow-y: auto;
-
-                li{
-                    display: block;
-                    height: 80px;
-                    padding: 10px;
-                    margin: -1px 0px;
-                    border: 1px solid #c1c1c1;
-                    cursor: pointer;
-                    position: relative;
-
-                    .left{
-                        position: absolute;
-                        display: inline-block;
-                        width: 80px;
-                        padding: 10px;
-                        height: 80px;
-                        left: 0px;
-                        top: 0px;
-                        font-size: 20px;
-                        font-weight: bold;
+            .table-vouchers {
+                display: block;
+                width : 100%; height : auto;
+                margin : 0; padding : 0;
+                overflow: auto;
+                > li {
+                    display: block; position : relative;
+                    height : 80px; margin : 0; padding : 0;
+                    border : 1px solid #c1c1c1;
+                    cursor : pointer;
+                    &.active {
+                        background: #ddecff;
                     }
-
-                    .right{
-                        margin-left: 80px;
+                    .left, .right {
+                        position : absolute; display: block;
+                        top : 0; bottom : 0;
+                        height : 100%;
+                        text-align: center; font-size: 0;
+                        > .placeholder, > .text-box {
+                            vertical-align: middle; display: inline-block;
+                        }
+                        > .placeholder {
+                            position : relative; width : 0; overflow: hidden;
+                            min-height: inherit; height: inherit;
+                        }
+                    }
+                    .left {
+                        left : 0; width : 80px;
+                        > .text-box {
+                            font-size : 18px; font-weight: bold;
+                            text-align: center;
+                        }
+                    }
+                    .right {
+                        left : 80px; right : 0;
+                        > .text-box {
+                            font-size: 14px; font-weight: 400;
+                            text-align: left;
+                        }
                     }
                 }
 
-                .active{
-                    background: #ddecff;
+            }
+
+            // ul{
+            //     width: 300px;
+            //     padding: 0px;
+            //     margin: 0px;
+            //     overflow-y: auto;
+
+            //     li{
+            //         display: block;
+            //         height: 80px;
+            //         padding: 5px;
+            //         margin: -1px 0px;
+            //         border: 1px solid #c1c1c1;
+            //         cursor: pointer;
+            //         position: relative;
+
+            //         .left{
+            //             position: absolute;
+            //             display: inline-block;
+            //             width: 80px;
+            //             padding: 10px 5px;
+            //             height: 80px;
+            //             left: 0px;
+            //             top: 0px;
+            //             font-size: 18px;
+            //             font-weight: bold;
+            //         }
+
+            //         .right{
+            //             margin-left: 80px;
+            //             padding : 10px 5px;
+            //         }
+            //     }
+
+            //     .active{
+            //         background: #ddecff;
+            //     }
+            // }
+        }
+    }
+    @media screen and (max-width : 1024px) {
+        .tab-consume {
+            width : 500px;
+            
+            .panel-vouchers {
+                width : 250px;
+                
+                .header, ul {
+                    width: 100%;
                 }
+            }
+        }
+    }
+    @media screen and (min-width : 1200px) {
+        .tab-consume {
+            .onumber {
+                margin-left : -2em;
             }
         }
     }
@@ -194,11 +266,14 @@
     }
 
     .btn-submit{
+        margin-top : 20px;
         height: 60px;
-        width: 500px;
+        // width: 500px;
     }
 
     .receipt-cnt {
+        position : absolute; top : 40px; bottom : 0px; left : 0; right : 0; overflow: auto;
+        padding-bottom : 50px;
         p {
             margin : 0; padding : 0; line-height: 1.5em; font-size: 1em;
             &.font-1x {font-size : 1em;}
