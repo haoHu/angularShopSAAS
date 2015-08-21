@@ -27,8 +27,8 @@
     .tab-join{
         .panel-viplevel{
             position: absolute;
-            right: -120px;
-            top: -21px;
+            right: -300px;
+            top: 0px; bottom : 0;
             background: white;
 
             .header{
@@ -62,19 +62,46 @@
     }
 
     .tab-recharge{
-        .panel-rechargeplan{
-            position: absolute;
-            right: -200px;
-            top: -21px;
-            background: white;
+        // .panel-rechargeplan{
+        //     position: absolute;
+        //     right: -200px;
+        //     top: -21px;
+        //     background: white;
 
+        //     .header{
+        //         font-size: 18px;
+        //         padding: 7px 10px;
+        //         border: 1px solid #c1c1c1;
+        //         margin-bottom: -1px;
+        //     }
+
+        //     ul{
+        //         width: 300px;
+        //         padding: 0px;
+        //         margin: 0px;
+
+        //         li{
+        //             display: block;
+        //             min-height: 80px;
+        //             padding: 10px;
+        //             margin: -1px 0px;
+        //             border: 1px solid #c1c1c1;
+        //             cursor: pointer;
+        //         }
+
+        //         .active{
+        //             background: #ddecff;
+        //         }
+        //     }
+        // }
+        .panel-rechargeplan {
+            position : fixed; right : 300px; top : 42px; bottom : 0; background-color: #fff; width : 300px;
             .header{
                 font-size: 18px;
                 padding: 7px 10px;
                 border: 1px solid #c1c1c1;
                 margin-bottom: -1px;
             }
-
             ul{
                 width: 300px;
                 padding: 0px;
@@ -200,6 +227,15 @@
         }
     }
     @media screen and (max-width : 1024px) {
+        .tab-recharge {
+            width : 500px;
+            .panel-rechargeplan {
+                width : 250px;
+                .header, .table-rechargeplan {
+                    width : 100%;
+                }
+            }
+        }
         .tab-consume {
             width : 500px;
             

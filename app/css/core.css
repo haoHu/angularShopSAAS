@@ -1956,8 +1956,9 @@ body {
 }
 .section-huiyuan .tab-join .panel-viplevel {
   position: absolute;
-  right: -120px;
-  top: -21px;
+  right: -300px;
+  top: 0px;
+  bottom: 0;
   background: white;
 }
 .section-huiyuan .tab-join .panel-viplevel .header {
@@ -1985,10 +1986,12 @@ body {
   background: #ddecff;
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan {
-  position: absolute;
-  right: -200px;
-  top: -21px;
-  background: white;
+  position: fixed;
+  right: 300px;
+  top: 42px;
+  bottom: 0;
+  background-color: #fff;
+  width: 300px;
 }
 .section-huiyuan .tab-recharge .panel-rechargeplan .header {
   font-size: 18px;
@@ -2090,6 +2093,16 @@ body {
   text-align: left;
 }
 @media screen and (max-width: 1024px) {
+  .section-huiyuan .tab-recharge {
+    width: 500px;
+  }
+  .section-huiyuan .tab-recharge .panel-rechargeplan {
+    width: 250px;
+  }
+  .section-huiyuan .tab-recharge .panel-rechargeplan .header,
+  .section-huiyuan .tab-recharge .panel-rechargeplan .table-rechargeplan {
+    width: 100%;
+  }
   .section-huiyuan .tab-consume {
     width: 500px;
   }
