@@ -103,14 +103,31 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			});
 
 			// 计算订单列表中的菜品小计金额
+			// $scope.calcFoodAmount = function (item) {
+			// 	var math = Hualala.Common.Math;
+			// 	var foodPayPrice = _.result(item, 'foodPayPrice', 0),
+			// 		foodProPrice = _.result(item, 'foodProPrice', 0),
+			// 		foodNumber = _.result(item, 'foodNumber', 0),
+			// 		foodSendNumber = _.result(item, 'foodSendNumber', 0),
+			// 		foodCancelNumber = _.result(item, 'foodCancelNumber', 0);
+			// 	var v = math.multi(foodPayPrice, math.sub(foodNumber, foodSendNumber, foodCancelNumber));
+			// 	var str = parseFloat(v) == 0 ? '' : math.standardPrice(v);
+			// 	return str;
+			// };
+			// 需求变更，订单菜品金额小计算法公式变更
+			// 条目小计 = （foodNumber - foodCancelNumber - foodSendNumber）* ( isSFDetail == 1 ? foodPayPrice : foodProPrice)
 			$scope.calcFoodAmount = function (item) {
 				var math = Hualala.Common.Math;
-				var foodPayPrice = _.result(item, 'foodPayPrice', 0),
+				var itemKey = _.result(item, 'itemKey'),
+					foodPayPrice = _.result(item, 'foodPayPrice', 0),
 					foodProPrice = _.result(item, 'foodProPrice', 0),
 					foodNumber = _.result(item, 'foodNumber', 0),
 					foodSendNumber = _.result(item, 'foodSendNumber', 0),
-					foodCancelNumber = _.result(item, 'foodCancelNumber', 0);
-				var v = math.multi(foodPayPrice, math.sub(foodNumber, foodSendNumber, foodCancelNumber));
+					foodCancelNumber = _.result(item, 'foodCancelNumber', 0),
+					itemType = OrderService.orderFoodItemType(itemKey);
+				var n = math.sub(foodNumber, foodSendNumber, foodCancelNumber),
+					p = itemType.isSetFoodDetail ? foodPayPrice : foodProPrice,
+					v = math.multi(p, n);
 				var str = parseFloat(v) == 0 ? '' : math.standardPrice(v);
 				return str;
 			};
