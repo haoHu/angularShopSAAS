@@ -119,7 +119,8 @@ define(['app'], function(app)
                     pointrate: d.pointRate,
                     pointasmoneyrate: d.pointAsMoneyRate,
                     //joinplace: '哗啦啦体验店铺（中关村店）',
-                    cardkey: d.cardKey
+                    cardkey: d.cardKey,
+                    customerPrnTxt : _.result(d, 'customerPrnTxt', '')
                 };
                 $scope.prntUserInfo = Hualala.Common.formatPrintTxt2Html(_.result(d, 'customerPrnTxt', ''));
 
