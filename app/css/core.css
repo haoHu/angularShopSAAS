@@ -2705,10 +2705,7 @@ body {
   top: 50%;
   display: block;
   vertical-align: middle;
-  padding: 0 20px;
   margin-top: -18px;
-  border-left: 20px none;
-  border-right: 20px none;
 }
 .section-pickupwindow .advertise-wrap .advertise-info > p,
 .section-pickupwindow .pickup-wrap .advertise-info > p,
@@ -2725,6 +2722,10 @@ body {
 .section-pickupwindow .advertise-wrap .advertise-info > p,
 .section-pickupwindow .pickup-wrap .advertise-info > p {
   margin: 0;
+  overflow: auto;
+  position: absolute;
+  display: block;
+  min-width: 100%;
 }
 .section-pickupwindow .current-pickup {
   position: absolute;
