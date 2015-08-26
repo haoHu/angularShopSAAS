@@ -34,8 +34,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "submitOrder", active : true, label : "落单"},
 				{name : "suspendOrder", active : true, label : "挂单"},
 				{name : "pickOrder", active : true, label : "提单"},
-				{name : "cashPayOrder", active : true, label : "现金"},
-				{name : "payOrder", active : true, label : "其他结账"},
+				{name : "cashPayOrder", active : true, label : "结账"},
+				{name : "payOrder", active : true, label : "扫码结账"},
 				{name : "openCashBox", active : true, label : "开钱箱"}
 			];
 			
@@ -1320,7 +1320,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};
 			
 			// 当前选中支付科目组名称
-			$scope.curPaySubjectGrpName = "cashPay";
+			$scope.curPaySubjectGrpName = _scope.act == "cashPayOrder" ?  "cashPay" : "hualalaPay";
 			// 缓存会员卡数据
 			$scope.$on('pay.upVIPCard', function (d, card) {
 				$scope.curVIPCard = card;
@@ -2610,6 +2610,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							templateUrl = "",
 							resolve = {
 								_scope : function () {
+									scope.act = act;
 									return scope;
 								}
 							};
