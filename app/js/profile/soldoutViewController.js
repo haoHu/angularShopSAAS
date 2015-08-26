@@ -4,6 +4,8 @@ define(['app'], function (app) {
 		function ($rootScope, $scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, AppAlert, AppConfirm, FoodMenuService, SoldoutService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
+			var shopInfo = storage.get('SHOPINFO'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			var modalIsOpenning = false;
 			var $searchFoodModal = $('#search_food');
 			$scope.isModified = false;
@@ -106,7 +108,7 @@ define(['app'], function (app) {
 				$scope.modalType = modalType;
 
 				var modalSize = 'md',
-					windowClass = '',
+					windowClass = webAppPageAnimationIsActive,
 					backdrop = 'static',
 					controller = 'SoldoutFoodSettingController',
 					templateUrl = 'js/profile/soldoutfoodset.html',

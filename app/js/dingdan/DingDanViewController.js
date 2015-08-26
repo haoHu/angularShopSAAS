@@ -56,6 +56,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			var searchParams = $location.search();
 			var getOrderCallServer = null;
 			var modalIsOpenning = false;
+			var shopInfo = storage.get("SHOPINFO"),
+				operationMode = _.result(shopInfo, 'operationMode'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			// 设置/获取当前是否打开了详情模态窗口
 			$scope.modalIsOpen = function (b) {
 				if (_.isBoolean(b)) {
@@ -104,7 +107,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			var openOrderDetailModal = function () {
 				if ($scope.modalIsOpen()) return;
 				var modalSize = 'lg',
-					windowClass = 'orderdetail-modal',
+					windowClass = 'orderdetail-modal ' + webAppPageAnimationIsActive,
 					backdrop = 'static',
 					controller = 'OrderDetailViewController',
 					templateUrl = 'js/dingdan/orderDetail.html',
@@ -129,7 +132,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-                });
+                }, webAppPageAnimationIsActive);
 			};
 			$scope.openDatePicker = function ($event) {
 				$event.preventDefault();
@@ -238,7 +241,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get("SHOPINFO"),
-				operationMode = _.result(shopInfo, 'operationMode');
+				operationMode = _.result(shopInfo, 'operationMode'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			var orderData = OrderService.getOrderData(),
 				reviewBy = _.result(orderData, 'reviewBy', '');
 			// var detailKeys = 'saasOrderKey,reportDate,saasOrderNo,timeNameCheckout,areaName,tableName,channelName,channelOrderNo,orderSubType,netOrderTypeCode,person,createBy,startTime,checkoutTime,checkoutBy,orderStatus,foodCount,foodAmount,sendFoodAmount,cardNo,cardTransID,discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,paidAmount,invoiceTitle,invoiceAmount,userName,userSex,userMobile,userAddress,modifyOrderLog,YJZCount,FJZCount,alertFlagLst,saasOrderRemark,deviceCode,deviceName,actionTime,createTime'.split(',');
@@ -432,7 +436,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			var openModal = function (modalCfg) {
 				// if ($scope.modalIsOpen()) return;
 				var modalSize = 'lg',
-					windowClass = 'orderdetail-modal',
+					windowClass = 'orderdetail-modal ' + webAppPageAnimationIsActive,
 					backdrop = 'static',
 					controller = 'OrderDetailViewController',
 					templateUrl = 'js/dingdan/orderDetail.html',
@@ -449,7 +453,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			$scope.modifyInvoice = function () {
 				openModal({
 					modalSize : 'md',
-					windowClass : 'invoice-modal',
+					windowClass : 'invoice-modal ' + webAppPageAnimationIsActive,
 					backdrop : 'static',
 					controller : 'OrderInvoiceViewController',
 					templateUrl : 'js/dingdan/invoice.html',
@@ -464,7 +468,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			$scope.abolishOrder = function () {
 				openModal({
 					modalSize : 'md',
-					windowClass : 'invoice-modal',
+					windowClass : 'invoice-modal' + webAppPageAnimationIsActive,
 					backdrop : 'static',
 					controller : 'AbolishOrderViewController',
 					templateUrl : 'js/dingdan/abolish.html',

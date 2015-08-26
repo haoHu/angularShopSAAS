@@ -97,8 +97,10 @@ define(['app'], function (app) {
 
 	// Confirm实现，代替浏览器默认confirm组件
 	app.factory('AppConfirm', [
-		'$rootScope', '$timeout', '$sce', '$modal', 
-		function ($rootScope, $timeout, $sce, $modal) {
+		'$rootScope', '$timeout', '$sce', '$modal', 'storage', 
+		function ($rootScope, $timeout, $sce, $modal, storage) {
+			var shopInfo = storage.get('SHOPINFO'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			var confirmService;
 			$rootScope.confirmSets = [];
 			app.controller('AppConfirmController', [
@@ -137,7 +139,7 @@ define(['app'], function (app) {
 					});
 					$rootScope.confirmSets.push(curConfirmSet);
 					var modalSize = 'sm',
-						windowClass = 'site-confirm',
+						windowClass = 'site-confirm ' + webAppPageAnimationIsActive,
 						backdrop = 'fixed',
 						controller = 'AppConfirmController',
 						templateUrl = 'js/services/confirm.html',
@@ -209,9 +211,11 @@ define(['app'], function (app) {
 
 	// 权限校验
 	app.factory('AppAuthEMP', [
-		'$rootScope', '$timeout', '$sce', '$modal',
-		function ($rootScope, $timeout, $sce, $modal) {
+		'$rootScope', '$timeout', '$sce', '$modal', 'storage',
+		function ($rootScope, $timeout, $sce, $modal, storage) {
 			var appAuthService;
+			var shopInfo = storage.get('SHOPINFO'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			$rootScope.authSets = [];
 			app.controller('AppAuthController', [
 				'$scope', '$rootScope', '$modalInstance', '_scope',
@@ -251,7 +255,7 @@ define(['app'], function (app) {
 					});
 					$rootScope.authSets.push(curAuthSet);
 					var modalSize = 'md',
-						windowClass = 'site-confirm',
+						windowClass = 'site-confirm ' + webAppPageAnimationIsActive,
 						backdrop = 'fixed',
 						controller = 'AppAuthController',
 						// templateUrl = 'js/services/confirm.html',

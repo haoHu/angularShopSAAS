@@ -286,7 +286,7 @@ define(['app'], function (app) {
     /**
      * 表单单头表单框
      */
-    app.directive('orderheader', ["$modal", "$rootScope", function ($modal, $rootScope) {
+    app.directive('orderheader', ["$modal", "$rootScope", "storage", function ($modal, $rootScope, storage) {
             return {
                 restrict : 'E',
                 // template : '<div><div class="" ng-class="{\'col-xs-6\' : $index <= 4, \'col-xs-12\' : $index > 4}" ng-repeat="el in fmels" ><label for="" class="col-xs-4">{{el.label}}</label><span class="col-xs-8"><span class="btn btn-default btn-block">{{el.value}}</span></span></div></div>',
@@ -330,6 +330,8 @@ define(['app'], function (app) {
                 },
                 link : function (scope, el, attrs) {
                     el.on('click', function (e) {
+                        var shopInfo = storage.get('SHOPINFO'),
+                            webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
                         if (el.hasClass('disabled')) return;
                         // $modal.open({
                         //     size : 'lg',
@@ -342,6 +344,7 @@ define(['app'], function (app) {
                         //     }
                         // });
                         Hualala.ModalCom.openModal($rootScope, $modal, {
+                            windowClass : webAppPageAnimationIsActive,
                             size : 'lg',
                             controller : "OrderHeaderSetController",
                             templateUrl : "js/diandan/orderheaderset.html",
@@ -700,8 +703,8 @@ define(['app'], function (app) {
     
     // 订单条目操作按钮组
     app.directive('orderitemhandle', [
-        "$modal", "$rootScope", "$filter", "OrderService",
-        function ($modal, $rootScope, $filter, OrderService) {
+        "$modal", "$rootScope", "$filter", "storage", "OrderService",
+        function ($modal, $rootScope, $filter, storage, OrderService) {
             return {
                 restrict : 'E',
                 template : [
@@ -714,6 +717,8 @@ define(['app'], function (app) {
                 replace : true,
                 link : function (scope, el, attr) {
                     el.on('click', '.btn-block', function () {
+                        var shopInfo = storage.get('SHOPINFO'),
+                            webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
                         var btn = $(this), act = btn.attr('name');
                         var modalSize = "lg",
                             controller = "",
@@ -791,7 +796,7 @@ define(['app'], function (app) {
                                 // 账单并台
                                 controller = "ChangeTableController";
                                 templateUrl = "js/diandan/changeTable.html";
-                                windowClass = "table-modal";
+                                windowClass = "table-modal " + webAppPageAnimationIsActive;
                                 backdrop = "static";
                                 resolve = {
                                     _scope : function () {

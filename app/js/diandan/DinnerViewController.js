@@ -40,7 +40,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			];
 			
 			var shopInfo = storage.get("SHOPINFO"),
-				operationMode = _.result(shopInfo, 'operationMode');
+				operationMode = _.result(shopInfo, 'operationMode'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			$scope.OrderHandleBtns = _.map($scope.OrderHandleBtns, function (btn) {
 				var name = btn.name;
 				// 正餐模式下没有挂单、提单
@@ -367,11 +368,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 					};
 				Hualala.ModalCom.openModal($rootScope, $modal, {
+					windowClass : webAppPageAnimationIsActive,
 					size : modalSize,
 					controller : controller,
 					templateUrl : templateUrl,
 					resolve : resolve
-				});
+				}, webAppPageAnimationIsActive);
 				// $modal.open({
 				// 	size : modalSize,
 				// 	controller : controller,
@@ -401,7 +403,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				// });
 
 				var modalSize = "lg",
-					windowClass = "setfood-modal",
+					windowClass = "setfood-modal " + webAppPageAnimationIsActive,
 					backdrop = "static",
 					controller = "SetFoodSettingController",
 					templateUrl = "js/diandan/setFoodSetting.html",
@@ -417,7 +419,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					templateUrl : templateUrl,
 					resolve : resolve,
 					backdrop : backdrop
-				});
+				}, webAppPageAnimationIsActive);
 				// $modal.open({
 				// 	size : modalSize,
 				// 	windowClass : windowClass,
@@ -431,7 +433,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 打开临时菜配置窗口
 			$scope.openTempFoodCfg = function (unitKey) {
 				var modalSize = "md",
-					windowClass = "tempfood-modal",
+					windowClass = "tempfood-modal " + webAppPageAnimationIsActive,
 					backdrop = "static",
 					controller = "TempFoodSettingController",
 					templateUrl = "js/diandan/tempFoodSetting.html",
@@ -2599,7 +2601,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				link : function (scope, el, attr) {
 					var submitOrder = null;
 					var shopInfo = storage.get("SHOPINFO"),
-						operationMode = _.result(shopInfo, 'operationMode');
+						operationMode = _.result(shopInfo, 'operationMode'),
+						webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? true : false;
 					if (operationMode != 0) {
 						el.find('.btn[name=return]').attr('disabled', true);
 					}
@@ -2651,7 +2654,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							// });
 							Hualala.ModalCom.openModal($rootScope, $modal, {
 								size : modalSize,
-								windowClass : "",
+								windowClass : webAppPageAnimationIsActive,
 								controller : controller,
 								templateUrl : templateUrl,
 								resolve : resolve
@@ -2698,7 +2701,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 										// });
 										Hualala.ModalCom.openModal($rootScope, $modal, {
 											size : modalSize,
-											windowClass : "pay-modal",
+											windowClass : "pay-modal " + webAppPageAnimationIsActive,
 											controller : controller,
 											templateUrl : templateUrl,
 											resolve : resolve,

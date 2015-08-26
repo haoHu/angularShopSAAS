@@ -4,6 +4,8 @@ define(['app'], function(app) {
 		function($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, CloudOrderLstService, CloudOrderService, AppAlert, OrderNoteService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
+			var shopInfo = storage.get('SHOPINFO'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			$scope.qOrderSubType = '0';
 			$scope.qKeyword = '';
 			$scope.curPageNo = 1;
@@ -288,7 +290,7 @@ define(['app'], function(app) {
 				var modalSize = "lg",
 					controller = "",
 					templateUrl = "",
-					windowClass = "",
+					windowClass = webAppPageAnimationIsActive,
 					backdrop = "static",
 					resolve = {
 						_scope : function () {
@@ -323,7 +325,7 @@ define(['app'], function(app) {
 						} else {
 							controller = "SubmitCloudOrderController";
 	                        templateUrl = "js/jiedan/chooseTable.html";
-	                        windowClass = "table-modal";
+	                        windowClass += " table-modal ";
 						}
 						
 						break;

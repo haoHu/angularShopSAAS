@@ -7,7 +7,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
 			var shopInfo = storage.get("SHOPINFO"),
-				operationMode = _.result(shopInfo, 'operationMode');
+				operationMode = _.result(shopInfo, 'operationMode'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			// $scope.closeTopTip = function (index) {
 			// 	HC.TopTip.closeTopTip($rootScope, index);
 			// };
@@ -175,6 +176,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
     //                 }
     //             });
                 Hualala.ModalCom.openModal($rootScope, $modal, {
+                	windowClass : webAppPageAnimationIsActive,
                     size : 'lg',
                     controller : "OpenTableSetController",
                     // templateUrl : "js/diandan/opentableset.html",

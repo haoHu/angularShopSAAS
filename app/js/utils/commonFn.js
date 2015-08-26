@@ -433,6 +433,9 @@
 	IX.ns("Hualala.ModalCom");
 	// 弹窗
 	Hualala.ModalCom.openModal = function ($rootScope, $modal, cfg) {
+		var cfg = _.extend({}, cfg, {
+			windowTemplateUrl : 'js/template/modal.html'
+		});
 		var modalInstance = $modal.open(cfg);
 		$rootScope.ModalLst.push(modalInstance);
 		return modalInstance;

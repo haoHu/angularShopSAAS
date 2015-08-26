@@ -4,7 +4,8 @@ define(['app'], function (app) {
 		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
-
+			var shopInfo = storage.get('SHOPINFO'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
 			var modalIsOpenning = false;
 			// 跳转沽清菜品设置
 			$scope.appSoldOutSetting = function (e) {
@@ -14,7 +15,7 @@ define(['app'], function (app) {
 			$scope.appVersionSetting = function (e) {
 				if ($scope.modalIsOpen()) return;
 				var modalSize = 'lg',
-					windowClass = 'server-modal',
+					windowClass = 'server-modal ' + webAppPageAnimationIsActive,
 					backdrop = 'static',
 					controller = 'AppVersionInfoModalController',
 					templateUrl = 'js/profile/appversion.html',
@@ -52,7 +53,7 @@ define(['app'], function (app) {
 			$scope.appModifyPWD = function (e) {
 				if ($scope.modalIsOpen()) return;
 				var modalSize = 'md',
-					windowClass = '',
+					windowClass = webAppPageAnimationIsActive,
 					backdrop = 'static',
 					controller = 'ModifyPWDController',
 					templateUrl = 'js/profile/modifypwd.html',
@@ -91,7 +92,7 @@ define(['app'], function (app) {
 			$scope.appServerInfo = function (e) {
 				if ($scope.modalIsOpen()) return;
 				var modalSize = 'lg',
-					windowClass = 'server-modal',
+					windowClass = 'server-modal ' + webAppPageAnimationIsActive,
 					backdrop = 'static',
 					controller = 'LocalServerInfoModalController',
 					templateUrl = 'js/profile/servermodal.html',
