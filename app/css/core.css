@@ -1231,10 +1231,10 @@ body {
   -webkit-box-flex: 1;
   -webkit-box-flex-group: 2;
 }
-.setfood-modal .setfood-ctrl .ctrl-schema > header .btn-close,
-.setfood-modal .setfood-ctrl .ctrl-opt > header .btn-close {
+.setfood-modal .setfood-ctrl .ctrl-schema > header > h4,
+.setfood-modal .setfood-ctrl .ctrl-opt > header > h4 {
   position: absolute;
-  right: 0;
+  left: 0;
   top: 0;
 }
 .setfood-modal .setfood-ctrl .ctrl-schema > section,
