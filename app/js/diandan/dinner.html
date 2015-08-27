@@ -714,7 +714,7 @@
 						<small class="help-block" ng-show="vip_pay.money_amount.$dirty && vip_pay.money_amount.$error.bvIsnum">必须是数字</small>
 					</div>
 					<div class="col-xs-4">
-						<p class="help-block info">使用余额:{{vipInfo.cardCashBalance || 0 | mycurrency:"￥"}}</p>
+						<p class="help-block info">使用余额:{{sumVIPCardMoneyBalance(vipInfo.cardCashBalance, vipInfo.cardGiveBalance) || 0 | mycurrency:"￥"}}</p>
 					</div>
 				</div>
 			</div>

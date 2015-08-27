@@ -2010,7 +2010,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							discountRange = _.result(scope.vipInfo, 'discountRange'),
 							isVipPrice = _.result(scope.vipInfo, 'isVIPPrice'),
 							cardPointAsMoney = parseFloat(_.result(scope.vipInfo, 'cardPointAsMoney', 0)),
-							cardCashBalance = parseFloat(_.result(scope.vipInfo, 'cardCashBalance', 0));
+							cardCashBalance = parseFloat(_.result(scope.vipInfo, 'cardCashBalance', 0)),
+							cardGiveBalance = parseFloat(_.result(scope.vipInfo, 'cardGiveBalance', 0)),
+							// 会员卡现金余额居然是cardCashBalance和cardGiveBalance两个数据相加......
+							cardMoneyBalance = parseFloat(HCMath.add(cardCashBalance, cardGiveBalance));
 
 						var prePayAmount = scope.prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName('vipCardPay'));
 						var delta = 0;
@@ -2018,7 +2021,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						// 如果cardPointAsMoney < prePayAmount, 将积分全部使用
 						scope.payByPoint = cardPointAsMoney >= prePayAmount ? prePayAmount : cardPointAsMoney;
 						delta = HCMath.sub(prePayAmount, scope.payByPoint);
-						scope.payByCash = cardCashBalance >= delta ? delta : cardCashBalance;
+						scope.payByCash = cardMoneyBalance >= delta ? delta : cardMoneyBalance;
 						delta = HCMath.sub(delta, scope.payByCash);
 						scope.prePayAmount = delta;
 					};
@@ -2056,6 +2059,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						scope.$apply();
 					};
 					
+					// 计算会员卡卡值余额
+					scope.sumVIPCardMoneyBalance = function (cardCashBalance, cardGiveBalance) {
+						cardCashBalance = !cardCashBalance ? 0 : cardCashBalance;
+						cardGiveBalance = !cardGiveBalance ? 0 : cardGiveBalance;
+						return parseFloat(HCMath.add(cardCashBalance, cardGiveBalance));
+					};
 					
 					// 判断是否有会员卡数据
 					scope.hasVIPInfo = function () {
