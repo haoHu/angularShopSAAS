@@ -37,6 +37,7 @@ define(['app'], function(app) {
 					orderStatus = _.result(order, 'orderStatus'),
 					orderSubType = _.result(order, 'orderSubtype'),
 					takeoutDeliveryTime = _.result(order, 'takeoutDeliveryTime', 0),
+					takeoutConfirmTime = _.result(order, 'takeoutConfirmTime'),
 					shopRefundAmount = _.result(order, 'shopRefundAmount', 0),
 					isAlreadyPaid = _.result(order, 'isAlreadyPaid', 0);
 				if (_.isEmpty(order)) {
@@ -65,10 +66,10 @@ define(['app'], function(app) {
 							btn.label = "打印";
 							break;
 						case "sendout":
-							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime == 0 && isAlreadyPaid != 1) ? false : true;
+							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime == 0 && shopRefundAmount == 0) ? false : true;
 							break;
 						case "delivery":
-							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutDeliveryTime > 0) ? false : true;
+							disabled = (orderStatus == 40 && orderSubType == 20 && takeoutConfirmTime == 0 && shopRefundAmount == 0) ? false : true;
 							break;
 						case "prev":
 							break;
