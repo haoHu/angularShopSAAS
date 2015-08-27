@@ -304,8 +304,8 @@ define(['app'], function(app)
 
     //会员导航栏入会办卡
     app.directive('jointab', [
-        '$rootScope', '$sce', 'CommonCallServer', 'AppAlert',
-        function ($rootScope, $sce, CommonCallServer, AppAlert) {
+        '$rootScope', '$sce', 'storage', 'CommonCallServer', 'AppAlert',
+        function ($rootScope, $sce, storage, CommonCallServer, AppAlert) {
             return {
                 restrict : 'E',
                 template : [
@@ -543,6 +543,23 @@ define(['app'], function(app)
                 link : function (scope, el, attr) {
                     el.find('.panel-viplevel ul').css('height', $(window).height() - 82);
                     var ti, checkcode;
+
+                    var viplevel = {
+                        defLevel: function(levels) {
+                            for(var i = 0; i < levels.length; i ++) {
+                                if(levels[i].isDefaultLevel == '1') {
+                                    levels[i].def = true;
+                                    scope.cardlevelid = levels[i].cardLevelID;
+                                    return  i;
+                                }
+                            }
+                        },
+                        changeLevel: function(index) {
+                            scope.level = scope.viplevels[index];
+                            scope.$apply();
+                        }
+                    };
+
                     //初始值设定
                     var init = function() {
                         scope.realcardnumber = '';
@@ -557,29 +574,62 @@ define(['app'], function(app)
                         clearInterval(ti);
                         $('.btn-sendcheckcode', el).html('获取验证码').removeClass('btn-disable');
                     };
+                    // 需求变更，要把获取的集团信息缓存在localstorage中
+                    // 需求变更判断是localstorage中有集团会员参数信息缓存，如果没有再去请求获取
+                    // 由于后台没有提供有效的消息推送机制，这种做法无法做到当集团会员数据信息在后端更新后，
+                    // 前端无法及时更新localstorage中的缓存信息
+                    // 问题反馈说点击会员模块速度慢，根源问题不在于每次进入会员模块请求集团会员参数信息，
+                    // 而在于请求这个数据后端响应时间太长
+                    // 初始化集团会员参数
+                    var initShopVIPInfo = function (data) {
+                        storage.set('SHOPVIPINFO', data);
+                        scope.vipinfo = storage.get('SHOPVIPINFO');
+                        scope.viplevels = _.result(scope.vipinfo, 'cardLevelList');
+                        var index = viplevel.defLevel(scope.viplevels);
+                        scope.level = scope.viplevels[index];
+                        scope.rechargeplans = _.result(scope.vipinfo, 'saveMoneySet');
+                        if (_.result(scope.vipinfo, 'isSysSwitchActive') == '1') {
+                            el.find('.panel-oldcard').show();
+                        }
+                    };
+                    
+                    if (_.isEmpty(storage.get('SHOPVIPINFO'))) {
+                        scope.CCS.getShopVipInfo({}).success(function (data) {
+                            if (data.code == '000') {
+                                scope.AA.add('success', '获取集团会员参数成功');
+                                initShopVIPInfo(_.result(data, 'data', null));
+                            } else {
+                                scope.AA.add('danger', data.msg);
+                            }
+                        });
+                    } else {
+                        initShopVIPInfo(storage.get('SHOPVIPINFO'));
+                    }
+
                     init();
+                    
 
                     //获取集团会员参数
-                    scope.CCS.getShopVipInfo({}).success(function(data) {
-                        if(data.code == '000') {
-                            scope.AA.add('success', '获取集团会员参数成功');
+                    // scope.CCS.getShopVipInfo({}).success(function(data) {
+                    //     if(data.code == '000') {
+                    //         scope.AA.add('success', '获取集团会员参数成功');
 
-                            scope.vipinfo = data.data;
+                    //         scope.vipinfo = data.data;
 
-                            scope.viplevels = data.data.cardLevelList;
+                    //         scope.viplevels = data.data.cardLevelList;
 
-                            var index = viplevel.defLevel(scope.viplevels);
-                            scope.level = scope.viplevels[index];
+                    //         var index = viplevel.defLevel(scope.viplevels);
+                    //         scope.level = scope.viplevels[index];
 
-                            scope.rechargeplans = data.data.saveMoneySet;
+                    //         scope.rechargeplans = data.data.saveMoneySet;
 
-                            if(data.data.isSysSwitchActive == '1') {
-                                el.find('.panel-oldcard').show();
-                            }
-                        }else {
-                            scope.AA.add('danger', data.msg);
-                        }
-                    });
+                    //         if(data.data.isSysSwitchActive == '1') {
+                    //             el.find('.panel-oldcard').show();
+                    //         }
+                    //     }else {
+                    //         scope.AA.add('danger', data.msg);
+                    //     }
+                    // });
 
                     scope.$watch('checkmobile',function(n, o) {
                         if(n == true) {
@@ -636,21 +686,7 @@ define(['app'], function(app)
                         }
                     });
 
-                    var viplevel = {
-                        defLevel: function(levels) {
-                            for(var i = 0; i < levels.length; i ++) {
-                                if(levels[i].isDefaultLevel == '1') {
-                                    levels[i].def = true;
-                                    scope.cardlevelid = levels[i].cardLevelID;
-                                    return  i;
-                                }
-                            }
-                        },
-                        changeLevel: function(index) {
-                            scope.level = scope.viplevels[index];
-                            scope.$apply();
-                        }
-                    };
+                    
 
                     //点击会员等级标签时
                     el.on('click', '.panel-viplevel li', function() {

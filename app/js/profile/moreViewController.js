@@ -125,6 +125,9 @@ define(['app'], function (app) {
 					success(function (data, status, headers, config) {
 						var code = _.result(data, 'code');
 						if (code == '000') {
+							// 需求变更，由于要缓存店铺会员信息参数SHOPVIPINFO，所以在注销时，需要将这部分缓存清空，
+							// 尽量保证下一次登录时，能够获取到最新的集团会员信息
+							storage.remove('SHOPVIPINFO');
 							$location.path('/signin');
 						} else {
 							// HC.TopTip.addTopTip($rootScope, data);
