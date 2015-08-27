@@ -723,7 +723,7 @@ define(['app'], function (app) {
                         var modalSize = "lg",
                             controller = "",
                             templateUrl = "",
-                            windowClass = "",
+                            windowClass = webAppPageAnimationIsActive,
                             backdrop = "",
                             resolve = {
                                 _scope : function () {
@@ -796,7 +796,7 @@ define(['app'], function (app) {
                                 // 账单并台
                                 controller = "ChangeTableController";
                                 templateUrl = "js/diandan/changeTable.html";
-                                windowClass = "table-modal " + webAppPageAnimationIsActive;
+                                windowClass += " table-modal ";
                                 backdrop = "static";
                                 resolve = {
                                     _scope : function () {

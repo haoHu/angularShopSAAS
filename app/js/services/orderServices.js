@@ -2665,7 +2665,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					items = _.uniq(mItems.concat(oItems), function (el) {
 						return el.notesName;
 					});
-					return _.extend(oData, {
+					// return _.extend(oData, {
+					// 	items : items
+					// });
+					return _.extend({}, oData, {
 						items : items
 					});
 				};
@@ -2688,7 +2691,10 @@ define(['app', 'uuid'], function (app, uuid) {
 					items = _.uniq(oItems.slice(0, 1).concat(mItems).concat(oItems.slice(1)), function (el) {
 						return el.notesName;
 					});
-					return _.extend(oData, {
+					// return _.extend(oData, {
+					// 	items : items
+					// });
+					return _.extend({}, oData, {
 						items : items
 					});
 				};
