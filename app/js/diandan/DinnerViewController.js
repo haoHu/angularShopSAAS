@@ -2103,7 +2103,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							AppConfirm.add({
 								title : "使用券",
 								// msg : curVoucher.voucherUsingNotes + '<br/>' + '是否使用?',
-								msg : (_.isEmpty(curVoucher.voucherUsingNotes) ? '' : curVoucher.voucherUsingNotes + '\n') + '是否使用？',
+								msg : (_.isEmpty(curVoucher.voucherUsingNotes) ? '' : curVoucher.voucherUsingNotes + '<br/>') + '是否使用？',
 								yesFn : function () {
 									chkbox.trigger('click');
 									return;

@@ -153,7 +153,7 @@ define(['app'], function (app) {
 									'</div>',
 									'<div class="media-body">',
 										'<h4 class="media-heading">{{confirmSet.title}}</h4>',
-										'<p>{{confirmSet.msg}}</p>',
+										'<p ng-bind-html="confirmSet.msg"></p>',
 									'</div>',
 								'</div>',
 							'</div>',
