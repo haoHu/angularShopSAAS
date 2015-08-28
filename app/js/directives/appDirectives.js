@@ -446,7 +446,12 @@ define(['app'], function (app) {
                         tarScope : scope,
                         curVal : val
                     });
+                    e.stopPropagation();
                     scope.$apply();
+
+                });
+                el.on('click', ':checkbox', function (e) {
+                    e.stopPropagation();
                 });
             }
         };

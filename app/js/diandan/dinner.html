@@ -688,7 +688,7 @@
 					</div>
 					<p class="help-block info col-xs-offset-2 col-xs-10" >
 						<span class="">姓名:{{vipInfo.userName || '哗啦啦'}}</span>
-						<span class="">手机:{{vipInfo.userMobile || '13322222222'}}</span>
+						<span class="">手机:{{vipInfo.userMobile || '133xxxxxxxx'}}</span>
 						<span class="" ng-class="{hidden : vipInfo.customerBirthday.length == 0}">生日:{{vipInfo.customerBirthday || ''}}</span>
 						<span class="">{{vipInfo.cardTypeName || 'VIP1'}}</span>
 					</p>
@@ -723,7 +723,7 @@
 					<label class="">用券:</label>
 					<span>{{curCashVoucherStr}}</span>
 				</div>
-				<div class="btngrp-box btngrp-2x3 voucher-grp" pager-list="loop" pager-data="{{cashVoucherOpts}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+				<div class="btngrp-box btngrp-2x3 voucher-grp" pager-list="loop" pager-data="{{cashVoucherOpts}}" page-size="5" item-selector=".btn.btn-checkbox" btn-selector=".btn-pager" page-num="0">
 					<checkboxgroup group-opts="cashVoucherOpts" checkbox-name="cash_voucher" cur-val="curCashVouchers" class="btn-group" role="group" data-toggle="buttons" on-change="onCashVoucherChange(val, checkboxName, tarScope, curVal)" ></checkboxgroup>
 					<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 				</div>
