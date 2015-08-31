@@ -40,6 +40,7 @@ define([], function () {
 				templateUrl : 'js/diandan/table.html',
 				dependencies : [
 					'diandan/TableViewController',
+					'diandan/DinnerViewController',
 					'directives/appDirectives',
 					'services/appServices',
 					'services/orderServices',

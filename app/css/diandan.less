@@ -13,7 +13,13 @@
 	@orderHeaderBG : #ffc;
 	// 页面框架
 	position : relative; height : 100%;
-	.btn {/*border-radius: 0;*/ white-space: normal;}
+	.btn {
+		/*border-radius: 0;*/ white-space: normal;
+		font-weight: bold;
+		&.btn-pager, &.btn-prev, &.btn-next, &.btn-search, &.btn-print {
+			background-color: #ec971f!important;
+		}
+	}
 	.order-plain {
 		position : absolute; left : 0; top : 0; bottom : 0; padding : 0; margin : 0;
 		width : @orderPlainWidth; border-right : 1px solid @xBaseBorderColor;
@@ -165,7 +171,16 @@
 
 	// 单头信息样式
 	.order-header {
-		> div {padding : .5rem;}
+		> div {
+			position: relative; padding : 0 .5rem; cursor : pointer;
+			.more {
+				display: block; position : absolute; top : 50%; right : 0; margin-top : -8px;
+				width : 16px; height : 16px; font-size: 16px;
+			}
+			&.disabled .more {
+				display: none;
+			}
+		}
 		.item {
 			padding : 0; 
 			label, span {

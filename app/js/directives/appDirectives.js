@@ -292,6 +292,7 @@ define(['app'], function (app) {
                 // template : '<div><div class="" ng-class="{\'col-xs-6\' : $index <= 4, \'col-xs-12\' : $index > 4}" ng-repeat="el in fmels" ><label for="" class="col-xs-4">{{el.label}}</label><span class="col-xs-8"><span class="btn btn-default btn-block">{{el.value}}</span></span></div></div>',
                 template : [
                     '<div>',
+                        '<span class="more glyphicon glyphicon-chevron-right"></span>',
                         '<div class="clearfix">',
                             '<div class="item col-xs-4"><label for="" class="col-xs-6">单号</label><span class="col-xs-6">{{fmels.saasOrderNo | getSaasOrderNo}}</span></div>',
                             '<div class="item col-xs-4"><label for="" class="col-xs-6">人数</label><span class="col-xs-6">{{fmels.person}}</span></div>',
@@ -708,19 +709,23 @@ define(['app'], function (app) {
     
     // 订单条目操作按钮组
     app.directive('orderitemhandle', [
-        "$modal", "$rootScope", "$filter", "storage", "OrderService",
-        function ($modal, $rootScope, $filter, storage, OrderService) {
+        "$modal", "$rootScope", "$filter", "$sce", "storage", "OrderService", "OrderPayService", "AppAlert",
+        function ($modal, $rootScope, $filter, $sce, storage, OrderService, OrderPayService, AppAlert) {
             return {
                 restrict : 'E',
                 template : [
                     '<div class="order-btngrp">',
-                        '<button class="btn btn-default btn-block {{btn.clz}}" type="button" ng-disabled="!btn.active" ng-repeat="btn in OrderItemHandle" name="{{btn.name}}">',
+                        '<button class="btn btn-default btn-block {{btn.clz}}" type="button" ng-disabled="!btn.active" ng-repeat="btn in OrderItemHandle" name="{{btn.name}}" ng-bind-html="parseSnippet(btn.label)">',
                             '{{btn.label}}',
                         '</button>',
                     '</div>'
                 ].join(''),
                 replace : true,
                 link : function (scope, el, attr) {
+                    // html解析
+                    scope.parseSnippet = function (str) {
+                        return $sce.trustAsHtml(str); 
+                    };
                     el.on('click', '.btn-block', function () {
                         var shopInfo = storage.get('SHOPINFO'),
                             webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
@@ -811,9 +816,39 @@ define(['app'], function (app) {
                                     }
                                 };
                                 break;
+                            case "cashPayOrder":
+                            case "payOrder":
+                                controller = "PayOrderController";
+                                templateUrl = "js/diandan/payOrder.html";
+                                backdrop = "static";
+                                resolve = {
+                                    _scope : function () {
+                                        scope.act = act;
+                                        return scope;
+                                    }
+                                };
+                                break;
 
 
                         }
+                        var openOrderPayModal = function () {
+                            var needConfirmFoodNumberItems = OrderService.getNeedConfirmFoodNumberItems();
+                            if (needConfirmFoodNumberItems.length > 0) {
+                                AppAlert.add('danger', '有菜品未确认数量,请先对菜品确认数量!');
+                                scope.$apply();
+                            } else {
+                                OrderPayService.initOrderPay(function () {
+                                    Hualala.ModalCom.openModal($rootScope, $modal, {
+                                        size : modalSize,
+                                        windowClass : windowClass + ' pay-modal ',
+                                        controller : controller,
+                                        templateUrl : templateUrl,
+                                        resolve : resolve,
+                                        backdrop : backdrop
+                                    });
+                                });
+                            }
+                        };
                         var modalAction = _.indexOf('delete,addOne,subOne,waiting,urgent,addFood,urgeFood,splitFood'.split(','), act);
                         if (modalAction == -1) {
                             //  $modal.open({
@@ -824,15 +859,18 @@ define(['app'], function (app) {
                             //     resolve : resolve,
                             //     backdrop : backdrop
                             // });
-
-                            Hualala.ModalCom.openModal($rootScope, $modal, {
-                                size : modalSize,
-                                windowClass : windowClass,
-                                controller : controller,
-                                templateUrl : templateUrl,
-                                resolve : resolve,
-                                backdrop : backdrop
-                            });
+                            if (act != "cashPayOrder" && act != "payOrder") {
+                                Hualala.ModalCom.openModal($rootScope, $modal, {
+                                    size : modalSize,
+                                    windowClass : windowClass,
+                                    controller : controller,
+                                    templateUrl : templateUrl,
+                                    resolve : resolve,
+                                    backdrop : backdrop
+                                });
+                            } else {
+                                openOrderPayModal();
+                            }
                         }
                     });
                 }
@@ -1106,7 +1144,8 @@ define(['app'], function (app) {
                             '<span ng-if="food.isTempFood == 1" class="tmpfood-tag"></span>',
                             '<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>',
                             '<p class="unit">',
-                                '{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}',
+                                // '{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}',
+                                '{{food.__foodUnit.price }}/{{food.__foodUnit.unit}}',
                             '</p>',
                         '</div>',
                         '<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><span>上页</span></div>',

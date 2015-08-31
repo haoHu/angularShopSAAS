@@ -21,8 +21,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "send", active : false, label : "赠"},
 				{name : "cancel", active : false, label : "退"},
 				{name : "delete", active : false, label : "删"},
-				{name : "addOne", active : false, label : "+"},
-				{name : "subOne", active : false, label : "-"},
+				{name : "addOne", active : false, label : "<span class=\"glyphicon glyphicon-plus\"><span>"},
+				{name : "subOne", active : false, label : "<span class=\"glyphicon glyphicon-minus\"><span>"},
 				{name : "count", active : false, label : "改量"},
 				{name : "price", active : false, label : "改价"},
 				{name : "method", active : false, label : "作法"},
@@ -486,6 +486,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						$scope.resetOrderInfo();
 						// 向子窗口推送新加菜品的消息
 						Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
+						$timeout(function () {
+							$('[item-key='+$scope.curFocusOrderItemKey + ']').trigger('click');
+						}, 0);
 					} else if (code == 'CS005') {
 						addAuthEMP();
 					} else {
@@ -1387,6 +1390,17 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var name = _.result(paySubjectGrp, 'name');
 				$scope.$broadcast('pay.submit', paySubjectGrp);
 			};
+			// 现金快捷支付结算
+			$scope.quickSubmitCashPay = function (paySubjectGrp) {
+				var _orderPayDetail;
+				$scope.submitPayForm(paySubjectGrp);
+				_orderPayDetail = $scope.orderPayDetail;
+				if ($scope.isCanbeSubmit(_orderPayDetail)) {
+					$scope.submitOrderPay();
+				} else {
+					AppAlert.add('danger', "请核对金额");
+				}
+			};
 			// 取消支付科目组支付金额
 			$scope.resetPaySubject = function (paySubjectGrp) {
 				var name = _.result(paySubjectGrp, 'name'),
@@ -1439,7 +1453,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var search = $location.search(),
 					path = _.result(search, 'path');
 				if (_.isEmpty(path)) {
-					$location.path('/dinner/table');
+					if ($location.path() == '/dinner/table') {
+						document.location.reload();
+					} else {
+						$location.path('/dinner/table');
+					}
 				} else {
 					$location.path(path).search(search);
 				}

@@ -1,0 +1,45 @@
+<form class="row" role="form" name="com_pay" novalidate="novalidate">
+	<div class="" ng-class="{'col-xs-12' : paySubjectGrp.name == 'discountPay', 'col-xs-4' : paySubjectGrp.name != 'discountPay'}" ng-if="needLeftBar(paySubjectGrp.name)">
+		<div class="btngrp-box discount-grp" ng-if="paySubjectGrp.name == 'discountPay'" pager-list="loop" pager-data="{{discountRuleLst}}" page-size="11" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+			<radiogroup group-opts="discountRuleLst" radio-name="discountRule" cur-val="{{curDiscountRule}}" class="btn-group" role="group" data-toggle="buttons" on-change="onDiscountChange(val)"></radiogroup>
+			<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+		</div>
+		
+		<div class="btngrp-box btngrp-vertical" ng-if="paySubjectGrp.name != 'discountPay'" pager-list="loop" pager-data="{{optCfg.items}}" page-size="5" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+			<radiogroup group-opts="optCfg.items" radio-name="pay_subject" cur-val="optCfg.selectedSubjects" class="btn-group" role="group" data-toggle="buttons" on-change="onPaySubjectChange(val)"></radiogroup>
+			<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+		</div>
+	</div>
+	<div class="col-xs-12 hll-paytype" ng-if="paySubjectGrp.name == 'hualalaPay'">
+		<div class="btn-group btn-group-justified">
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="''" ng-click="genQRCode()">哗啦啦手工输入</label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual">哗啦啦扫码支付</label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'WECHAT'" ng-click="genQRCode('WECHAT')" ng-disabled="onlyHLLPayManual">微信扫码支付</label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'ALIPAY'" ng-click="genQRCode('ALIPAY')" ng-disabled="onlyHLLPayManual">支付宝扫码支付</label>
+			
+		</div>
+	</div>
+	<div class="col-xs-8" ng-if="paySubjectGrp.name != 'discountPay'" ng-class="{hidden : !!payType}">
+		<div class="form-horizontal">
+			<div class="form-group" ng-repeat="el in formCfg">
+				<label class="col-xs-4 control-label">{{el.label}}</label>
+				<div class="col-xs-8" ng-class="{'has-success' : com_pay.realPrice.$dirty && com_pay.realPrice.$valid, 'has-error' : com_pay.realPrice.$invalid}">
+					<input ng-if="$index == 0 && (paySubjectGrp.name == 'cashPay' || paySubjectGrp.name == 'remissionPay')" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
+					<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay'" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0 ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
+					<input ng-if="$index != 0" type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
+					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvIsnum">必须是数字</small>
+					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvGreaterthan">必须大于0</small>
+				</div>
+			</div>
+		</div>
+		<div>
+			<numkeyboard cur-target="focusInputEl"></numkeyboard>
+		</div>
+	</div>
+	
+	<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}" ng-if="paySubjectGrp.name == 'hualalaPay'">
+		<h4>{{curQRCodeTitle}}</h4>
+		<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
+		<p>{{curQRCodeLabel}}</p>
+	</div>
+</form>

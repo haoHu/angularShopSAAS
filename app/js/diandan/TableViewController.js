@@ -25,6 +25,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			$scope.OrderItemHandle = [
 				{name : "addFood", clz : "addfood", active : true, label : "点菜"},
+				{name : "cashPayOrder", clz : "", active : false, label : "结账"},
+				{name : "payOrder", clz : "hidden", active : false, label : "二维码结账"},
 				{name : "urgeFood", active : false, label : "催叫"},
 				// {name : "splitFood", active : false, label : "拆分"},
 				{name : "changeFood", active : false, label : "转菜"},
@@ -212,7 +214,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						tableStatus = _.result(_tbl, 'tableStatus'),
 						saasOrderKey = _.result(_tbl, 'saasOrderKey'),
 						hisFlag = _.result(_tbl, 'his', 0);
-					var activeBtns = ['addFood', 'changeOrder', 'mergeOrder', 'unionOrder'];
+					var activeBtns = ['addFood', 'changeOrder', 'mergeOrder', 'unionOrder', 'cashPayOrder', 'payOrder'];
 					// 如果桌台为占用状态并且订单号不为空，加载选中桌台的订单
 					if (tableStatus == 1 && !_.isEmpty(saasOrderKey)) {
 						OrderService.getOrderByOrderKey({
@@ -220,6 +222,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							hisFlag : hisFlag
 						}, function (data) {
 							$scope.resetOrderInfo();
+							$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
+								var n = _.result(btn, 'name'),
+									i = _.indexOf(activeBtns, n);
+								btn['active'] = i >= 0 ? true : false;
+								return btn;
+							});
 						}, function (data) {
 							// HC.TopTip.addTopTips($rootScope, data);
 							AppAlert.add('danger', _.result(data, 'msg', ''));
@@ -228,14 +236,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						// 弹出单头配置窗口，确认后发送开台请求，待成功开台后跳转点菜页面
 						activeBtns = ['addFood'];
 						initOpenTableModal();
+						$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
+							var n = _.result(btn, 'name'),
+								i = _.indexOf(activeBtns, n);
+							btn['active'] = i >= 0 ? true : false;
+							return btn;
+						});
 					}
 					
-					$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
-						var n = _.result(btn, 'name'),
-							i = _.indexOf(activeBtns, n);
-						btn['active'] = i >= 0 ? true : false;
-						return btn;
-					});
+					
 					
 					
 				});

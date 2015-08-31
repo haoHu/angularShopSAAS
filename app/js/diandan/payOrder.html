@@ -1,0 +1,82 @@
+<div class="modal-body">
+	<div class="pay-ctrl">
+		<section class="pay-schema">
+			<header class="schema-header">
+				<h4>结账</h4>
+				<button class="btn btn-default btn-close btn-lg pull-right" ng-click="close()">返回</button>
+				
+			</header>
+			<section class="schema-body">
+				<div class="row disabeld">
+					<label class="col-xs-5 control-label">菜品金额</label>
+					<p class="col-xs-7 sum">{{orderPayDetail.foodAmount | currency:"￥"}}</p>
+				</div>
+				<ul class="list-group">
+					<li ng-repeat="paySubjectGrp in orderPayDetail.payGrps" class="list-group-item clearfix" name="{{paySubjectGrp.name}}" ng-class="{disabled : isDisabledPaySubjectGrp(paySubjectGrp), active : isCurPaySubjectGrpName(paySubjectGrp.name), hidden : isHiddenPaySubjectGrp(paySubjectGrp)}" ng-click="changeCurrentPaySubjectGrp(paySubjectGrp)">
+						<label class="col-xs-5">{{paySubjectGrp.label}}</label>
+						<p class="col-xs-7 sum" ng-class="{hidden : isHiddenPrice(paySubjectGrp.amount)}">{{paySubjectGrp.amount | mycurrency:"￥"}}</p>
+						<p class="col-xs-12" ng-if="isNotEmptyStr(paySubjectGrp.detail)">{{paySubjectGrp.detail}}</p>
+						<button class="btn btn-default" ng-if="isNotZeroAmount(paySubjectGrp)" ng-click="resetPaySubject(paySubjectGrp)">撤销</button>
+					</li>
+				</ul>
+			</section>
+			<footer class="schema-footer">
+				<div class="row">
+					<label class="col-xs-5 control-label">未付</label>
+					<p class="col-xs-7 sum">{{orderPayDetail.unPayAmount | mycurrency: "￥"}}</p>
+				</div>
+				<div class="btn-group btn-group-justified" role="group">
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default btn-block btn-lg" ng-click="openCashBox()">开钱箱</button>
+					</div>
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default btn-block btn-lg" ng-click="printCheckoutPreBill()">打印预结单</button>
+					</div>
+				</div>
+				<!--
+				<div class="row">
+					<div class="col-xs-6">
+						<button type="button" class="btn btn-default btn-block btn-lg" ng-click="openCashBox()">开钱箱</button>
+					</div>
+					<div class="col-xs-6">
+						<button type="button" class="btn btn-default btn-block btn-lg" ng-click="printCheckoutPreBill()">打印预结单</button>
+					</div>
+				</div>
+				-->
+				<button type="button" class="btn btn-default btn-block btn-lg" ng-class="{disabled : !isCanbeSubmit(orderPayDetail)}" ng-click="submitOrderPay()">完成结账</button>
+			</footer>
+		</section>
+		
+		<section class="pay-subject">
+			<div class="panel panel-default animate-repeat" ng-repeat="paySubjectGrp in orderPayDetail.payGrps | filter:curPaySubjectGrpName" id="{{paySubjectGrp.name}}">
+				<div class="panel-heading">
+					{{paySubjectGrp.label}}
+				</div>
+				<div class="panel-body">
+					<commonpayform ng-if="getPayFormType(paySubjectGrp) == 'common'" pay-subject-grp="paySubjectGrp" form-cfg="payFormCfg[paySubjectGrp.name]" ></commonpayform>
+					<vippayform ng-if="getPayFormType(paySubjectGrp) == 'vip'" pay-subject-grp="paySubjectGrp"></vippayform>
+				</div>
+				<div class="panel-footer" ng-if="paySubjectGrp.name !== 'cashPay'">
+					<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">
+						确认收款
+					</button>
+					<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'vip'" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">
+						会员消费确认
+					</button>
+				</div>
+				<div class="panel-footer" ng-if="paySubjectGrp.name == 'cashPay'">
+					<div class="btn-group btn-group-justified" role="group">
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-default btn-lg" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">确认收款</button>
+						</div>
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-default btn-lg" ng-click="quickSubmitCashPay(paySubjectGrp)" ng-disabled="!formIsValid">完成结账</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</section>
+	</div>
+	
+</div>

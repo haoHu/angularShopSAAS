@@ -540,7 +540,7 @@
 			</div>
 		</div>
 	</script>
-	<!-- 订单支付操作窗口 -->
+	<!-- 订单支付操作窗口 
 	<script type="text/ng-template" id="js/diandan/payOrder.html">
 		<div class="modal-body">
 			<div class="pay-ctrl">
@@ -577,8 +577,8 @@
 								<button type="button" class="btn btn-default btn-block btn-lg" ng-click="printCheckoutPreBill()">打印预结单</button>
 							</div>
 						</div>
-						<!--
-						<div class="row">
+						
+						<div class="row hidden">
 							<div class="col-xs-6">
 								<button type="button" class="btn btn-default btn-block btn-lg" ng-click="openCashBox()">开钱箱</button>
 							</div>
@@ -586,7 +586,7 @@
 								<button type="button" class="btn btn-default btn-block btn-lg" ng-click="printCheckoutPreBill()">打印预结单</button>
 							</div>
 						</div>
-						-->
+						
 						<button type="button" class="btn btn-default btn-block btn-lg" ng-class="{disabled : !isCanbeSubmit(orderPayDetail)}" ng-click="submitOrderPay()">完成结账</button>
 					</footer>
 				</section>
@@ -600,7 +600,7 @@
 							<commonpayform ng-if="getPayFormType(paySubjectGrp) == 'common'" pay-subject-grp="paySubjectGrp" form-cfg="payFormCfg[paySubjectGrp.name]" ></commonpayform>
 							<vippayform ng-if="getPayFormType(paySubjectGrp) == 'vip'" pay-subject-grp="paySubjectGrp"></vippayform>
 						</div>
-						<div class="panel-footer">
+						<div class="panel-footer" ng-if="paySubjectGrp.name !== 'cashPay'">
 							<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">
 								确认收款
 							</button>
@@ -608,14 +608,24 @@
 								会员消费确认
 							</button>
 						</div>
+						<div class="panel-footer" ng-if="paySubjectGrp.name == 'cashPay'">
+							<div class="btn-group btn-group-justified" role="group">
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-default btn-lg" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">确认收款</button>
+								</div>
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-default btn-lg" ng-click="quickSubmitCashPay(paySubjectGrp)" ng-disabled="!formIsValid">完成结账</button>
+								</div>
+							</div>
+						</div>
 					</div>
 					
 				</section>
 			</div>
 			
 		</div>
-	</script>
-	<!-- 通用支付表单部件 -->
+	</script>-->
+	<!-- 通用支付表单部件
 	<script type="text/ng-template" id="js/diandan/commonpayform.html">
 		<form class="row" role="form" name="com_pay" novalidate="novalidate">
 			<div class="" ng-class="{'col-xs-12' : paySubjectGrp.name == 'discountPay', 'col-xs-4' : paySubjectGrp.name != 'discountPay'}" ng-if="needLeftBar(paySubjectGrp.name)">
@@ -662,8 +672,8 @@
 				<p>{{curQRCodeLabel}}</p>
 			</div>
 		</form>
-	</script>
-	<!-- 会员卡支付表单部件 -->
+	</script> -->
+	<!-- 会员卡支付表单部件
 	<script type="text/ng-template" id="js/diandan/vippayform.html">
 		<form class="row vip-pay" role="form" name="vip_pay" novalidate="novalidate">
 			<div class="form-horizontal">
@@ -740,5 +750,5 @@
 			<numkeyboard cur-target="focusInputEl"></numkeyboard>
 
 		</form>
-	</script>
+	</script> -->
 </section>
