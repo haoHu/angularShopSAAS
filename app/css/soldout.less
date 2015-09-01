@@ -1,6 +1,14 @@
 .section-soldout {
 	.order-plain .order-box{
-		width : 100%; padding-bottom: 90px;
+		position : relative; width : 100%; padding-top: 50px; padding-bottom: 90px;
+		.order-header {
+			position : absolute; top : 0; left : 0; right : 0;
+			.header-title {
+				 font-weight: bold;
+			}
+
+		}
+		.grid-header {border-top : 1px solid @xBaseBorderColor;}
 		.order-list {
 			padding-bottom : 0; height : initial;
 		}

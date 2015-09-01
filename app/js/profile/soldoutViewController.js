@@ -11,6 +11,9 @@ define(['app'], function (app) {
 			$scope.isModified = false;
 			$scope.modalType = 'new';
 			$scope.curSoldoutItems = [];
+			$scope.returnBtnClick = function () {
+				$location.path('/more');
+			};
 			// 设置/获取当前是否打开了详情模态窗口
 			$scope.modalIsOpen = function (b) {
 				if (_.isBoolean(b)) {
