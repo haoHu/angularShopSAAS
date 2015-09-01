@@ -231,4 +231,18 @@
 		{value : 'CPKM', label : '菜品科目'},
 		{value : 'XSPH', label : '销售排行'}
 	];
+
+	// 推送消息类型
+	Hualala.TypeDef.PushMsgTypes = {
+		// 叫号取餐消息
+		"CallNum" : "HLL_SAAS_MSG_CALL_TAKE_FOOD",
+		// 收到新的订单消息
+		"NewOrder" : "HLL_SAAS_MSG_REV_NEW_ORDER",
+		// 收到新的消息
+		"NewMsg" : "HLL_SAAS_MSG_NEW_INFO_MSG",
+		// 订单自助支付成功
+		"SelfPay" : "HLL_SAAS_MSG_SELF_ORDER_PAID",
+		// 基本信息更新
+		"BaseUpdate" : "HLL_SAAS_MSG_BASE_UPDATE"
+	};
 })();
