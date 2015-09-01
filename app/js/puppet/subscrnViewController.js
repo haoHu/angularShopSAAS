@@ -101,6 +101,7 @@ define(['app'], function (app) {
 			// 初始化广告
 			var initAD = function (data) {
 				var adLst = _.result(data, 'screen2AdImageLst', []),
+					adInterval = _.result(data, 'screen2AdImageIntervalTime', 60000 * 2),
 					len = adLst.length,
 					count = 0,
 					$adBox = $('#ad_box');
@@ -138,7 +139,7 @@ define(['app'], function (app) {
 				});
 				$scope.ADLst = adLst;
 				$scope.adNoWrapSlides = false;
-				$scope.adInterval = 2000;
+				$scope.adInterval = adInterval;
 				$scope.$apply();
 			};
 
