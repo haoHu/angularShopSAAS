@@ -235,14 +235,24 @@
 	// 推送消息类型
 	Hualala.TypeDef.PushMsgTypes = {
 		// 叫号取餐消息
-		"CallNum" : "HLL_SAAS_MSG_CALL_TAKE_FOOD",
+		"HLL_SAAS_MSG_CALL_TAKE_FOOD" : {
+			subName : 'CallNum'
+		},
 		// 收到新的订单消息
-		"NewOrder" : "HLL_SAAS_MSG_REV_NEW_ORDER",
+		"HLL_SAAS_MSG_REV_NEW_ORDER" : {
+			subName : 'NewOrder'
+		},
 		// 收到新的消息
-		"NewMsg" : "HLL_SAAS_MSG_NEW_INFO_MSG",
+		"HLL_SAAS_MSG_NEW_INFO_MSG" : {
+			subName : "NewMsg"
+		},
 		// 订单自助支付成功
-		"SelfPay" : "HLL_SAAS_MSG_SELF_ORDER_PAID",
+		"HLL_SAAS_MSG_SELF_ORDER_PAID" : {
+			subName : "SelfPay"
+		},
 		// 基本信息更新
-		"BaseUpdate" : "HLL_SAAS_MSG_BASE_UPDATE"
+		"HLL_SAAS_MSG_BASE_UPDATE" : {
+			subName : "BaseUpdate"
+		}
 	};
 })();

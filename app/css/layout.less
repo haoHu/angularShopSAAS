@@ -75,6 +75,16 @@ body {
 			color : @xSiteNavActiveColor;
 			background-color: transparent;
 		}
+		.badge-notify {
+			display: none; position: absolute;
+			width : 16px; height: 16px; z-index: 9;
+			left : 10px; top : 10px; background-color: red;
+			border-radius: 50%;
+		}
+		.badge-notify.in {
+			display: inline-block;
+			-webkit-animation: blink 1s 3 ease-in-out;
+		}
 	}
 }
 #site_body {
@@ -205,6 +215,7 @@ body {
 		left : 40%; bottom : 15%;
 	}
 }
+
 
 
 // 更多站点功能页面

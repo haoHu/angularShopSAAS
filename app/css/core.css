@@ -39,6 +39,16 @@ body {
 .table th.num {
   text-align: right;
 }
+.btn {
+  font-weight: bold;
+}
+.btn.btn-pager,
+.btn.btn-prev,
+.btn.btn-next,
+.btn.btn-search,
+.btn.btn-print {
+  background-color: #ec971f!important;
+}
 #site_wrapper {
   position: relative;
   display: block;
@@ -68,6 +78,21 @@ body {
 #site_header .nav-pills > li.active > a:focus {
   color: #ff6600;
   background-color: transparent;
+}
+#site_header .nav-pills .badge-notify {
+  display: none;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  z-index: 9;
+  left: 10px;
+  top: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
+#site_header .nav-pills .badge-notify.in {
+  display: inline-block;
+  -webkit-animation: blink 1s 3 ease-in-out;
 }
 #site_body {
   height: 100%;
@@ -303,6 +328,14 @@ body {
 .section-diandan .btn {
   /*border-radius: 0;*/
   white-space: normal;
+  font-weight: bold;
+}
+.section-diandan .btn.btn-pager,
+.section-diandan .btn.btn-prev,
+.section-diandan .btn.btn-next,
+.section-diandan .btn.btn-search,
+.section-diandan .btn.btn-print {
+  background-color: #ec971f!important;
 }
 .section-diandan .order-plain {
   position: absolute;
@@ -500,7 +533,22 @@ body {
   color: #fff;
 }
 .section-diandan .order-header > div {
-  padding: .5rem;
+  position: relative;
+  padding: 0 .5rem;
+  cursor: pointer;
+}
+.section-diandan .order-header > div .more {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -8px;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+.section-diandan .order-header > div.disabled .more {
+  display: none;
 }
 .section-diandan .order-header .item {
   padding: 0;
@@ -2249,8 +2297,22 @@ body {
   opacity: 1;
 }
 .section-soldout .order-plain .order-box {
+  position: relative;
   width: 100%;
+  padding-top: 50px;
   padding-bottom: 90px;
+}
+.section-soldout .order-plain .order-box .order-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.section-soldout .order-plain .order-box .order-header .header-title {
+  font-weight: bold;
+}
+.section-soldout .order-plain .order-box .grid-header {
+  border-top: 1px solid #e6e6e6;
 }
 .section-soldout .order-plain .order-box .order-list {
   padding-bottom: 0;
@@ -2380,6 +2442,10 @@ body {
 }
 .section-chupin .chupin-footer .btn {
   height: 5rem;
+}
+.section-chupin .chupin-footer .order-info > p {
+  font-size: 12px;
+  line-height: 1.5em;
 }
 .section-chupin .chupin-body {
   position: absolute;

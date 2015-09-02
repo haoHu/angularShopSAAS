@@ -73,6 +73,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
 
     app.controller('AppController', ['$scope', '$rootScope', '$location', 'storage', function ($scope, $rootScope, $location, storage) {
         IX.ns("Hualala");
+        var $navEl = $('#site_header .nav');
         $scope.curNav = $location.path();
         $scope.isWelcomPage = false;
         $scope.isSignPage = false;
@@ -136,10 +137,19 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             if ($scope.isWelcomPage) {
                 $scope.openSecondScreen();
             }
+            $scope.initSocket();
         });
         $scope.checkNavBtnActive = function (_curNav, _href) {
             var reg = new RegExp('^' + _href);
             return reg.test(_curNav);
+        };
+        $scope.navBtnClick = function (evt) {
+            var curTar = $(evt.currentTarget),
+                p = curTar.attr('href').slice('1');
+            $navEl.find('a[href="#' + p + '"] .badge-notify').removeClass('in');
+            if (p == $scope.curNav && $scope.curNav == '/jiedan') {
+                $scope.$broadcast('newOrder');
+            }
         };
 
         /**
@@ -160,6 +170,38 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             Hualala.SecondScreen.subcribePostMsg('PayQRCode');
             // 订阅广告postMsg
             Hualala.SecondScreen.subcribePostMsg('AD');
+        };
+
+        /**
+         * 建立Socket通信，并订阅消息
+         * @return {[type]} [description]
+         */
+        $scope.initSocket = function () {
+            if (Hualala.PushMsg.hasSocket()) return;
+            Hualala.PushMsg.initWebSocketConnect();
+            // 订阅新订单消息
+            Hualala.PushMsg.subcribeMsg('NewOrder', function (topic, args) {
+                var msgData = _.result(args, 'msgData');
+                var newOrderCount = _.result(msgData, 'newOrderCount');
+                var $siteHeader = $('#site_header'),
+                    $navBtn = $siteHeader.find('a[name=jiedan] .badge-notify');
+                $navBtn.removeClass('in');
+                if (newOrderCount > 0) {
+                    $navBtn.addClass('in');
+                }
+            });
+            // 订阅新消息
+            Hualala.PushMsg.subcribeMsg('NewMsg', function (topic, args) {
+
+            });
+            // 订阅自助支付消息
+            Hualala.PushMsg.subcribeMsg('SelfPay', function (topic, args) {
+
+            });
+            // 订阅基本信息更新消息
+            Hualala.PushMsg.subcribeMsg('BaseUpdate', function (topic, args) {
+
+            });
         };
         
         

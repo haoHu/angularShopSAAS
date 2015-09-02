@@ -411,12 +411,12 @@ define(['app'], function(app) {
 					if (_.isEmpty(_orderSchame)) {
 						$scope.curOrderDetail = null;
 						updateOrderBtnsStatus();
-						cbFn();
+						_.isFunction(cbFn) && cbFn();
 					} else {
 						callServer.success(function () {
 							$scope.curOrderDetail = CloudOrderService.getOrderDetail();
 							updateOrderBtnsStatus();
-							cbFn();
+							_.isFunction(cbFn) && cbFn();
 						});
 					}
 					
@@ -429,6 +429,9 @@ define(['app'], function(app) {
 			}, function (data) {
 				// HC.TopTip.addTopTips($rootScope, data);
 				AppAlert.add('danger', _.result(data, 'msg', ''));
+			});
+			$scope.$on('newOrder', function () {
+				$scope.refreshPage();
 			});
 		}
 	]);

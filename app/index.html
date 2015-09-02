@@ -23,7 +23,8 @@
 					<nav>
 						<ul class="nav nav-pills nav-stacked">
 							<li ng-class="{active: curNav=='/jiedan'}">
-								<a href="#/jiedan">
+								<a href="#/jiedan" name="jiedan" ng-click="navBtnClick($event)">
+									<span class="badge-notify"></span>
 									<span class="glyphicon glyphicon-cloud-download"></span>
 									<span>接单</span>
 								</a>
@@ -41,38 +42,44 @@
 								</a>
 							</li> -->
 							<li ng-class="{active: curNav.indexOf(ShopOperationMode == '0' ? '/dinner' : '/snack') >= 0}">
-								<a href="{{ShopOperationMode == '0' ? '#/dinner/table' : '#/snack'}}">
+								<a href="{{ShopOperationMode == '0' ? '#/dinner/table' : '#/snack'}}" name="diandan" ng-click="navBtnClick($event)">
+									<span class="badge-notify"></span>
 									<span class="glyphicon glyphicon-edit"></span>
 									<span>点单</span>
 								</a>
 							</li>
 							<li class="" ng-class="{active: curNav=='/chupin', hidden : isFoodMakeStatusActive == 0}">
-								<a href="#/chupin">
+								<a href="#/chupin" name="chupin" ng-click="navBtnClick($event)">
+									<span class="badge-notify"></span>
 									<span class="glyphicon glyphicon-tasks"></span>
 									<span>出品</span>
 								</a>
 							</li>
 							<li ng-class="{active: curNav=='/dingdan'}">
-								<a href="#/dingdan">
+								<a href="#/dingdan" name="zhangdan" ng-click="navBtnClick($event)">
+									<span class="badge-notify"></span>
 									<span class="glyphicon glyphicon-th"></span>
 									<span>账单</span>
 								</a>
 							</li>
 							<li ng-class="{active: curNav=='/huiyuan'}">
-								<a href="#/huiyuan">
+								<a href="#/huiyuan" name="huiyuan" ng-click="navBtnClick($event)">
+									<span class="badge-notify"></span>
 									<span class="glyphicon glyphicon-user"></span>
 									<span>会员</span>
 								</a>
 							</li>
 							<li ng-class="{active: curNav=='/baobiao'}">
-								<a href="#/baobiao">
+								<a href="#/baobiao" name="baobiao" ng-click="navBtnClick($event)">
+									<span class="badge-notify"></span>
 									<span class="glyphicon glyphicon-stats"></span>
 									<span>报表</span>
 								</a>
 							</li>
 							<!-- <li ng-class="{active: curNav=='/more'}"><a href="#/more">更多</a></li> -->
 							<li ng-class="{active: checkNavBtnActive(curNav, '/more')}">
-								<a href="#/more">
+								<a href="#/more" name="gengduo" ng-click="navBtnClick($event)">
+									<span class="badge-notify"></span>
 									<span class="glyphicon glyphicon-th-large"></span>
 									<span>更多</span>
 								</a>

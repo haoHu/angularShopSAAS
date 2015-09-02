@@ -524,3 +524,144 @@
 		publishPostMsg : publishPostMsg
 	};
 })();
+(function () {
+	// 服务器消息推送及订阅发布封装
+	IX.ns("Hualala.PushMsg");
+	var H = Hualala,
+		HCMath = Hualala.Common.Math
+		loc = document.location,
+		// 当前页面端口
+		port = parseInt(loc.port),
+		// webSocket实例对象
+		socket = null,
+		// websocket port
+		webSocketServerPort = HCMath.add(port, 234),
+		// websocket domain
+		webSocketDomainName = Hualala.Global.AJAX_DOMAIN.split(':')[1],
+		// webSocket超时重连时间
+		reconnectTimeout = 3 * 60 * 1000,
+		// 计时器
+		reconnectTimer = null,
+		pushMsgTypes = Hualala.TypeDef.PushMsgTypes,
+		closeConnect = true;
+	if (window.HualalaWorkMode == 'dev') {
+		webSocketDomainName = 'http://10.10.2.166'.split(':')[1];
+		port = 8080;
+		webSocketServerPort = HCMath.add(port, 234);
+	}
+	// 初始化socket,建立连接
+	var initWebSocketConnect = function () {
+		var wsUri = 'ws:' + webSocketDomainName + ':' + webSocketServerPort;
+		socket = new WebSocket(wsUri);
+		socket.onopen = function (evt) {
+			IX.Debug.info("WebSocket Open");
+			onOpen(evt);
+		};
+		socket.onclose = function (evt) {
+			IX.Debug.info("WebSocket Close");
+			onClose(evt);
+		};
+		socket.onmessage = function (evt) {
+			IX.Debug.info("WebSocket Push Message");
+			onMessage(evt);
+		};
+		return socket;
+	};
+	// 重连定时器
+	var initReconnectTimer = function () {
+		if (!reconnectTimer) {
+			reconnectTimer = setTimeout(function () {
+				if (closeConnect) {
+					clearTimeout(reconnectTimer);
+					reconnectTimer = null;
+					socket && socket.close();
+				}
+			}, reconnectTimeout);
+			closeConnect = true;
+		} else {
+			clearTimeout(reconnectTimer);
+			reconnectTimer = null;
+			initReconnectTimer();
+		}
+	};
+
+	// socket打开
+	var onOpen = function (evt) {
+		initReconnectTimer();
+	};
+	// socket关闭
+	var onClose = function (evt) {
+		initWebSocketConnect();
+	};
+	// socket推送消息
+	var onMessage = function (evt) {
+		var oriData = JSON.parse(evt.data);
+		var msgType = _.result(oriData, 'msgType'),
+			msgData = _.result(oriData, 'msgData'),
+			msgEvent = _.result(oriData, 'msgEvent');
+		var pushMsgCfg = pushMsgTypes[msgType],
+			subName = _.result(pushMsgCfg, 'subName');
+		publishMsg(subName, oriData);
+		initReconnectTimer();
+	};
+
+	// 发布消息
+	var publishMsg = function (topic, args) {
+		return Hualala.PubSub.publish(topic, args);
+	};
+	// 订阅消息
+	var subcribeMsg = function (topic, fn) {
+		return Hualala.PubSub.subcribe(topic, fn);
+	};
+	Hualala.PushMsg = {
+		hasSocket : function () {
+			return !!socket;
+		},
+		initWebSocketConnect : initWebSocketConnect,
+		subcribeMsg : subcribeMsg,
+		publishMsg : publishMsg
+	};
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
