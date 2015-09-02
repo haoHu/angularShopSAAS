@@ -3030,6 +3030,7 @@ define(['app', 'uuid'], function (app, uuid) {
 			IX.ns("Hualala");
 			var self = this;
 			var orderHT = new IX.IListManager(),
+				orderCountInfoHT = new IX.IListManager(),
 				totalSize = 0,
 				pageNo = 1,
 				pageSize = 6;
@@ -3048,17 +3049,30 @@ define(['app', 'uuid'], function (app, uuid) {
 				pageSize = _pageSize;
 				totalSize = _totalSize;
 			};
+			var initOrderCountInfo = function (data) {
+				orderCountInfoHT.clear();
+				_.each(data, function (el) {
+					var orderSubType = _.result(el, 'orderSubType');
+					orderCountInfoHT.register(orderSubType, el);
+				});
+			};
 			// 获取云端订单列表数据
 			this.loadCloudOrderLstData = function (params) {
 				var callServer = CommonCallServer.getCloudOrderLst(params);
 				callServer.success(function (data) {
 					var _d = _.result(data, 'data'),
 						records = _.result(_d, 'orderLst'),
+						orderCountInfo = _.result(_d, 'orderCountInfo', []),
 						recordCount = _.result(_d, 'orderCount', 0);
 					updatePageParams(_.result(params, 'pageNo', 1), _.result(params, 'pageSize', 6), recordCount);
+					initOrderCountInfo(orderCountInfo);
 					initListData(records);
 				});
 				return callServer;
+			};
+			// 根据orderSubType获取订单数量信息
+			this.getOrderCountInfoByOrderSubType = function (subtype) {
+				return orderCountInfoHT.get(subtype);
 			};
 			// 获取当前页搜索订单结果
 			this.getOrderLst = function () {

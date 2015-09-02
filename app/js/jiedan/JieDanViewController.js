@@ -30,6 +30,20 @@ define(['app'], function(app) {
 				var pageParams = CloudOrderLstService.getPaginationParams();
 				$scope.curPageNo = _.result(pageParams, 'pageNo');
 				$scope.totalSize = _.result(pageParams, 'totalSize');
+				updateFilterBar();
+			};
+			var updateFilterBar = function () {
+				var ret = _.map($scope.OrderSubTypes, function (el) {
+					var orderSubType = _.result(el, 'value'),
+						countInfo = CloudOrderLstService.getOrderCountInfoByOrderSubType(orderSubType);
+					if (!_.isEmpty(countInfo)) {
+						return _.extend({}, el, {
+							labelTxt : _.result(el, 'label', '') + '(' + _.result(countInfo, 'waitDealingOrderCount', '0') + ')'
+						});
+					}
+					return el;
+				});
+				$scope.OrderSubTypes = ret;
 			};
 			// 更新订单操作按钮状态
 			var updateOrderBtnsStatus = function () {
