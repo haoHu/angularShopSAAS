@@ -15,8 +15,12 @@ define(['app'], function (app) {
 
 		var jumpPath = function (path) {
 			var p = $timeout(function() {
-				var screen2AdImageLst = _.result(storage.get('SHOPINFO'), 'screen2AdImageLst', ['http://images7.alphacoders.com/555/555837.jpg', 'http://ec4.images-amazon.com/images/I/918Th61HzWL._SL1500_.jpg', 'http://fc08.deviantart.net/fs70/f/2014/319/2/b/iron_baymax_by_harousel-d86isrh.jpg']);
-                Hualala.SecondScreen.publishPostMsg('AD', {screen2AdImageLst : screen2AdImageLst});
+				var screen2AdImageLst = _.result(storage.get('SHOPINFO'), 'screen2AdImageLst', ['http://images7.alphacoders.com/555/555837.jpg', 'http://ec4.images-amazon.com/images/I/918Th61HzWL._SL1500_.jpg', 'http://fc08.deviantart.net/fs70/f/2014/319/2/b/iron_baymax_by_harousel-d86isrh.jpg']),
+					screen2AdImageIntervalTime = _.result(storage.get('SHOPINFO'), 'screen2AdImageIntervalTime');
+                Hualala.SecondScreen.publishPostMsg('AD', {
+                	screen2AdImageLst : screen2AdImageLst,
+                	screen2AdImageIntervalTime : screen2AdImageIntervalTime
+                });
 				$location.path(path).replace();
 			}, 5000);
 		};
