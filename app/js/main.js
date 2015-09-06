@@ -66,7 +66,7 @@ require.config({
 		},
 		'commonFn' : {
 			exports : 'commonFn',
-			deps : ['IX', 'jquery', "global-const"]
+			deps : ['IX', 'jquery', "global-const", "datatype"]
 		},
 		'pubsub' : {
 			exports : 'pubsub',
@@ -94,7 +94,7 @@ require.config({
 	}
 });
 
-require(['app', 'underscore', 'IX', 'global-const', 'global-url', 'api', 'commonFn', 'datatype', 'pubsub', 'matcher', 'uuid', 'qrcode'], function (app, _) {
+require(['app', 'underscore', 'IX', 'global-const', 'global-url', 'api', 'datatype', 'commonFn', 'pubsub', 'matcher', 'uuid', 'qrcode'], function (app, _) {
 	IX.ns("Hualala");
 	if (window.HualalaWorkMode == 'dev') {
 		// require(['global-dev-url', 'api'], function () {
