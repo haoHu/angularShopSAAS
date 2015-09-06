@@ -537,20 +537,28 @@
 		// websocket port
 		webSocketServerPort = HCMath.add(port, 234),
 		// websocket domain
-		webSocketDomainName = Hualala.Global.AJAX_DOMAIN.split(':')[1],
+		// webSocketDomainName = Hualala.Global.AJAX_DOMAIN.split(':')[1],
+		webSocketDomainName = '',
 		// webSocket超时重连时间
 		reconnectTimeout = 3 * 60 * 1000,
 		// 计时器
 		reconnectTimer = null,
 		pushMsgTypes = Hualala.TypeDef.PushMsgTypes,
 		closeConnect = true;
-	if (window.HualalaWorkMode == 'dev') {
-		webSocketDomainName = 'http://10.10.2.166'.split(':')[1];
-		port = 8080;
-		webSocketServerPort = HCMath.add(port, 234);
-	}
+	// if (window.HualalaWorkMode == 'dev') {
+	// 	webSocketDomainName = 'http://10.10.2.166'.split(':')[1];
+	// 	port = 8080;
+	// 	webSocketServerPort = HCMath.add(port, 234);
+	// }
 	// 初始化socket,建立连接
 	var initWebSocketConnect = function () {
+		if (window.HualalaWorkMode == 'dev') {
+			webSocketDomainName = 'http://10.10.2.166'.split(':')[1];
+			port = 8080;
+		} else {
+			webSocketDomainName = document.location.origin.split(':')[1];
+		}
+		webSocketServerPort = HCMath.add(port, 234);
 		var wsUri = 'ws:' + webSocketDomainName + ':' + webSocketServerPort;
 		socket = new WebSocket(wsUri);
 		socket.onopen = function (evt) {
