@@ -545,6 +545,7 @@
 		reconnectTimer = null,
 		pushMsgTypes = Hualala.TypeDef.PushMsgTypes,
 		closeConnect = true;
+
 	// if (window.HualalaWorkMode == 'dev') {
 	// 	webSocketDomainName = 'http://10.10.2.166'.split(':')[1];
 	// 	port = 8080;
