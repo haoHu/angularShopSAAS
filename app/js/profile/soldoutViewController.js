@@ -42,18 +42,18 @@ define(['app'], function (app) {
 				$scope.FoodCategories = FoodMenuService.getFoodCategoryData();
 				IX.Debug.info("All FoodCategories Data:");
 				IX.Debug.info($scope.FoodCategories);
-				
+				// 加载沽清列表
+				(SoldoutService.initSoldoutLst()).success(function (data) {
+					var code = _.result(data, 'code');
+					if (code != "000") {
+						AppAlert.add('danger', _.result(code, 'result', ''));
+					}
+					$scope.updateCurSoldoutItems();
+				});
 			}, function (data) {
 				AppAlert.add('danger', _.result(data, 'msg', ''));
 			});
-			// 加载沽清列表
-			(SoldoutService.initSoldoutLst()).success(function (data) {
-				var code = _.result(data, 'code');
-				if (code != "000") {
-					AppAlert.add('danger', _.result(code, 'result', ''));
-				}
-				$scope.updateCurSoldoutItems();
-			});
+			
 			// 为菜品分类绑定事件
 			$scope.$on('foodCategory.change', function () {
 				// 为当前作用域绑定当前菜品分类Key，并绑定当前分类下的菜品数据
