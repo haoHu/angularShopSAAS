@@ -427,8 +427,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			 * @return {[type]} [description]
 			 */
 			$scope.printOrderDetailBill = function () {
+				if (_.isEmpty($scope.curTableName)) return;
 				var orderData = OrderService.getOrderData();
-				if (orderData) {
+				var foods = OrderService.getOrderFoodHT().getAll();
+
+				if (foods.length == 0) {
+					AppAlert.add('danger', '订单没有菜品，不能打印！');
+				} else {
 					Hualala.DevCom.exeCmd("PrintOrderDetailBill", JSON.stringify(orderData));
 				}
 			};

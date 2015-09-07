@@ -42,13 +42,41 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			var shopInfo = storage.get("SHOPINFO"),
 				operationMode = _.result(shopInfo, 'operationMode'),
 				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
-			$scope.OrderHandleBtns = _.map($scope.OrderHandleBtns, function (btn) {
-				var name = btn.name;
-				// 正餐模式下没有挂单、提单
-				return _.extend(btn, {
-					active : (operationMode == 0 && (name == "suspendOrder" || name == "pickOrder")) ? false : true
+			// $scope.OrderHandleBtns = _.map($scope.OrderHandleBtns, function (btn) {
+			// 	var name = btn.name;
+			// 	var _active = btn.active;
+			// 	if (operationMode == 0) {
+			// 		_active = (name == 'suspendOrder' || name == 'pickOrder') ? false : true;
+			// 	} else {
+			// 		_active = name == 'submitOrder' ? false : true;
+			// 	}
+			// 	// 正餐模式下没有挂单、提单
+			// 	return _.extend(btn, {
+			// 		active : _active
+			// 	});
+			// });
+			var mapOrderHandleBtns = function () {
+				var ordersCatch = storage.get('OrderCatch');
+				$scope.OrderHandleBtns = _.map($scope.OrderHandleBtns, function (btn) {
+					var name = btn.name;
+					var _active = btn.active,
+						_label = btn.label;
+					if (operationMode == 0) {
+						_active = (name == 'suspendOrder' || name == 'pickOrder') ? false : true;
+					} else {
+						_active = name == 'submitOrder' ? false : true;
+					}
+					if (operationMode == 1 && name == 'pickOrder' && _.isArray(ordersCatch) && ordersCatch.length > 0) {
+						_label += '<span class="badge">' + ordersCatch.length + '</span>';
+					}
+					// 正餐模式下没有挂单、提单
+					return _.extend(btn, {
+						active : _active,
+						label : _label
+					});
 				});
-			});
+			};
+			mapOrderHandleBtns();
 			var tmpSearchFoods = null;
 
 			$scope.resetOrderInfo = function () {
@@ -465,6 +493,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 落单操作
 			$scope.submitOrder = function () {
+				var orderData = OrderService.getOrderData(),
+					foods = OrderService.getOrderFoodHT().getAll();
+				if (_.isEmpty(orderData, 'saasOrderKey') || foods.length == 0) {
+					AppAlert.add('danger', '请添加菜品后落单！');
+					return null;
+				}
 				var callServer = OrderService.submitOrder('LD');
 				if (_.isEmpty(callServer)) return;
 				var addAuthEMP = function () {
@@ -511,10 +545,17 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 挂单操作
 			$scope.suspendOrder = function () {
+				var orderData = OrderService.getOrderData(),
+					foods = OrderService.getOrderFoodHT().getAll();
+				if (food.length == 0) {
+					AppAlert.add('danger', '请添加菜品后挂单！');
+					return null;
+				}
 				OrderService.suspendOrder(function () {
 					AppAlert.add('success', '挂单成功!');
 					// 向子窗口推送新加菜品的消息
 					Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
+					mapOrderHandleBtns();
 				}, function () {
 					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
 				});
@@ -559,8 +600,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				// 2. 如果有菜品没有落单弹出提示消息，不进行账单打印
 				// 3. 否则直接打印账单信息
 				var orderData = OrderService.getOrderData();
+				var foods = OrderService.getOrderFoodHT().getAll();
 				var unorderedItems = OrderService.getUnorderedItems();
-				if (unorderedItems.length > 0) {
+				if (_.isEmpty(orderData.saasOrderKey) || foods.length == 0) {
+					AppAlert.add('danger', '订单未落单，无法打印！');
+				} else if (unorderedItems.length > 0) {
 					// HC.TopTip.addTopTips($rootScope, {
 					// 	code : '111',
 					// 	msg : '还有未落单菜品,无法打印,请先将所有菜品落单!'
@@ -2627,7 +2671,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					'<div class="btns-plain">',
 						'<div class="col-xs-10">',
 							'<div class="col-xs-2" ng-repeat="btn in OrderHandleBtns">',
-								'<button class="btn btn-warning btn-block" ng-disabled="!btn.active" type="button" name="{{btn.name}}">{{btn.label}}</button>',
+								'<button class="btn btn-warning btn-block" ng-disabled="!btn.active" type="button" name="{{btn.name}}" ng-bind-html="btn.label"></button>',
 							'</div>',
 						'</div>',
 						'<div class="col-xs-2">',
@@ -2698,6 +2742,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								resolve : resolve
 							});
 						} else if (act == "payOrder" || act == "cashPayOrder") {
+							var orderData = OrderService.getOrderData(),
+								foods = OrderService.getOrderFoodHT().getAll();
+							if (foods.length == 0 && _.isEmpty(orderData.saasOrderKey)) {
+								AppAlert.add('danger', '请先添加菜品再结账！');
+								return;
+							}
 							// 结账操作，需要先提交一次订单，待服务返回结账数据后进行结账
 							submitOrder = OrderService.submitOrder('LD');
 							var successCallBack = function (data) {
