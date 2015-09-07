@@ -24,9 +24,9 @@
 			<div class="form-group" ng-repeat="el in formCfg">
 				<label class="col-xs-4 control-label">{{el.label}}</label>
 				<div class="col-xs-8" ng-class="{'has-success' : com_pay.realPrice.$dirty && com_pay.realPrice.$valid, 'has-error' : com_pay.realPrice.$invalid}">
-					<input ng-if="$index == 0 && (paySubjectGrp.name == 'cashPay' || paySubjectGrp.name == 'remissionPay')" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
-					<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay'" type="text" class="form-control" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0 ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
-					<input ng-if="$index != 0" type="text" class="form-control" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
+					<input ng-if="$index == 0 && (paySubjectGrp.name == 'cashPay' || paySubjectGrp.name == 'remissionPay')" type="text" class="form-control input-lg" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
+					<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay'" type="text" class="form-control input-lg" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0 ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
+					<input ng-if="$index != 0" type="text" class="form-control input-lg" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
 					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvIsnum">必须是数字</small>
 					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvGreaterthan">必须大于0</small>
 				</div>

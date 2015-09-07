@@ -25,7 +25,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			$scope.OrderItemHandle = [
 				{name : "addFood", clz : "addfood", active : true, label : "点菜"},
-				{name : "cashPayOrder", clz : "", active : false, label : "结账"},
+				{name : "cashPayOrder", clz : "check", active : false, label : "结账"},
 				{name : "payOrder", clz : "hidden", active : false, label : "二维码结账"},
 				{name : "urgeFood", active : false, label : "催叫"},
 				// {name : "splitFood", active : false, label : "拆分"},
