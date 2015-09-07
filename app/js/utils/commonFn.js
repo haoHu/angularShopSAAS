@@ -381,6 +381,51 @@
 		}
 		return isTag;
 	};
+	// 生成数组的排列组合
+	var permutate = function (arr, permutatedArr) {
+		if (!permutatedArr) {
+			permutatedArr = [];
+		}
+		if (arr.length > 1) {
+			// 弹出第一个数据
+			var curEl = arr.shift();
+			// 排列剩余的数组
+			permutate(arr, permutatedArr);
+			// 返回剩余数组的排列长度
+			var permutatedArrLen = permutatedArr.length;
+			// 第一个数与其他剩余数组所有数组组合
+			for (var j = 0; j < permutatedArrLen; j++) {
+				// 弹出补齐的组
+				var p = permutatedArr.shift();
+				// 把当前元素放到排列好的数组的所有位置
+				for (var i = 0; i <= p.length; i++) {
+					// 复制排列好的数组
+					var r = p.slice(0);
+					// 插入数据到数组的位置
+					r.splice(i, 0, curEl);
+					// 保存
+					permutatedArr.push(r);
+				}
+			}
+		} else {
+			// 退出的条件
+			permutatedArr.push([arr[0]]);
+		}
+		return permutatedArr;
+	};
+	Hualala.Common.Permutate = permutate;
+	// 获得数组的组合
+	var combination = function (arr, num) {
+		var ret = [];
+		(function fn (t, a, n) {
+			if (n == 0) return ret.push(t);
+			for (var i = 0, l = a.length; i<=l-n; i++) {
+				fn(t.concat(a[i]), a.slice(i + 1), n - 1);
+			}
+		})([], arr, num);
+		return ret;
+	};
+	Hualala.Common.Combination = combination;
 })(jQuery);
 
 (function () {

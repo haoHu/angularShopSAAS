@@ -49,7 +49,7 @@ define(['app'], function (app) {
 							break;
 						case "py":
 							// val = _.result(food, 'foodKey').split(';') + _.result(food, 'foodKey') + ';';
-							val = _.result(food, 'foodMnemonicCode', '');
+							val = _.result(food, 'foodMnemonicCode', '').replace(/;$/g, '');
 							break;
 						default :
 							val = _.result(food, k1);
@@ -327,9 +327,26 @@ define(['app'], function (app) {
 			this.searchFoodsByFoodCode = function (code) {
 				var matcher = (new Pymatch([]));
 				var foods = self.foodHT.getAll();
+				var pyCombination = function (arr, num) {
+					var r = Hualala.Common.Combination(arr, num);
+					r = _.map(r, function (el) {
+						return el.join('');
+					});
+					return r.join(';');
+				};
 				var getMatchedFn = function (searchText) {
 					matcher.setNames(_.map(foods, function (el) {
-						return _.extend(el, {name : el.foodKey});
+						var py = el.py,
+							arr = py.split(';'),
+							jianpin = arr[arr.length - 1].split('');
+						// py += ';' + arr[arr.length - 1].split('').join(';');
+						for (var i = 2, l = jianpin.length; i <= l; i++) {
+							py += ';' + pyCombination(jianpin, i);
+						}
+						return _.extend({}, el, {
+							name : el.foodKey,
+							py : py
+						});
 					}));
 					var matchedSections = matcher.match(searchText);
 					var matchedOptions = _.map(matchedSections, function (el, i) {

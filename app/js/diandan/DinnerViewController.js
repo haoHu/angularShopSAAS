@@ -178,10 +178,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};
 
 			// 打开搜索菜品窗口
+			$scope.selectSearchInput = function () {
+				$searchFoodModal.find(':text:first').trigger('focus').trigger('select');
+			};
 			$scope.openSearch = function () {
 				$searchFoodModal.modal({
 					backdrop : false
 				});
+				$scope.selectSearchInput();
 			};
 			// 为搜索菜品绑定事件 
 			$searchFoodModal.on('click', '.btn', function (e) {
@@ -193,7 +197,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			});
 			// 搜索菜品操作
 			$scope.searchFood = function () {
-				console.info($scope.curSearchKey);
+				IX.Debug.info($scope.curSearchKey);
 				// var matchedFoods = FoodMenuService.searchFoodsByFoodCode($scope.curSearchKey);
 				// if (_.isEqual(tmpSearchFoods, matchedFoods)) {
 				// 	return;
@@ -267,7 +271,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					})(item.itemKey), 0);
 				}
 				
-				
+				$scope.selectSearchInput();
 			};
 
 			/**
