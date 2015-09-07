@@ -26,6 +26,7 @@ define(['app'], function (app) {
                     .error(function (data, status) {
                         AppAlert.add("danger", '请求服务失败');
                         // HC.TopTip.addTopTips($rootScope, data);
+                        AppProgressbar.close(progressbar);
                     });
             };
 

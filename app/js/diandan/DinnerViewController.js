@@ -1287,8 +1287,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert, AppAuthEMP) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert, AppAuthEMP, AppProgressbar) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -1393,12 +1393,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 现金快捷支付结算
 			$scope.quickSubmitCashPay = function (paySubjectGrp) {
 				var _orderPayDetail;
+				var progressbar = AppProgressbar.add('warning', '提交数据...');
 				$scope.submitPayForm(paySubjectGrp);
 				_orderPayDetail = $scope.orderPayDetail;
 				if ($scope.isCanbeSubmit(_orderPayDetail)) {
-					$scope.submitOrderPay();
+					$scope.submitOrderPay(progressbar);
 				} else {
 					AppAlert.add('danger', "请核对金额");
+					AppProgressbar.close(progressbar);
 				}
 			};
 			// 取消支付科目组支付金额
@@ -1463,7 +1465,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 			};
 			// 订单支付提交
-			$scope.submitOrderPay = function () {
+			$scope.submitOrderPay = function (progressbar) {
+				progressbar = progressbar || AppProgressbar.add('warning', '提交数据...');
 				var isOK = $scope.isCanbeSubmit($scope.orderPayDetail);
 				var shopInfo = storage.get("SHOPINFO"),
 				operationMode = _.result(shopInfo, 'operationMode');
@@ -1494,9 +1497,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							$scope.jumpToTablePage();
 						}
 						$scope.close();
+						AppProgressbar.close(progressbar);
 					} else if (code == 'CS005') {
+						AppProgressbar.close(progressbar);
 						AppAuthEMP.add({
 							yesFn : function (empInfo) {
+								progressbar = AppProgressbar.add('warning', '提交数据...');
 								callServer = OrderService.submitOrder('JZ', 
 									_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams()), empInfo);
 								callServer.success(submitOrderSuccess);
