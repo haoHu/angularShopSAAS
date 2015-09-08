@@ -30,7 +30,7 @@ define(['app'], function (app) {
                     });
             };
 
-            $scope.inputKeyup = function ($event) {
+            $scope.inputKeypress = function ($event) {
                 if ($event.keyCode != 13) return;
                 var el = $($event.target);
                 var tabIdx = parseInt(el.attr('tabIndex'));

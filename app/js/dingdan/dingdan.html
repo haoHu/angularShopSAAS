@@ -3,7 +3,7 @@
 		<div class=" filter-bar">
 			<div class="col-xs-3 clearfix">
 				<div class="input-group">
-					<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
+					<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="日期" ng-model="qReportDate" is-open="datePickerOpened" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keypress="queryByReportDate($event, qReportDate)" ng-change="queryByReportDate($event, qReportDate)" ng-click="openDatePicker($event)"/>
 					<span class="input-group-btn">
 						<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event)">
 							<span class="glyphicon glyphicon-calendar"></span>
@@ -24,7 +24,7 @@
 			</div>
 			<div class="col-xs-3 clearfix">
 				<div class="input-group">
-					<input type="text" class="form-control input-lg" placeholder="订单号、手机、桌台、凭证" ng-model="qKeyword" ng-keyup="queryByKeyword($event)" />
+					<input type="text" class="form-control input-lg" placeholder="订单号、手机、桌台、凭证" ng-model="qKeyword" ng-keypress="queryByKeyword($event)" />
 					<span class="input-group-btn" ng-click="queryByKeyword($event)"><button class="btn btn-default btn-lg" type="button">搜索</button></span>
 				</div>
 			</div>

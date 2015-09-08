@@ -60,7 +60,7 @@
 			<div class="filter-bar row">
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qform.startDate" is-open="qform.dp1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event, qform.startDate)" ng-change="queryByDate($event, qform.startDate)" ng-click="openDatePicker($event, '1')"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qform.startDate" is-open="qform.dp1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keypress="queryByDate($event, qform.startDate)" ng-change="queryByDate($event, qform.startDate)" ng-click="openDatePicker($event, '1')"/>
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '1')">
 								<span class="glyphicon glyphicon-calendar"></span>
@@ -70,7 +70,7 @@
 				</div>
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qform.endDate" is-open="qform.dp2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event, qform.endDate)" ng-change="queryByDate($event, qform.endDate)" ng-click="openDatePicker($event, '2')"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qform.endDate" is-open="qform.dp2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keypress="queryByDate($event, qform.endDate)" ng-change="queryByDate($event, qform.endDate)" ng-click="openDatePicker($event, '2')"/>
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '2')">
 								<span class="glyphicon glyphicon-calendar"></span>
@@ -80,7 +80,7 @@
 				</div>
 				<div class="col-xs-6 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" placeholder="日志名、内容、设备名、操作员" ng-model="qform.keyword" ng-keyup="queryByKeyword($event)" />
+						<input type="text" class="form-control input-lg" placeholder="日志名、内容、设备名、操作员" ng-model="qform.keyword" ng-keypress="queryByKeyword($event)" />
 						<span class="input-group-btn" ng-click="queryByKeyword($event)"><button class="btn btn-default btn-lg" type="button">搜索</button></span>
 					</div>
 				</div>
@@ -118,7 +118,7 @@
 			<div class="filter-bar row">
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qform.startDate" is-open="qform.dp1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '1')"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qform.startDate" is-open="qform.dp1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keypress="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '1')"/>
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '1')">
 								<span class="glyphicon glyphicon-calendar"></span>
@@ -142,7 +142,7 @@
 				</div>
 				<div class="col-xs-3 clearfix">
 					<div class="input-group">
-						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qform.endDate" is-open="qform.dp2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keyup="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '2')"/>
+						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qform.endDate" is-open="qform.dp2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keypress="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '2')"/>
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button" ng-click="openDatePicker($event, '2')">
 								<span class="glyphicon glyphicon-calendar"></span>

@@ -1507,7 +1507,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 						callServer = scope.getVIPCardInfo(searchStr);
 					});
-					el.on('keyup', 'input[name=card_id]', function (e) {
+					el.on('keypress', 'input[name=card_id]', function (e) {
 						var txtEl = $(this),
 							val = txtEl.val(),
 							callServer;

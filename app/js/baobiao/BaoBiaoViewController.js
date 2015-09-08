@@ -165,14 +165,14 @@ define(['app'], function(app)
 			$scope.queryByKeyword = function ($event, v) {
 				var evtType = $event.type,
 					keyCode = $event.keyCode;
-				if (evtType == 'keyup' && keyCode != 13) return;
+				if (evtType == 'keypress' && keyCode != 13) return;
 				console.info('qKeyword:' + $scope.qform.keyword);
 				$scope.queryLst();
 			};
 			$scope.queryByDate = function ($event) {
 				// var evtType = $event.type,
 				// 	keyCode = $event.keyCode;
-				// if (evtType == 'keyup' && keyCode != 13) return;
+				// if (evtType == 'keypress' && keyCode != 13) return;
 				$scope.queryLst();
 			};
 			// 查询结果

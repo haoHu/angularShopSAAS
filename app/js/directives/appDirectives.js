@@ -1060,7 +1060,7 @@ define(['app'], function (app) {
                             '<div class="row filter-bar">',
                                 '<div class="col-xs-6">',
                                     '<div class="input-group">',
-                                        '<input type="text" class="form-control input-lg" placeholder="桌台名称" ng-model="qTblName" ng-keyup="quickSelectTable($event, qTblName)">',
+                                        '<input type="text" class="form-control input-lg" placeholder="桌台名称" ng-model="qTblName" ng-keypress="quickSelectTable($event, qTblName)">',
                                         '<span class="input-group-btn">',
                                             '<button class="btn btn-default btn-lg" type="button" ng-click="quickSelectTable($event, qTblName)">进入桌台</button>',
                                         '</span>',

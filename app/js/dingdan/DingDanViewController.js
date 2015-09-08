@@ -146,7 +146,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			$scope.queryByReportDate = function ($event, v) {
 				var evtType = _.result($event, 'type'),
 					keyCode = _.result($event, 'keyCode');
-				if (evtType == 'keyup' && keyCode != 13) return;
+				if (evtType == 'keypress' && keyCode != 13) return;
 				console.info('qReportDate:' + $scope.qReportDate);
 				$scope.queryOrderLst();
 			};
@@ -163,7 +163,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			$scope.queryByKeyword = function ($event, v) {
 				var evtType = $event.type,
 					keyCode = $event.keyCode;
-				if (evtType == 'keyup' && keyCode != 13) return;
+				if (evtType == 'keypress' && keyCode != 13) return;
 				// $scope.qKeyword = v;
 				console.info('qKeyword:' + $scope.qKeyword);
 				$scope.queryOrderLst();

@@ -77,7 +77,7 @@ define(['app'], function (app) {
 			$scope.queryByKeyword = function ($event) {
 				var evtType = $event.type,
 					keyCode = $event.keyCode;
-				if (evtType == 'keyup' && keyCode != 13) return;
+				if (evtType == 'keypress' && keyCode != 13) return;
 				console.info('qKeyword:' + $scope.qform.qKeyword);
 				$scope.queryFoodMakeStatusLst();
 			};

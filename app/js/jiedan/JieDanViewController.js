@@ -106,7 +106,7 @@ define(['app'], function(app) {
 			};
 			$scope.queryByKeyword = function ($event) {
 				var etype = $event.type, keycode = $event.keyCode;
-				if (etype == 'keyup' && keycode != 13) {
+				if (etype == 'keypress' && keycode != 13) {
 					return;
 				}
 				$scope.queryOrderLst();
@@ -698,7 +698,7 @@ define(['app'], function(app) {
 			 */
 			$scope.quickSelectTable = function ($event, tableName) {
 				var evtType = $event.type, keyCode = $event.keyCode;
-				if (evtType == 'keyup' && keyCode != 13) {return false;}
+				if (evtType == 'keypress' && keyCode != 13) {return false;}
 				var table = TableService.getTablesByTableName(tableName);
 				table = table[0];
 				if (_.isEmpty(table)) {
