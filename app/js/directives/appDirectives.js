@@ -1084,7 +1084,7 @@ define(['app'], function (app) {
                             '</div>',
                         '</div>',
                         '<div class="table-menu" pager-list="common" pager-data="{{curTables}}" page-size="34" item-selector=".cell-btn[id]" btn-selector=".btn-prev,.btn-next" page-num="0">',
-                            '<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1, active : table.tableName == curTableName}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}" ng-click="selectTableName(table)">',
+                            '<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1, active : table.tableName == curTableName}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}" ng-click="selectTableName($event, table)" ng-dblclick="selectTableName($event, table)">',
                                 '<span class="table-lock" ng-if="tableIsLocked(table.lockedBy)"></span>',
                                 '<span class="table-union" ng-if="tableIsUnion(table.unionTableGroupName)">{{table.unionTableGroupName || 1}}</span>',
                                 '<span class="table-book" ng-if="tableIsBooked(table.bookOrderNo)"></span>',

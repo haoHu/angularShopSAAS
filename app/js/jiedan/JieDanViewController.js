@@ -573,8 +573,8 @@ define(['app'], function(app) {
 
 	// 下单选台操作控制器
 	app.controller('SubmitCloudOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'CloudOrderService', 'AppAlert', 'AppConfirm',
-		function ($scope, $rootScope, $modalInstance, $location, $filter, _scope, CommonCallServer, OrderService, TableService, CloudOrderService, AppAlert, AppConfirm) {
+		'$scope', '$rootScope', '$modalInstance', '$location', '$filter', '$timeout', '_scope', 'CommonCallServer', 'OrderService', 'TableService', 'CloudOrderService', 'AppAlert', 'AppConfirm',
+		function ($scope, $rootScope, $modalInstance, $location, $filter, $timeout, _scope, CommonCallServer, OrderService, TableService, CloudOrderService, AppAlert, AppConfirm) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -650,7 +650,65 @@ define(['app'], function(app) {
 			 * @param  {[type]} v [description]
 			 * @return {[type]}   [description]
 			 */
-			$scope.selectTableName = function (table) {
+			$scope.selectTableName = function ($event, table) {
+				// var tableKey = _.result(table, 'itemID');
+				// $scope.curTableID = tableKey;
+				// $scope.curTableName = _.result(table, 'tableName', '');
+				// // 获取当前选中桌台状态数据
+				// var callServer = TableService.loadTableStatusLst({
+				// 	areaName : $scope.curAreaName,
+				// 	tableName : $scope.curTableName
+				// });
+				// callServer.success(function (data) {
+				// 	getCurTables();
+				// 	AppConfirm.add({
+				// 		title : '下单操作',
+				// 		msg : "是否下单到此桌台?",
+				// 		yesFn : function () {
+				// 			var callServer = CloudOrderService.submit($scope.curTableName);
+				// 			callServer.success(function (data) {
+				// 				var code = _.result(data, 'code');
+				// 				var _data = _.result(data, 'data'),
+				// 					_orderStatus = _.result(data, 'orderStatus');
+				// 				if (code == '000') {
+				// 					AppAlert.add('success', '下单成功');
+				// 					_orderStatus == 40 && _scope.printAction(_.result(data, 'data'));
+				// 					_scope.queryOrderLst({
+				// 						pageNo : $scope.curPageNo,
+				// 						pageSize : $scope.pageSize
+				// 					});
+				// 					_scope.selectCurOrder(_scope.curOrderDetail);
+				// 					$modalInstance.close();
+				// 				} else {
+				// 					AppAlert.add('danger', _.result(data, 'msg', ''));
+				// 				}
+				// 			}).error(function (data) {
+				// 				AppAlert.add('danger', '请求失败');
+				// 			});
+				// 		},
+				// 		noFn : function () {
+				// 			$modalInstance.close();
+				// 		}
+				// 	});
+				// });
+
+				var evtType = $event.type,
+					timeout = evtType == 'click' ? 500 : 200;
+				$timeout(function () {
+					IX.Debug.info("Table name event type: " + evtType);
+					if (table.evtType == 'dblclick' && evtType == 'click') {
+						return false;
+					}
+					if (evtType == 'dblclick') {
+						_.extend(table, {evtType : evtType});
+					}
+					IX.Debug.info("table.evtType is " + table.evtType);
+					$scope.enterTableName($event, table);
+				}, timeout);
+			};
+
+			$scope.enterTableName = function ($event, table) {
+				var evtType = table.evtType;
 				var tableKey = _.result(table, 'itemID');
 				$scope.curTableID = tableKey;
 				$scope.curTableName = _.result(table, 'tableName', '');
@@ -689,9 +747,10 @@ define(['app'], function(app) {
 						noFn : function () {
 							$modalInstance.close();
 						}
-					});
+					}); 
 				});
 			};
+
 			/**
 			 * 快捷选择桌台
 			 * @return {[type]} [description]
@@ -709,7 +768,7 @@ define(['app'], function(app) {
 					AppAlert.add('danger', '桌台不存在');
 					return;
 				}
-				$scope.selectTableName(table);
+				$scope.selectTableName($event, table);
 
 			};
 

@@ -1,8 +1,8 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	// 桌台控制器
 	app.controller('TableViewController', [
-		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderService', 'TableService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, OrderService, TableService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'TableService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar',
+		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, TableService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP, AppProgressbar) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -199,11 +199,75 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			 * @param  {[type]} v [description]
 			 * @return {[type]}   [description]
 			 */
-			$scope.selectTableName = function (table) {
+			$scope.selectTableName = function ($event, table) {
+				// var evtType = $event.type;
+				// IX.Debug.info("Table name event type: " + evtType);
+				// var tableKey = _.result(table, 'itemID');
+				// $scope.curTableID = _.result(table, 'itemID');
+				// $scope.curTableName = _.result(table, 'tableName', '');
+				// // 获取当前选中桌台状态数据
+				// var callServer = TableService.loadTableStatusLst({
+				// 	areaName : $scope.curAreaName,
+				// 	tableName : $scope.curTableName
+				// });
+				// callServer.success(function (data) {
+				// 	getCurTables();
+				// 	var _tbl = TableService.getTableByItemID(tableKey),
+				// 		tableStatus = _.result(_tbl, 'tableStatus'),
+				// 		saasOrderKey = _.result(_tbl, 'saasOrderKey'),
+				// 		hisFlag = _.result(_tbl, 'his', 0);
+				// 	var activeBtns = ['addFood', 'changeOrder', 'mergeOrder', 'unionOrder', 'cashPayOrder', 'payOrder'];
+				// 	// 如果桌台为占用状态并且订单号不为空，加载选中桌台的订单
+				// 	if (tableStatus == 1 && !_.isEmpty(saasOrderKey)) {
+				// 		OrderService.getOrderByOrderKey({
+				// 			saasOrderKey : saasOrderKey,
+				// 			hisFlag : hisFlag
+				// 		}, function (data) {
+				// 			$scope.resetOrderInfo();
+				// 			$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
+				// 				var n = _.result(btn, 'name'),
+				// 					i = _.indexOf(activeBtns, n);
+				// 				btn['active'] = i >= 0 ? true : false;
+				// 				return btn;
+				// 			});
+				// 		}, function (data) {
+				// 			// HC.TopTip.addTopTips($rootScope, data);
+				// 			AppAlert.add('danger', _.result(data, 'msg', ''));
+				// 		});
+				// 	} else if (tableStatus == 0) {
+				// 		// 弹出单头配置窗口，确认后发送开台请求，待成功开台后跳转点菜页面
+				// 		activeBtns = ['addFood'];
+				// 		initOpenTableModal();
+				// 		$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
+				// 			var n = _.result(btn, 'name'),
+				// 				i = _.indexOf(activeBtns, n);
+				// 			btn['active'] = i >= 0 ? true : false;
+				// 			return btn;
+				// 		});
+				// 	}
+				// });
+				var evtType = $event.type,
+					timeout = evtType == 'click' ? 500 : 200;
+				$timeout(function () {
+					IX.Debug.info("Table name event type: " + evtType);
+					if (table.evtType == 'dblclick' && evtType == 'click') {
+						return false;
+					}
+					if (evtType == 'dblclick') {
+						_.extend(table, {evtType : evtType});
+					}
+					IX.Debug.info("table.evtType is " + table.evtType);
+					$scope.enterTable($event, table);
+				}, timeout); 
+			};
+
+			$scope.enterTable = function ($event, table) {
+				var evtType = table.evtType;
+				
 				var tableKey = _.result(table, 'itemID');
-				$scope.curTableID = _.result(table, 'itemID');
+				$scope.curTableID = tableKey;
 				$scope.curTableName = _.result(table, 'tableName', '');
-				// 获取当前选中桌台状态数据
+				// 获取桌台状态数据
 				var callServer = TableService.loadTableStatusLst({
 					areaName : $scope.curAreaName,
 					tableName : $scope.curTableName
@@ -217,21 +281,26 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					var activeBtns = ['addFood', 'changeOrder', 'mergeOrder', 'unionOrder', 'cashPayOrder', 'payOrder'];
 					// 如果桌台为占用状态并且订单号不为空，加载选中桌台的订单
 					if (tableStatus == 1 && !_.isEmpty(saasOrderKey)) {
-						OrderService.getOrderByOrderKey({
-							saasOrderKey : saasOrderKey,
-							hisFlag : hisFlag
-						}, function (data) {
-							$scope.resetOrderInfo();
-							$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
-								var n = _.result(btn, 'name'),
-									i = _.indexOf(activeBtns, n);
-								btn['active'] = i >= 0 ? true : false;
-								return btn;
+						if (evtType == 'dblclick') {
+							// 如果是双击桌台按钮，跳转到点菜页面
+							$scope.jumpToDinnerPage(saasOrderKey);
+						} else {
+							// 获取订单信息，展示菜桌台页面左侧的订单列表中
+							OrderService.getOrderByOrderKey({
+								saasOrderKey : saasOrderKey,
+								hisFlag : hisFlag
+							}, function (data) {
+								$scope.resetOrderInfo();
+								$scope.OrderItemHandle = _.map($scope.OrderItemHandle, function (btn) {
+									var n = _.result(btn, 'name'),
+										i = _.indexOf(activeBtns, n);
+									btn['active'] = i >= 0 ? true : false;
+									return btn;
+								});
+							}, function (data) {
+								AppAlert.add('danger', _.result(data, 'msg', ''));
 							});
-						}, function (data) {
-							// HC.TopTip.addTopTips($rootScope, data);
-							AppAlert.add('danger', _.result(data, 'msg', ''));
-						});
+						}
 					} else if (tableStatus == 0) {
 						// 弹出单头配置窗口，确认后发送开台请求，待成功开台后跳转点菜页面
 						activeBtns = ['addFood'];
@@ -243,10 +312,6 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							return btn;
 						});
 					}
-					
-					
-					
-					
 				});
 			};
 
@@ -304,8 +369,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			 * 跳转点菜页面
 			 * @return {[type]} [description]
 			 */
-			$scope.jumpToDinnerPage = function () {
-				var saasOrderKey = _.result($scope.orderHeader, 'saasOrderKey'),
+			$scope.jumpToDinnerPage = function (saasOrderKey) {
+				var saasOrderKey = saasOrderKey || _.result($scope.orderHeader, 'saasOrderKey'),
 					// tableName = _.result($scope.orderHeader, 'tableName');
 					tableName = $scope.curTableName;
 				console.info($scope.orderHeader);
@@ -523,7 +588,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			 * @param  {[type]} v [description]
 			 * @return {[type]}   [description]
 			 */
-			$scope.selectTableName = function (table) {
+			$scope.selectTableName = function ($event, table) {
 				var tableKey = _.result(table, 'itemID');
 				$scope.curTableID = tableKey;
 				$scope.curTableName = _.result(table, 'tableName', '');

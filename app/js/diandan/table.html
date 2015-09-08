@@ -78,7 +78,7 @@
 			</div>
 		</div>
 		<div class="table-menu" pager-list="common" pager-data="{{curTables.length}}" page-size="34" item-selector=".cell-btn[id]" btn-selector=".btn-prev,.btn-next" page-num="0">
-			<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1, active : table.tableName == curTableName}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}" ng-click="selectTableName(table)">
+			<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1, active : table.tableName == curTableName}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}" ng-click="selectTableName($event, table)">
 				<p class="name">{{table.tableName}}</p>
 				<p class="time" ng-if="table.tableStatus == 1">{{table.orderCreateTime | formatDateTimeStr:"HH:mm"}}</p>
 				<p class="amount" ng-if="table.tableStatus == 1">{{table.orderTotalAmount | mycurrency:"￥"}}</p>
@@ -87,8 +87,8 @@
 			<div class="col-xs-2 btn cell-btn btn-next" pager-direction="+1"><p class="name">下页</p></div>
 		</div>
 
-	</div> -->
-	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>
+	</div> 
+	<alert class="site-toptip" ng-repeat="alert in toptips" type="{{alert.type}}" close="closeTopTip($index)" dismiss-on-timeout="1500">{{alert.msg}}</alert>-->
 	<script type="text/ng-template" id="js/diandan/tablemenu.html">
 		<div class="menu-plain">
 			<div class="cates">
@@ -119,7 +119,7 @@
 				</div>
 			</div>
 			<div class="table-menu" pager-list="common" pager-data="{{curTables}}" page-size="34" item-selector=".cell-btn[id]" btn-selector=".btn-prev,.btn-next" page-num="0">
-				<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1, active : table.tableName == curTableName}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}" ng-click="selectTableName(table)">
+				<div class="col-xs-2 btn cell-btn" id="{{table.tableCode}}" ng-repeat="table in curTables" ng-class="{disabled : table.tableStatus == 4, idle : table.tableStatus == 0, occupy : table.tableStatus == 1, active : table.tableName == curTableName}" table-status="{{table.tableStatus}}" book-order-no="{{table.bookOrderNo}}" ng-click="selectTableName($event, table)">
 					<span class="table-lock" ng-if="tableIsLocked(table.lockedBy)"></span>
 					<span class="table-union" ng-if="tableIsUnion(table.unionTableGroupName)">{{table.unionTableGroupName || 1}}</span>
 					<span class="table-book" ng-if="tableIsBooked(table.bookOrderNo)"></span>
