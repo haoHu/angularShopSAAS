@@ -66,8 +66,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					} else {
 						_active = name == 'submitOrder' ? false : true;
 					}
-					if (operationMode == 1 && name == 'pickOrder' && _.isArray(ordersCatch) && ordersCatch.length > 0) {
-						_label += '<span class="badge">' + ordersCatch.length + '</span>';
+					if (operationMode == 1 && name == 'pickOrder') {
+						_label = _.isArray(ordersCatch) && ordersCatch.length > 0 ? ('提单<span class="badge">' + ordersCatch.length + '</span>') : '提单';
 					}
 					// 正餐模式下没有挂单、提单
 					return _.extend(btn, {
@@ -572,12 +572,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					AppAlert.add('success', '当前订单挂单成功!');
 					// 向子窗口推送新加菜品的消息
 					Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
+					mapOrderHandleBtns();
 				}, function () {
 					AppAlert.add('danger', '挂单列表已满，请完成当前订单!');
 					// 向子窗口推送新加菜品的消息
 					Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
+					mapOrderHandleBtns();
 				});
 				$scope.resetOrderInfo();
+				mapOrderHandleBtns();
 			};
 
 			// 跳转选择桌台页面
