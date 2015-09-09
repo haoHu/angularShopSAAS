@@ -593,14 +593,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};
 
 			// 开钱箱操作
-			$scope.openCashBox = function ($event) {
-				var $btn = $($event.target);
-				$btn.button('loading');
-				$timeout(function () {
-					Hualala.DevCom.exeCmd("OpenCashbox");
-					$btn.button('reset');
-				}, 500);
-				
+			$scope.openCashBox = function () {
+				Hualala.DevCom.exeCmd("OpenCashbox");
 			};
 
 			// 打印结账消费明细
@@ -2683,15 +2677,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	
 	// 订单操作按钮组
 	app.directive('orderhandlebtns', [
-		"$modal", "$rootScope", "$filter", "storage", "OrderService", "OrderPayService", "AppAlert", "AppAuthEMP",
-		function ($modal, $rootScope, $filter, storage, OrderService, OrderPayService, AppAlert, AppAuthEMP) {
+		"$modal", "$rootScope", "$filter", "$timeout", "storage", "OrderService", "OrderPayService", "AppAlert", "AppAuthEMP",
+		function ($modal, $rootScope, $filter, $timeout, storage, OrderService, OrderPayService, AppAlert, AppAuthEMP) {
 			return {
 				restrict : 'E',
 				template : [
 					'<div class="btns-plain">',
 						'<div class="col-xs-10">',
 							'<div class="col-xs-2" ng-repeat="btn in OrderHandleBtns">',
-								'<button class="btn btn-warning btn-block" ng-disabled="!btn.active" type="button" name="{{btn.name}}" ng-bind-html="btn.label"></button>',
+								'<button class="btn btn-warning btn-block" ng-disabled="!btn.active" type="button" name="{{btn.name}}" ng-bind-html="btn.label" data-loading-text="{{btn.label}}"></button>',
 							'</div>',
 						'</div>',
 						'<div class="col-xs-2">',
@@ -2736,7 +2730,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								templateUrl = "js/diandan/payOrder.html";
 								break;
 							case "openCashBox":
+								btn.button('loading');
 								scope.$apply("openCashBox()");
+								$timeout(function () {
+									btn.button('reset');
+								}, 500);
 								break;
 							case "return":
 								if (operationMode != 0) {
