@@ -551,7 +551,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.suspendOrder = function () {
 				var orderData = OrderService.getOrderData(),
 					foods = OrderService.getOrderFoodHT().getAll();
-				if (food.length == 0) {
+				if (foods.length == 0) {
 					AppAlert.add('danger', '请添加菜品后挂单！');
 					return null;
 				}
