@@ -1070,7 +1070,7 @@ define(['app'], function (app) {
                                     '<div class="btn-group center-block clearfix">',
                                         '<label class="btn btn-default btn-lg col-xs-4" ng-model="qTblStatus" btn-radio=\"\'-1\'\" ng-click="queryTablesByStatus(-1)">全部</label>',
                                         '<label class="btn btn-default btn-lg col-xs-4" ng-model="qTblStatus" btn-radio=\"\'0\'\" ng-click="queryTablesByStatus(0)">空闲</label>',
-                                        '<label class="btn btn-default btn-lg col-xs-4" ng-model="qTblStatus" btn-radio=\"\'1\'\" ng-click="queryTablesByStatus(1)">占用</label>',
+                                        '<label class="btn btn-default btn-lg col-xs-4" ng-model="qTblStatus" btn-radio=\"\'1\'\" ng-click="queryTablesByStatus(1)">占用<span class="badge" ng-if="getTablesCountByStatus(1) > 0" ng-bind="getTablesCountByStatus(1)"></span></label>',
                                     '</div>',
                                 '</div>',
                             '</div>',

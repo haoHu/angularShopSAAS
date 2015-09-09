@@ -802,7 +802,15 @@ define(['app'], function(app) {
 			$scope.close = function () {
 				$modalInstance.close();
 			};
-
+			/**
+			 * 根据状态获取桌台数量
+			 * @param  {[type]} status [description]
+			 * @return {[type]}        [description]
+			 */
+			$scope.getTablesCountByStatus = function (status) {
+				var tables = TableService.filterTableLst(status, $scope.curAreaName);
+				return !tables ? 0 : tables.length;
+			};
 		}
 	]);
 });

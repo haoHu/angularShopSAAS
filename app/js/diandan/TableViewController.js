@@ -146,6 +146,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			 * @return {[type]}   [description]
 			 */
 			$scope.selectTableArea = function (v) {
+				var progressbar = AppProgressbar.add('warning', '加载中...');
 				$scope.curAreaName = v;
 				// 获取指定区域桌台状态数据
 				var callServer = TableService.loadTableStatusLst({
@@ -155,6 +156,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					// var areas = TableService.getTableAreas();
 					getCurTables();
 					// $scope.TableAreas = mapTableAreaRenderData(areas);
+					AppProgressbar.close(progressbar);
 				});
 				return callServer;
 			};
@@ -503,6 +505,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 			};
 
+			/**
+			 * 根据状态获取桌台数量
+			 * @param  {[type]} status [description]
+			 * @return {[type]}        [description]
+			 */
+			$scope.getTablesCountByStatus = function (status) {
+				var tables = TableService.filterTableLst(status, $scope.curAreaName);
+				return !tables ? 0 : tables.length;
+			};
+
 
 		}
 	]);
@@ -795,6 +807,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			$scope.close = function () {
 				$modalInstance.close();
+			};
+			/**
+			 * 根据状态获取桌台数量
+			 * @param  {[type]} status [description]
+			 * @return {[type]}        [description]
+			 */
+			$scope.getTablesCountByStatus = function (status) {
+				var tables = TableService.filterTableLst(status, $scope.curAreaName);
+				return !tables ? 0 : tables.length;
 			};
 		} 
 	]);

@@ -1347,6 +1347,10 @@ body {
 .table-ctrl .filter-bar .btn {
   white-space: nowrap;
 }
+.section-table .filter-bar .badge,
+.table-ctrl .filter-bar .badge {
+  background-color: #f00;
+}
 .section-table .area-bar,
 .table-ctrl .area-bar {
   position: relative;
