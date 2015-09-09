@@ -1,8 +1,8 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	app.controller('SnackViewController', 
 	[
-		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar',
+		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP, AppProgressbar) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -593,8 +593,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			};
 
 			// 开钱箱操作
-			$scope.openCashBox = function () {
-				Hualala.DevCom.exeCmd("OpenCashbox");
+			$scope.openCashBox = function ($event) {
+				var $btn = $($event.target);
+				$btn.button('loading');
+				$timeout(function () {
+					Hualala.DevCom.exeCmd("OpenCashbox");
+					$btn.button('reset');
+				}, 500);
+				
 			};
 
 			// 打印结账消费明细
@@ -1335,8 +1341,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar',
-		function ($scope, $rootScope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert, AppAuthEMP, AppProgressbar) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '$timeout', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, $timeout, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert, AppAuthEMP, AppProgressbar) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -1642,14 +1648,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			});
 
 			// 开钱箱
-			$scope.openCashBox = function () {
-				Hualala.DevCom.exeCmd("OpenCashbox");
+			$scope.openCashBox = function ($event) {
+				var $btn = $($event.target);
+				$btn.button('loading');
+				$timeout(function () {
+					Hualala.DevCom.exeCmd("OpenCashbox");
+					$btn.button('reset');
+				}, 500);
+				// Hualala.DevCom.exeCmd("OpenCashbox");
 			};
 			// 打印预结账清单
-			$scope.printCheckoutPreBill = function () {
+			$scope.printCheckoutPreBill = function ($event) {
 				// TODO 
 				// 1. 提交订单（actionType=YJZ）
 				// 2. 提交成功后发送硬件指令
+				var $btn = $($event.target);
+				$btn.button('loading');
 				var callServer = OrderService.submitOrder('YJZ', _.extend(OrderPayService.getOrderPayParams(), {
 					payQRCodeTitle : $scope.curQRCodeTitle,
 					payQRCodeTxt : $scope.curQRCode,
@@ -1665,9 +1679,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						});
 						// var msg = _.pick(_.result(data, 'data'), ['discountRate', 'discountRange', 'isVipPrice', 'moneyWipeZeroType', 'payLst'])
 						Hualala.DevCom.exeCmd("PrintCheckoutPreBill", JSON.stringify(msg));
+						$btn.button('reset');
 					} else {
 						// HC.TopTIp.addTopTips($rootScope, data);
 						AppAlert.add('danger', _.result(data, 'msg', ''));
+						$btn.button('reset');
 					}
 				});
 			};
