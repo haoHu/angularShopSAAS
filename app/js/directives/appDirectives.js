@@ -291,7 +291,7 @@ define(['app'], function (app) {
                 restrict : 'E',
                 // template : '<div><div class="" ng-class="{\'col-xs-6\' : $index <= 4, \'col-xs-12\' : $index > 4}" ng-repeat="el in fmels" ><label for="" class="col-xs-4">{{el.label}}</label><span class="col-xs-8"><span class="btn btn-default btn-block">{{el.value}}</span></span></div></div>',
                 template : [
-                    '<div>',
+                    '<div id="order_header_handle">',
                         '<span class="more glyphicon glyphicon-chevron-right"></span>',
                         '<div class="clearfix">',
                             '<div class="item col-xs-4"><label for="" class="col-xs-6">单号</label><span class="col-xs-6">{{fmels.saasOrderNo | getSaasOrderNo}}</span></div>',
@@ -1264,23 +1264,27 @@ define(['app'], function (app) {
                             var $btnPlain = $('.btns-plain');
                             switch(keyCode) {
                                 case HotKeys['F2']:
+                                // 更改单头
+                                    $('#order_header_handle').trigger('click');
+                                    break;
+                                case HotKeys['F3']:
                                 // 落单
                                     if (moudleName == 'snack') return;
                                     $btnPlain.find('.btn[name="submitOrder"]').trigger('click');
                                     break;
-                                case HotKeys['F3']:
+                                case HotKeys['F6']:
                                 // 结账
                                     $btnPlain.find('.btn[name="cashPayOrder"]').trigger('click');
                                     break;
-                                case HotKeys['F4']:
+                                case HotKeys['F7']:
                                 // 扫码结账
                                     $btnPlain.find('.btn[name="payOrder"]').trigger('click');
                                     break;
-                                case HotKeys['F6']:
+                                case HotKeys['F8']:
                                 // 打开钱箱
                                     $btnPlain.find('.btn[name="openCashBox"]').trigger('click');
                                     break;
-                                case HotKeys['Esc']:
+                                case HotKeys['F9']:
                                     if (moudleName != 'snack' && $('.modal').filter('[id!=search_food]').length == 0) {
                                         $btnPlain.find('.btn[name="return"]').trigger('click');
                                     }

@@ -31,12 +31,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "urgent", active : false, label : "加急"}
 			];
 			$scope.OrderHandleBtns = [
-				{name : "submitOrder", active : true, label : "落单"},
+				{name : "submitOrder", active : true, label : "落单(F3)"},
 				{name : "suspendOrder", active : true, label : "挂单"},
 				{name : "pickOrder", active : true, label : "提单"},
-				{name : "cashPayOrder", active : true, label : "结账"},
-				{name : "payOrder", active : true, label : "扫码结账"},
-				{name : "openCashBox", active : true, label : "开钱箱"}
+				{name : "cashPayOrder", active : true, label : "结账(F6)"},
+				{name : "payOrder", active : true, label : "扫码结账(F7)"},
+				{name : "openCashBox", active : true, label : "开钱箱(F8)"}
 			];
 			
 			var shopInfo = storage.get("SHOPINFO"),
@@ -2692,7 +2692,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							'</div>',
 						'</div>',
 						'<div class="col-xs-2">',
-							'<button class="btn btn-default btn-block" type="button" name="return">返回</button>',
+							'<button class="btn btn-default btn-block" type="button" name="return">返回(F9)</button>',
 						'</div>',
 					'</div>'
 				].join(''),
