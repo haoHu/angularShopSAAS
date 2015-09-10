@@ -1240,4 +1240,71 @@ define(['app'], function (app) {
             }
         }
     ]);
+
+    // 热键操作
+    app.directive('hotkey', [
+        "$rootScope", "$timeout", "$location",
+        function ($rootScope, $timeout, $location) {
+            return {
+                restrict : "A",
+                link : function (scope, el, attr) {
+                    $('body').on('keydown.hotkey', function ($event) {
+                        var path = $location.path(),
+                            search = $location.search(),
+                            keyCode = $event.keyCode || $event.which;
+                        var moudleName = path.slice(1).split('/')[0];
+                        var HotKeys = Hualala.TypeDef.HotKeys;
+                        IX.Debug.info("path is " + path);
+                        IX.Debug.info("search is ");
+                        IX.Debug.info(search);
+                        IX.Debug.info("keyCode is " + $event.keyCode);
+                        IX.Debug.info("charCode is " + $event.charCode);
+                        IX.Debug.info("which is " + $event.which);
+                        var dinnerHotKeysHandle = function (moudleName, keyCode) {
+                            var $btnPlain = $('.btns-plain');
+                            switch(keyCode) {
+                                case HotKeys['F2']:
+                                // 落单
+                                    if (moudleName == 'snack') return;
+                                    $btnPlain.find('.btn[name="submitOrder"]').trigger('click');
+                                    break;
+                                case HotKeys['F3']:
+                                // 结账
+                                    $btnPlain.find('.btn[name="cashPayOrder"]').trigger('click');
+                                    break;
+                                case HotKeys['F4']:
+                                // 扫码结账
+                                    $btnPlain.find('.btn[name="payOrder"]').trigger('click');
+                                    break;
+                                case HotKeys['F6']:
+                                // 打开钱箱
+                                    $btnPlain.find('.btn[name="openCashBox"]').trigger('click');
+                                    break;
+                                case HotKeys['Esc']:
+                                    if (moudleName != 'snack' && $('.modal').filter('[id!=search_food]').length == 0) {
+                                        $btnPlain.find('.btn[name="return"]').trigger('click');
+                                    }
+                                    break;
+                            }
+                        };
+                        switch(moudleName) {
+                            case "snack":
+                            case "dinner":
+                                IX.Debug.info("dinner|snack moudle");
+                                if (moudleName == 'snack' || path.slice(1).split('/')[1] != 'table') {
+                                    // 点菜页面
+                                    dinnerHotKeysHandle(moudleName, keyCode);
+                                }
+                                break;
+                            case "dingdan":
+                                IX.Debug.info("dingdan moudle");
+                                break;
+
+                        }
+
+                    });
+                }
+            }
+        }
+    ]);
 });

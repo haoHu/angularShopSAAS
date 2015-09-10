@@ -138,6 +138,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
                 $scope.openSecondScreen();
             }
             $scope.initSocket();
+            $('body').unbind('keydown.hotkey');
         });
         $scope.checkNavBtnActive = function (_curNav, _href) {
             var reg = new RegExp('^' + _href);
