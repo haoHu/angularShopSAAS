@@ -48,7 +48,8 @@
 		"F10" : 121,
 		"F11" : 122,
 		"F12" : 123,
-		"Esc" : 27
+		"Esc" : 27,
+		"Backspace" : 8
 	};
 
 	Hualala.TypeDef.ResponseCodes = {

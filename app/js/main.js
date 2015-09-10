@@ -136,4 +136,16 @@ require(['app', 'underscore', 'IX', 'global-const', 'global-url', 'api', 'dataty
 		}
 		return true;
 	});
+	// 屏蔽Backspace键让路由回退的功能
+	$('body').on('keydown', function ($event) {
+		var keyCode = $event.keyCode || $event.which;
+		var $tar = $($event.target || $event.srcElement);
+		var isTextEl = $tar.is(':text, :password, textarea');
+		var readOnly = $tar.attr('readonly');
+		readOnly = !readOnly ? false : true;
+		if (keyCode == Hualala.TypeDef.HotKeys['Backspace'] && (!isTextEl || readOnly)) {
+			IX.Debug.info('Ignore route jump by press Backspace Keyboard!');
+			return false;
+		}
+	});
 });
