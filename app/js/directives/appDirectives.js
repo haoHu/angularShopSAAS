@@ -1249,6 +1249,8 @@ define(['app'], function (app) {
                 restrict : "A",
                 link : function (scope, el, attr) {
                     $('body').on('keydown.hotkey', function ($event) {
+                        var $tar = $($event.target);
+                        // if ($tar.is("input, textarea")) return false;
                         var path = $location.path(),
                             search = $location.search(),
                             keyCode = $event.keyCode || $event.which;
@@ -1265,24 +1267,34 @@ define(['app'], function (app) {
                             switch(keyCode) {
                                 case HotKeys['F2']:
                                 // 更改单头
-                                    $('#order_header_handle').trigger('click');
+                                    if ($('.modal').filter('[id!=search_food]').length == 0) {
+                                        $('#order_header_handle').trigger('click');
+                                    }
                                     break;
                                 case HotKeys['F3']:
                                 // 落单
                                     if (moudleName == 'snack') return;
-                                    $btnPlain.find('.btn[name="submitOrder"]').trigger('click');
+                                    if ($('.modal').filter('[id!=search_food]').length == 0) {
+                                        $btnPlain.find('.btn[name="submitOrder"]').trigger('click');
+                                    }
                                     break;
                                 case HotKeys['F6']:
                                 // 结账
-                                    $btnPlain.find('.btn[name="cashPayOrder"]').trigger('click');
+                                    if ($('.modal').filter('[id!=search_food]').length == 0) {
+                                        $btnPlain.find('.btn[name="cashPayOrder"]').trigger('click');
+                                    }
                                     break;
                                 case HotKeys['F7']:
                                 // 扫码结账
-                                    $btnPlain.find('.btn[name="payOrder"]').trigger('click');
+                                    if ($('.modal').filter('[id!=search_food]').length == 0) {
+                                        $btnPlain.find('.btn[name="payOrder"]').trigger('click');
+                                    }
                                     break;
                                 case HotKeys['F8']:
                                 // 打开钱箱
-                                    $btnPlain.find('.btn[name="openCashBox"]').trigger('click');
+                                    if ($('.modal').filter('[id!=search_food]').length == 0) {
+                                        $btnPlain.find('.btn[name="openCashBox"]').trigger('click');
+                                    }
                                     break;
                                 case HotKeys['F9']:
                                     if (moudleName != 'snack' && $('.modal').filter('[id!=search_food]').length == 0) {

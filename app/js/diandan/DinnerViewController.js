@@ -2767,6 +2767,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								foods = OrderService.getOrderFoodHT().getAll();
 							if (foods.length == 0 && _.isEmpty(orderData.saasOrderKey)) {
 								AppAlert.add('danger', '请先添加菜品再结账！');
+								scope.$apply();
 								return;
 							}
 							// 结账操作，需要先提交一次订单，待服务返回结账数据后进行结账
