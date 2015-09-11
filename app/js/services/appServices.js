@@ -238,6 +238,30 @@ define(['app'], function (app) {
 						$scope.authSet.noFn();
 						closeAuth();
 					};
+					$scope.inputKeypress = function ($event) {
+						if ($event.keyCode != 13) return;
+						var el = $($event.target);
+						var tabIdx = parseInt(el.attr('tabIndex'));
+						var nextEl = $('[tabIndex=' + (tabIdx + 1) + ']');
+						
+						el.blur();
+						(nextEl.length > 0 && !nextEl.is('.btn')) ? nextEl.focus() : $scope.yesFn();
+						
+					};
+					// 输入框聚焦事件
+					// 告诉软键盘当前操作控件
+					$scope.inputFocus = function ($event) {
+						console.info($event);
+						console.info(arguments);
+						var curEl = $($event.target);
+						if (!curEl.attr('readonly')) {
+							$scope.focusInputEl = curEl;
+						} else {
+							$scope.focusInputEl = null;
+						}
+						return;
+
+					};
 				}
 			]);
 			return appAuthService = {
@@ -263,26 +287,30 @@ define(['app'], function (app) {
 							'<div class="modal-header">',
 								'<h4 class="modal-title">获取临时权限</h4>',
 							'</div>',
-							'<div class="modal-body text-warning">',
+							'<div class="modal-body text-warning clearfix">',
 								'<div class="form-horizontal">',
 									'<div class="form-group">',
-										'<label for="empID" class="col-xs-4 control-label">工号</label>',
-										'<div class="col-xs-8">',
-											'<input type="text" class="form-control" id="empID" ng-model="tempAllowEmpCode" />',
+										'<label for="empID" class="col-xs-3 control-label">工号</label>',
+										'<div class="col-xs-7">',
+											'<input type="text" class="form-control" id="empID" ng-model="tempAllowEmpCode" autofocus="true" tabIndex="1" ng-keypress="inputKeypress($event)"  ng-focus="inputFocus($event)"/>',
 										'</div>',
 									'</div>',
 									'<div class="form-group">',
-										'<label for="empPWD" class="col-xs-4 control-label">密码</label>',
-										'<div class="col-xs-8">',
-											'<input type="password" class="form-control" id="empPWD" ng-model="tempAllowEmpPWD" />',
+										'<label for="empPWD" class="col-xs-3 control-label">密码</label>',
+										'<div class="col-xs-7">',
+											'<input type="password" class="form-control" id="empPWD" ng-model="tempAllowEmpPWD" tabIndex="2" ng-keypress="inputKeypress($event)"  ng-focus="inputFocus($event)"/>',
 										'</div>',
 									'</div>',
+								'</div>',
+								'<div class="col-xs-12">',
+									'<!-- 软键盘 -->',
+									'<numkeyboard cur-target="focusInputEl"></numkeyboard>',
 								'</div>',
 							'</div>',
 							'<div class="modal-footer bg-warning">',
 								'<div class="btn-group btn-group-justified" role="group">',
 									'<div class="btn-group" role="group">',
-										'<button type="button" class="btn btn-warning btn-lg" ng-click="yesFn()">{{authSet.yesText}}</button>',
+										'<button type="button" class="btn btn-warning btn-lg" ng-click="yesFn()" tabIndex="3">{{authSet.yesText}}</button>',
 									'</div>',
 									'<div class="btn-group" role="group">',
 										'<button type="button" class="btn btn-default btn-lg" ng-click="noFn()">{{authSet.noText}}</button>',
