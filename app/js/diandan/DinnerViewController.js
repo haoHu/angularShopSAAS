@@ -1548,9 +1548,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							$scope.jumpToTablePage();
 						}
 						$scope.close();
-						AppProgressbar.close(progressbar);
+						$timeout(function () {
+							AppProgressbar.close(progressbar);
+						}, 200);
 					} else if (code == 'CS005') {
-						AppProgressbar.close(progressbar);
 						AppAuthEMP.add({
 							yesFn : function (empInfo) {
 								progressbar = AppProgressbar.add('warning', '提交数据...');
@@ -1562,10 +1563,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 							}
 						});
+						AppProgressbar.close(progressbar);
 					} else {
 						// HC.TopTip.addTopTips($rootScope, data);
 						// alert(_.result(data, 'msg', ''));
 						AppAlert.add('danger', _.result(data, 'msg', ''));
+						AppProgressbar.close(progressbar);
 					}
 				};
 
