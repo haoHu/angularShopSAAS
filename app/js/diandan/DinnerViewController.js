@@ -1521,7 +1521,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var $tar = $($event.target);
 				var isOK = $scope.isCanbeSubmit($scope.orderPayDetail);
 				var shopInfo = storage.get("SHOPINFO"),
-				operationMode = _.result(shopInfo, 'operationMode');
+					operationMode = _.result(shopInfo, 'operationMode');
+				var hisFlag = _.result($location.search(), 'hisFlag', 0);
+				var actionType = _.result($location.search(), 'FJZFlag', 'JZ');
 				if (!isOK) return;
 				// 1. 获取会员卡支付科目数据
 				// 2. 如果存在会员卡的cardNo，并且cardTransID为空
@@ -1557,7 +1559,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						AppAuthEMP.add({
 							yesFn : function (empInfo) {
 								progressbar = AppProgressbar.add('warning', '提交数据...');
-								callServer = OrderService.submitOrder('JZ', 
+								callServer = OrderService.submitOrder(actionType, 
 									_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams()), empInfo);
 								callServer.success(submitOrderSuccess);
 							},
@@ -1584,7 +1586,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							// 1. 发送打印会员卡交易凭证
 							Hualala.DevCom.exeCmd('PrintCRMTransBill', _.result(_data, 'transReceiptsTxt', ''));
 							// 2. 提交订单
-							submitOrderCallServer = OrderService.submitOrder('JZ', 
+							submitOrderCallServer = OrderService.submitOrder(actionType, 
 								_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams())
 							);
 							!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {
@@ -1597,7 +1599,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 					});
 				} else {
-					submitOrderCallServer = OrderService.submitOrder('JZ', 
+					submitOrderCallServer = OrderService.submitOrder(actionType, 
 						_.extend(OrderService.getOrderHeaderData(), OrderPayService.getOrderPayParams())
 					);
 					!_.isEmpty(submitOrderCallServer) && submitOrderCallServer.success(function (data) {

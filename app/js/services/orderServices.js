@@ -1060,8 +1060,10 @@ define(['app', 'uuid'], function (app, uuid) {
 				orderJson = Hualala.Common.formatPostData(orderJson);
 
 				params = _.extend(params, {
+					// actionType : _.isEmpty(self.FJZFlag) ? actionType : 'FJZ',
 					actionType : actionType,
-					submitBatchNo : submitBatchNo
+					submitBatchNo : submitBatchNo,
+					hisFlag : _.result(self._OrderData, 'his', 0)
 				}, {
 					orderJson : JSON.stringify(orderJson)
 				}, _.isEmpty(tmpEMP) ? null : tmpEMP);
