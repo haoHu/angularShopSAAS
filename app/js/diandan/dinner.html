@@ -531,7 +531,7 @@
 					</p>
 				</li>
 			</ul>
-			<p class="alert text-center center-block bg-danger text-danger" ng-if="OrdersCatch && OrdersCatch.length == 0">当前没有挂起订单！</p>
+			<p class="alert text-center center-block bg-danger text-danger" ng-if="!OrdersCatch || (OrdersCatch && OrdersCatch.length == 0)">当前没有挂起订单！</p>
 		</div>
 		<div class="modal-footer">
 			<div class="btn-group btn-group-justified" role="group">
