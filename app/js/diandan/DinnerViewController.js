@@ -1442,13 +1442,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				$scope.$broadcast('pay.submit', paySubjectGrp);
 			};
 			// 现金快捷支付结算
-			$scope.quickSubmitCashPay = function (paySubjectGrp) {
+			$scope.quickSubmitCashPay = function ($event, paySubjectGrp) {
 				var _orderPayDetail;
 				var progressbar = AppProgressbar.add('warning', '提交数据...');
 				$scope.submitPayForm(paySubjectGrp);
 				_orderPayDetail = $scope.orderPayDetail;
 				if ($scope.isCanbeSubmit(_orderPayDetail)) {
-					$scope.submitOrderPay(progressbar);
+					$scope.submitOrderPay($event, progressbar);
 				} else {
 					AppAlert.add('danger', "请核对金额");
 					AppProgressbar.close(progressbar);
@@ -1516,8 +1516,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				}
 			};
 			// 订单支付提交
-			$scope.submitOrderPay = function (progressbar) {
+			$scope.submitOrderPay = function ($event, progressbar) {
 				progressbar = progressbar || AppProgressbar.add('warning', '提交数据...');
+				var $tar = $($event.target);
 				var isOK = $scope.isCanbeSubmit($scope.orderPayDetail);
 				var shopInfo = storage.get("SHOPINFO"),
 				operationMode = _.result(shopInfo, 'operationMode');
@@ -1533,7 +1534,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				// 
 				var cardNo = OrderPayService.cardNo, cardTransID = OrderPayService.cardTransID;
 				var vipCardDeductMoneyCallServer = null, submitOrderCallServer = null;
-
+				$tar.button('loading');
 				var submitOrderSuccess = function (data) {
 					var code = _.result(data, 'code');
 					if (code == "000") {
@@ -1550,6 +1551,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						$scope.close();
 						$timeout(function () {
 							AppProgressbar.close(progressbar);
+							$tar.button('reset');
 						}, 200);
 					} else if (code == 'CS005') {
 						AppAuthEMP.add({
