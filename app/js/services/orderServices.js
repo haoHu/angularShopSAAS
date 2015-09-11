@@ -1050,7 +1050,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					empCode : empCode,
 					empName : empName,
 					bizModel : operationMode,
-					allFoodRemark : allFoodRemark
+					allFoodRemark : allFoodRemark,
+					hisFlag : _.result(self._OrderData, 'his', 0)
 				}, orderHeader, {
 					foodLst : foodLst
 				}, (_.isEmpty(self.FJZFlag) ? {} : {FJZFlag : self.FJZFlag}));
