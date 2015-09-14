@@ -1540,7 +1540,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var shopInfo = storage.get("SHOPINFO"),
 					operationMode = _.result(shopInfo, 'operationMode');
 				var hisFlag = _.result($location.search(), 'hisFlag', 0);
-				var actionType = _.result($location.search(), 'FJZFlag', 'JZ');
+				// var actionType = _.result($location.search(), 'FJZFlag', 'JZ');
+				var actionType = 'JZ';
 				if (!isOK) return;
 				// 1. 获取会员卡支付科目数据
 				// 2. 如果存在会员卡的cardNo，并且cardTransID为空
