@@ -2167,7 +2167,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var l = opts.length, amount = HCMath.add.apply(null, _.pluck(opts, 'voucherValue'));
 						var txt = '使用{count}张,共{amount}元'.replace('{count}', l).replace('{amount}', amount);
 						scope.curCashVoucherStr = txt;
-						scope.$apply();
+						// scope.$apply();
 					};
 					
 					// 计算会员卡卡值余额
@@ -2216,7 +2216,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								// msg : curVoucher.voucherUsingNotes + '<br/>' + '是否使用?',
 								msg : (_.isEmpty(curVoucher.voucherUsingNotes) ? '' : curVoucher.voucherUsingNotes + '<br/>') + '是否使用？',
 								yesFn : function () {
-									chkbox.trigger('click');
+									setTimeout(function () {
+										chkbox.trigger('click');
+									});
 									return;
 								},
 								noFn : function () {
