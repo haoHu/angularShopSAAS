@@ -304,8 +304,8 @@ define(['app'], function(app)
 
     //会员导航栏入会办卡
     app.directive('jointab', [
-        '$rootScope', '$sce', 'storage', 'CommonCallServer', 'AppAlert',
-        function ($rootScope, $sce, storage, CommonCallServer, AppAlert) {
+        '$rootScope', '$sce', 'storage', 'CommonCallServer', 'AppAlert','AppProgressbar',
+        function ($rootScope, $sce, storage, CommonCallServer, AppAlert, AppProgressbar) {
             return {
                 restrict : 'E',
                 template : [
@@ -705,6 +705,7 @@ define(['app'], function(app)
                     //点击提交按钮时
                     el.on('click', '.btn-submit-join', function() {
                         if((scope.checkmobile && checkcode == scope.checkcode) || !scope.checkmobile) {
+                            var progressbar = AppProgressbar.add('warning', '提交数据...');
                             scope.CCS.createVIPCard({
                                 shopName: null,
                                 cardNO: scope.realcardnumber,
@@ -721,6 +722,7 @@ define(['app'], function(app)
                                 oldCardMoneyBalnace: scope.oldrechargeamount,
                                 oldCardPointBalnace: scope.oldpointamount
                             }).success(function(data) {
+                                AppProgressbar.close(progressbar);
                                 if(data.code == '000') {
                                     AppAlert.add('success', '办卡成功！');
                                     scope.panel_userinfo.hide();
@@ -740,8 +742,8 @@ define(['app'], function(app)
     ]);
 
     //会员导航栏储值
-    app.directive('rechargetab', [
-        function () {
+    app.directive('rechargetab', ['AppProgressbar',
+        function (AppProgressbar) {
             return {
                 restrict : 'E',
                 template : [
@@ -968,6 +970,7 @@ define(['app'], function(app)
                     //点击提交按钮时
                     el.on('click', '.btn-submit-recharge', function() {
                         if(!$(this).hasClass('btn-disable')) {
+                            var progressbar = AppProgressbar.add('warning', '提交数据...');
                             scope.CCS.saveMoney({
                                 cardID: scope.user.cardkey,
                                 payWayName: scope.payway,
@@ -977,6 +980,7 @@ define(['app'], function(app)
                                 transReturnMoneyAmount: scope.rechargeway == 0 ? scope.rechargereturnamount : scope.rechargeplan.returnMoney,
                                 transReturnPointAmount: scope.rechargeway == 0 ? scope.rechargereturnpoint : scope.rechargeplan.returnPoint
                             }).success(function(data) {
+                                AppProgressbar.close(progressbar);
                                 if(data.code == '000') {
                                     scope.AA.add('success', '储值成功！');
 
@@ -996,8 +1000,8 @@ define(['app'], function(app)
 
     //会员导航栏消费刷卡
     app.directive('consumetab', [
-        '$rootScope', '$sce', 'CommonCallServer', 'AppAlert',
-        function ($rootScope, $sce, CommonCallServer, AppAlert) {
+        '$rootScope', '$sce', 'CommonCallServer', 'AppAlert','AppProgressbar',
+        function ($rootScope, $sce, CommonCallServer, AppAlert, AppProgressbar) {
             return {
                 restrict : 'E',
                 template : [
@@ -1452,6 +1456,7 @@ define(['app'], function(app)
                     //点击提交按钮时
                     el.on('click', '.btn-submit-consume', function() {
                         if(!$(this).hasClass('btn-disable')) {
+                            var progressbar = AppProgressbar.add('warning', '提交数据...');
                             scope.CCS.deductMoney({
                                 cardKey: scope.user.cardkey,
                                 cardTransPWD: scope.transpwd,
@@ -1467,6 +1472,7 @@ define(['app'], function(app)
                                 EGiftItemIDList: scope.group.vl,
                                 exchangeItemIDList: scope.group.el
                             }).success(function(data) {
+                                AppProgressbar.close(progressbar);
                                 if(data.code == '000') {
                                     scope.AA.add('success', '消费成功！');
                                     scope.panel_userinfo.hide();
@@ -1485,8 +1491,8 @@ define(['app'], function(app)
     ]);
 
     //会员导航栏卡操作
-    app.directive('cardhandletab', [
-        function () {
+    app.directive('cardhandletab', ['AppProgressbar',
+        function (AppProgressbar) {
             return {
                 restrict : 'E',
                 template : [
@@ -1688,7 +1694,9 @@ define(['app'], function(app)
                     //点击提交按钮时
                     el.on('click', '.btn-submit-handle', function() {
                         if(!$(this).hasClass('disable')) {
+                            var progressbar = AppProgressbar.add('warning', '提交数据...');
                             if(scope.handler == '绑定手机号' && msgcode != scope.msgcode) {
+                                AppProgressbar.close(progressbar);
                                 scope.AA.add('danger', '验证码错误！');
                             }else {
                                 scope.CCS.cardOption({
@@ -1698,6 +1706,7 @@ define(['app'], function(app)
                                     newCardNoOrMobile: getval(scope.handler),
                                     oldCardNoOrMobile: getval(scope.handler)
                                 }).success(function(data) {
+                                    AppProgressbar.close(progressbar);
                                     if(data.code == '000') {
                                         scope.AA.add('success', '操作成功！');
                                         scope.panel_userinfo.hide();
