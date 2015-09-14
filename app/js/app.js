@@ -85,6 +85,19 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
         if (!$rootScope.ModalLst) {
             $rootScope.ModalLst = [];
         }
+        // 订单反结账状态开关
+        $rootScope.$on('Order.FJZStatusToggle', function ($event, isFJZ) {
+            $scope.isFJZ = isFJZ;
+        });
+        // 路由切换前，先判断是否正在进行反结账操作
+        $rootScope.$on('$locationChangeStart', function (event) {
+            if ($scope.isFJZ) {
+                // 如果当前是反结账操作，不允许跳转任何界面
+                event.preventDefault();
+                // 弹出提示框，让用户进行结账操作
+                $rootScope.$broadcast('Order.CheckoutOrder');
+            }
+        });
         $rootScope.$on('$routeChangeSuccess', function (event) {
             var shopInfo = storage.get('SHOPINFO'),
                 empInfo = storage.get('EMPINFO');

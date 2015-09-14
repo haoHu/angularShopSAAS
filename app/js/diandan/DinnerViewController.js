@@ -1,8 +1,8 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	app.controller('SnackViewController', 
 	[
-		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar',
-		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP, AppProgressbar) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar', 'AppConfirm',
+		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP, AppProgressbar, AppConfirm) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -95,6 +95,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				// 反结账标记
 				var _FJZFlag = _.result(urlParams, 'FJZFlag', '');
 				OrderService.updateFJZFlag(_FJZFlag);
+				$scope.$emit('Order.FJZStatusToggle', !_FJZFlag ? false : true);
 			}, function (data) {
 				// HC.TopTip.addTopTips($rootScope, data);
 				AppAlert.add('danger', _.result(data, 'msg', ''));
@@ -626,6 +627,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var _ZXJ = _.result(food, 'ZXJ');
 				return _ZXJ == 'Z' ? 'zfood' : (_ZXJ == 'J' ? 'jfood' : 'xfood');
 			};
+
+			// 监听是否需要弹出反结账提示
+			$scope.$on('Order.CheckoutOrder', function ($event) {
+				AppConfirm.add({
+					title : "反结账操作",
+					msg : '你正在进行反结账操作，是否完成结账？',
+					yesFn : function () {
+						// 打开结账窗口
+						$('.btn[name=cashPayOrder]').trigger('click');
+					},
+					noFn : function () {
+
+						return;
+					}
+				});
+			});
 
 		}
 	]);
@@ -1552,6 +1569,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 						$scope.close();
 						$timeout(function () {
+							// 向上广播事件，更新反结账状态
+							$scope.$emit('Order.FJZStatusToggle', false);
 							AppProgressbar.close(progressbar);
 							$tar.button('reset');
 						}, 200);
