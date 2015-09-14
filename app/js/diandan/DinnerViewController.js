@@ -2158,6 +2158,21 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							VIPCardService.initVIPCardInfo(card);
 						}
 					});
+
+					scope.$watch('payByCash', function (nv, ov) {
+						if (nv == ov) return;
+						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
+							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
+						var payByPoint = scope.payByPoint;
+						var cashVouchers = scope.curCashVouchers;
+						var cashVoucherOpts = VIPCardService.getCashVoucherInfoByID(cashVouchers);
+						var cashVoucherAmount = cashVouchers.length == 0 ? 0 : HCMath.add.apply(null, _.pluck(cashVoucherOpts, 'voucherValue'));
+						var total = HCMath.add.apply(null, [payByPoint, nv, cashVoucherAmount]);
+						if (total > unPayAmount) {
+							AppAlert.add("danger", "你使用的会员卡支付总额已经超出应付金额！");
+						}
+					});
+
 					/**
 					 * 格式化现金代金券使用记录
 					 * @return {[type]} [description]
@@ -2171,9 +2186,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var payByPoint = scope.payByPoint, payByCash = scope.payByCash;
 						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
 							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
-					var total = HCMath.add.apply(null, [payByPoint, payByCash, amount]);
+						var total = HCMath.add.apply(null, [payByPoint, payByCash, amount]);
 						if (total > unPayAmount) {
-							AppAlert.add("danger", "你使用的券金额总和已经超出！");
+							AppAlert.add("danger", "你使用的会员卡支付总额已经超出应付金额！");
 						}
 					};
 					
@@ -2287,8 +2302,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var opts = _.isEmpty(items) ? [] : VIPCardService.getCashVoucherInfoByID(items);
 						var amount = HCMath.add.apply(null, _.pluck(opts, 'voucherValue')),
 							voucherIDs = _.pluck(opts, 'voucherID').join(',');
-						var payByPoint = _.isNumber(scope.payByPoint) ? scope.payByPoint : 0,
-							payByCash = _.isNumber(scope.payByCash) ? scope.payByCash : 0;
+						var payByPoint = _.isNumber(parseFloat(scope.payByPoint)) ? scope.payByPoint : 0,
+							payByCash = _.isNumber(parseFloat(scope.payByCash)) ? scope.payByCash : 0;
 						var prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName('vipCardPay'));
 						var delta = HCMath.sub(prePayAmount, payByCash, payByPoint);
 						var debitAmount = amount < delta ? amount : delta;
@@ -2301,7 +2316,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					};
 					// 积分抵扣
 					var mapPointPay = function () {
-						var payByPoint = _.isNumber(scope.payByPoint) ? scope.payByPoint : 0;
+						var payByPoint = _.isNumber(parseFloat(scope.payByPoint)) ? scope.payByPoint : 0;
 						return payByPoint <= 0 ? null : {
 							debitAmount : payByPoint,
 							giftItemNoLst : '',
@@ -2310,7 +2325,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					};
 					// 会员卡现金卡值抵扣
 					var mapCashPay = function () {
-						var payByCash = _.isNumber(scope.payByCash) ? scope.payByCash : 0;
+						var payByCash = _.isNumber(parseFloat(scope.payByCash)) ? scope.payByCash : 0;
 						return payByCash <= 0 ? null : {
 							debitAmount : payByCash,
 							giftItemNoLst : '',
