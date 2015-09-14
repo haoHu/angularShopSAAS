@@ -2159,6 +2159,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						}
 					});
 
+					scope.updatePaySumValue = function (total, unPayAmount) {
+						scope.vipPaySum = total;
+						scope.vipRealPaySum = total > unPayAmount ? unPayAmount : total;
+					};
+
 					scope.$watch('payByCash', function (nv, ov) {
 						if (nv == ov) return;
 						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
@@ -2171,6 +2176,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						if (total > unPayAmount) {
 							AppAlert.add("danger", "你使用的会员卡支付总额已经超出应付金额！");
 						}
+						scope.updatePaySumValue(total, unPayAmount);
+					});
+
+					scope.$watch('payByPoint', function (nv, ov) {
+						if (nv == ov) return;
+						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
+							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
+						var payByCash = scope.payByCash;
+						var cashVouchers = scope.curCashVouchers;
+						var cashVoucherOpts = VIPCardService.getCashVoucherInfoByID(cashVouchers);
+						var cashVoucherAmount = cashVouchers.length == 0 ? 0 : HCMath.add.apply(null, _.pluck(cashVoucherOpts, 'voucherValue'));
+						var total = HCMath.add.apply(null, [payByCash, nv, cashVoucherAmount]);
+						if (total > unPayAmount) {
+							AppAlert.add("danger", "你使用的会员卡支付总额已经超出应付金额！");
+						}
+						scope.updatePaySumValue(total, unPayAmount);
 					});
 
 					/**
@@ -2190,6 +2211,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						if (total > unPayAmount) {
 							AppAlert.add("danger", "你使用的会员卡支付总额已经超出应付金额！");
 						}
+						scope.updatePaySumValue(total, unPayAmount);
 					};
 					
 					// 计算会员卡卡值余额

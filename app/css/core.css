@@ -49,6 +49,10 @@ body {
 .btn.btn-print {
   background-color: #ec971f!important;
 }
+hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
 #site_wrapper {
   position: relative;
   display: block;

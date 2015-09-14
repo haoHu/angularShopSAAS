@@ -63,6 +63,18 @@
 	</div>
 	<div class="form-horizontal">
 		<div class="form-group">
+			<label for="" class="col-xs-3 control-label">会员卡支付小计</label>
+			<div class="col-xs-5">
+				<p class="form-control-static info">
+					<span ng-bind="vipPaySum"></span>
+					(实际抵扣: <span ng-bind="vipRealPaySum" class="text-danger"></span>)
+				</p>
+			</div>
+		</div>
+		<hr/>
+	</div>
+	<div class="form-horizontal">
+		<div class="form-group">
 			<label class="col-xs-3 control-label">支付确认码</label>
 			<div class="col-xs-7">
 				<input type="password" class="form-control" name="auth_code" value="{{cardTransPWD}}" ng-focus="inputFocus($event)"/>
