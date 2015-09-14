@@ -2168,6 +2168,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var txt = '使用{count}张,共{amount}元'.replace('{count}', l).replace('{amount}', amount);
 						scope.curCashVoucherStr = txt;
 						// scope.$apply();
+						var payByPoint = scope.payByPoint, payByCash = scope.payByCash;
+						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
+							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
+					var total = HCMath.add.apply(null, [payByPoint, payByCash, amount]);
+						if (total > unPayAmount) {
+							AppAlert.add("danger", "你使用的券金额总和已经超出！");
+						}
 					};
 					
 					// 计算会员卡卡值余额
@@ -2216,6 +2223,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								// msg : curVoucher.voucherUsingNotes + '<br/>' + '是否使用?',
 								msg : (_.isEmpty(curVoucher.voucherUsingNotes) ? '' : curVoucher.voucherUsingNotes + '<br/>') + '是否使用？',
 								yesFn : function () {
+									var _cashVoucherOpts = scope.cashVoucherOpts,
+										_curVoucher = curVoucher;
+
 									setTimeout(function () {
 										chkbox.trigger('click');
 									});
