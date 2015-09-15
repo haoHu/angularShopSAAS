@@ -1569,9 +1569,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							$scope.jumpToTablePage();
 						}
 						$scope.close();
+						// 向上广播事件，更新反结账状态
+						$scope.$emit('Order.FJZStatusToggle', false);
 						$timeout(function () {
-							// 向上广播事件，更新反结账状态
-							$scope.$emit('Order.FJZStatusToggle', false);
 							AppProgressbar.close(progressbar);
 							$tar.button('reset');
 						}, 200);
