@@ -371,8 +371,13 @@
 				<div class="form-group">
 					<label for="" class="col-xs-3 control-label">作废原因</label>
 					<div class="col-xs-9">
-						<input type="text" class="form-control" name="saasOrderRemark" ng-model="saasOrderRemark" bv-notempty />
+						<input type="text" class="form-control" name="saasOrderRemark"  ng-model="saasOrderRemark" bv-notempty />
 						<small class="help-block" ng-show="saasOrderRemark.$dirty && saasOrderRemark.$error.bvNotempty">请输入作废原因</small>
+
+						<div class="btngrp-box btngrp-3x3" pager-list="loop" pager-data="{{abolishOrders}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+							<radiogroup group-opts="abolishOrders" radio-name="abolishOrdersval" cur-val="{{abolishOrdersval}}" class="btn-group" role="group" data-toggle="buttons" on-change="onAbolishChange(val)" ></radiogroup>
+							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -45,8 +45,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 		createTime : {label : '记录创建时间', type : 'date', format : 'yyyy/MM/dd HH:mm:ss'}
 	};
 	app.controller('DingDanViewController', [
-		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'LocalOrderLstService', 'OrderService', 'AppAlert',
-		function($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, LocalOrderLstService, OrderService, AppAlert) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'LocalOrderLstService', 'OrderService', 'AppAlert','OrderNoteService',
+		function($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, LocalOrderLstService, OrderService, AppAlert,OrderNoteService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -231,6 +231,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				}
 			};
             $scope.queryOrderLst();
+			// 加载订单字典数据
+			OrderNoteService.getOrderNotesLst({}, function (data) {
+				IX.Debug.info("Order Notes: ");
+				IX.Debug.info(OrderNoteService.OrderNoteDict);
+			}, function (data) {
+				// HC.TopTip.addTopTips($rootScope, data);
+				AppAlert.add('danger', _.result(data, 'msg', ''));
+			});
 		}
 	]);
 
@@ -562,12 +570,31 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 	]);
 	/*账单作废操作*/
 	app.controller('AbolishOrderViewController', [
-		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppConfirm', 'AppAuthEMP',
-		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppConfirm, AppAuthEMP) {
-			IX.ns("Hualala");
+		'$scope', '$modalInstance', '$filter', '$location', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppConfirm', 'AppAuthEMP', 'OrderNoteService',
+		function ($scope, $modalInstance, $filter, $location, _scope, storage, OrderService, OrderChannel, AppAlert, AppConfirm, AppAuthEMP ,OrderNoteService) {
+			IX.ns("Hualala");		
 			var HC = Hualala.Common;
 			var orderInfo = OrderService.getOrderData();
 			$scope.saasOrderRemark = '';
+
+			////退款原因
+			//获得退款数据
+			var abolishOrderData = OrderNoteService.getabolishOrderNotes();
+			$scope.abolishOrders = _.result(abolishOrderData, 'items', []);
+			//焦点值改变赋值给中间变量
+			$scope.onAbolishChange = function (v) {
+				$scope.abolishOrdersval = v;
+				$scope.saasOrderRemark = v;
+			};
+			// //监听中间变量是否改变，改变就修改到input中
+			// $scope.$watch('abolishOrdersval',function(newValue,oldValue){
+			// 	if ( newValue !== oldValue ) {
+			// 		$scope.saasOrderRemark = newValue;
+			// 	}
+			// });
+
+
+
 			// 关闭窗口
 			$scope.close = function () {
 				// _scope.modalIsOpen(false);

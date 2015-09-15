@@ -2452,7 +2452,7 @@ define(['app', 'uuid'], function (app, uuid) {
 
 	// 订单附加信息字典服务
 	// 10：点单备注；20：作法；30：口味；40：退菜原因；50：赠菜原因；
-	// 60：改价原因；70：改单原因；80：预定退订原因；90：外卖退单原因
+	// 60：改价原因；70：改单原因；80：预定退订原因；90：外卖退单原因； 100：退款原因；110：作废原因
 	app.service('OrderNoteService',[
 		'$rootScope', '$location', '$filter', '$sanitize', '$sce', 'storage', 'CommonCallServer', 
 		function ($rootScope, $location, $filter, $sanitize, $sce, storage, CommonCallServer) {
@@ -2624,6 +2624,14 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.getOrderRefundNotes = function () {
 				return self.getOrderNotesByNotesType(100);
+			};
+
+			/**
+			 * 获取作废原因字典
+			 * @return {[type]} [description]
+			 */
+			this.getabolishOrderNotes = function () {
+				return self.getOrderNotesByNotesType(110);
 			};
 
 			/**
