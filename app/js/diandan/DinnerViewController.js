@@ -2398,6 +2398,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						OrderPayService.updatePaySubjectItem(curName, ret);
 						
 						scope.$emit('pay.detailUpdate');
+						VIPCardService.clear();
 						d.preventDefault();
 						return ;
 					});
