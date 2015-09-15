@@ -516,6 +516,16 @@
 			})
 			.bind('selectstart', false);
 	};
+	// 屏蔽文字头尾的空格和\t
+	 $.fn.trimTextInput = function () {
+	 	return this.bind('keyup', function (e) {
+	 		var $tar = $(e.target),
+	 			keyCode = e.keyCode || e.which;
+	 		if ($tar.is('input, textarea')) {
+	 			$tar.val($.trim($tar.val()));
+	 		}
+	 	});
+	 };
 })(jQuery);
 (function () {
 	// 弹出子窗体

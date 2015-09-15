@@ -118,6 +118,7 @@ require(['app', 'underscore', 'IX', 'global-const', 'global-url', 'api', 'dataty
 			angular.bootstrap(document, ['app']);
 		});
 	}
+	var ua = window.navigator.userAgent;
 	// 全局禁止鼠标右键菜单
 	$(document).bind('contextmenu', function (e) {
 		if (window.IXDEBUG) return true;
@@ -148,4 +149,11 @@ require(['app', 'underscore', 'IX', 'global-const', 'global-url', 'api', 'dataty
 			return false;
 		}
 	});
+	if (ua.indexOf("Windows NT 5.0") > -1 || ua.indexOf("Windows NT 5.1") > -1
+		|| ua.indexOf("Windows NT 5.2") > -1 || ua.indexOf("Windows 2000") > -1
+		|| ua.indexOf("Windows 2000") > -1 || ua.indexOf("Windows XP") > -1
+		|| ua.indexOf("Windows 2003") > -1) {
+		$('body').trimTextInput();
+	}
+	
 });
