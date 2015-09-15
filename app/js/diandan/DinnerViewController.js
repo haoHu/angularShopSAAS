@@ -2136,22 +2136,35 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						scope.payByCash = cardMoneyBalance >= delta ? delta : cardMoneyBalance;
 						delta = HCMath.sub(delta, scope.payByCash);
 						scope.prePayAmount = delta;
+
+						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
+							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
+						var cashVouchers = scope.curCashVouchers;
+						var cashVoucherOpts = VIPCardService.getCashVoucherInfoByID(cashVouchers);
+						var cashVoucherAmount = cashVouchers.length == 0 ? 0 : HCMath.add.apply(null, _.pluck(cashVoucherOpts, 'voucherValue'));
+						var total = HCMath.add.apply(null, [scope.payByPoint, scope.payByCash, cashVoucherAmount]);
+						scope.updatePaySumValue(total, unPayAmount);
+
 					};
-					if (_.isEmpty(VIPCardService.getOrigVIPCardData())) {
-						scope.vipInfo = null;
-						scope.cashVoucherOpts = null;
-						scope.curCashVouchers = [];
-						scope.payByPoint = 0;
-						scope.payByCash = 0;
-						scope.prePayAmount = 0;
-						scope.cardTransPWD = '';
-					} else {
-						scope.vipInfo = VIPCardService.mapVIPCardInfo();
-						scope.cashVoucherOpts = VIPCardService.mapCashVoucherOpts();
-						scope.curCashVouchers = [];
-						scope.cardTransPWD = '';
-						initPayForm();
-					}
+					// 初始化zhifukemu 
+					var initPaySubject = function () {
+						if (_.isEmpty(VIPCardService.getOrigVIPCardData())) {
+							scope.vipInfo = null;
+							scope.cashVoucherOpts = null;
+							scope.curCashVouchers = [];
+							scope.payByPoint = 0;
+							scope.payByCash = 0;
+							scope.prePayAmount = 0;
+							scope.cardTransPWD = '';
+						} else {
+							scope.vipInfo = VIPCardService.mapVIPCardInfo();
+							scope.cashVoucherOpts = VIPCardService.mapCashVoucherOpts();
+							scope.curCashVouchers = [];
+							scope.cardTransPWD = '';
+							initPayForm();
+						}
+					};
+					
 					
 					scope.$on('pay.setVIPCard', function (d, card) {
 						if (!_.isEmpty(card)) {
@@ -2442,7 +2455,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					scope.formElKeyup = function (invalid) {
 						scope.$emit('pay.chkPayFormValid', invalid == true ? false : true);
 					};
-
+					initPaySubject();
 				}
 			}
 		}
