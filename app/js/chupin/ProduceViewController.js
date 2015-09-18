@@ -11,9 +11,11 @@ define(['app'], function (app) {
 				// 菜品制作超时阀值
 				foodMakeDangerTimeout = parseInt(_.result(shopInfo, 'foodMakeDangerTimeout', 600)),
 				// 新增出品管理显示模式0：整单；1：单品
-				foodMakeManageShowMode = parseInt(_.result(shopInfo, 'foodMakeManageShowMode', 0)),
+				// foodMakeManageShowMode = parseInt(_.result(shopInfo, 'foodMakeManageShowMode', 0)),
+				foodMakeManageShowMode = storage.get('foodMakeManageShowMode') || 0;
 				// 当前站点管理的菜品部门Key列表，如果为空，表示全部菜品，多个部门用逗号分隔
-				departmentKeyLst = _.result(shopInfo, 'departmentkeyLst', '');
+				// departmentKeyLst = _.result(shopInfo, 'departmentkeyLst', '');
+				departmentKeyLst = storage.get('departmentKeyLst') || '';
 
 			$scope.foodMakeManageShowMode = foodMakeManageShowMode;
 			$scope.departmentKeyLst = departmentKeyLst;
@@ -298,6 +300,14 @@ define(['app'], function (app) {
 			$scope.hideBadge = function (type) {
 				return !($scope[type] > 0);
 			};
+			// 监听菜品制作完成的推送消息
+			$scope.$on('Produce.updateOrder', function (data) {
+				var records = _.result(data, 'records', []);
+				IX.Debug.info("Socket Push Produce Msg:");
+				IX.Debug.info(records);
+				// 增量更新菜品制作状态列表
+				ProduceOrderService.updateOrder(data);
+			});
 			$scope.queryFoodMakeStatusLst();
 			pollingOrderDealInterval();
 		}

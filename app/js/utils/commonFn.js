@@ -596,6 +596,8 @@
 		webSocketDomainName = '',
 		// webSocket超时重连时间
 		reconnectTimeout = 3 * 60 * 1000,
+		// 重连计数器
+		reconnectCount = 0;
 		// 计时器
 		reconnectTimer = null,
 		pushMsgTypes = Hualala.TypeDef.PushMsgTypes,
@@ -629,6 +631,7 @@
 			IX.Debug.info("WebSocket Push Message");
 			onMessage(evt);
 		};
+		reconnectCount++;
 		return socket;
 	};
 	// 重连定时器
@@ -655,6 +658,11 @@
 	};
 	// socket关闭
 	var onClose = function (evt) {
+		if (reconnectCount > 10) {
+			clearTimeout(reconnectTimer);
+			throw("WebSocket 重连失败！");
+			return;
+		}
 		initWebSocketConnect();
 	};
 	// socket推送消息

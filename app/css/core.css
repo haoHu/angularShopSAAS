@@ -2007,6 +2007,23 @@ hr {
   text-align: right;
   margin-right: 10px;
 }
+.section-huiyuan .form-inline .list-group label.list-group-item {
+  position: relative;
+  display: block;
+  text-align: left;
+  margin: 0;
+  width: 100%;
+  cursor: pointer;
+  height: 45px;
+  padding: 0 15px;
+}
+.section-huiyuan .form-inline .list-group label.list-group-item b {
+  margin-left: 1rem;
+}
+.section-huiyuan .form-inline .list-group label.list-group-item span {
+  display: block;
+  padding-left: 1rem;
+}
 .section-huiyuan label[class*=col-],
 .section-huiyuan div[class*=col-] {
   padding-left: 5px;
@@ -2480,6 +2497,28 @@ hr {
 .section-chupin .chupin-body.row > .order-item {
   padding: 3px;
 }
+.section-chupin .icon-tangshi,
+.section-chupin .icon-waimai,
+.section-chupin .icon-ziti {
+  width: 32px;
+  height: 32px;
+  -webkit-transform: scale(0.5);
+  position: absolute;
+  left: -8px;
+  top: -8px;
+}
+.section-chupin .icon-tangshi {
+  /*width: 32px; height:32px;*/
+  background-position: -120px -40px;
+}
+.section-chupin .icon-waimai {
+  /*width: 32px; height:32px;*/
+  background-position: -200px -120px;
+}
+.section-chupin .icon-ziti {
+  /*width: 32px; height:32px;*/
+  background-position: -240px 0px;
+}
 .section-chupin .order-item {
   position: relative;
   padding: 3px;
@@ -2514,7 +2553,7 @@ hr {
   display: none;
 }
 .section-chupin .order-item.active > .order-box {
-  border: 3px solid #ffff00;
+  border: 3px solid #f0ad4e;
   border-radius: 8px;
 }
 .section-chupin .order-item.warning .panel-heading {
@@ -2522,7 +2561,7 @@ hr {
 }
 .section-chupin .order-item.danger .panel-heading {
   background-color: #ff0000;
-  -webkit-animation: blink 1s infinite ease-in-out;
+  -webkit-animation: blink 1s 3 ease-in-out;
 }
 .section-chupin .order-item .panel {
   margin: 0;
@@ -2539,28 +2578,6 @@ hr {
   height: 16px;
   overflow: hidden;
   vertical-align: middle;
-}
-.section-chupin .order-item .icon-tangshi,
-.section-chupin .order-item .icon-waimai,
-.section-chupin .order-item .icon-ziti {
-  width: 32px;
-  height: 32px;
-  -webkit-transform: scale(0.5);
-  position: absolute;
-  left: -8px;
-  top: -8px;
-}
-.section-chupin .order-item .icon-tangshi {
-  /*width: 32px; height:32px;*/
-  background-position: -120px -40px;
-}
-.section-chupin .order-item .icon-waimai {
-  /*width: 32px; height:32px;*/
-  background-position: -200px -120px;
-}
-.section-chupin .order-item .icon-ziti {
-  /*width: 32px; height:32px;*/
-  background-position: -240px 0px;
 }
 .section-chupin .order-item.popup {
   overflow: visible;
@@ -2612,6 +2629,11 @@ hr {
   border-left: 3px solid transparent;
   border-right: 0;
   cursor: pointer;
+  background-color: #F5F5F5;
+}
+.section-chupin .food-lst .food-item.maked,
+.section-chupin .food-lst .food-item.call {
+  background-color: #e7f9de;
 }
 .section-chupin .food-lst .food-item.call > .status {
   color: #669900;
@@ -2619,20 +2641,100 @@ hr {
 .section-chupin .food-lst .food-item.hangup > .status {
   color: #ff4a22;
 }
-.section-chupin .food-lst .food-item.done > .num,
-.section-chupin .food-lst .food-item.done > .txt {
+.section-chupin .food-lst .food-item.done .num,
+.section-chupin .food-lst .food-item.done .txt,
+.section-chupin .food-lst .food-item.done .unit {
   color: #d2d2d2;
+}
+.section-chupin .food-lst .food-item .num,
+.section-chupin .food-lst .food-item .txt,
+.section-chupin .food-lst .food-item .unit {
+  font-weight: 700;
 }
 .section-chupin .food-lst .food-item.active {
   border: 1px solid #669900;
   border-left-width: 3px;
   border-right-width: 0;
-  background-color: #fff;
   color: #333333;
 }
 .section-chupin .food-lst .food-item.disabled {
   color: #cccccc;
   background-color: #fff;
+}
+.section-chupin .food-mode .food-box {
+  height: 70px;
+  cursor: pointer;
+}
+.section-chupin .food-mode .food-box[class*="col-"] {
+  padding: 0 2px;
+}
+.section-chupin .food-mode .food-box.danger .time {
+  color: #fff;
+  background-color: #ff0000;
+}
+.section-chupin .food-mode .food-box.warning .time {
+  color: #111;
+  background-color: #ffff66;
+}
+.section-chupin .food-mode .food-box.active > .well {
+  border: 3px solid #f0ad4e;
+}
+.section-chupin .food-mode .food-box > .well.maked,
+.section-chupin .food-mode .food-box > .well.call {
+  background-color: #e7f9de;
+}
+.section-chupin .food-mode .food-box > .well.call .status {
+  color: #669900;
+}
+.section-chupin .food-mode .food-box > .well.hangup .status {
+  color: #ff4a22;
+}
+.section-chupin .food-mode .food-box > .well.done .num,
+.section-chupin .food-mode .food-box > .well.done .txt,
+.section-chupin .food-mode .food-box > .well.done .unit {
+  color: #d2d2d2;
+}
+.section-chupin .food-mode .food-box > .well.done .icon-tangshi,
+.section-chupin .food-mode .food-box > .well.done .icon-waimai,
+.section-chupin .food-mode .food-box > .well.done .icon-ziti {
+  opacity: .6;
+}
+.section-chupin .food-mode .food-box > .well.done .time {
+  display: none;
+}
+.section-chupin .food-mode .food-box .time {
+  background-color: #669900;
+}
+.section-chupin .food-mode .food-box .icon-tangshi,
+.section-chupin .food-mode .food-box .icon-waimai,
+.section-chupin .food-mode .food-box .icon-ziti {
+  width: 32px;
+  height: 32px;
+  -webkit-transform: scale(0.5);
+  position: absolute;
+  left: -8px;
+  top: -4px;
+}
+.section-chupin .food-mode .food-box .ordernum,
+.section-chupin .food-mode .food-box .foodname {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.section-chupin .food-mode .food-box .foodnum {
+  padding-left: 16px;
+}
+.section-chupin .food-mode .food-box .num,
+.section-chupin .food-mode .food-box .txt {
+  font-weight: bolder;
+  font-size: 1.5em;
+  line-height: 1em;
+}
+.section-chupin .food-mode .food-box .unit,
+.section-chupin .food-mode .food-box .time {
+  display: inline-block;
+  font-weight: 400;
+  font-size: 1em;
 }
 @-webkit-keyframes blink {
   0%,

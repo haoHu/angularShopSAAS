@@ -123,6 +123,14 @@ define(['app', 'uuid'], function (app, uuid) {
 				});
 				return foods;
 			};
+			// 更新订单信息
+			this.updateOrder = function (orders) {
+				_.each(orders, function (order) {
+					var saasOrderKey = _.result(order, 'saasOrderKey');
+					var curOrder = this.getOrderitem(saasOrderkey);
+					_.extend(curOrder, order);
+				});
+			};
 		}
 	]);
 	

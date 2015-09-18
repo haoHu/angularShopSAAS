@@ -128,6 +128,11 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
                 deviceCode = _.result(urlParams, 'deviceCode', null),
                 deviceKey = _.result(urlParams, 'deviceKey', null),
                 deviceName = _.result(urlParams, 'deviceName', null);
+            // foodMakeManageShowMode -- 出品管理显示模式0：整单；1：单品
+            // departmentKeyLst -- 当前站点管理的菜品部门Key列表,多个时用逗号隔开，如果为空，表示全部菜品
+            var foodMakeManageShowMode = _.result(urlParams, 'foodMakeManageShowMode', 0),
+                departmentKeyLst = _.result(urlParams, 'departmentKeyLst', '');
+
             var screen2Exists = _.result(urlParams, 'Screen2Exists', 0),
                 screen2Left = _.result(urlParams, 'Screen2Left', 0),
                 screen2Top = _.result(urlParams, 'Screen2Top', 0),
@@ -138,6 +143,12 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
                 storage.set('deviceKey', deviceKey);
                 storage.set('deviceName', deviceName);
             }
+
+            if (!_.isEmpty(foodMakeManageShowMode)) {
+                storage.set('foodMakeManageShowMode', foodMakeManageShowMode);
+                storage.set('departmentKeyLst', departmentKeyLst);
+            }
+            
             
             if (screen2Exists == 1) {
                 storage.set('screen2Exists', screen2Exists);
@@ -215,6 +226,11 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             // 订阅基本信息更新消息
             Hualala.PushMsg.subcribeMsg('BaseUpdate', function (topic, args) {
 
+            });
+            // 菜品制作完成消息更新
+            Hualala.PushMsg.subcribeMsg('FoodMaked', function (topic, args) {
+                var msgData = _.result(args, 'msgData');
+                $rootScope.$broadcast('Produce.updateOrder', msgData);
             });
         };
         

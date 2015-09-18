@@ -271,6 +271,10 @@
 		// 基本信息更新
 		"HLL_SAAS_MSG_BASE_UPDATE" : {
 			subName : "BaseUpdate"
+		},
+		// 菜品制作完成消息
+		"HLL_SAAS_MSG_BASE_UPDATE" : {
+			subName : "FoodMaked"
 		}
 	};
 })();
