@@ -31,7 +31,8 @@
 		</div>
 		
 	</header>
-	<div class="chupin-body row">
+	<!-- 整单显示模式 -->
+	<div class="chupin-body order-mode row" ng-if="foodMakeManageShowMode == 0" order-mode="true">
 		<!-- 订单处理状态，订单是否被选中，订单是否被展开 -->
 		<div class="col-md-4 col-lg-3 order-item {{order.orderDealStatus}}" ng-class="{active : isSelectedOrder(order),  'offset-md' : isOffsetItem($index, 6), 'offset-lg' : isOffsetItem($index, 8), hidden : order.hidden}" ng-repeat="order in OrderLst" id="{{order.saasOrderKey}}" item-idx="{{$index}}">
 			<div class="order-box" ng-click="selectOrder(order)">
@@ -59,10 +60,13 @@
 						<ul class="list-group food-lst">
 							<li class="list-group-item food-item row {{getFoodMakeStatusStyle(order, food)}}" ng-repeat="food in order.foodLst" ng-click="toggleFood($event, order, food)" ng-class="{active : food.selected == true}" item-key="{{food.itemKey}}">
 								<!-- 菜品制作状态 -->
-								<div class="col-xs-3 status">{{getFoodMakeStatusStr(order, food)}}</div>
+								<div class="col-xs-2 status">{{getFoodMakeStatusStr(order, food)}}</div>
 								<!-- 菜品数量 -->
-								<div class="col-xs-1 num">{{food.foodNumber}}</div>
-								<div class="col-xs-8 txt">{{food.foodName}}/{{food.unit}}</div>
+								<div class="col-xs-2">
+									<span class="num">{{food.foodNumber}}</span>
+									<span class="unit">{{food.unit}}</span>
+								</div>
+								<div class="col-xs-8 txt">{{food.foodName}}</div>
 								<div class="col-xs-offset-4 col-xs-8 remark" ng-if="food.foodRemark.length > 0">
 									<span class="label label-danger">{{food.foodRemark}}</span>
 								</div>
@@ -84,234 +88,78 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- <div class="chupin-body row">
-		<div class="col-md-4 col-lg-3 order-item active">
-			<div class="order-box">
-				<div class="panel panel-default">
-					<div class="panel-heading row">
-						<div class="col-xs-3 panel-title">A109</div>
-						<div class="col-xs-6 ">
-							<span class="order-type">
-								<span class="icon-tangshi"></span>
-							</span>
-							<span class="num">￥35</span>
-						</div>
-						<div class="col-xs-3 time">00:00:14</div>
-					</div>
-					<div class="food-box">
-						<ul class="list-group food-lst">
-							<li class="list-group-item food-item row">
-								<div class="col-xs-3 status">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">可乐/大杯</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row active">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">可乐/大杯</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row disabled active">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">薯条/中</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row disabled">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">薯条/中</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row disabled">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">薯条/中</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-						</ul>
-					</div>
-					
+	<!-- 单品显示模式 -->
+	<div class="chupin-body food-mode row" ng-if="foodMakeManageShowMode == 1" food-mode="true">
+		<div ng-repeat="food in FoodLst" class="col-sm-6 col-md-6 col-lg-4 food-box {{food.__order.orderDealStatus}}" ng-class="{active : isSelectedFood(food)}" id="{{food.itemKey}}" item-idx="{{$index}}" ng-click="toggleFood($event, food)">
+			<div class="well well-sm row {{getFoodMakeStatusStyle(food.__order, food)}}">
+				<div class="col-xs-2 ordernum">
+					<span class="num">
+						{{food.__order.tableName || food.__order.saasOrderNo}}
+					</span>
 				</div>
-			</div>
-		</div>
-
-		<div class="col-md-4 col-lg-3 order-item active warning popup">
-			<div class="order-box">
-				<div class="panel panel-default">
-					<div class="panel-heading row">
-						<div class="col-xs-3 panel-title">A109</div>
-						<div class="col-xs-6 ">
-							<span class="order-type">
-								<span class="icon-tangshi"></span>
-							</span>
-							<span class="num">￥35</span>
-						</div>
-						<div class="col-xs-3 time">00:00:14</div>
-					</div>
-					<div class="food-box">
-						<ul class="list-group food-lst">
-							<li class="list-group-item food-item row">
-								<div class="col-xs-3 status">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">可乐/大杯</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row active">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">可乐/大杯</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row disabled active">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">薯条/中</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row disabled">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">薯条/中</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-							<li class="list-group-item food-item row disabled">
-								<div class="col-xs-3 call">叫2</div>
-								<div class="col-xs-1 num">2</div>
-								<div class="col-xs-8 txt">薯条/中</div>
-								<div class="col-xs-offset-4 col-xs-8 remark">
-									<span class="label label-danger">不加冰</span>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div class="pager">
-						<div class="btn-grp btn-group-justified " order-pager="{{curFoodItems.length}}">
-							<div class="btn-group" role="group">
-								<button class="btn btn-default btn-block btn-lg btn-prev" type="button" pager-act="prev">上页</button>
-							</div>
-							<div class="btn-group" role="group">
-								<button class="btn btn-default btn-block btn-lg btn-next" type="button" pager-act="next">下页</button>
-							</div>
-						</div>
+				<div class="col-xs-2 foodnum">
+					<span class="{{getOrderSubType(food.__order)}}"></span>
+					<span class="num">
+						{{food.foodNumber}}
+					</span>
+					<span class="unit">
+						{{food.unit}}
+					</span>
+				</div>
+				<div class="col-xs-6 foodname">
+					<span class="txt">
+						{{food.foodName}}
+					</span>
+					<div class="remark">
+						<span class="label label-danger" ng-if="food.foodRemark.length > 0">
+							{{food.foodRemark}}
+						</span>
+						<span  ng-if="food.foodRemark.length == 0">&nbsp;</span>
 					</div>
 				</div>
-			</div>
-		</div>
-
-		<div class="col-md-4 col-lg-3 order-item danger">
-			<div class="order-box">
-				<div class="panel panel-default">
-					<div class="panel-heading row">
-						<div class="col-xs-3 panel-title">A109</div>
-						<div class="col-xs-6 ">
-							<span class="order-type">
-								<span class="icon-tangshi"></span>
-							</span>
-							<span class="num">￥35</span>
-						</div>
-						<div class="col-xs-3 time">00:00:14</div>
+				<div class="col-xs-2">
+					<div class="status">
+						{{getFoodMakeStatusStr(food.__order, food) || '&nbsp;'}}
 					</div>
-					<div class="food-box">
-						<ul class="list-group food-lst">
-							
-						</ul>
-					</div>
-					
+					<span class="label time">
+						{{food.__order.makeIntervalTime || '&nbsp;'}}
+					</span>
 				</div>
+				
 			</div>
 		</div>
+	</div>
 
-		<div class="col-md-4 col-lg-3 order-item">
-			<div class="order-box">
-				<div class="panel panel-default">
-					<div class="panel-heading row">
-						<div class="col-xs-3 panel-title">A109</div>
-						<div class="col-xs-6 ">
-							<span class="order-type">
-								<span class="icon-tangshi"></span>
-							</span>
-							<span class="num">￥35</span>
-						</div>
-						<div class="col-xs-3 time">00:00:14</div>
-					</div>
-					<div class="food-box">
-						<ul class="list-group food-lst">
-							
-						</ul>
-					</div>
-					
-				</div>
-			</div>
-		</div>
-
-		<div class="col-md-4 col-lg-3 order-item">
-			<div class="order-box">
-				<div class="panel panel-default">
-					<div class="panel-heading row">
-						<div class="col-xs-3 panel-title">A109</div>
-						<div class="col-xs-6 ">
-							<span class="order-type">
-								<span class="icon-tangshi"></span>
-							</span>
-							<span class="num">￥35</span>
-						</div>
-						<div class="col-xs-3 time">00:00:14</div>
-					</div>
-					<div class="food-box">
-						<ul class="list-group food-lst">
-							
-						</ul>
-					</div>
-					
-				</div>
-			</div>
-		</div>
-
-		<div class="col-md-4 col-lg-3 order-item">
-			<div class="order-box">
-				<div class="panel panel-default">
-					<div class="panel-heading row">
-						<div class="col-xs-3 panel-title">A109</div>
-						<div class="col-xs-6 ">
-							<span class="order-type">
-								<span class="icon-tangshi"></span>
-							</span>
-							<span class="num">￥35</span>
-						</div>
-						<div class="col-xs-3 time">00:00:14</div>
-					</div>
-					<div class="food-box">
-						<ul class="list-group food-lst">
-							
-						</ul>
-					</div>
-					
-				</div>
-			</div>
-		</div>
-	</div> -->
 	<footer class="chupin-footer">
+		<div class="btn-group btn-group-justified" role="group" aria-label="出品操作">
+			<div class="btn-group" role="group">
+				<button class="btn btn-success btn-lg" ng-click="foodOperate('ZZWC')">
+					制作完成
+				</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button class="btn btn-warning btn-lg" ng-click="foodOperate('CCJH')">
+					出餐叫号
+				</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button class="btn btn-warning btn-lg" ng-click="foodOperate('ZSGQ')">
+					暂时挂起
+				</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button class="btn btn-warning btn-lg" ng-click="foodOperate('WCQC')">
+					完成取餐
+				</button>
+			</div>
+			<div class="btn-group" role="group" ng-if="foodMakeManageShowMode == 0">
+				<button class="btn btn-info btn-lg" ng-click="nextOrderLstPage()">
+					翻页
+				</button>
+			</div>
+		</div>
+	</footer>
+	<!-- <footer class="chupin-footer">
 		<div class=" row clearfix">
 			<div class="col-xs-4 order-info" >
 				<p ng-if="!!curFocusOrder">
@@ -328,5 +176,5 @@
 				<button for="" class="btn btn-warning btn-lg col-xs-3" ng-click="nextOrderLstPage()">翻页</button>
 			</div>
 		</div>
-	</footer>
+	</footer> -->
 </section>

@@ -37,10 +37,6 @@ define(['app', 'uuid'], function (app, uuid) {
 				});
 				return c;
 			};
-			// 获取数据队列
-			this.getOrderLst = function () {
-				return OrderHT.getAll();
-			};
 			// 菜品出品状态操作
 			this.foodMakeStatusOperate = function (params) {
 				var c = CommonCallServer.foodMakeStatusOperation(params);
@@ -81,15 +77,17 @@ define(['app', 'uuid'], function (app, uuid) {
 					makeEndTime = _.result(food, 'makeEndTime', 0),
 					makeCallCount = _.result(food, 'makeCallCount', 0);
 				var statusName, statusStr;
-				if (makeStatus == '29') {
+				if (makeStatus == '21') {
+					// 新加状态：菜品制作完成
+					statusName = makeCallCount > 0 ? 'call' : 'maked';
+					statusStr = makeCallCount > 0  ? '叫' + makeCallCount : '';
+				} else if (makeStatus == '29') {
 					statusName = 'hangup';
 					statusStr = '挂';
-				} else if (makeEndTime > 0) {
+				} else if (makeStatus == '3') {
+					// 菜品完成取餐
 					statusName = 'done';
 					statusStr = '';
-				} else if (makeStartTime > 0 && makeCallCount > 0) {
-					statusName = 'call';
-					statusStr = '叫' + makeCallCount;
 				} else {
 					statusName = '';
 					statusStr = '';
@@ -102,6 +100,28 @@ define(['app', 'uuid'], function (app, uuid) {
 			// 获取进行中、排队中、挂起中订单数
 			this.getBadgeCountByType = function (type) {
 				return self[type] || 0;
+			};
+			// 获取订单数据队列
+			this.getOrderLst = function () {
+				return OrderHT.getAll();
+			};
+			// 获取菜品数据队列
+			this.getFoodLst = function () {
+				var orders = OrderHT.getAll();
+				var foods = [];
+				// 遍历订单数据
+				_.each(orders, function (order) {
+					// 生成一道菜品对应一个订单的数据结构
+					var _order = _.omit(order, 'foodLst');
+					var foodLst = _.result(order, 'foodLst', []);
+					foodLst = _.map(foodLst, function (food) {
+						return _.extend(food, {
+							__order : _order
+						});
+					});
+					foods = foods.concat(foodLst);
+				});
+				return foods;
 			};
 		}
 	]);

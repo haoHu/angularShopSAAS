@@ -6,29 +6,53 @@ define(['app'], function (app) {
 			var HC = Hualala.Common,
 				shopInfo = storage.get('SHOPINFO'),
 				isFoodMakeStatusActive = _.result(shopInfo, 'isFoodMakeStatusActive'),
+				// 菜品制作即将超时阀值
 				foodMakeWarningTimeout = parseInt(_.result(shopInfo, 'foodMakeWarningTimeout', 300)),
-				foodMakeDangerTimeout = parseInt(_.result(shopInfo, 'foodMakeDangerTimeout', 600));
+				// 菜品制作超时阀值
+				foodMakeDangerTimeout = parseInt(_.result(shopInfo, 'foodMakeDangerTimeout', 600)),
+				// 新增出品管理显示模式0：整单；1：单品
+				foodMakeManageShowMode = parseInt(_.result(shopInfo, 'foodMakeManageShowMode', 0)),
+				// 当前站点管理的菜品部门Key列表，如果为空，表示全部菜品，多个部门用逗号分隔
+				departmentKeyLst = _.result(shopInfo, 'departmentkeyLst', '');
+
+			$scope.foodMakeManageShowMode = foodMakeManageShowMode;
+			$scope.departmentKeyLst = departmentKeyLst;
+			// 进行中单数
 			$scope.JZXOrderCount = 0;
+			// 排队中单数
 			$scope.PDZOrderCount = 0;
+			// 已挂起单数
 			$scope.YGQOrderCount = 0;
+			// 当前聚焦订单
 			$scope.curFocusOrder = null;
+			// 当前聚焦菜品列表
 			$scope.curFocusFoods = [];
+			// 订单页数
 			$scope.orderPageNo = 1;
+			// 搜索表单数据
 			$scope.qform = {
 				// 查询关键字
 				qKeyword : '',
 				// 过滤条件
 				qActionType : 'JXZ'
 			};
+			// 整单模式下订单列表
 			$scope.OrderLst = [];
+			// 单品模式下数据列表
+			$scope.FoodLst = [];
+			// 计时器
 			$scope.oInterval = null;
 			// 清空当前选中的订单数据
-			var cleanCurFocusOrderData = function () {
-				cleanCurFocusFoods();
+			$scope.cleanCurFocusOrderData = function () {
+				$scope.cleanCurFocusFoods();
 				$scope.curFocusOrder = null;
 			};
-			var cleanCurFocusFoods = function () {
+			// 清空当前聚焦菜品列表
+			$scope.cleanCurFocusFoods = function () {
 				_.each(_.result($scope.curFocusOrder, 'foodLst'), function (el) {
+					el.selected = false;
+				});
+				_.each($scope.curFocusFoods, function (el) {
 					el.selected = false;
 				});
 				$scope.curFocusFoods = [];
@@ -44,35 +68,47 @@ define(['app'], function (app) {
 				return !_.isEmpty(_f);
 			};
 			// 添加选中菜品
-			var addCurFocusFood = function (food) {
+			$scope.addCurFocusFood = function (food) {
 				$scope.curFocusFoods.push(food);
 			};
 			// 删除选中菜品
-			var deleteCurFocusFood = function (food) {
+			$scope.deleteCurFocusFood = function (food) {
 				var itemKey = _.result(food, 'itemKey');
 				$scope.curFocusFoods = _.filter($scope.curFocusFoods, function (el) {
 					return _.result(el, 'itemKey') != itemKey;
 				});
 			};
+			$scope.updateCurFocusOrder = function (order) {
+				$scope.curFocusOrder = order;
+			};
 			// 计时器开启
 			var pollingOrderDealInterval = function () {
 				$scope.oInterval = $interval(function () {
-					_.each($scope.OrderLst, function (order) {
-						var s = $scope.getOrderDealInterval(_.result(order, 'startTime', null));
-						order.makeIntervalTime = s;
-						$scope.getOrderDealStatus(order);
-					});
+					if ($scope.foodMakeManageShowMode == 0) {
+						_.each($scope.OrderLst, function (order) {
+							var s = $scope.getOrderDealInterval(_.result(order, 'startTime', null));
+							order.makeIntervalTime = s;
+							$scope.getOrderDealStatus(order);
+						});
+					} else {
+						_.each($scope.FoodLst, function (food) {
+							var order = _.result(food, '__order');
+							var s = $scope.getOrderDealInterval(_.result(order, 'startTime', null));
+							order.makeIntervalTime = s;
+							$scope.getOrderDealStatus(order);
+						});
+					}
 				}, 1000);
 			};
 			// 计时器取消
 			var cancelPollingOrderDealInterval = function () {
 				return $interval.cancel($scope.oInterval);
 			};
-			// 判断订单元素展开时是否需要偏移
-			$scope.isOffsetItem = function (idx, pageSize) {
-				var itemIdx = idx % pageSize;
-				return itemIdx >= (pageSize / 2) ? true : false;
-			};
+			// // 判断订单元素展开时是否需要偏移
+			// $scope.isOffsetItem = function (idx, pageSize) {
+			// 	var itemIdx = idx % pageSize;
+			// 	return itemIdx >= (pageSize / 2) ? true : false;
+			// };
 			// 关键字搜索
 			$scope.queryByKeyword = function ($event) {
 				var evtType = $event.type,
@@ -89,10 +125,12 @@ define(['app'], function (app) {
 			// 查询数据
 			$scope.queryFoodMakeStatusLst = function () {
 				cancelPollingOrderDealInterval();
-				cleanCurFocusOrderData();
+				$scope.cleanCurFocusOrderData();
 				var callServer = ProduceOrderService.loadFoodMakeStatusLst({
 					actionType : $scope.qform.qActionType,
-					keyword : $scope.qform.qKeyword
+					keyword : $scope.qform.qKeyword,
+					departmentKeyLst : departmentKeyLst,
+					showMode : foodMakeManageShowMode
 				});
 				callServer.success(function (data) {
 					var code = _.result(data, 'code');
@@ -100,6 +138,7 @@ define(['app'], function (app) {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					} else {
 						$scope.OrderLst = ProduceOrderService.getOrderLst();
+						$scope.FoodLst = ProduceOrderService.getFoodLst();
 						pollingOrderDealInterval();
 					}
 					$scope.JZXOrderCount = ProduceOrderService.getBadgeCountByType('JZXOrderCount');
@@ -110,11 +149,11 @@ define(['app'], function (app) {
 				});
 			};
 			
-			// 订单是否选中
-			$scope.isSelectedOrder = function (order) {
-				var saasOrderKey = _.result(order, 'saasOrderKey');
-				return _.isEmpty($scope.curFocusOrder) ? false : (_.result($scope.curFocusOrder, 'saasOrderKey') == saasOrderKey);
-			};
+			// // 订单是否选中
+			// $scope.isSelectedOrder = function (order) {
+			// 	var saasOrderKey = _.result(order, 'saasOrderKey');
+			// 	return _.isEmpty($scope.curFocusOrder) ? false : (_.result($scope.curFocusOrder, 'saasOrderKey') == saasOrderKey);
+			// };
 			
 			// 订单类型
 			$scope.getOrderSubType = function (order) {
@@ -169,37 +208,38 @@ define(['app'], function (app) {
 				}
 				// if (!_.isEmpty($scope.curFocusOrder)) {
 				// 	$('#' + _.result($scope.curFocusOrder, 'saasOrderKey')).addClass('collapse').removeClass('popup');
-				// 	cleanCurFocusFoods();
+				// 	$scope.cleanCurFocusFoods();
 				// }
 				if (!_.isEmpty($scope.curFocusOrder) && $scope.curFocusOrder.saasOrderKey != saasOrderKey) {
 					$('#' + _.result($scope.curFocusOrder, 'saasOrderKey')).addClass('collapse').removeClass('popup');
-					cleanCurFocusFoods();
+					$scope.cleanCurFocusFoods();
 				}
-				$scope.curFocusOrder = order;
+				// $scope.curFocusOrder = order;
+				$scope.updateCurFocusOrder(order);
 			};
-			// 选择/取消选择菜品
-			$scope.toggleFood = function ($event, order, food) {
-				var saasOrderKey = _.result(order, 'saasOrderKey'),
-					itemKey = _.result(food, 'itemKey'),
-					srcOrderItemEl = $('#' + _.result($scope.curFocusOrder, 'saasOrderKey'));
-				var foodMakeStatus = ProduceOrderService.getOrderFoodMakeStatus(saasOrderKey, itemKey);
-				if (_.result($scope.curFocusOrder, 'saasOrderKey') !== saasOrderKey) {
-					srcOrderItemEl.addClass('collapse').removeClass('popup');
-					cleanCurFocusOrderData();
-					$scope.curFocusOrder = order;
-				}
-				if (foodMakeStatus.name == 'done') {
-					return true;
-				}
-				if (_.result(food, 'selected')) {
-					food.selected = false;
-					deleteCurFocusFood(food);
-				} else {
-					food.selected = true;
-					addCurFocusFood(food);
-				}
-				// $event.stopPropagation();
-			};
+			// // 选择/取消选择菜品
+			// $scope.toggleFood = function ($event, order, food) {
+			// 	var saasOrderKey = _.result(order, 'saasOrderKey'),
+			// 		itemKey = _.result(food, 'itemKey'),
+			// 		srcOrderItemEl = $('#' + _.result($scope.curFocusOrder, 'saasOrderKey'));
+			// 	var foodMakeStatus = ProduceOrderService.getOrderFoodMakeStatus(saasOrderKey, itemKey);
+			// 	if (_.result($scope.curFocusOrder, 'saasOrderKey') !== saasOrderKey) {
+			// 		srcOrderItemEl.addClass('collapse').removeClass('popup');
+			// 		cleanCurFocusOrderData();
+			// 		$scope.curFocusOrder = order;
+			// 	}
+			// 	if (foodMakeStatus.name == 'done') {
+			// 		return true;
+			// 	}
+			// 	if (_.result(food, 'selected')) {
+			// 		food.selected = false;
+			// 		$scope.deleteCurFocusFood(food);
+			// 	} else {
+			// 		food.selected = true;
+			// 		$scope.addCurFocusFood(food);
+			// 	}
+			// 	// $event.stopPropagation();
+			// };
 			// 菜品出品状态操作
 			$scope.foodOperate = function (actionType) {
 				var saasOrderKey = _.result($scope.curFocusOrder, 'saasOrderKey'),
@@ -216,7 +256,7 @@ define(['app'], function (app) {
 				c.success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
-						cleanCurFocusFoods();
+						$scope.cleanCurFocusFoods();
 						// $scope.OrderLst = ProduceOrderService.getOrderLst();
 						// 刷新当前页面
 						$scope.queryFoodMakeStatusLst();
@@ -262,6 +302,112 @@ define(['app'], function (app) {
 			pollingOrderDealInterval();
 		}
 	]);
+	
+	app.directive('orderMode', [
+		"$rootScope", "$filter", "ProduceOrderService",
+		function ($rootScope, $filter, ProduceOrderService) {
+			return {
+				restrict : 'A',
+				link : function ($scope, el, attr) {
+
+					// 判断订单元素展开时是否需要偏移
+					$scope.isOffsetItem = function (idx, pageSize) {
+						var itemIdx = idx % pageSize;
+						return itemIdx >= (pageSize / 2) ? true : false;
+					};
+
+					// 订单是否选中
+					$scope.isSelectedOrder = function (order) {
+						var saasOrderKey = _.result(order, 'saasOrderKey');
+						return _.isEmpty($scope.curFocusOrder) ? false : (_.result($scope.curFocusOrder, 'saasOrderKey') == saasOrderKey);
+					};
+
+					// 选择/取消选择菜品
+					$scope.toggleFood = function ($event, order, food) {
+						var saasOrderKey = _.result(order, 'saasOrderKey'),
+							itemKey = _.result(food, 'itemKey'),
+							srcOrderItemEl = $('#' + _.result($scope.curFocusOrder, 'saasOrderKey'));
+						var foodMakeStatus = ProduceOrderService.getOrderFoodMakeStatus(saasOrderKey, itemKey);
+						if (_.result($scope.curFocusOrder, 'saasOrderKey') !== saasOrderKey) {
+							srcOrderItemEl.addClass('collapse').removeClass('popup');
+							$scope.cleanCurFocusOrderData();
+							// $scope.curFocusOrder = order;
+							$scope.updateCurFocusOrder(order);
+						}
+						if (foodMakeStatus.name == 'done') {
+							return true;
+						}
+
+						if (_.result(food, 'selected')) {
+							food.selected = false;
+							$scope.deleteCurFocusFood(food);
+						} else {
+							food.selected = true;
+							$scope.addCurFocusFood(food);
+						}
+						// $event.stopPropagation();
+					};
+				}
+			}
+		}
+	]);
+
+	app.directive('foodMode', [
+		"$rootScope", "$filter", "ProduceOrderService",
+		function ($rootScope, $filter, ProduceOrderService) {
+			return {
+				restrict : 'A',
+				link : function ($scope, el, attr) {
+					// 菜品是否选中
+					// $scope.isSelectedFood = function (food) {
+					// 	var order = _.result(food, '__order'),
+					// 		saasOrderKey = _.result(order, 'saasOrderKey'),
+					// 		itemkey = _.result(food, 'itemKey');
+					// 	return _.indexOf($scope.curFocusFoods, itemKey);
+					// };
+					// 选中单品
+					$scope.isSelectedFood = function (food) {
+						var order = _.result(food, '__order'),
+							saasOrderKey = _.result(order, 'saasOrderKey'),
+							itemKey = _.result(food, 'itemKey');
+						var isFocus = _.find($scope.curFocusFoods, function (el) {
+							return el.itemKey == itemKey;
+						});
+						return !isFocus ? false : true;
+					};
+					// 选择/取消选择菜品
+					$scope.toggleFood = function ($event, food) {
+						var order = _.result(food, '__order'),
+							saasOrderKey = _.result(order, 'saasOrderKey'),
+							itemKey = _.result(food, 'itemKey');
+						var foodMakeStatus = ProduceOrderService.getOrderFoodMakeStatus(saasOrderKey, itemKey);
+						if (!_.isEmpty($scope.curFocusOrder) && $scope.curFocusOrder.saasOrderKey != saasOrderKey) {
+							$scope.cleanCurFocusOrderData();
+						}
+						if (foodMakeStatus.name == 'done') {
+							return true;
+						}
+						// 更新当前选中的订单
+						// $scope.curFocusOrder = ProduceOrderService.getOrderItem(saasOrderKey);
+						$scope.updateCurFocusOrder(ProduceOrderService.getOrderItem(saasOrderKey));
+						$scope.cleanCurFocusFoods();
+						// 更新当前选中的foodItem
+						if (_.result(food, 'selected')) {
+							food.selected = false;
+							$scope.deleteCurFocusFood(food);
+						} else {
+							food.selected = true;
+							$scope.addCurFocusFood(food);
+						}
+						
+
+					};
+
+				}
+			}
+		}
+	]);
+
 	app.directive('foodPager', [
 		"$rootScope", "$filter", "ProduceOrderService",
 		function ($rootScope, $filter, ProduceOrderService) {

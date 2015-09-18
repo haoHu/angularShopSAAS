@@ -3,10 +3,13 @@
 	@secFootHeight : 5rem;
 	@bgBody : #000;
 	@bgBar : @xPageHeaderBG;
-	@itemFocusBorder : darken(#ff6, 20%);
+	// @itemFocusBorder : darken(#ff6, 20%);
+	@itemFocusBorder : #F0AD4E;
 	@bgWarning : #ff6;
 	@bgDanger : #f00;
+	@bgSuccess : #690;
 	@foodItemFocusBorder : #690;
+	@foodMaked : rgb(231, 249, 222);
 	@foodItemCall : #690;
 	@foodItemHangup : #ff4a22;
 	@foodDisabledColor : #ccc;
@@ -29,6 +32,19 @@
 		position : absolute; left : 0; right : 0; top : @secHeadHeight; bottom : @secFootHeight; z-index: 1;
 		padding : 3px; background-color: @bgBody; overflow: hidden;
 		&.row > .order-item {padding : 3px;}
+	}
+	.icon-tangshi, .icon-waimai, .icon-ziti {
+		width : 32px; height : 32px; -webkit-transform: scale(0.5);
+		position: absolute; left : -8px; top : -8px;
+	}
+	.icon-tangshi {
+		.x-icon-32_dingzuo();
+	}
+	.icon-waimai {
+		.x-icon-32_waimai();
+	}
+	.icon-ziti {
+		.x-icon-32_ziti();
 	}
 	.order-item {
 		position : relative; padding : 3px; height : 50%; overflow : hidden; z-index: 99;
@@ -60,7 +76,9 @@
 		}
 		&.danger .panel-heading{
 			background-color: @bgDanger;
-			-webkit-animation: blink 1s infinite ease-in-out;
+			-webkit-animation: blink 1s 3 ease-in-out;
+			// 去掉无限次闪烁动画
+			// -webkit-animation: blink 1s infinite ease-in-out;
 		}
 		.panel {
 			margin : 0;
@@ -73,19 +91,7 @@
 		.order-type {
 			display: inline-block; position: relative; width : 16px; height : 16px; overflow: hidden; vertical-align: middle;
 		}
-		.icon-tangshi, .icon-waimai, .icon-ziti {
-			width : 32px; height : 32px; -webkit-transform: scale(0.5);
-			position: absolute; left : -8px; top : -8px;
-		}
-		.icon-tangshi {
-			.x-icon-32_dingzuo();
-		}
-		.icon-waimai {
-			.x-icon-32_waimai();
-		}
-		.icon-ziti {
-			.x-icon-32_ziti();
-		}
+		
 		&.popup {
 			overflow: visible; z-index: 100;
 			.order-box {
@@ -118,23 +124,24 @@
 	.food-lst {
 		.food-item {
 			border-left : 3px solid transparent; border-right : 0; cursor : pointer;
+			background-color: #F5F5F5;
+			&.maked, &.call {
+				background-color : @foodMaked;
+			}
 			&.call > .status{
 				color : @foodItemCall;
 			}
 			&.hangup > .status{
 				color : @foodItemHangup;
 			}
-			&.done > .num, &.done > .txt {
+			&.done .num, &.done .txt, &.done .unit {
 				color : #d2d2d2;
 			}
-			.num {
-
-			}
-			.txt {
-
+			.num, .txt, .unit {
+				font-weight: 700;
 			}
 			&.active {
-				border : 1px solid @foodItemFocusBorder; border-left-width : 3px; border-right-width : 0; background-color: #fff; color : @xBaseColor;
+				border : 1px solid @foodItemFocusBorder; border-left-width : 3px; border-right-width : 0; color : @xBaseColor;
 			}
 			&.disabled {
 				color : @foodDisabledColor; background-color: #fff;
@@ -142,6 +149,75 @@
 		}
 		
 	}
+
+	.food-mode {
+		.food-box {
+			height : 70px; cursor: pointer;
+			&[class*="col-"] {
+				padding : 0 2px;
+			}
+			&.danger {
+				.time {
+					color : #fff; background-color: @bgDanger;
+				}
+			}
+			&.warning {
+				.time {
+					color : #111; background-color: @bgWarning;
+				}
+			}
+			&.active > .well {
+				border : 3px solid @itemFocusBorder;
+			}
+			& > .well {
+				&.maked, &.call {
+					background-color : @foodMaked;
+				}
+				&.call .status {
+					color : @foodItemCall;
+				}
+				&.hangup .status {
+					color : @foodItemHangup;
+				}
+				&.done {
+					.num, .txt, .unit {
+						color : #d2d2d2;
+					}
+					.icon-tangshi, .icon-waimai, .icon-ziti {
+						opacity : .6;
+					}
+					.time {
+						display: none;
+					}
+				}
+			}
+			
+			
+			.time {
+				background-color: @bgSuccess;
+			}
+			.icon-tangshi, .icon-waimai, .icon-ziti {
+				width : 32px; height : 32px; -webkit-transform: scale(0.5);
+				position: absolute; left : -8px; top : -4px;
+			}
+			.ordernum, .foodname {
+				white-space: nowrap; overflow: hidden; text-overflow : ellipsis;
+			}
+			.foodnum {
+				padding-left : 16px;
+			}
+			.num, .txt, .unit, .time {
+				// display: inline-block;
+			}
+			.num,.txt {
+				font-weight: bolder; font-size: 1.5em; line-height: 1em;
+			}
+			.unit, .time {
+				display:inline-block; font-weight: 400; font-size : 1em;
+			}
+		}
+	}
+	
 	
 
 	@-webkit-keyframes blink {
