@@ -157,9 +157,10 @@
 					pickupListEl.html(htm);
 				};
 				var refreshPage = function (data) {
-					var title = _.result(data, 'title', ''),
+					//注释的为需求变更，不更新页头渲染
+					//var title = _.result(data, 'title', ''),
 						callNoLst = _.result(data, 'callNoLst', []);
-					renderAdvertiseInfo(title);
+					//renderAdvertiseInfo(title);
 					renderCurrentPickupInfo(callNoLst[0]);
 					renderPickupList(callNoLst);
 				};

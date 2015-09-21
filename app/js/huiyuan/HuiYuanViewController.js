@@ -1734,7 +1734,7 @@ define(['app'], function(app)
 
                     //点击提交按钮时
                     el.on('click', '.btn-submit-handle', function() {
-                        if(!$(this).hasClass('disable')) {
+                        if(!$(this).hasClass('btn-disable')) {
                             var progressbar = AppProgressbar.add('warning', '提交数据...');
                             if(scope.handler == '绑定手机号' && msgcode != scope.msgcode) {
                                 AppProgressbar.close(progressbar);
