@@ -234,10 +234,20 @@
 
 	Hualala.TypeDef.CompBizQueryRangeLst = [
 		{value : 'ZH', label : '综合'},
+		// 新增报表项目
+		{value : 'HYZH', label : '会员交易汇总'},
+		{value : 'HYMX', label : '会员交易明细'},
+		{value : 'RHBK', label : '会员入会办卡'},
+
 		{value : 'QD', label : '渠道占比'},
 		{value : 'YYSD', label : '营业时段'},
 		{value : 'ZTQY', label : '桌台区域'},
 		{value : 'ZDXQ', label : '账单详情'},
+
+		// 新增报表项目
+		{value : 'ZFZD', label : '作废账单'},	
+		{value : 'KPZD', label : '开票账单'},	
+
 		{value : 'SYRY', label : '收银人员'},
 		{value : 'DCRY', label : '点菜人员'},
 		{value : 'ZZRY', label : '制作人员'},
