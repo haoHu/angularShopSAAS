@@ -308,6 +308,10 @@ define(['app'], function (app) {
 				// 增量更新菜品制作状态列表
 				ProduceOrderService.updateOrder(data);
 			});
+			// 刷新页面数据 
+			$scope.refresh = function () {
+				$scope.queryFoodMakeStatusLst();
+			};
 			$scope.queryFoodMakeStatusLst();
 			pollingOrderDealInterval();
 		}

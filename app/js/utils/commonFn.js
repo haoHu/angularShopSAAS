@@ -590,7 +590,7 @@
 		// webSocket实例对象
 		socket = null,
 		// websocket port
-		webSocketServerPort = HCMath.add(port, 234),
+		webSocketServerPort = HCMath.add(port, 1),
 		// websocket domain
 		// webSocketDomainName = Hualala.Global.AJAX_DOMAIN.split(':')[1],
 		webSocketDomainName = '',
@@ -606,7 +606,7 @@
 	// if (window.HualalaWorkMode == 'dev') {
 	// 	webSocketDomainName = 'http://10.10.2.166'.split(':')[1];
 	// 	port = 8080;
-	// 	webSocketServerPort = HCMath.add(port, 234);
+	// 	webSocketServerPort = HCMath.add(port, 1);
 	// }
 	// 初始化socket,建立连接
 	var initWebSocketConnect = function () {
@@ -616,7 +616,7 @@
 		} else {
 			webSocketDomainName = document.location.origin.split(':')[1];
 		}
-		webSocketServerPort = HCMath.add(port, 234);
+		webSocketServerPort = HCMath.add(port, 1);
 		var wsUri = 'ws:' + webSocketDomainName + ':' + webSocketServerPort;
 		socket = new WebSocket(wsUri);
 		socket.onopen = function (evt) {

@@ -1,15 +1,18 @@
 <section class="section section-chupin" ng-controller="ProduceViewController">
 	<header class="chupin-header">
 		<div class="filter-bar row clearfix">
-			<div class="col-xs-4">
-				<div class="input-group invisible">
+			<div class="col-xs-2">
+				<div class="input-group hidden">
 					<input type="text" class="form-control input-lg" placeholder="订单号、手机号、桌台、凭证号等" ng-model="qform.qKeyword" ng-keypress="queryByKeyword($event)" />
 					<span class="input-group-btn" ng-click="queryByKeyword($event)">
 						<button class="btn btn-default btn-lg" type="button">搜索</button>
 					</span>
 				</div>
+				<button class="btn btn-info btn-lg btn-block" ng-click="refresh()">
+					刷新
+				</button>
 			</div>
-			<div class="col-xs-7 col-xs-offset-1 clearfix">
+			<div class="col-xs-9 col-xs-offset-1 clearfix">
 				<div class="btn-group btn-group-justified">
 					<label class="btn btn-default btn-lg col-xs-3" ng-model="qform.qActionType" btn-radio="'JXZ'" ng-click="queryByActionType('JXZ')">
 						进行中
@@ -106,7 +109,7 @@
 						{{food.unit}}
 					</span>
 				</div>
-				<div class="col-xs-6 foodname">
+				<div class="col-xs-5 foodname">
 					<span class="txt">
 						{{food.foodName}}
 					</span>
@@ -117,11 +120,11 @@
 						<span  ng-if="food.foodRemark.length == 0">&nbsp;</span>
 					</div>
 				</div>
-				<div class="col-xs-2">
-					<div class="status">
+				<div class="col-xs-3">
+					<div class="status text-right">
 						{{getFoodMakeStatusStr(food.__order, food) || '&nbsp;'}}
 					</div>
-					<span class="label time">
+					<span class="label time pull-right">
 						{{food.__order.makeIntervalTime || '&nbsp;'}}
 					</span>
 				</div>

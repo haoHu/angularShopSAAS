@@ -2909,7 +2909,6 @@ hr {
 .section-pickupwindow .advertise-wrap .advertise-info > p,
 .section-pickupwindow .pickup-wrap .advertise-info > p {
   margin: 0;
-  overflow: auto;
   position: absolute;
   display: block;
   min-width: 100%;
