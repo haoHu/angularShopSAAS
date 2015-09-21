@@ -2405,7 +2405,7 @@ hr {
 .section-baobiao .tab-comp .btn-group > .btn {
   border-radius: 3px!important;
   margin-bottom: .5rem;
-  width: 10rem;
+  width: 10em;
   margin-right: 1rem;
 }
 .section-baobiao .tab-comp .btn-group > .btn.active {

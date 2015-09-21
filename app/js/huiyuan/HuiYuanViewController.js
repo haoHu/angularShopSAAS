@@ -15,8 +15,9 @@ define(['app'], function(app)
                 {class: '', active: true, label: '入会办卡', tabname: 'join'},
                 {class: '', active: true, label: '储值', tabname: 'recharge'},
                 {class: 'active', active: true, label: '消费刷卡', tabname: 'consume'},
-                {class: '', active: true, label: '卡操作', tabname: 'cardhandle'},
-                {class: '', active: true, label: '报表', tabname: 'report'}
+                {class: '', active: true, label: '卡操作', tabname: 'cardhandle'}
+                // 新需求--去掉会员报表，在报表模块中
+                // {class: '', active: true, label: '报表', tabname: 'report'}
             ];
 
             $scope.handletype = {
@@ -316,7 +317,7 @@ define(['app'], function(app)
                 restrict : 'E',
                 template : [
                     '<ul class="nav nav-tabs">',
-                        '<li role="presentation" ng-repeat="el in tabs" ng-disabled="!tab.active" class="{{el.class}}" name="{{el.tabname}}" style="width:20%;"><a>{{el.label}}</a></li>',
+                        '<li role="presentation" ng-repeat="el in tabs" ng-disabled="!tab.active" class="{{el.class}}" name="{{el.tabname}}" style="width:25%;"><a>{{el.label}}</a></li>',
                     '</ul>'
                 ].join(''),
                 replace : true,
