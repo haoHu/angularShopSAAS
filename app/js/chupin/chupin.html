@@ -43,7 +43,7 @@
 					<div class="panel-heading row">
 						<!-- 订单桌台号(订单单号)， -->
 						<div class="col-xs-3 panel-title">{{order.tableName || order.saasOrderNo}}</div>
-						<div class="col-xs-3 amount clearfix">
+						<div class="col-xs-4 amount clearfix">
 							<span class="order-type">
 								<!-- 订单类型图标 -->
 								<span class="{{getOrderSubType(order)}}"></span>
@@ -52,7 +52,7 @@
 							<span class="num">{{order.paidAmount | mycurrency:"￥"}}</span>
 							
 						</div>
-						<div class="col-xs-3 amount">
+						<div class="col-xs-2 amount">
 							<!-- 菜品条目数量 -->
 							<span class="num">{{order.foodCount || 0}}条</span>
 						</div>

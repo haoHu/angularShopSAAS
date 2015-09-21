@@ -282,7 +282,7 @@ hr {
   width: 320px;
   height: 320px;
 }
-@media screen and (max-width: 1170px) {
+@media screen and (max-height: 900px) {
   .site-numkeyboard {
     width: 240px;
     height: 240px;
@@ -2406,7 +2406,7 @@ hr {
   border-radius: 3px!important;
   margin-bottom: .5rem;
   width: 10em;
-  margin-right: 1rem;
+  margin-right: 1em;
 }
 .section-baobiao .tab-comp .btn-group > .btn.active {
   background: #449D44;
@@ -2528,6 +2528,9 @@ hr {
 }
 .section-chupin .order-item.collapse {
   display: block;
+}
+.section-chupin .order-item .panel-heading {
+  padding: 10px 5px;
 }
 .section-chupin .order-item .panel-heading .amount,
 .section-chupin .order-item .panel-heading .time,
