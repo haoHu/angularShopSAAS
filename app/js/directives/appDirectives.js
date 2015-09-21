@@ -1069,7 +1069,7 @@ define(['app'], function (app) {
                                     '</div>',
                                 '</div>',
                                 '<div class="col-xs-2">',
-                                    '<button class="btn btn-info btn-block btn-lg" ng-click="refreshTable($event)">刷新</button>',
+                                    '<button class="btn btn-info btn-block btn-lg" ng-click="refreshTable($event)" id="refresh_table">刷新(F3)</button>',
                                 '</div>',
                                 '<div class="col-xs-6">',
                                     '<div class="btn-group center-block clearfix">',
@@ -1308,6 +1308,11 @@ define(['app'], function (app) {
                                     break;
                             }
                         };
+                        var tableHotKeysHandle = function (moudleName, keyCode) {
+                            if (keyCode == HotKeys['F3']) {
+                                $('#refresh_table').trigger('click');
+                            }
+                        };
                         switch(moudleName) {
                             case "snack":
                             case "dinner":
@@ -1315,6 +1320,9 @@ define(['app'], function (app) {
                                 if (moudleName == 'snack' || path.slice(1).split('/')[1] != 'table') {
                                     // 点菜页面
                                     dinnerHotKeysHandle(moudleName, keyCode);
+                                }
+                                if (path.slice(1).split('/')[1] == 'table') {
+                                    tableHotKeysHandle(moudleName, keyCode);
                                 }
                                 break;
                             case "dingdan":
