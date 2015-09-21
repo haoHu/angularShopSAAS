@@ -159,7 +159,7 @@
 				var refreshPage = function (data) {
 					//注释的为需求变更，不更新页头渲染
 					//var title = _.result(data, 'title', ''),
-						callNoLst = _.result(data, 'callNoLst', []);
+					var callNoLst = _.result(data, 'callNoLst', []);
 					//renderAdvertiseInfo(title);
 					renderCurrentPickupInfo(callNoLst[0]);
 					renderPickupList(callNoLst);
