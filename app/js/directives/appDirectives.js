@@ -828,6 +828,8 @@ define(['app'], function (app) {
                                     }
                                 };
                                 break;
+                            default:
+                                break;
 
 
                         }
@@ -1058,13 +1060,16 @@ define(['app'], function (app) {
                     '<div class="menu-plain">',
                         '<div class="cates">',
                             '<div class="row filter-bar">',
-                                '<div class="col-xs-6">',
+                                '<div class="col-xs-4">',
                                     '<div class="input-group">',
                                         '<input type="text" class="form-control input-lg" placeholder="桌台名称" ng-model="qTblName" ng-keypress="quickSelectTable($event, qTblName)">',
                                         '<span class="input-group-btn">',
                                             '<button class="btn btn-default btn-lg" type="button" ng-click="quickSelectTable($event, qTblName)">进入桌台</button>',
                                         '</span>',
                                     '</div>',
+                                '</div>',
+                                '<div class="col-xs-2">',
+                                    '<button class="btn btn-info btn-block btn-lg" ng-click="refreshTable($event)">刷新</button>',
                                 '</div>',
                                 '<div class="col-xs-6">',
                                     '<div class="btn-group center-block clearfix">',

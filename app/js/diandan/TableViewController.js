@@ -32,7 +32,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "changeFood", active : false, label : "转菜"},
 				{name : "changeOrder", active : false, label : "换台"},
 				{name : "mergeOrder", active : false, label : "并台"},
-				{name : "unionOrder", active : false, label : "联台"},
+				{name : "unionOrder", active : false, label : "联台"}
 				// {name : "selectAll", active : true, label : "全选"},
 				// {name : "selectNone", active : true, label : "取消选择"}
 			];
@@ -168,17 +168,6 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					saasOrderRemark : '',
 					tableName : $scope.curTableName
 				};
-				// $modal.open({
-    //                 size : 'lg',
-    //                 controller : "OpenTableSetController",
-    //                 // templateUrl : "js/diandan/opentableset.html",
-    //                 templateUrl : "js/diandan/orderheaderset.html",
-    //                 resolve : {
-    //                     _scope : function () {
-    //                         return $scope;
-    //                     }
-    //                 }
-    //             });
                 Hualala.ModalCom.openModal($rootScope, $modal, {
                 	windowClass : webAppPageAnimationIsActive,
                     size : 'lg',
@@ -513,6 +502,25 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.getTablesCountByStatus = function (status) {
 				var tables = TableService.filterTableLst(status, $scope.curAreaName);
 				return !tables ? 0 : tables.length;
+			};
+
+			/**
+			 * 刷新桌台状态
+			 * @return {[type]} [description]
+			 */
+			$scope.refreshTable = function () {
+				var progressbar = AppProgressbar.add('warning', '加载中...');
+				// 获取指定区域桌台状态数据
+				var callServer = TableService.loadTableStatusLst({
+					areaName : $scope.curAreaName
+				});
+				callServer.success(function (data) {
+					getCurTables();
+					AppProgressbar.close(progressbar);
+				}).error(function(data) {
+					AppProgressbar.close(progressbar);
+				});;
+				return callServer;
 			};
 
 

@@ -141,7 +141,7 @@ require(['app', 'underscore', 'IX', 'global-const', 'global-url', 'api', 'dataty
 	$('body').on('keydown', function ($event) {
 		var keyCode = $event.keyCode || $event.which;
 		var $tar = $($event.target || $event.srcElement);
-		var isTextEl = $tar.is(':text, :password, textarea,:number');
+		var isTextEl = $tar.is(':text, :password, textarea, input[type=number]');
 		var readOnly = $tar.attr('readonly');
 		readOnly = !readOnly ? false : true;
 		if (keyCode == Hualala.TypeDef.HotKeys['Backspace'] && (!isTextEl || readOnly)) {

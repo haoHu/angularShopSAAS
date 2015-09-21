@@ -40,7 +40,7 @@ define(['app'], function(app){
 	function initServiceRoutes() {
 		var ajaxAPICfgs = ajaxEngine.getAll();
 		
-		app.factory('CommonCallServer', ['$http', '$location', function ($http, $location) {
+		app.factory('CommonCallServer', ['$http', '$location', 'AppProgressbar', function ($http, $location, AppProgressbar) {
 			var ret = {};
 			var doRequest = function (pdata, apiCfg) {
 				var AjaxDomain = Hualala.Global.AJAX_DOMAIN;
@@ -81,6 +81,7 @@ define(['app'], function(app){
 					}
 				}).error(function (data) {
 					pendingRequests[name] = null;
+					AppProgressbar.clear();
 				});
 			};
 			_.each(ajaxAPICfgs, function (apiCfg) {
