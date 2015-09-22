@@ -327,11 +327,18 @@ define(['app'], function (app) {
 			this.searchFoodsByFoodCode = function (code) {
 				var matcher = (new Pymatch([]));
 				var foods = self.foodHT.getAll();
-				var pyCombination = function (arr, num) {
-					var r = Hualala.Common.Combination(arr, num);
-					r = _.map(r, function (el) {
-						return el.join('');
-					});
+				// var pyCombination = function (arr, num) {
+				// 	var r = Hualala.Common.Combination(arr, num);
+				// 	r = _.map(r, function (el) {
+				// 		return el.join('');
+				// 	});
+				// 	return r.join(';');
+				// };
+				var pyCombination = function (arr) {
+					var r = [], l = arr.length;
+					for (var i = 1; i <= l; i++) {
+						r.push(arr.slice(0, i).join(''));
+					}
 					return r.join(';');
 				};
 				var getMatchedFn = function (searchText) {
