@@ -334,10 +334,31 @@ define(['app'], function (app) {
 				// 	});
 				// 	return r.join(';');
 				// };
-				var pyCombination = function (arr) {
-					var r = [], l = arr.length;
+				// var getMatchedFn = function (searchText) {
+				// 	matcher.setNames(_.map(foods, function (el) {
+				// 		var py = el.py,
+				// 			arr = py.split(';'),
+				// 			jianpin = arr[arr.length - 1].split('');
+				// 		// py += ';' + arr[arr.length - 1].split('').join(';');
+				// 		for (var i = 2, l = jianpin.length; i <= l; i++) {
+				// 			py += ';' + pyCombination(jianpin, i);
+				// 		}
+				// 		return _.extend({}, el, {
+				// 			name : el.foodKey,
+				// 			py : py
+				// 		});
+				// 	}));
+				// 	var matchedSections = matcher.match(searchText);
+				// 	var matchedOptions = _.map(matchedSections, function (el, i) {
+				// 		return el[0];
+				// 	});
+					
+				// 	return matchedOptions;
+				// };
+				var pyCombination = function (str) {
+					var r = [], l = str.length;
 					for (var i = 1; i <= l; i++) {
-						r.push(arr.slice(0, i).join(''));
+						r.push(str.slice(0, i));
 					}
 					return r.join(';');
 				};
@@ -345,11 +366,8 @@ define(['app'], function (app) {
 					matcher.setNames(_.map(foods, function (el) {
 						var py = el.py,
 							arr = py.split(';'),
-							jianpin = arr[arr.length - 1].split('');
-						// py += ';' + arr[arr.length - 1].split('').join(';');
-						for (var i = 2, l = jianpin.length; i <= l; i++) {
-							py += ';' + pyCombination(jianpin, i);
-						}
+							jianpin = arr[arr.length - 1];
+						py += ';' + pyCombination(jianpin);
 						return _.extend({}, el, {
 							name : el.foodKey,
 							py : py
@@ -359,7 +377,6 @@ define(['app'], function (app) {
 					var matchedOptions = _.map(matchedSections, function (el, i) {
 						return el[0];
 					});
-					
 					return matchedOptions;
 				};
 				return getMatchedFn(code);
