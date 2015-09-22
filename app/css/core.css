@@ -2681,6 +2681,7 @@ hr {
 }
 .section-chupin .food-mode .food-box.active > .well {
   border: 3px solid #f0ad4e;
+  padding: 6px;
 }
 .section-chupin .food-mode .food-box > .well.maked,
 .section-chupin .food-mode .food-box > .well.call {

@@ -124,8 +124,8 @@
 					<div class="status text-right">
 						{{getFoodMakeStatusStr(food.__order, food) || '&nbsp;'}}
 					</div>
-					<span class="label time pull-right">
-						{{food.__order.makeIntervalTime || '&nbsp;'}}
+					<span class="label time pull-right" ng-if="food.__order.makeIntervalTime.length > 0">
+						{{food.__order.makeIntervalTime}}
 					</span>
 				</div>
 				
