@@ -1314,12 +1314,14 @@ define(['app', 'uuid'], function (app, uuid) {
 			 * @return {[type]} [description]
 			 */
 			this.abolishOrder = function (remark, empInfo) {
-				var saasOrderKey = _.result(self._OrderData, 'saasOrderKey');
+				var saasOrderKey = _.result(self._OrderData, 'saasOrderKey'),
+					hisFlag = _.result(self._OrderData, 'his', 0);
 				return CommonCallServer.submitOrder(_.extend({
 					actionType : 'ZF',
 					orderJson : JSON.stringify({
 						saasOrderKey : saasOrderKey,
-						saasOrderRemark : remark
+						saasOrderRemark : remark,
+						hisFlag : hisFlag
 					})
 				}, empInfo));
 			};

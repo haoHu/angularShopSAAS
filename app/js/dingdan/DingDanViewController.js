@@ -581,9 +581,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			//获得退款数据
 			var abolishOrderData = OrderNoteService.getabolishOrderNotes();
 			$scope.abolishOrders = _.result(abolishOrderData, 'items', []);
-			//焦点值改变赋值给中间变量
+			//修改赋值到input
 			$scope.onAbolishChange = function (v) {
-				$scope.abolishOrdersval = v;
 				$scope.saasOrderRemark = v;
 			};
 			// //监听中间变量是否改变，改变就修改到input中
