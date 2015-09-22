@@ -359,11 +359,14 @@ define(['app'], function (app) {
 					var r = [], l = str.length;
 					for (var i = 1; i <= l; i++) {
 						r.push(str.slice(0, i));
+						if (i < l) {
+							r.push(str.slice((-1 * i)))
+						}
 					}
 					return r.join(';');
 				};
 				var getMatchedFn = function (searchText) {
-					matcher.setNames(_.map(foods, function (el) {
+					var pyNames = _.map(foods, function (el) {
 						var py = el.py,
 							arr = py.split(';'),
 							jianpin = arr[arr.length - 1];
@@ -372,7 +375,8 @@ define(['app'], function (app) {
 							name : el.foodKey,
 							py : py
 						});
-					}));
+					});
+					matcher.setNames(pyNames);
 					var matchedSections = matcher.match(searchText);
 					var matchedOptions = _.map(matchedSections, function (el, i) {
 						return el[0];
