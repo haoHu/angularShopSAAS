@@ -83,6 +83,7 @@
 				var socket,
 					webSocketServerPort,
 					reconnectTimeout = 3 * 60 * 1000,
+					rolltitle = '',
 					closeConnect = true;
 					reconnectTimer = null;
 				var initSocketConnect = function (webSocketServerPort) {
@@ -157,11 +158,14 @@
 					pickupListEl.html(htm);
 				};
 				var refreshPage = function (data) {
-					//注释的为需求变更，不更新页头渲染
-					//var title = _.result(data, 'title', ''),
 					var callNoLst = _.result(data, 'callNoLst', []);
-					//renderAdvertiseInfo(title);
 					renderCurrentPickupInfo(callNoLst[0]);
+					//只渲染一次滚动title
+					var title = _.result(data, 'title', '');
+					if (title != rolltitle){
+						rolltitle = title;
+						renderAdvertiseInfo(title);						
+					}
 					renderPickupList(callNoLst);
 				};
 				var onOpen = function (evt) {

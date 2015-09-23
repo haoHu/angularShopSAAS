@@ -26,6 +26,17 @@ define(['app'], function (app) {
 						calcImgSize(this);
 					});
 				}, 200);
+
+				//如果结账了，清空二维码
+				var saasOrderKey = _.result(data, 'saasOrderKey', null);
+				if (!saasOrderKey) {
+					$scope.curQRCode = null;
+					$scope.curQRCodeLabel = null;
+					$scope.curQRCodeOpt = null;
+					$scope.$apply();
+					return;
+				}
+
 			};
 
 			// 初始化支付二维码
