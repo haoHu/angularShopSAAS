@@ -472,17 +472,26 @@
 			}
 
 			.vip-pay {
+				.form-horizontal .form-group {
+					margin-bottom : 3px;
+				}
+				.help-block {
+					margin-bottom : 5px;
+				}
 				.help-block.info {
 					margin-top : 0px; margin-bottom : 3px; padding : 0; font-size: 12px;
 				}
 				.help-block.info > span {
-					padding : 0; padding-left : 12px;
+					display:inline-block; padding : 0; padding-left : 6px;
+					&:first-child {
+						width : 10em; text-overflow : ellipsis; white-space: nowrap; overflow: hidden;
+					}
 				}
 				.user-voucher {
 					margin-bottom : 5px;
 				}
 				.voucher-grp {
-					height : 10rem;
+					height : 7rem;
 				}
 			}
 		}	

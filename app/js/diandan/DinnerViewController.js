@@ -2179,7 +2179,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					};
 
 					scope.$watch('payByCash', function (nv, ov) {
-						if (nv == ov) return;
+						if (nv == ov || nv == undefined) return;
 						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
 							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
 						var payByPoint = scope.payByPoint;
@@ -2194,7 +2194,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					});
 
 					scope.$watch('payByPoint', function (nv, ov) {
-						if (nv == ov) return;
+						if (nv == ov || nv == undefined) return;
 						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
 							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
 						var payByCash = scope.payByCash;
