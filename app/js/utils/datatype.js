@@ -235,7 +235,7 @@
 	Hualala.TypeDef.CompBizQueryRangeLst = [
 		{value : 'ZH', label : '综合'},
 		// 新增报表项目
-		{value : 'HYZH', label : '会员交易汇总'},
+		{value : 'HYHZ', label : '会员交易汇总'},
 		{value : 'HYMX', label : '会员交易明细'},
 		{value : 'RHBK', label : '会员入会办卡'},
 
