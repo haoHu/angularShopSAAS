@@ -2304,7 +2304,12 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var callServer = VIPCardService.loadVIPCardInfo({
 							cardNoOrMobile : val
 						});
-						callServer.success(function () {
+						callServer.success(function (data) {
+							var code = _.result(data, 'code');
+							if (code !== '000') {
+								AppAlert.add('danger', _.result(data, 'msg', ''));
+								return;
+							}
 							scope.vipInfo = VIPCardService.mapVIPCardInfo();
 							scope.cashVoucherOpts = VIPCardService.mapCashVoucherOpts();
 							scope.curCashVouchers = [];
