@@ -947,6 +947,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 切换支付科目组
 			$scope.changeCurrentPaySubjectGrp = function (paySubjectGrp) {
 				var name = _.result(paySubjectGrp, 'name');
+				//删除副屏二维码
+				Hualala.SecondScreen.publishPostMsg('PayQRCode', '');
 				if ($scope.isDisabledPaySubjectGrp(paySubjectGrp)) return;
 				$scope.curPaySubjectGrpName = name;
 			};
@@ -958,6 +960,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 关闭窗口
 			$scope.close = function () {
 				$modalInstance.close();
+				//删除副屏二维码
+				Hualala.SecondScreen.publishPostMsg('PayQRCode', '');
 			};
 			// 支付科目组提交
 			$scope.submitPayForm = function (paySubjectGrp) {
