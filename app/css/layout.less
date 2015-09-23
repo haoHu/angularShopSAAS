@@ -23,6 +23,13 @@ body {
 .has-feedback .form-control {
 	padding-right : 12px;
 }
+// 设置表单元素输入框聚焦时的背景色
+.form-control {
+	background-color: lighten(#9DDFFF, 10%);
+	&:focus {
+		background-color: #9DDFFF;
+	}
+}
 // 重置模态创部分默认样式
 .modal {
 	.modal-footer {
@@ -51,6 +58,7 @@ body {
 		background-color: #ec971f!important;
 	}
 }
+
 
 // 重置滚动条样式
 // 滚动条默认显示样式

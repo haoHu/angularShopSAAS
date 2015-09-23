@@ -894,7 +894,7 @@ define(['app'], function (app) {
                             '<span class="col-xs-2 grid-cell num">{{el.foodNumber}}</span>',
                             '<span class="col-xs-2 grid-cell unit">{{el.unit}}</span>',
                             // '<span class="col-xs-3 grid-cell price">{{el.foodPayPrice}}</span>',
-                            '<span class="col-xs-3 grid-cell price">{{calcFoodAmount(el)}}</span>',
+                            '<span class="col-xs-3 grid-cell price">{{calcFoodAmount(el) | prettyNum}}</span>',
                             '<div class="col-xs-12 grid-cell clearfix modifyprice" ng-class="{hidden : (!el.modifyReason || el.modifyReason.length == 0)}">',
                                 '<span class="col-xs-offset-1 col-xs-11 grid-cell txt">{{el.modifyReason}}</span>',
                             '</div>',
@@ -1069,7 +1069,7 @@ define(['app'], function (app) {
                                     '</div>',
                                 '</div>',
                                 '<div class="col-xs-2">',
-                                    '<button class="btn btn-info btn-block btn-lg" ng-click="refreshTable($event)" id="refresh_table">刷新(F3)</button>',
+                                    '<button class="btn btn-info btn-block btn-lg" ng-click="refreshTable($event)" id="refresh_table" data-loading-text="刷新">刷新(F3)</button>',
                                 '</div>',
                                 '<div class="col-xs-6">',
                                     '<div class="btn-group center-block clearfix">',
@@ -1150,7 +1150,7 @@ define(['app'], function (app) {
                             '<p food-key="{{food.foodKey}}" unit-key="{{food.__foodUnit.unitKey}}">{{food.foodName}}</p>',
                             '<p class="unit">',
                                 // '{{food.__foodUnit.price | currency : "￥" }}/{{food.__foodUnit.unit}}',
-                                '{{food.__foodUnit.price }}/{{food.__foodUnit.unit}}',
+                                '{{food.__foodUnit.price | prettyNum}}/{{food.__foodUnit.unit}}',
                             '</p>',
                         '</div>',
                         '<div class="col-xs-2 btn cell-btn btn-prev" pager-direction="-1"><span>上页</span></div>',
@@ -1310,7 +1310,9 @@ define(['app'], function (app) {
                         };
                         var tableHotKeysHandle = function (moudleName, keyCode) {
                             if (keyCode == HotKeys['F3']) {
-                                $('#refresh_table').trigger('click');
+                                $timeout(function () {
+                                    $('#refresh_table').trigger('click');
+                                }, 200);
                             }
                         };
                         switch(moudleName) {

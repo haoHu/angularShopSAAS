@@ -508,8 +508,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			 * 刷新桌台状态
 			 * @return {[type]} [description]
 			 */
-			$scope.refreshTable = function () {
+			$scope.refreshTable = function ($event) {
 				var progressbar = AppProgressbar.add('warning', '加载中...');
+				var btn = $($event.target);
+				btn.button('loading');
 				// 获取指定区域桌台状态数据
 				var callServer = TableService.loadTableStatusLst({
 					areaName : $scope.curAreaName
@@ -517,8 +519,10 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				callServer.success(function (data) {
 					getCurTables();
 					AppProgressbar.close(progressbar);
+					btn.button('reset');
 				}).error(function(data) {
 					AppProgressbar.close(progressbar);
+					btn.button('reset');
 				});;
 				return callServer;
 			};

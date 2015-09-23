@@ -36,7 +36,7 @@
 						<label for="">账单合计</label>
 						<span class="dollar">￥</span>
 						<!-- <span class="cash">58888</span> -->
-						<span class="cash">{{calcOrderAmount()}}</span>
+						<span class="cash">{{calcOrderAmount() | prettyNum}}</span>
 					</div>
 					<div class="col-xs-5">
 						<button class="btn btn-default btn-block hidden" type="button" ng-click="openOrderRemark()">{{curOrderRemark}}</button>
@@ -102,7 +102,7 @@
 						</div>
 					</div>
 					<div class="col-xs-2">
-						<button class="btn btn-info btn-block btn-lg" ng-click="refreshTable($event)">刷新</button>
+						<button class="btn btn-info btn-block btn-lg" ng-click="refreshTable($event)" data-loading-text="刷新">刷新</button>
 					</div>
 					<div class="col-xs-6">
 						<div class="btn-group center-block clearfix">
