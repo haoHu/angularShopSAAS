@@ -142,9 +142,20 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.getTablesByTableName = function (tableName) {
 				var tables = TableHT.getAll();
-				return _.filter(tables, function (table) {
-					return _.result(table, 'tableName') == tableName;
+				// 先模糊匹配桌台
+				var matchedTables = _.filter(tables, function (table) {
+					var _name = _.result(table, 'tableName', '');
+					return _name.indexOf(tableName) > -1;
 				});
+
+				// 从模糊匹配的桌台中查找是否有完全匹配的桌台
+				// 如果没有取模糊匹配中的第一个匹配到的桌台
+				// 如果有完全匹配的则去匹配到的桌台
+				var equalTables = _.filter(matchedTables, function (table) {
+					var _name = _.result(table, 'tableName', '');
+					return _name == tableName;
+				});
+				return _.isEmpty(equalTables) ? matchedTables : equalTables;
 			};
 		}
 	]);

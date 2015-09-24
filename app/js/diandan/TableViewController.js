@@ -313,8 +313,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.quickSelectTable = function ($event, tableName) {
 				var evtType = $event.type, keyCode = $event.keyCode;
 				if (evtType == 'keypress' && keyCode != 13) {return false;}
-				var table = TableService.getTablesByTableName(tableName);
-				table = table[0];
+				var tables = TableService.getTablesByTableName(tableName),
+					table = tables[0];
 				if (_.isEmpty(table)) {
 					// HC.TopTip.addTopTips($rootScope, {
 					// 	code : '111',
