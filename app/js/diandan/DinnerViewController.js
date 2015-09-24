@@ -2882,7 +2882,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							if (operationMode != 0 && (_.isUndefined(tableName) || tableName.length == 0)) {
 								// 如果开餐模式下，订单太牌号为空，要求弹出单头配置窗口，进行单头信息的填写
 								scope.$emit('Order.OpenHeaderSet', act);
-								AppAlert.add('danger', '请先设置太牌号、人数等信息！');
+								AppAlert.add('danger', '请先设置台牌号、人数等信息！');
 								scope.$apply();
 								return;
 							}

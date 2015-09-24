@@ -1087,7 +1087,7 @@ define(['app'], function (app) {
                             '<div class="row filter-bar">',
                                 '<div class="col-xs-4">',
                                     '<div class="input-group">',
-                                        '<input type="text" class="form-control input-lg" placeholder="桌台名称" ng-model="qTblName" ng-keypress="quickSelectTable($event, qTblName)">',
+                                        '<input type="text" class="form-control input-lg" placeholder="桌台名称" ng-model="qTblName" ng-keypress="quickSelectTable($event, qTblName)" autofocus="true">',
                                         '<span class="input-group-btn">',
                                             '<button class="btn btn-default btn-lg" type="button" ng-click="quickSelectTable($event, qTblName)">进入桌台</button>',
                                         '</span>',
@@ -1335,9 +1335,10 @@ define(['app'], function (app) {
                         };
                         var tableHotKeysHandle = function (moudleName, keyCode) {
                             if (keyCode == HotKeys['F3']) {
-                                $timeout(function () {
-                                    $('#refresh_table').trigger('click');
-                                }, 200);
+                                if ($tar.attr('loading') == true) {
+                                    return true;
+                                }
+                                $('#refresh_table').trigger('click');
                             }
                         };
                         switch(moudleName) {

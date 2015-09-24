@@ -512,17 +512,23 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var progressbar = AppProgressbar.add('warning', '加载中...');
 				var btn = $($event.target);
 				btn.button('loading');
+				btn.attr('loading', true);
+				var resetBtn = function () {
+					AppProgressbar.close(progressbar);
+					btn.button('reset');
+					$timeout(function () {
+						btn.attr('loading', false);
+					}, 5000);
+				};
 				// 获取指定区域桌台状态数据
 				var callServer = TableService.loadTableStatusLst({
 					areaName : $scope.curAreaName
 				});
 				callServer.success(function (data) {
 					getCurTables();
-					AppProgressbar.close(progressbar);
-					btn.button('reset');
+					resetBtn();
 				}).error(function(data) {
-					AppProgressbar.close(progressbar);
-					btn.button('reset');
+					resetBtn();
 				});;
 				return callServer;
 			};
