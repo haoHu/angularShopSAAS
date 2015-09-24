@@ -4,6 +4,7 @@ define(['app'], function (app) {
 		function ($rootScope, $scope, $modalInstance, $filter, _scope, storage, CommonCallServer, AppAlert) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
+			var act = _.result(_scope, 'act');
 			$scope.close = function () {
 				$modalInstance.close();
 			};
@@ -12,6 +13,10 @@ define(['app'], function (app) {
 					_scope.fmels[k] = v;
 				});
 				_scope.$parent.updateOrderHeader(_scope.fmels);
+				if (act == 'payOrder' || act == 'cashPayOrder') {
+					var $btnPlain = $('.section-diandan .btns-plain');
+					$btnPlain.find('.btn[name=' + act + ']').trigger('click');
+				}
 				$scope.close();
 			};
 

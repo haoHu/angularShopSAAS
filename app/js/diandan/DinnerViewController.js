@@ -644,6 +644,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				});
 			});
 
+			// 监听是否需要弹出单头配置信息界面
+			$scope.$on('Order.OpenHeaderSet', function ($event, act) {
+				$('#order_header_handle').trigger('click', act);
+			});
+
 		}
 	]);
 
@@ -2867,9 +2872,17 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							});
 						} else if (act == "payOrder" || act == "cashPayOrder") {
 							var orderData = OrderService.getOrderData(),
-								foods = OrderService.getOrderFoodHT().getAll();
+								foods = OrderService.getOrderFoodHT().getAll(),
+								tableName = _.result(orderData, 'tableName');
 							if (foods.length == 0 && _.isEmpty(orderData.saasOrderKey)) {
 								AppAlert.add('danger', '请先添加菜品再结账！');
+								scope.$apply();
+								return;
+							}
+							if (operationMode != 0 && (_.isUndefined(tableName) || tableName.length == 0)) {
+								// 如果开餐模式下，订单太牌号为空，要求弹出单头配置窗口，进行单头信息的填写
+								scope.$emit('Order.OpenHeaderSet', act);
+								AppAlert.add('danger', '请先设置太牌号、人数等信息！');
 								scope.$apply();
 								return;
 							}

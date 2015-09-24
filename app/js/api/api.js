@@ -79,6 +79,7 @@ define(['app'], function(app){
 					if (code == 'CS002') {
 						$location.path('/signin');
 					}
+					AppProgressbar.clear();
 				}).error(function (data) {
 					pendingRequests[name] = null;
 					AppProgressbar.clear();

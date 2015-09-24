@@ -355,7 +355,7 @@ define(['app'], function (app) {
                     'channels' : '=channels'
                 },
                 link : function (scope, el, attrs) {
-                    el.on('click', function (e) {
+                    el.on('click', function (e, act) {
                         var shopInfo = storage.get('SHOPINFO'),
                             webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
                         if (el.hasClass('disabled')) return;
@@ -376,7 +376,7 @@ define(['app'], function (app) {
                             templateUrl : "js/diandan/orderheaderset.html",
                             resolve : {
                                 _scope : function () {
-                                    return scope;
+                                    return _.extend(scope, {act : act});
                                 }
                             }
                         });
