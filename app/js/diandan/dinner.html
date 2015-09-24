@@ -120,14 +120,19 @@
 		<div class="modal-body">
 			<div class="row">
 				<div class="col-xs-6">
-					<div class="form-horizontal clearfix">
-						<label for="" class="col-xs-3 control-label">数量</label>
-						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" autofocus="true"/>
-							<span class="help-block">可以赠送数量：{{enableSendNumber}}</span>
+					<form class="form-horizontal clearfix" name="send_food" role="form" novalidate="novalidate">
+						<div class="form-group has-feedback">
+							<label for="" class="col-xs-3 control-label">数量</label>
+							<div class="col-xs-7" ng-class="{'has-success' : send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$valid, 'has-error' : send_food.foodSendNumber.$invalid}">
+								<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" autofocus="true"  bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableSendNumber}}" tabindex="1" />
+								<span class="help-block">可以赠送数量：{{enableSendNumber}}</span>
+								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvNotempty">请输入赠送数量</small>
+								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvIsnum">必须是数字</small>
+								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvFloatprecision">精确到小数点后2位</small>
+								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvBetween">赠送数量必须在0到{{enableSendNumber}}之间</small>
+							</div>
 						</div>
-
-					</div>
+					</form>
 					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 				<div class="col-xs-6">
@@ -162,13 +167,20 @@
 		<div class="modal-body">
 			<div class="row">
 				<div class="col-xs-6">
-					<div class="form-horizontal clearfix">
-						<label for="" class="col-xs-3 control-label">数量</label>
-						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" autofocus="true" />
-							<span class="help-block">可以退菜数量：{{enableCancelNumber}}</span>
+					<form class="form-horizontal clearfix" name="cancel_food" role="form" novalidate="novalidate">
+						<div class="form-group has-feedback">
+							<label for="" class="col-xs-3 control-label">数量</label>
+							<div class="col-xs-7" ng-class="{'has-success' : cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$valid, 'has-error' : cancel_food.foodCancelNumber.$invalid}">
+								<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" autofocus="true"   bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableCancelNumber}}" tabindex="1" />
+								<span class="help-block">可以退菜数量：{{enableCancelNumber}}</span>
+								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvNotempty">请输入退菜数量</small>
+								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvIsnum">必须是数字</small>
+								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvFloatprecision">精确到小数点后2位</small>
+								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvBetween">退菜数量必须在0到{{enableCancelNumber}}之间</small>
+							</div>
 						</div>
-					</div>
+						
+					</form>
 					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 				<div class="col-xs-6">
@@ -203,13 +215,18 @@
 		<div class="modal-body">
 			<div class="row">
 				<div class="col-xs-offset-1 col-xs-10">
-					<div class="form-horizontal clearfix">
-						<label for="" class="col-xs-3 control-label">数量</label>
-						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodCount" ng-model="foodCount" ng-focus="inputFocus($event)" autofocus="true" />
-							<span class="help-block">当前菜品数量：{{curFoodCount}}</span>
+					<form class="form-horizontal clearfix" name="modify_count" role="form" novalidate="novalidate">
+						<div class="form-group has-feedback">
+							<label for="" class="col-xs-3 control-label">数量</label>
+							<div class="col-xs-9" ng-class="{'has-success' : modify_count.foodCount.$dirty && modify_count.foodCount.$valid, 'has-error' : modify_count.foodCount.$invalid}">
+								<input type="text" class="form-control" name="foodCount" ng-model="foodCount" ng-focus="inputFocus($event)" autofocus="true"   bv-notempty bv-isnum bv-floatprecision="2" tabindex="1" />
+								<span class="help-block">当前菜品数量：{{curFoodCount}}</span>
+								<small class="help-block" ng-show="modify_count.foodCount.$dirty && modify_count.foodCount.$error.bvNotempty">请输入菜品数量</small>
+								<small class="help-block" ng-show="modify_count.foodCount.$dirty && modify_count.foodCount.$error.bvIsnum">必须是数字</small>
+								<small class="help-block" ng-show="modify_count.foodCount.$dirty && modify_count.foodCount.$error.bvFloatprecision">精确到小数点后2位</small>
+							</div>
 						</div>
-					</div>
+					</form>
 					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 			</div>
@@ -234,13 +251,18 @@
 		<div class="modal-body">
 			<div class="row">
 				<div class="col-xs-6">
-					<div class="form-horizontal clearfix">
-						<label for="" class="col-xs-3 control-label">价格</label>
-						<div class="col-xs-9">
-							<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" ng-focus="inputFocus($event)" autofocus="true" />
-							<span class="help-block">菜品当前价格：{{curFoodPrice}}</span>
+					<form class="form-horizontal clearfix" name="modify_price" role="form" novalidate="novalidate">
+						<div class="form-group has-feedback">
+							<label for="" class="col-xs-3 control-label">价格</label>
+							<div class="col-xs-7" ng-class="{'has-success' : modify_price.foodPrice.$dirty && modify_price.foodPrice.$valid, 'has-error' : modify_price.foodPrice.$invalid}">
+								<input type="text" class="form-control" name="foodPrice" ng-model="foodPrice" ng-focus="inputFocus($event)" autofocus="true" bv-notempty bv-isnum bv-floatprecision="2"/>
+								<span class="help-block">菜品当前价格：{{curFoodPrice}}</span>
+								<small class="help-block" ng-show="modify_price.foodPrice.$dirty && modify_price.foodPrice.$error.bvNotempty">请输入菜品价格</small>
+								<small class="help-block" ng-show="modify_price.foodPrice.$dirty && modify_price.foodPrice.$error.bvIsnum">必须是数字</small>
+								<small class="help-block" ng-show="modify_price.foodPrice.$dirty && modify_price.foodPrice.$error.bvFloatprecision">精确到小数点后2位</small>
+							</div>
 						</div>
-					</div>
+					</form>
 					<numkeyboard cur-target="focusInputEl"></numkeyboard>
 				</div>
 				<div class="col-xs-6">

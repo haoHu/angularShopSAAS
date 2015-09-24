@@ -673,6 +673,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.save = function () {
 				// TODO submit Modify result
 				if (parseInt($scope.foodSendNumber) > parseInt($scope.enableSendNumber) || _.isEmpty($scope.sendReason)) {
+					AppAlert.add('danger', "请检查赠送数量和原因！");
 					return ;
 				}
 				IX.Debug.info("Food Item Send setting:");
@@ -747,6 +748,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.save = function () {
 				// TODO submit Modify result
 				if (parseInt($scope.foodCancelNumber) > parseInt($scope.enableCancelNumber) || _.isEmpty($scope.cancelReason)) {
+					AppAlert.add('danger', "请检查退菜数量和原因！");
 					return ;
 				}
 				IX.Debug.info("Food Item Cancel Setting:");
@@ -816,6 +818,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.save = function () {
 				// TODO submit Modify result
 				if (isNaN($scope.foodCount) || parseFloat($scope.foodCount) < 0 || $scope.foodCount.toString().length == 0) {
+					AppAlert.add('danger', "请检查菜品数量！");
 					return ;
 				}
 
@@ -849,7 +852,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					
 				};
 
-				if (_.isEmpty(obj.callServer)) {
+				if (_.isEmpty(obj) || _.isEmpty(_.result(obj, 'callServer'))) {
 					item = obj;
 					_scope.refreshOrderList();
 					if (_.isEmpty(item)) {
@@ -895,7 +898,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			var curItemKey = _scope.curFocusOrderItemKey,
 				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey);
 			$scope.ModifyPriceNotes = _.result(modifyPriceData, 'items', []);
-			$scope.foodPrice = '';
+			$scope.foodPrice = _.result(curItem, 'foodPayPrice', 0);
 			$scope.priceNote = '';
 			$scope.curFoodName = _.result(curItem, 'foodName', '');
 			$scope.curFoodPrice = _.result(curItem, 'foodPayPrice', 0);
@@ -924,7 +927,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					
 				}
 				// TODO submit Modify result
-				if ((_.isEmpty($scope.priceNote) && parseFloat($scope.foodPrice) > 0) || $scope.foodPrice.length == 0) {
+				if ((_.isEmpty($scope.priceNote) && parseFloat($scope.foodPrice) >= 0) || _.isUndefined($scope.foodPrice)) {
+					AppAlert.add('danger', "请检查改价数量和原因！");
 					return ;
 				}
 

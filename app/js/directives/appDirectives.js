@@ -241,6 +241,31 @@ define(['app'], function (app) {
         };
     });
 
+    app.directive('bvFloatprecision', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                var precision = parseInt(attrs.bvFloatprecision) || 2;
+                ctrl.$parsers.unshift(function (viewValue) {
+                    if (_.isUndefined(viewValue)) {
+                        return viewValue;
+                    }
+                    var v = viewValue.toString(), 
+                        pIdx = v.indexOf('.'),
+                        dec = v.slice(pIdx + 1);
+                        va = false;
+                    if (_.isNumber(parseFloat(viewValue))) {
+                        va = pIdx >= 0 && dec.length > precision ? false : true;
+                    } else {
+                        va = true;
+                    }
+                    ctrl.$setValidity('bvFloatprecision', va);
+                    return va ? viewValue : undefined;
+                });
+            }
+        }
+    });
+
     app.directive('bvIssame', function () {
         return {
             require : 'ngModel',
