@@ -459,15 +459,86 @@
 				}
 				.hll-paytype {
 					margin : 20px 0;
-					.btn  {
-						height : 64px; white-space: normal;
+					// .btn  {
+					// 	height : 64px; line-height: 32px;
+					// 	.icon-keyboard, .icon-hualala, .icon-weixin, .icon-zhifubao {
+					// 		width : 34px; 
+					// 		height : 34px;
+					// 		float: left;
+					// 	}
+					// 	.icon-keyboard {
+					// 		.x-icon-34_keyboard();
+					// 	}
+					// 	.icon-hualala {
+					// 		.x-icon-34_hualala();
+					// 	}
+					// 	.icon-weixin {
+					// 		.x-icon-34_weixin();
+					// 	}
+					// 	.icon-zhifubao {
+					// 		.x-icon-34_zhifubao();
+					// 	}	
+								
+					// }
+					// @media screen and(max-width:1200px) {
+					// 	.btn  {
+					// 		.btncelldoc{
+					// 			display: block;
+					// 		}
+					// 		.icon-keyboard, .icon-hualala, .icon-weixin, .icon-zhifubao {
+					// 			float : none;
+					// 		}
+					// 	}
+
+					// }
+					.icon-keyboard, .icon-hualala, .icon-weixin, .icon-zhifubao {
+						width : 34px; height : 34px;
 					}
+					.icon-keyboard {
+						.x-icon-34_keyboard();
+					}
+					.icon-hualala {
+						.x-icon-34_hualala();
+					}
+					.icon-weixin {
+						.x-icon-34_weixin();
+					}
+					.icon-zhifubao {
+						.x-icon-34_zhifubao();
+					}
+
+					@media screen and (min-width : 1200px) {
+						.btn {
+							> div {
+								display: inline-block; vertical-align: middle;
+							}
+							.btncelldoc {
+								margin-left : .5rem;
+							}
+						}
+					}
+					
+
+
 				}
 				.qrcode-box {
 					// position : absolute; width : 200px; height : 240px; top : 56px; left : 50%; margin-left : -100px;
 					position : relative; margin : 64px auto 0; width : 300px; height : 300px; text-align: center;
 					h4 {font-size : 1.5rem;}
 					p {text-align: center;}
+					.qrcode-wrap {
+						@qrCodeSize : 250px;
+						position : relative; width : @qrCodeSize; height : @qrCodeSize; margin : 0 auto;
+						.qrcode-type {
+							@icoSize : (@qrCodeSize / 6.25);
+							position : absolute; display: block; width : @icoSize; height : @icoSize;
+							top : 50%; left : 50%; margin-top : -(@icoSize / 2); margin-left : -(@icoSize / 2);
+						}
+					}
+					.qrcodelabel{
+						color:red;
+						font-size: 40px;
+					}
 				}
 			}
 

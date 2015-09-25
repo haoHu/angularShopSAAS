@@ -50,7 +50,7 @@
 				<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
 				<img class="qrcode-type" data-paytype="{{curQRCodeType}}" ng-src="{{curPayType}}">
 			</div>
-			<p>{{curQRCodeLabel}}</p>
+			<p>{{curQRCodeLabel[0]}}<span class="qrcodelabel">{{curQRCodeLabel[1] | mycurrency:"￥" |prettyNum}}</span>{{curQRCodeLabel[2]}}</p>
 		</div>
 		
 	</div>

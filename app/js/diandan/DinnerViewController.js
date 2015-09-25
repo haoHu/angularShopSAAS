@@ -2055,7 +2055,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							scope.curQRCode = _.result(data, 'QRCodeTxt', null);
 							scope.curQRCodeTitle = title;
 							scope.curQRCodeLabel = remark || defaultQRCodeLabels[qrcodeType];
-
+							scope.curPayType = scope.genPayTypeImg(qrcodeType);
 							scope.curQRCodeOpt = {
 								render : 'image',
 								size : QRCodeSize,
@@ -2063,13 +2063,33 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								background : '#fff',
 								label : scope.curQRCode
 							};
+							//高亮显示二维码下方数字
+							var reg=/￥(\d+.\d\d)/
+							scope.curQRCodeLabel=scope.curQRCodeLabel.split(reg);
+
 							scope.$emit('pay.updateQRCodeParams', {
 								curQRCode : scope.curQRCode,
 								curQRCodeTitle : scope.curQRCodeTitle,
 								curQRCodeLabel : scope.curQRCodeLabel
 							});
+							// 生成二维码并推送给副屏幕
+							// 推送二维码消息
+							Hualala.SecondScreen.publishPostMsg('PayQRCode', {
+								saasOrderKey : saasOrderKey, 
+								QRCodeType : QRCodeType,
+								curQRCode : scope.curQRCode, 
+								curQRCodeTitle : scope.curQRCodeTitle,
+								curQRCodeLabel : scope.curQRCodeLabel,
+								curPayType : scope.curPayType,
+								curQRCodeOpt : scope.curQRCodeOpt,
+								curQRCodeLabelNum : scope.curQRCodeLabelNum
+							});
 						};
-
+					  	scope.genPayTypeImg = function (type) {
+							if (_.isEmpty(type)) return '';
+							var imgPath = 'img/ic_' + type.toLowerCase() + '.png';
+							return imgPath;
+						};	
 						precheckoutCallServer = OrderService.submitOrder('YJZ', _.extend(OrderPayService.getOrderPayParams(), {
 							payQRCodeTitle : scope.curQRCodeTitle,
 							payQRCodeTxt : scope.curQRCode,
@@ -2078,9 +2098,6 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						precheckoutCallServer.success(function (data) {
 							var c = _.result(data, 'code');
 							if (c == '000') {
-								// 生成二维码并推送给副屏幕
-								// 推送二维码消息
-								Hualala.SecondScreen.publishPostMsg('PayQRCode', {saasOrderKey : saasOrderKey, QRCodeType : QRCodeType});
 								// 生成二维码
 								qrcodeCallServer = CommonCallServer.getOrderCheckoutQRCode({
 									saasOrderKey : saasOrderKey,

@@ -42,25 +42,12 @@ define(['app'], function (app) {
 						'WECHAT' : '请使用微信扫描二维码支付',
 						'BAIDU' : '请使用百度扫描二维码支付'
 					};
+				$scope.curQRCode = _.result(data, 'curQRCode', null);
+				$scope.curQRCodeTitle = _.result(data, 'curQRCodeTitle', null);
+				$scope.curQRCodeLabel = _.result(data, 'curQRCodeLabel', null);
+				$scope.curPayType = _.result(data, 'curPayType', null);
+				$scope.curQRCodeOpt = _.result(data, 'curQRCodeOpt', null);
 
-				var genQRCode = function (data, qrcodeType) {
-					var remark = _.result(data, 'remark', null),
-						title = _.result(data, 'title', '');
-					$scope.curQRCode = _.result(data, 'QRCodeTxt', null);
-					$scope.curQRCodeLabel = remark || defaultQRCodeLabels[qrcodeType];
-					$scope.curQRCodeTitle = title;
-					$scope.curQRCodeType = qrcodeType;
-					$scope.curPayType = $scope.genPayTypeImg(qrcodeType);
-					$scope.curQRCodeOpt = {
-						render : 'image',
-						size : QRCodeSize,
-						fill : '#000',
-						background : '#fff',
-						label : $scope.curQRCode
-					};
-					// $scope.$apply();
-
-				};
 				if (!saasOrderKey || !QRCodeType) {
 					$scope.curQRCode = null;
 					$scope.curQRCodeLabel = null;
@@ -68,19 +55,6 @@ define(['app'], function (app) {
 					$scope.$apply();
 					return;
 				}
-				callServer = CommonCallServer.getOrderCheckoutQRCode({
-					saasOrderKey : saasOrderKey,
-					QRCodeType : QRCodeType
-				}).success(function (data) {
-					var code = _.result(data, 'code');
-					if (code == "000") {
-						genQRCode(_.result(data, 'data'), QRCodeType);
-					} else {
-						AppAlert.add('danger', _.result(data, 'msg', ''));
-					}
-				}).error(function (data) {
-					AppAlert.add('danger', "通信失败");
-				});
 			};
 
 			// 计算广告图片宽高

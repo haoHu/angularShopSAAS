@@ -12,10 +12,10 @@
 	</div>
 	<div class="col-xs-12 hll-paytype" ng-if="paySubjectGrp.name == 'hualalaPay'">
 		<div class="btn-group btn-group-justified">
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="''" ng-click="genQRCode()">哗啦啦手工输入</label>
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual">哗啦啦扫码支付</label>
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'WECHAT'" ng-click="genQRCode('WECHAT')" ng-disabled="onlyHLLPayManual">微信扫码支付</label>
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'ALIPAY'" ng-click="genQRCode('ALIPAY')" ng-disabled="onlyHLLPayManual">支付宝扫码支付</label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="''" ng-click="genQRCode()"><div class="icon-keyboard"></div><div class="btncelldoc">手工输入</div></label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual"><div class="icon-hualala"></div><div class="btncelldoc">哗啦啦</div></label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'WECHAT'" ng-click="genQRCode('WECHAT')" ng-disabled="onlyHLLPayManual"><div class="icon-weixin"></div><div class="btncelldoc">微信</div></label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'ALIPAY'" ng-click="genQRCode('ALIPAY')" ng-disabled="onlyHLLPayManual"><div class="icon-zhifubao"></div><div class="btncelldoc">支付宝</div></label>
 			
 		</div>
 	</div>
@@ -39,7 +39,10 @@
 	
 	<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}" ng-if="paySubjectGrp.name == 'hualalaPay'">
 		<h4>{{curQRCodeTitle}}</h4>
-		<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
-		<p>{{curQRCodeLabel}}</p>
+		<div class="qrcode-wrap">
+			<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
+			<img class="qrcode-type" data-paytype="{{curQRCodeType}}" ng-src="{{curPayType}}">
+		</div>
+		<p>{{curQRCodeLabel[0]}}<span class="qrcodelabel">{{curQRCodeLabel[1] | mycurrency:"￥" |prettyNum}}</span>{{curQRCodeLabel[2]}}</p>
 	</div>
 </form>
