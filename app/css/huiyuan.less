@@ -1,5 +1,8 @@
 .section-huiyuan{
-    postion : absolute; left : 0; right : 0; top : 0; bottom : 0;
+    postion : absolute; left : 0; right : 0; top : 0; bottom : 0;height: 100%;
+    .tab-wrapper{
+        padding:20px;width:670px;height: 100%;
+    }
     .form-inline{
         label{
             width: 120px;
@@ -10,7 +13,7 @@
             position : relative; display : block; text-align: left; margin : 0; width: 100%;
             cursor : pointer; height : 45px; padding : 0 15px;
             b {margin-left : 1rem; }
-            span {display: block; padding-left : 1rem;}
+            span {display: block; padding-left : 1rem; font-weight: normal; font-size: small;}
         }
     }
 
@@ -28,8 +31,12 @@
 
     .tab{
         position: relative;
+        height: 100%;
     }
-
+    .submitbtn{
+        position: absolute;
+        bottom: 50px;
+    }
     .tab-join{
         .panel-viplevel{
             position: absolute;
@@ -232,7 +239,8 @@
             // }
         }
     }
-    @media screen and (max-width : 1024px) {
+    
+    @media screen and (max-width : 1200px) {
         .tab-recharge {
             width : 500px;
             .panel-rechargeplan {
@@ -240,6 +248,9 @@
                 .header, .table-rechargeplan {
                     width : 100%;
                 }
+            }
+            .submitbtn{
+                width:350px;
             }
         }
         .tab-consume {
@@ -252,8 +263,41 @@
                     width: 100%;
                 }
             }
+            .submitbtn{
+                width:350px;
+            }
+        }
+        .tab-join {
+            width : 500px;
+            
+            .panel-vouchers {
+                width : 250px;
+                
+                .header, ul {
+                    width: 100%;
+                }
+            }
+            .submitbtn{
+                width:350px;
+            }
+        }
+        .tab-cardhandle {
+            //宽度短了table文字会跨行
+            width : 600px;
+            
+            .panel-vouchers {
+                width : 250px;
+                
+                .header, ul {
+                    width: 100%;
+                }
+            }
+            .submitbtn{
+                width:350px;
+            }
         }
     }
+
     @media screen and (min-width : 1200px) {
         .tab-consume {
             .onumber {

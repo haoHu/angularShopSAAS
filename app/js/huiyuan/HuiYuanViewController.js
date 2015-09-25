@@ -90,7 +90,6 @@ define(['app'], function(app)
                     $('.btn-query').click();
                 }
             });
-
             $scope.$watch('user', function(n, o, scope) {
                 $('.btn-submit').each(function() {
                     if(!$(this).hasClass('btn-submit-join')) {
@@ -227,6 +226,7 @@ define(['app'], function(app)
                     wrapRect = tabEl[0].getBoundingClientRect(),
                     inputGrpRect = formGrpEl[0].getBoundingClientRect();
                 var kbdTop = $('body').height() - inputGrpRect.top < 320 ? ($('body').height() - 320) : inputGrpRect.top;
+                var kbdLeft = $('body').width() - wrapRect.right < 320 ? ($('body').width() - 320) : wrapRect.right;
                 var keyboard = $('.site-numkeyboard');
                 if (!curEl.attr('readonly')) {
                     $scope.focusInputEl = curEl;
@@ -237,7 +237,7 @@ define(['app'], function(app)
                     display : 'block',
                     position : 'fixed',
                     top : kbdTop,
-                    left : wrapRect.right,
+                    left : kbdLeft,
                     'z-index' : 99
                 });
                 return;
@@ -328,7 +328,9 @@ define(['app'], function(app)
 
                         HuiYuanTabsService.changeTab($(this).attr('name'), scope, e);
 
-                        //scope.panel_userinfo.hide();
+                        //切换tab清除会员信息
+                        scope.panel_userinfo.hide();
+                        $(".cardnumber").val("");
                     });
                 }
             };
@@ -370,7 +372,7 @@ define(['app'], function(app)
                     '<form class="tab tab-join form-horizontal" name="join_form" role="form" novalidate="novalidate" style="display:none;">',
                         '<div class="form-group has-feedback">',
                             '<label class="control-label col-xs-3 col-lg-3">实体卡卡号</label>',
-                            '<div class="col-xs-6 col-lg-9" ng-class="{\'has-success\' : join_form.realcardnumber.$dirty && join_form.realcardnumber.$valid, \'has-error\' : join_form.realcardnumber.$invalid}">',
+                            '<div class="col-xs-6 col-lg-8" ng-class="{\'has-success\' : join_form.realcardnumber.$dirty && join_form.realcardnumber.$valid, \'has-error\' : join_form.realcardnumber.$invalid}">',
                                 '<div class="input-group">',
                                     '<input name="realcardnumber" type="text" class="form-control input-lg realcardnumber" ng-model="realcardnumber" bv-isnum  ng-focus="inputFocus($event)" tabindex="1">',
                                     '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-viplevel" >{{level.cardLevelName || "&nbsp;"}}</button></span>',
@@ -592,8 +594,8 @@ define(['app'], function(app)
                         //         '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-join btn-success">提交入会办卡</button>',
                         //     '</div>',
                         // '</div>',
-                        '<div class="col-xs-8 col-lg-10 clearfix">',
-                            '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-join btn-success btn-block" tabindex="13">提交入会办卡</button>',
+                        '<div class="col-xs-8 col-lg-10 clearfix submitbtn">',
+                            '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-join btn-disable btn-success btn-block" tabindex="13">提交入会办卡</button>',
                         '</div>',
                     '</form>'
                 ].join(''),
@@ -760,38 +762,49 @@ define(['app'], function(app)
                         el.find('.panel-viplevel').show();
                     });
 
+                    //判断是否符合提交要求
+
+                    scope.$watch('realcardnumber + cardpassword ', function() {
+                        if(scope.realcardnumber && scope.cardpassword ){
+                              $('.btn-submit-join').removeClass('btn-disable');
+                        }else{
+                             $('.btn-submit-join').addClass('btn-disable');
+                        }
+                    });
                     //点击提交按钮时
                     el.on('click', '.btn-submit-join', function() {
-                        if((scope.checkmobile && checkcode == scope.checkcode) || !scope.checkmobile) {
-                            var progressbar = AppProgressbar.add('warning', '提交数据...');
-                            scope.CCS.createVIPCard({
-                                shopName: null,
-                                cardNO: scope.realcardnumber,
-                                cardLevelID: scope.cardlevelid,
-                                cardFee: scope.cardfee,
-                                cardPWD: scope.cardpassword,
-                                customerName: scope.username,
-                                customerSex: scope.sex,
-                                customerMobile: scope.phonenumber,
-                                isMobileChecked: scope.checkmobile == true ? 1 : 0,
-                                customerBirthday: IX.Date.getDateByFormat(scope.birthday, 'yyyy-MM-dd'),
-                                birthdayType: '0',
-                                oldSystemcardNO: scope.oldcardnumber,
-                                oldCardMoneyBalnace: scope.oldrechargeamount,
-                                oldCardPointBalnace: scope.oldpointamount
-                            }).success(function(data) {
-                                AppProgressbar.close(progressbar);
-                                if(data.code == '000') {
-                                    AppAlert.add('success', '办卡成功！');
-                                    scope.panel_userinfo.hide();
-                                    init();
-                                }else{
-                                    AppAlert.add('danger', data.msg);
-                                }
-                            });
-                        }else {
-                            AppAlert.add('danger', '验证码错误！');
-                            scope.$apply();
+                        if(!$(this).hasClass('btn-disable')) {
+                            if((scope.checkmobile && checkcode == scope.checkcode) || !scope.checkmobile) {
+                                var progressbar = AppProgressbar.add('warning', '提交数据...');
+                                scope.CCS.createVIPCard({
+                                    shopName: null,
+                                    cardNO: scope.realcardnumber,
+                                    cardLevelID: scope.cardlevelid,
+                                    cardFee: scope.cardfee,
+                                    cardPWD: scope.cardpassword,
+                                    customerName: scope.username,
+                                    customerSex: scope.sex,
+                                    customerMobile: scope.phonenumber,
+                                    isMobileChecked: scope.checkmobile == true ? 1 : 0,
+                                    customerBirthday: IX.Date.getDateByFormat(scope.birthday, 'yyyy-MM-dd'),
+                                    birthdayType: '0',
+                                    oldSystemcardNO: scope.oldcardnumber,
+                                    oldCardMoneyBalnace: scope.oldrechargeamount,
+                                    oldCardPointBalnace: scope.oldpointamount
+                                }).success(function(data) {
+                                    AppProgressbar.close(progressbar);
+                                    if(data.code == '000') {
+                                        AppAlert.add('success', '办卡成功！');
+                                        scope.panel_userinfo.hide();
+                                        init();
+                                    }else{
+                                        AppAlert.add('danger', data.msg);
+                                    }
+                                });
+                            }else {
+                                AppAlert.add('danger', '验证码错误！');
+                                scope.$apply();
+                            }
                         }
                     });
                 }
@@ -808,7 +821,7 @@ define(['app'], function(app)
                     '<form class="tab tab-recharge form-horizontal" name="recharge_form" role="form" novalidate="novalidate" style="display:none;">',
                         '<div class="form-group">',
                             '<label class="control-label col-xs-3 col-lg-3">卡号/手机号</label>',
-                            '<div class="col-xs-6 col-lg-9">',
+                            '<div class="col-xs-6 col-lg-8">',
                                 '<div class="input-group">',
                                     '<input type="text" ng-model="cardnumber" class="form-control input-lg cardnumber"  ng-focus="inputFocus($event)" tabindex="1">',
                                     '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
@@ -878,11 +891,11 @@ define(['app'], function(app)
                         '</div>',
                         '<div class="form-group clearfix">',
                             '<label class="control-label col-xs-3 col-lg-3">备注</label>',
-                            '<div class="col-xs-6 col-lg-9">',
+                            '<div class="col-xs-6 col-lg-6">',
                                 '<input type="text" class="form-control input-lg remark" ng-model="remark"  ng-focus="inputFocus($event)" tabindex="7">',
                             '</div>',
                         '</div>',
-                        '<div class="col-xs-8 clearfix">',
+                        '<div class="col-xs-8 col-lg-10 clearfix submitbtn">',
                             '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-recharge btn-disable btn-success btn-block" tabindex="8">提交储值</button>',
                         '</div>',
 
@@ -1130,7 +1143,7 @@ define(['app'], function(app)
                             
                         '</div>',
                         '<div class="form-group">',
-                            '<label class="control-label col-xs-3">备注</label>',
+                            '<label class="control-label col-xs-3 col-lg-3">备注</label>',
                             '<div class="col-xs-6 col-lg-6">',
                                 '<input type="text" class="form-control input-lg remark" ng-model="remark"  ng-focus="inputFocus($event)" tabindex="9">',
                             '</div>',
@@ -1138,7 +1151,7 @@ define(['app'], function(app)
                         '<div class="form-group">',
                             '<small class="col-xs-offset-3 col-xs-9 help-block">会员消费积分＝可积分金额*等级积分系数</small>',
                         '</div>',
-                        '<div class="col-xs-10 col-lg-10 clearfix">',
+                        '<div class="col-xs-8 col-lg-10 clearfix submitbtn">',
                             '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-consume btn-disable btn-success btn-block" tabindex="10">提交刷卡</button>',
                         '</div>',
                         '<div class="panel-vouchers" style="display:none;">',
@@ -1558,8 +1571,8 @@ define(['app'], function(app)
                         '<div style="display:block;">',
                             '<div class="form-group">',
                                 '<label>卡号/手机号</label>',
-                                '<div class="input-group">',
-                                    '<input style="width: 250px;" type="text" ng-model="cardnumber" class="form-control input-lg cardnumber"  ng-focus="inputFocus($event)" tabindex="1">',
+                                '<div class="input-group col-xs-6 col-lg-8">',
+                                    '<input type="text" ng-model="cardnumber" class="form-control input-lg cardnumber"  ng-focus="inputFocus($event)" tabindex="1">',
                                     '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
                                 '</div>',
                             '</div>',
@@ -1645,7 +1658,7 @@ define(['app'], function(app)
                         //         '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-handle btn-disable btn-success">提交{{handler}}操作</button>',
                         //     '</div>',
                         // '</div>',
-                        '<div class="col-xs-8 clearfix">',
+                        '<div class="col-xs-7 col-lg-10 clearfix submitbtn">',
                             '<button type="button" class="btn btn-default btn-submit btn-lg btn-submit-handle btn-disable btn-success btn-block" tabindex="7">提交{{handler}}操作</button>',
                         '</div>',
                     '</div>'
