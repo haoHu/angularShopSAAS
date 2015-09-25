@@ -16,6 +16,16 @@ define(['app'], function (app) {
 				// 当前站点管理的菜品部门Key列表，如果为空，表示全部菜品，多个部门用逗号分隔
 				// departmentKeyLst = _.result(shopInfo, 'departmentkeyLst', '');
 				departmentKeyLst = storage.get('departmentKeyLst') || '';
+			var popupOrderLst = function (saasOrderKey) {
+				var itemEl = $('#' + saasOrderKey),
+					orderTitleH = itemEl.find('.panel-title').height(),
+					orderBoxH = itemEl.find('.order-box').height(),
+					foodLstEl = itemEl.find('.food-lst'),
+					foodLstH = foodLstEl.height();
+				if (foodLstH - orderBoxH + orderTitleH > 0) {
+					itemEl.removeClass('collapse').addClass('popup');
+				}
+			};
 
 			$scope.foodMakeManageShowMode = foodMakeManageShowMode;
 			$scope.departmentKeyLst = departmentKeyLst;
@@ -83,6 +93,28 @@ define(['app'], function (app) {
 			$scope.updateCurFocusOrder = function (order) {
 				$scope.curFocusOrder = order;
 			};
+			$scope.updateCurFocusFoodsStatus = function () {
+				var fOrder = $scope.curFocusOrder,
+					fFoods = $scope.curFocusFoods,
+					saasOrderKey = _.result(fOrder, 'saasOrderKey');
+
+				if (!saasOrderKey || fFoods.length == 0) return;
+				fOrder = ProduceOrderService.getOrderItem(saasOrderKey);
+				_.each(_.result(fOrder, 'foodLst', []), function (food) {
+					var itemKey = _.result(food, 'itemKey');
+					var _food = _.find(fFoods, function (el) {
+						return el.itemKey == itemKey;
+					});
+					if (!_.isEmpty(_food)) {
+						food.selected = true;
+					}
+				});
+				if ($scope.foodMakeManageShowMode == 0) {
+					setTimeout(function () {
+						popupOrderLst(saasOrderKey);
+					}, 200);
+				}
+			};
 			// 计时器开启
 			var pollingOrderDealInterval = function () {
 				$scope.oInterval = $interval(function () {
@@ -125,9 +157,13 @@ define(['app'], function (app) {
 				$scope.queryFoodMakeStatusLst();
 			};
 			// 查询数据
-			$scope.queryFoodMakeStatusLst = function () {
+			$scope.queryFoodMakeStatusLst = function (actionType) {
 				cancelPollingOrderDealInterval();
-				$scope.cleanCurFocusOrderData();
+
+				// 菜品操作后的获取数据，不清空当前选中菜品数据
+				if (actionType != 'CCJH') {
+					$scope.cleanCurFocusOrderData();
+				}
 				var callServer = ProduceOrderService.loadFoodMakeStatusLst({
 					actionType : $scope.qform.qActionType,
 					keyword : $scope.qform.qKeyword,
@@ -146,6 +182,10 @@ define(['app'], function (app) {
 					$scope.JZXOrderCount = ProduceOrderService.getBadgeCountByType('JZXOrderCount');
 					$scope.PDZOrderCount = ProduceOrderService.getBadgeCountByType('PDZOrderCount');
 					$scope.YGQOrderCount = ProduceOrderService.getBadgeCountByType('YGQOrderCount');
+					if (actionType == 'CCJH') {
+						// 更新菜品选中状态
+						$scope.updateCurFocusFoodsStatus();
+					}
 				}).error(function (data) {
 					AppAlert.add('danger', '请求失败');
 				});
@@ -199,15 +239,17 @@ define(['app'], function (app) {
 			};
 			// 选择当前操作订单
 			$scope.selectOrder = function (order) {
-				var saasOrderKey = _.result(order, 'saasOrderKey'),
-					itemEl = $('#' + saasOrderKey),
-					orderTitleH = itemEl.find('panel-title').height(),
-					orderBoxH = itemEl.find('.order-box').height(),
-					foodLstEl = itemEl.find('.food-lst'),
-					foodLstH = foodLstEl.height();
-				if (foodLstH - orderBoxH + orderTitleH > 0) {
-					itemEl.removeClass('collapse').addClass('popup');
-				}
+				// var saasOrderKey = _.result(order, 'saasOrderKey'),
+				// 	itemEl = $('#' + saasOrderKey),
+				// 	orderTitleH = itemEl.find('panel-title').height(),
+				// 	orderBoxH = itemEl.find('.order-box').height(),
+				// 	foodLstEl = itemEl.find('.food-lst'),
+				// 	foodLstH = foodLstEl.height();
+				// if (foodLstH - orderBoxH + orderTitleH > 0) {
+				// 	itemEl.removeClass('collapse').addClass('popup');
+				// }
+				var saasOrderKey = _.result(order, 'saasOrderKey');
+				popupOrderLst(saasOrderKey);
 				// if (!_.isEmpty($scope.curFocusOrder)) {
 				// 	$('#' + _.result($scope.curFocusOrder, 'saasOrderKey')).addClass('collapse').removeClass('popup');
 				// 	$scope.cleanCurFocusFoods();
@@ -258,10 +300,10 @@ define(['app'], function (app) {
 				c.success(function (data) {
 					var code = _.result(data, 'code');
 					if (code == '000') {
-						$scope.cleanCurFocusFoods();
+						// $scope.cleanCurFocusFoods();
 						// $scope.OrderLst = ProduceOrderService.getOrderLst();
 						// 刷新当前页面
-						$scope.queryFoodMakeStatusLst();
+						$scope.queryFoodMakeStatusLst(actionType);
 					} else {
 						AppAlert.add('danger', _,result(data, 'msg', ''));
 					}
