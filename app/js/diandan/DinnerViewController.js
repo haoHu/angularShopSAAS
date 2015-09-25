@@ -2826,7 +2826,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					var submitOrder = null;
 					var shopInfo = storage.get("SHOPINFO"),
 						operationMode = _.result(shopInfo, 'operationMode'),
-						webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? true : false;
+						webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? true : false,
+						// 新需求：fastModeCreateOrderBeforePopOH --是否在结账前弹出单头配置窗口0:不弹窗（默认）；1：弹窗，但不要求输入台号；2：弹窗并且必须输入台号
+						fastModeCreateOrderBeforePopOH = _.result(shopInfo, 'fastModeCreateOrderBeforePopOH', 0);
 					if (operationMode != 0) {
 						el.find('.btn[name=return]').attr('disabled', true);
 					}
@@ -2896,7 +2898,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								scope.$apply();
 								return;
 							}
-							if (operationMode != 0 && (_.isUndefined(tableName) || tableName.length == 0)) {
+							if (operationMode != 0 && (_.isUndefined(tableName) || tableName.length == 0) && fastModeCreateOrderBeforePopOH != 0) {
 								// 如果开餐模式下，订单太牌号为空，要求弹出单头配置窗口，进行单头信息的填写
 								scope.$emit('Order.OpenHeaderSet', act);
 								AppAlert.add('danger', '请先设置台牌号、人数等信息！');

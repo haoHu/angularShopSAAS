@@ -5,6 +5,9 @@ define(['app'], function (app) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var act = _.result(_scope, 'act');
+			// 新需求：fastModeCreateOrderBeforePopOH --是否在结账前弹出单头配置窗口0:不弹窗（默认）；1：弹窗，但不要求输入台号；2：弹窗并且必须输入台号
+			var shopInfo = storage.get("SHOPINFO");
+			$scope.fastModeCreateOrderBeforePopOH = _.result(shopInfo, 'fastModeCreateOrderBeforePopOH', 0);
 			$scope.close = function () {
 				$modalInstance.close();
 			};

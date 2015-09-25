@@ -21,9 +21,14 @@
 						<input type="text" name="tableName" class="form-control" ng-readonly="{{tableNameIsReadOnly()}}" ng-model="fmels.tableName" ng-focus="inputFocus($event)" bv-strlength min="1" max="20"  tabindex="2">
 						<small class="help-block" ng-show="order_header.tableName.$dirty && order_header.tableName.$error.bvStrlength">台/牌号不能超过20个字符</small>
 					</div>
-					<div class="col-xs-8" ng-class="{'has-success' : order_header.tableName.$dirty && order_header.tableName.$valid, 'has-error' : order_header.tableName.$invalid}" ng-if="!(tableNameIsReadOnly())">
-						<input type="text" name="tableName" class="form-control" ng-model="fmels.tableName" ng-focus="inputFocus($event)" bv-notempty tabindex="2" />
+					<div class="col-xs-8" ng-class="{'has-success' : order_header.tableName.$dirty && order_header.tableName.$valid, 'has-error' : order_header.tableName.$invalid}" ng-if="!(tableNameIsReadOnly()) && fastModeCreateOrderBeforePopOH == 2">
+						<input type="text" name="tableName" class="form-control" ng-model="fmels.tableName" ng-focus="inputFocus($event)" bv-notempty bv-strlength min="1" max="20" tabindex="2" />
 						<small class="help-block" ng-show="order_header.tableName.$dirty && order_header.tableName.$error.bvNotempty">台/牌号不能为空</small>
+						<small class="help-block" ng-show="order_header.tableName.$dirty && order_header.tableName.$error.bvStrlength">台/牌号不能超过20个字符</small>
+					</div>
+					<div class="col-xs-8" ng-class="{'has-success' : order_header.tableName.$dirty && order_header.tableName.$valid, 'has-error' : order_header.tableName.$invalid}" ng-if="!(tableNameIsReadOnly()) && fastModeCreateOrderBeforePopOH == 1">
+						<input type="text" name="tableName" class="form-control" ng-model="fmels.tableName" ng-focus="inputFocus($event)"  bv-strlength min="1" max="20" tabindex="2" />
+						<small class="help-block" ng-show="order_header.tableName.$dirty && order_header.tableName.$error.bvStrlength">台/牌号不能超过20个字符</small>
 					</div>
 				</div>
 				<div class="form-group has-feedback">
