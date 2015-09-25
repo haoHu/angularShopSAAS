@@ -646,6 +646,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 监听是否需要弹出单头配置信息界面
 			$scope.$on('Order.OpenHeaderSet', function ($event, act) {
+				var orderData = OrderService.getOrderData();
+				orderData.hasOrderHeader = true;
 				$('#order_header_handle').trigger('click', act);
 			});
 
@@ -2892,19 +2894,28 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						} else if (act == "payOrder" || act == "cashPayOrder") {
 							var orderData = OrderService.getOrderData(),
 								foods = OrderService.getOrderFoodHT().getAll(),
-								tableName = _.result(orderData, 'tableName');
+								tableName = _.result(orderData, 'tableName'),
+								hasOrderHeader = _.result(orderData, 'hasOrderHeader');
 							if (foods.length == 0 && _.isEmpty(orderData.saasOrderKey)) {
 								AppAlert.add('danger', '请先添加菜品再结账！');
 								scope.$apply();
 								return;
 							}
-							if (operationMode != 0 && (_.isUndefined(tableName) || tableName.length == 0) && fastModeCreateOrderBeforePopOH != 0) {
-								// 如果开餐模式下，订单太牌号为空，要求弹出单头配置窗口，进行单头信息的填写
-								scope.$emit('Order.OpenHeaderSet', act);
-								AppAlert.add('danger', '请先设置台牌号、人数等信息！');
-								scope.$apply();
-								return;
+							if (operationMode != 0) {
+								if ((_.isUndefined(tableName) || tableName.length == 0) && fastModeCreateOrderBeforePopOH == 2) {
+									// 如果快餐模式下，订单太牌号为空，要求弹出单头配置窗口，进行单头信息的填写
+									scope.$emit('Order.OpenHeaderSet', act);
+									AppAlert.add('danger', '请先设置台牌号、人数等信息！');
+									// scope.$apply();
+									return;
+								}
+								if (fastModeCreateOrderBeforePopOH == 1 && !hasOrderHeader) {
+									scope.$emit('Order.OpenHeaderSet', act);
+									AppAlert.add('danger', '请先设置台牌号、人数等信息！');
+									return ;
+								}
 							}
+			
 							// 结账操作，需要先提交一次订单，待服务返回结账数据后进行结账
 							submitOrder = OrderService.submitOrder('LD');
 							var successCallBack = function (data) {
