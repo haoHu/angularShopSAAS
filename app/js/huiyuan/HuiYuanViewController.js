@@ -764,8 +764,8 @@ define(['app'], function(app)
 
                     //判断是否符合提交要求
 
-                    scope.$watch('realcardnumber + cardpassword ', function() {
-                        if(scope.realcardnumber && scope.cardpassword ){
+                    scope.$watch('realcardnumber + cardpassword + phonenumber', function() {
+                        if((scope.realcardnumber || scope.phonenumber) && scope.cardpassword){
                               $('.btn-submit-join').removeClass('btn-disable');
                         }else{
                              $('.btn-submit-join').addClass('btn-disable');

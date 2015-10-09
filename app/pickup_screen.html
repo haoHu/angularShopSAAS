@@ -126,7 +126,7 @@
 					var tpl = [
 							'<div class="info {{hidden}}">',
 								'<img class="img-circle" alt="" src="{{image}}" />',
-								'<span class="num">{{No}}号，  请取餐!</span>',
+								'<span class="num">{{No}}</span><span class="numdoc">号，请取餐!</span>',
 							'</div>',
 							'<div class="remark">',
 								'{{remark}}',
@@ -139,7 +139,7 @@
 						htm = tpl;
 						_.each(curPickup, function (v, k) {
 							if (k == 'image' && _.isEmpty(v)) {
-								v = 'img/blank.png';
+								v = 'img/logo.png';
 							}
 							htm = htm.replace('{{' + k + '}}', v);
 						});

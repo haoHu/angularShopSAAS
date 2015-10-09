@@ -1,19 +1,27 @@
 .section-pickupwindow {
-	@headerBG : #FC6622;
+	font-family: Tahoma, Verdana,Arial, Helvetica, SimHei,sans-serif;
+	@headerBG : #FF6600;
 	@headerColor : #FFF;
-
 	@pickupHeight : 200px;
 	@pickupWidth : 100%;
-	@pickupColor : #FC6622;
-	@pickupFontSize : 64px;
-	@pickupPhotoSize : 80px;
-
+	@pickupColor : #FF6600;
+	@pickupFontSize : 6em;
+	@pickupPhotoSize: 200px;
+	@pickupnum : 18em;
+	@pickupnumdoc :15em;
+	@pickupdocs: 12em;
 	@footerBG : #FFF;
 	@footerColor : #040404;
 
 	display: block; position: absolute; top : 0; bottom : 0; left : 0; right : 0;
 	width : 100%; height : 100%; background-color: #fff;
-
+	font-size: 10px;
+	@media (max-width: 1200px){
+		font-size: 7px;
+		.current-pickup {
+			img{width:120px!important;height:120px!important;}
+		}
+	}
 	.header, .footer {
 		position: fixed; left : 0; right : 0; height : 20%; width : 100%; text-align: center;
 	}
@@ -22,17 +30,17 @@
 		top : 0; background-color: @headerBG; color : @headerColor;
 	}
 	.footer {
-		bottom : 0; background-color: @footerBG; color : @footerColor;
+		bottom : 0; /* background-color: @footerBG; */ color : @footerColor;
 	}
 
 	.advertise-wrap, .pickup-wrap {
 		// display: table; height : 100%; width : 100%;
-		display: block; height : 100%; width : 100%;
+		display: block; height : 85%; width : 100%;
 		.advertise-info, .pickup-list {
 			position : relative; top : 50%; display: block; vertical-align: middle; margin-top : -18px;
 		}
 		.advertise-info > p, .pickup-list .pickup-item {
-			font-size : 36px; font-weight: 400; letter-spacing: 2px; line-height: 1em; 
+			font-size : @pickupFontSize; font-weight: 400; letter-spacing: 2px; line-height: 1em; 
 			white-space: nowrap; text-overflow : ellipsis; overflow: hidden;
 		}
 		.advertise-info > p {
@@ -45,27 +53,29 @@
 
 	.current-pickup {
 		position : absolute; width : @pickupWidth; height : @pickupHeight;
-		top : 50%; left : 0; margin-top : -(@pickupHeight / 2);
-
+		top : 30%; left : 0; white-space : nowrap;
+		.numdoc{
+			font-size: @pickupnumdoc;
+			vertical-align: middle;
+		}
 		.info, .remark {
-			height : 50%;
-			font-size : @pickupFontSize; font-weight: 400; letter-spacing: 2px;
-			white-space : nowrap; text-overflow : ellipsis; 
-			color : @pickupColor; text-align: center;
+			//height: 50%;letter-spacing: 2px;
+			text-overflow : ellipsis; 
+			color : @pickupColor; 
+			text-align: center;
+		}
+		.remark{
+			font-size : @pickupdocs; 
 		}
 		.info {
 			> img {
-				display: inline-block; width : @pickupPhotoSize; height : @pickupPhotoSize;
-				margin-right: .3em; vertical-align: middle;
+				display: inline-block; width: @pickupPhotoSize; height: @pickupPhotoSize;
+				margin-right: .6em; vertical-align: -webkit-baseline-middle; 
 			}
 			.num {
 				vertical-align: middle;
+				font-size: @pickupnum ;
 			}
 		}
 	}
-	
-
-	
-	
-	
 }
