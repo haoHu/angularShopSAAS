@@ -633,6 +633,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						fromTableName = _.result(orderHeader, 'tableName', ''),
 						foodItemKeyLst = _scope.curSelectedOrderItems || [];
 					var actionType = action == 'changeFood' ? 'CPHT' : (action == 'changeOrder' ? 'HT' : (action == 'mergeOrder' ? 'BT' : 'LT'));
+					if (fromTableName != _scope.curTableName) {
+						fromTableName = _scope.curTableName;
+					}
 					// var con = window.confirm("是否进行" + (actionType == 'CPHT' ? '转菜' : (actionType == 'HT' ? '换台' : '并台')) + '操作？');
 					// if (con) {
 					// 	var callServer = OrderService.tableOperation(actionType, {
