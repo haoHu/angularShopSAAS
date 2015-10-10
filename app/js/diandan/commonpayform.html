@@ -13,7 +13,7 @@
 	<div class="col-xs-12 hll-paytype" ng-if="paySubjectGrp.name == 'hualalaPay'">
 		<div class="btn-group btn-group-justified">
 			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="''" ng-click="genQRCode()"><div class="icon-keyboard"></div><div class="btncelldoc">手工输入</div></label>
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual"><div class="icon-hualala"></div><div class="btncelldoc">哗啦啦</div></label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual"><div class="icon-hualala"></div><div class="btncelldoc">会员卡、券</div></label>
 			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'WECHAT'" ng-click="genQRCode('WECHAT')" ng-disabled="onlyHLLPayManual"><div class="icon-weixin"></div><div class="btncelldoc">微信</div></label>
 			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'ALIPAY'" ng-click="genQRCode('ALIPAY')" ng-disabled="onlyHLLPayManual"><div class="icon-zhifubao"></div><div class="btncelldoc">支付宝</div></label>
 			

@@ -20,7 +20,12 @@
     label[class*=col-], div[class*=col-] {
         padding-left : 5px; padding-right : 5px;
     }
-
+    .form-group> label{
+        font-size: 2rem;
+    }
+    .radio-inline, .checkbox-inline{
+        padding-top: 12px; margin-left: 10px;
+    }
     .panel-heading{
         background: none;
     }
@@ -254,39 +259,20 @@
             }
             
         }
-        .tab-consume {
-            width : 500px;
-            
-            .panel-vouchers {
+        .panel-vouchers {
                 width : 250px;
                 
                 .header, ul {
                     width: 100%;
                 }
             }
-        }
-        .tab-join {
+
+        .tab-consume , .tab-join {
             width : 500px;
-            
-            .panel-vouchers {
-                width : 250px;
-                
-                .header, ul {
-                    width: 100%;
-                }
-            }
         }
         .tab-cardhandle {
             //宽度短了table文字会跨行
             width : 600px;
-            
-            .panel-vouchers {
-                width : 250px;
-                
-                .header, ul {
-                    width: 100%;
-                }
-            }
         }
     }
 
