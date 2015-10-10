@@ -2340,6 +2340,12 @@ define(['app', 'uuid'], function (app, uuid) {
 					cardNoOrMobile : cardKey,
 					transID : transID
 				});
+				callServer.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						self.cardTransID = null;
+					}
+				});
 				return callServer;
 			};
 

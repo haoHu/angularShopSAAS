@@ -1510,6 +1510,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								// HC.TopTip.addTopTips($rootScope, data);
 								AppAlert.add('danger', _.result(data, 'msg', ''));
 							}
+							$scope.$broadcast('pay.detailUpdate');
 						}).error(function (data) {
 							// HC.TopTip.addTopTips($rootScope, {
 							// 	code : '111', msg : '通信失败'
@@ -1529,8 +1530,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					}
 				} else {
 					OrderPayService.deletePaySubjectItem(subjectCodes, name);
+					$scope.$broadcast('pay.detailUpdate');
 				}
-				$scope.$broadcast('pay.detailUpdate');
+				// $scope.$broadcast('pay.detailUpdate');
 			};		
 			// 跳转选择桌台页面
 			$scope.jumpToTablePage = function () {
