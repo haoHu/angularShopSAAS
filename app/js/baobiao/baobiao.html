@@ -116,7 +116,7 @@
 	<section class="tab-cnt tab-comp" ng-show="curPageType=='comp'">
 		<header class="cnt-header">
 			<div class="filter-bar row">
-				<div class="col-xs-3 clearfix">
+				<div class="col-xs-4 clearfix">
 					<div class="input-group">
 						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="开始日期" ng-model="qform.startDate" is-open="qform.dp1" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keypress="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '1')"/>
 						<span class="input-group-btn">
@@ -126,7 +126,7 @@
 						</span>
 					</div>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-4">
 					<div class="input-group timepicker" id="startTime" ng-click="popupTimePicker($event, 'startTime')">
 						<input type="text" class="form-control input-lg" readonly="" placeholder="开始时间" value="{{formatDateTime(qform.startTime, 'HH:mm')}}">
 						<span class="input-group-btn">
@@ -140,7 +140,7 @@
 						<button class="btn btn-default btn-lg btn-block">关闭</button>
 					</div>
 				</div>
-				<div class="col-xs-3 clearfix">
+				<div class="col-xs-4 clearfix">
 					<div class="input-group">
 						<input type="text" class="form-control input-lg" readonly datepicker-popup="yyyy/MM/dd" placeholder="截止日期" ng-model="qform.endDate" is-open="qform.dp2" max-date="today()" datepicker-options="datePickerOptions" close-text="关闭" current-text="今天" clear-text="清空" ng-keypress="queryByDate($event)" ng-change="queryByDate($event)" ng-click="openDatePicker($event, '2')"/>
 						<span class="input-group-btn">
@@ -150,7 +150,7 @@
 						</span>
 					</div>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-4">
 					<div class="input-group timepicker" id="endTime" ng-click="popupTimePicker($event, 'endTime')">
 						<input type="text" class="form-control input-lg" readonly="" placeholder="截止时间" value="{{formatDateTime(qform.endTime, 'HH:mm')}}">
 						<span class="input-group-btn">
@@ -164,8 +164,11 @@
 						<button class="btn btn-default btn-lg btn-block">关闭</button>
 					</div>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-4">
 					<div class="input-group dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<span class="input-group-addon">
+							收银人员
+						</span>
 						<input type="text" class="form-control input-lg" readonly placeholder="收银人员" ng-model="qform.checkoutBy">
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button">
@@ -175,12 +178,17 @@
 					</div>
 					<ul class="dropdown-menu" role="menu">
 						<li ng-repeat="item in CheckoutUsers" ng-class="{active: item.value == qform.checkoutBy}" ng-click="queryByFilterItem(item, 'checkoutBy')">
-							<a>{{item.label}}</a>
+							<a>
+								{{item.label}}
+							</a>
 						</li>
 					</ul>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-4">
 					<div class="input-group dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<span class="input-group-addon">
+							营业时段
+						</span>
 						<input type="text" class="form-control input-lg" readonly placeholder="营业时段" ng-model="qform.timeName">
 						<span class="input-group-btn">
 							<button class="btn btn-default btn-lg" type="button">
@@ -194,8 +202,11 @@
 						</li>
 					</ul>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-4">
 					<div class="input-group dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<span class="input-group-addon">
+							桌台区域
+						</span>
 						<input type="text" class="form-control input-lg dropdown-toggle" readonly placeholder="桌台区域" ng-model="qform.areaName" >
 						<span class="input-group-btn dropdown-toggle" >
 							<button class="btn btn-default btn-lg" type="button">
@@ -209,7 +220,25 @@
 						</li>
 					</ul>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-4">
+					<div class="input-group dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+						<span class="input-group-addon">
+							站点
+						</span>
+						<input type="text" class="form-control input-lg dropdown-toggle" readonly placeholder="站点" ng-model="qform.siteName" >
+						<span class="input-group-btn dropdown-toggle" >
+							<button class="btn btn-default btn-lg" type="button">
+								<span class="caret"></span>
+							</button>
+						</span>
+					</div>
+					<ul class="dropdown-menu" role="menu">
+						<li ng-repeat="item in SiteNames" ng-class="{active: item.value == qform.siteName}" ng-click="queryByFilterItem(item, 'siteName')">
+							<a>{{item.label}}</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-xs-4">
 					<button class="btn btn-default btn-lg btn-block" ng-click="queryLst()">搜索</button>
 				</div>
 				

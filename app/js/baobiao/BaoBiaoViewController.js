@@ -10,6 +10,8 @@ define(['app'], function(app)
 			$scope.CheckoutUsers = [];
 			$scope.TimeNames = [];
 			$scope.TableAreas = [];
+			// 新需求：增站点选项
+			$scope.SiteNames = [];
 			$scope.QueryRangeLst = Hualala.TypeDef.CompBizQueryRangeLst;
 			$scope.formatDateTime = function (v,  format) {
 				console.info(v);
@@ -42,7 +44,7 @@ define(['app'], function(app)
 							$scope.CheckoutUsers = ReportDictionaryService.getCheckouts();
 							$scope.TimeNames = ReportDictionaryService.getTimeNames();
 							$scope.TableAreas = ReportDictionaryService.getAreas();
-
+							$scope.SiteNames = ReportDictionaryService.getSiteNames();
 							$scope.qform = {
 								startDate : today,
 								endDate : tonight,
@@ -51,6 +53,7 @@ define(['app'], function(app)
 								checkoutBy : '全部',
 								timeName : '全部',
 								areaName : '全部',
+								siteName : '',
 								queryRangeLst : _.pluck($scope.QueryRangeLst, 'value').slice(0,1)
 							};
 							$scope.QueryRangeLst = _.map($scope.QueryRangeLst, function (el) {
@@ -118,6 +121,7 @@ define(['app'], function(app)
 					endDate = _.result(params, 'endDate'),
 					endTime = _.result(params, 'endTime'),
 					areaName = _.result(params, 'areaName'),
+					siteName = _.result(params, 'siteName'),
 					checkoutBy = _.result(params, 'checkoutBy'),
 					timeName = _.result(params, 'timeName'),
 					queryRangeLst = _.result(params, 'queryRangeLst', []);
@@ -126,6 +130,7 @@ define(['app'], function(app)
 					return $scope.formatDateTime(oDate, 'yyyyMMdd') + $scope.formatDateTime(oTime, 'HHmm');
 				};
 				postData.areaName = areaName;
+				postData.siteName = siteName;
 				postData.checkoutBy = checkoutBy;
 				postData.timeName = timeName;
 				postData.startDateTime = mapDateTimeStr(startDate, startTime);

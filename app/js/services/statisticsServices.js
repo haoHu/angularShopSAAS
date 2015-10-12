@@ -205,6 +205,10 @@ define(['app'], function (app) {
 				return getDictDataByType('areaLst');
 			};
 
+			this.getSiteNames = function () {
+				return getDictDataByType('siteLst');
+			};
+
 
 		}
 	]);
