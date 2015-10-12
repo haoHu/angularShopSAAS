@@ -2032,6 +2032,8 @@ define(['app', 'uuid'], function (app, uuid) {
 			 */
 			this.deletePaySubjectItem = function (paySubjectCodes, subjectGrpName) {
 				var paySubjectHT = self.OrderPaySubjectHT;
+				var _payLst = _.result(self._OrderData, 'payLst', []);
+
 				_.each(paySubjectCodes, function (code) {
 					paySubjectHT.remove(code);
 				});
@@ -2046,6 +2048,23 @@ define(['app', 'uuid'], function (app, uuid) {
 						discountRate : self.discountRate,
 						discountRange : self.discountRange
 					});
+				}
+				if (subjectGrpName == 'vipCardPay') {
+					// 清除元数据中的会员支付部分和会员卡优惠部分数据
+					var discountPayCodes = _.pluck(_.result(self.OrderPaySubjectGrpHT.get('discountPay'), 'items', []), 'subjectCode'),
+						delPayCodes = paySubjectCodes.concat(discountPayCodes);
+					_payLst = _.reject(_payLst, function (el) {
+						var paySubjectCode = _.result(el, 'paySubjectCode');
+						// var i = _.findIndex(paySubjectCodes, paySubjectCode);
+						var i = _.indexOf(delPayCodes, paySubjectCode);
+						return i > -1;
+					});
+
+					self._OrderData.payLst = _payLst;
+					self._OrderData.isVipPrice = 0;
+					self._OrderData.discountRate = 1;
+					self._OrderData.discountRange = 0;
+					self.deletePaySubjectItem(discountPayCodes, 'discountPay');
 				}
 			};
 
