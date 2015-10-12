@@ -5,6 +5,8 @@ define(['app'], function(app)
 		function($scope, $rootScope, $modal, $location, $filter, $timeout, $sce, storage, CommonCallServer, AppAlert, ShopLogService, ShopCurBizService, ShopCompositeBizService, ReportDictionaryService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common, dictCallServer = null;
+			var empInfo = storage.get('EMPINFO'),
+				curSiteName = empInfo.siteCode;
 			$scope.curPageType = _.isEmpty(_.result($location.search(), 'tab')) ? 'biz' : _.result($location.search(), 'tab');
 			dictCallServer = $scope.curPageType == 'comp' ? ReportDictionaryService.loadReportDictionary() : null;
 			$scope.CheckoutUsers = [];
@@ -35,11 +37,11 @@ define(['app'], function(app)
 					return dictCallServer.success(function(data) {
 						var code = _.result(data, 'code');
 						var today = new Date(),
-							tonight = new Date();
+							curTime = new Date();
 						today.setHours(0);
 						today.setMinutes(0);
-						tonight.setHours(23);
-						tonight.setMinutes(59);
+						curTime.setHours(curTime.getHours());
+						curTime.setMinutes(curTime.getMinutes());
 						if (code == '000') {
 							$scope.CheckoutUsers = ReportDictionaryService.getCheckouts();
 							$scope.TimeNames = ReportDictionaryService.getTimeNames();
@@ -47,13 +49,13 @@ define(['app'], function(app)
 							$scope.SiteNames = ReportDictionaryService.getSiteNames();
 							$scope.qform = {
 								startDate : today,
-								endDate : tonight,
+								endDate : curTime,
 								startTime : today,
-								endTime : tonight,
-								checkoutBy : '全部',
-								timeName : '全部',
-								areaName : '全部',
-								siteName : '',
+								endTime : curTime,
+								checkoutBy : _.result($scope.CheckoutUsers[0], 'value', ''),
+								timeName : _.result($scope.TimeNames[0], 'value', ''),
+								areaName : _.result($scope.TableAreas[0], 'value', ''),
+								siteName : _.result($scope.SiteNames[0], 'value', ''),
 								queryRangeLst : _.pluck($scope.QueryRangeLst, 'value').slice(0,1)
 							};
 							$scope.QueryRangeLst = _.map($scope.QueryRangeLst, function (el) {
