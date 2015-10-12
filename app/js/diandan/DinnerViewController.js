@@ -598,7 +598,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 开钱箱操作
 			$scope.openCashBox = function () {
-				Hualala.DevCom.exeCmd("OpenCashbox");
+				var empInfo = storage.get('EMPINFO'),
+					rightIDLst = _.result(empInfo, 'rightIDLst', '');
+				if (rightIDLst.indexOf('2010049') > -1) {
+					Hualala.DevCom.exeCmd("OpenCashbox");
+				} else {
+					AppAlert.add('danger', '没有权限开启钱箱!');
+				}
+				
 			};
 
 			// 打印结账消费明细
@@ -1691,11 +1698,17 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 开钱箱
 			$scope.openCashBox = function ($event) {
 				var $btn = $($event.target);
-				$btn.button('loading');
-				$timeout(function () {
-					Hualala.DevCom.exeCmd("OpenCashbox");
-					$btn.button('reset');
-				}, 500);
+				var empInfo = storage.get('EMPINFO'),
+					rightIDLst = _.result(empInfo, 'rightIDLst', '');
+				if (rightIDLst.indexOf('2010049') > -1) {
+					$btn.button('loading');
+					$timeout(function () {
+						Hualala.DevCom.exeCmd("OpenCashbox");
+						$btn.button('reset');
+					}, 500);
+				} else {
+					AppAlert.add('danger', '没有权限开启钱箱!');
+				}
 				// Hualala.DevCom.exeCmd("OpenCashbox");
 			};
 			// 打印预结账清单
