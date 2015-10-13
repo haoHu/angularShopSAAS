@@ -23,7 +23,7 @@
 						<span class="cash">{{calcOrderAmount() | prettyNum}}</span>
 					</div>
 					<div class="col-xs-12" ng-repeat="pay in payLst">
-						<p ng-if="pay.paySubjectCode == '10010001'" class="text-warning">
+						<p ng-if="pay.paySubjectCode == '10010001'" class="text-warning payremark">
 							现金{{pay.payRemark}}
 						</p>
 					</div>
