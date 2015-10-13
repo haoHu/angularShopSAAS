@@ -1588,7 +1588,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						_scope.resetOrderInfo();
 						// 3. 打印结账清单
 						Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
-						// 向子窗口推送新加菜品的消息
+						// 向子窗口推送消息
 						Hualala.SecondScreen.publishPostMsg('OrderDetail', OrderService.getOrderPublishData());
 						if (operationMode == 0) {
 							$scope.jumpToTablePage();
@@ -1652,7 +1652,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						
 					});
 				}
-				
+				Hualala.DevCom.exeCmd("OpenCashbox");
 				
 			};
 
@@ -1770,14 +1770,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var realPay = parseFloat(realPriceEl.val());
 						var delta = HCMath.sub(prePayAmount, realPay);
 						var payRemark = '';
-						if (delta < 0 && curName == 'cashPay') {
-							payRemark = '实收:' + realPay + ';找零:' + delta;
-							realPay = prePayAmount;
+						if (curName == 'cashPay') {
+							payRemark = '应收:' + prePayAmount + ';实收:' + realPay + ';找零:' + (delta <= 0 ? delta : 0);
+							realPay = delta < 0 ? prePayAmount : realPay;
 						}
 						OrderPayService.updatePaySubjectItem(curName, {
 							debitAmount : realPay,
 							payRemark : payRemark
 						});
+						// 向子窗口推送消息
+						Hualala.SecondScreen.publishPostMsg('OrderDetail', _.extend({}, OrderService.getOrderPublishData(), OrderPayService.getOrderPayParams()));
 					};
 					// 多支付科目组的提交
 					var multiPaySubjectSubmit = function (curName) {

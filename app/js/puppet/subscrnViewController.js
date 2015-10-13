@@ -19,6 +19,7 @@ define(['app'], function (app) {
 				OrderService.clear();
 				OrderService.initOrderFoodDB(data);
 				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
+				$scope.payLst = _.result(data, 'payLst');
 				$scope.$apply();
 				setTimeout(function () {
 					var imgs = $('#ad_box').find('img');

@@ -584,6 +584,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			//修改赋值到input
 			$scope.onAbolishChange = function (v) {
 				$scope.saasOrderRemark = v;
+				$scope.$apply();
 			};
 			// //监听中间变量是否改变，改变就修改到input中
 			// $scope.$watch('abolishOrdersval',function(newValue,oldValue){
