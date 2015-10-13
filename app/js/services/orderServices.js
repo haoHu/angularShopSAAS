@@ -1892,6 +1892,18 @@ define(['app', 'uuid'], function (app, uuid) {
 						detail : detail
 					};
 				};
+				var mapCashPaySubjectSchema = function (items) {
+					var amount = 0, detail = '',
+						isEmpty = _.isEmpty(items);
+					if (!isEmpty) {
+						amount = HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+						detail = _.result(items[0], 'payRemark', '');
+					}
+					return {
+						amount : amount,
+						detail : detail
+					};
+				};
 				var mapDiscountPaySchema = function (items) {
 					var amount = 0, detail = '',
 						isEmpty = _.isEmpty(items);
@@ -1980,13 +1992,14 @@ define(['app', 'uuid'], function (app, uuid) {
 					case "wipeZeroPay":
 					// 账单减免
 					case "remissionPay":
-					// 现金支付
-					case "cashPay":
 					// 哗啦啦
 					case "hualalaPay":
 					// 代金券
 					case "voucherPay":
 						ret = mapCommonSubjectSchema(payLst);
+						break;
+					case "cashPay":
+						ret = mapCashPaySubjectSchema(payLst);
 						break;
 					// 账单折扣
 					case "discountPay":

@@ -1534,6 +1534,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						});
 						// $scope.curVIPCard = null;
 						$scope.$broadcast('pay.upVIPCard', null);
+						$scope.$broadcast('pay.detailUpdate');
 					}
 				} else {
 					OrderPayService.deletePaySubjectItem(subjectCodes, name);
