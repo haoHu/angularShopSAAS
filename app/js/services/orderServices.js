@@ -1023,7 +1023,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					empName = _.result(empInfo, 'empName'),
 					empCode = _.result(empInfo, 'empCode');
 				var shopInfo = storage.get("SHOPINFO"),
-					operationMode = _.result(shopInfo, 'operationMode');
+					operationMode = _.result(shopInfo, 'operationMode'),
+					_moneyWipeZeroType = _.result(shopInfo, 'moneyWipeZeroType', 0);
 				var orderHeader = self.getOrderHeaderData(),
 					allFoodRemark = self.getOrderRemark();
 				var saasOrderKey = self.getSaasOrderKey(),
@@ -1054,7 +1055,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					hisFlag : _.result(self._OrderData, 'his', 0)
 				}, orderHeader, {
 					foodLst : foodLst
-				}, (_.isEmpty(self.FJZFlag) ? {} : {FJZFlag : self.FJZFlag}));
+				}, (_.isEmpty(self.FJZFlag) ? {} : {FJZFlag : self.FJZFlag}),
+				(_.isEmpty(saasOrderKey) ? {moneyWipeZeroType : _moneyWipeZeroType} : {}));
 				if (actionType == 'JZ' || actionType == 'YJZ') {
 					orderJson = _.extend(orderJson, payParams);
 				}

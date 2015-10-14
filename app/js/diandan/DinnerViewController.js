@@ -1,8 +1,8 @@
 define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 	app.controller('SnackViewController', 
 	[
-		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar', 'AppConfirm',
-		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP, AppProgressbar, AppConfirm) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', 'storage', 'CommonCallServer', 'OrderService', 'FoodMenuService', 'OrderChannel', 'OrderNoteService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar', 'AppConfirm', 'EMPPermission',
+		function ($scope, $rootScope, $modal, $location, $filter, $timeout, storage, CommonCallServer, OrderService, FoodMenuService, OrderChannel, OrderNoteService, AppAlert, AppAuthEMP, AppProgressbar, AppConfirm, EMPPermission) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -598,9 +598,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 			// 开钱箱操作
 			$scope.openCashBox = function () {
-				var empInfo = storage.get('EMPINFO'),
-					rightIDLst = _.result(empInfo, 'rightIDLst', '');
-				if (rightIDLst.indexOf('2010049') > -1) {
+				var hasPermission = EMPPermission.chkPermission('2010049');
+				if (hasPermission) {
 					Hualala.DevCom.exeCmd("OpenCashbox");
 				} else {
 					AppAlert.add('danger', '没有权限开启钱箱!');
@@ -1373,8 +1372,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 	// 订单支付操作控制器
 	app.controller('PayOrderController', [
-		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '$timeout', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar',
-		function ($scope, $rootScope, $modalInstance, $filter, $location, $timeout, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert, AppAuthEMP, AppProgressbar) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '$timeout', '_scope', 'storage', 'OrderService', 'OrderPayService', 'PaySubjectService', 'OrderDiscountRuleService', 'VIPCardService', 'AppAlert', 'AppAuthEMP', 'AppProgressbar', 'EMPPermission',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, $timeout, _scope, storage, OrderService, OrderPayService, PaySubjectService, OrderDiscountRuleService, VIPCardService, AppAlert, AppAuthEMP, AppProgressbar, EMPPermission) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			// HC.TopTip.reset($rootScope);
@@ -1699,9 +1698,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 开钱箱
 			$scope.openCashBox = function ($event) {
 				var $btn = $($event.target);
-				var empInfo = storage.get('EMPINFO'),
-					rightIDLst = _.result(empInfo, 'rightIDLst', '');
-				if (rightIDLst.indexOf('2010049') > -1) {
+				var hasPermission = EMPPermission.chkPermission('2010049');
+				if (hasPermission) {
 					$btn.button('loading');
 					$timeout(function () {
 						Hualala.DevCom.exeCmd("OpenCashbox");

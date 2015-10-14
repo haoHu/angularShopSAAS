@@ -244,8 +244,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 
 	/*订单详情模态窗口控制器*/
 	app.controller('OrderDetailViewController', [
-		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP',
-		function ($scope, $rootScope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP) {
+		'$scope', '$rootScope', '$modalInstance', '$filter', '$location', '$modal', '_scope', 'storage', 'OrderService', 'OrderChannel', 'AppAlert', 'AppAuthEMP', 'EMPPermission',
+		function ($scope, $rootScope, $modalInstance, $filter, $location, $modal, _scope, storage, OrderService, OrderChannel, AppAlert, AppAuthEMP, EMPPermission) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get("SHOPINFO"),
@@ -408,12 +408,22 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 反结账
 			$scope.counterSettlingAccount = function () {
+				var hasPermission = EMPPermission.chkPermission('2010060');
+				if (!hasPermission) {
+					AppAlert.add('danger', '没有权限修改账单!');
+					return;
+				}
 				var orderData = OrderService.getOrderData();
 				jumpToDinnerPage(_.result(orderData, 'saasOrderKey'), _.result(orderData, 'tableName'), _.result(orderData, 'his', 0));
 				$scope.close();
 			};
 			// 完成审核
 			$scope.doAudit = function () {
+				var hasPermission = EMPPermission.chkPermission('2010058');
+				if (!hasPermission) {
+					AppAlert.add('danger', '没有权限完成审核!');
+					return;
+				}
 				var callServer = OrderService.orderAudit();
 				var addAuthEMP = function () {
 					AppAuthEMP.add({
@@ -460,6 +470,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 修改发票
 			$scope.modifyInvoice = function () {
+				var hasPermission = EMPPermission.chkPermission('2010059');
+				if (!hasPermission) {
+					AppAlert.add('danger', '没有权限修改发票及赠券!');
+					return;
+				}
 				openModal({
 					modalSize : 'md',
 					windowClass : 'invoice-modal ' + webAppPageAnimationIsActive,
@@ -475,6 +490,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 作废操作
 			$scope.abolishOrder = function () {
+				var hasPermission = EMPPermission.chkPermission('2010056');
+				if (!hasPermission) {
+					AppAlert.add('danger', '没有权限作废订单!');
+					return;
+				}
 				openModal({
 					modalSize : 'md',
 					windowClass : 'invoice-modal' + webAppPageAnimationIsActive,

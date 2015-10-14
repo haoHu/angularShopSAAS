@@ -633,4 +633,19 @@ define(['app'], function (app) {
 
 		}
 	]);
+
+	// 判断登录用户是否存在权限
+	app.factory('EMPPermission', [
+		'$rootScope', 'storage',
+		function ($rootScope, storage) {
+			var empInfo = storage.get('EMPINFO'),
+				rightIDLst = _.result(empInfo, 'rightIDLst', '');
+			var empPermission;
+			return empPermission = {
+				chkPermission : function (pID) {
+					return rightIDLst.indexOf(pID) > -1;
+				}
+			};
+		}
+	]);
 });
