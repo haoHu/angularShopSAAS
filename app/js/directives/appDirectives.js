@@ -165,7 +165,7 @@ define(['app'], function (app) {
                         phoneReg = /(^400\-{0,1}\d+\-{0,1}\d+$)|^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
                     var va = viewValue.length == 0 ? true : (mobileReg.test(viewValue) || phoneReg.test(viewValue));
                     ctrl.$setValidity('bvPhone', va);
-                    return va ? viewValue : undefined;
+                    return viewValue;
                 });
             }
         }
@@ -179,7 +179,7 @@ define(['app'], function (app) {
                     var mobileReg = /^1[345789]\d{9}$/;
                     var va = viewValue.length == 0 ? true : mobileReg.test(viewValue);
                     ctrl.$setValidity('bvMobile', va);
-                    return va ? viewValue : undefined;
+                    return viewValue ;
                 });
             }
         };
@@ -294,6 +294,27 @@ define(['app'], function (app) {
         };
     });
 
+    //小数点后两位数字
+    app.directive('bvIsdigit', function () {
+        return {
+            require : 'ngModel',
+            link : function (scope, el, attrs, ctrl) {
+                ctrl.$parsers.unshift(function (viewValue) {
+                    var digit = false;
+                    if(!isNaN(viewValue)){
+                        var digit = true;
+                        var checkdigit = viewValue.split(".");
+                        if(checkdigit.length == 2 && checkdigit[1].length >2){
+                           var digit = false;
+                        }
+                    }
+                    var isdigit = viewValue.length == 0 ? true : digit;
+                    ctrl.$setValidity('bvIsdigit', isdigit);
+                    return isdigit ? viewValue : undefined;
+                });
+            }
+        };
+    });
     /**
      * 表单提交指令fm-submit
      */
