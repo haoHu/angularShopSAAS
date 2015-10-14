@@ -1938,6 +1938,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var changeVal = HCMath.sub(prePayAmount, v);
 						changeEl.val(changeVal);
 					});
+					scope.getUnpayAmount = function () {
+						var orderPayDetail = OrderPayService.mapOrderPayDetail(),
+							unPayAmount = _.result(orderPayDetail, 'unPayAmount', 0);
+						return unPayAmount;
+					};
 					// 判断是否需要左侧栏位
 					scope.needLeftBar = function (name) {
 						var curName = scope.paySubjectGrp.name;
@@ -2044,6 +2049,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 					// 生成支付二维码
 					scope.genQRCode = function (type) {
+						var realPriceEl = el.find('input[name=realPrice]');
+						var prePayAmount = parseFloat(OrderPayService.preCalcPayAmountByPaySubjectGrpName(curPayGrpName));
 						var saasOrderKey = OrderService.getSaasOrderKey(),
 							QRCodeType = type,
 							QRCodeSize = 250,
@@ -2059,6 +2066,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						scope.curQRCodeOpt = null;
 						scope.curQRCodeLabel = null;
 						scope.curQRCodeTitle = null;
+						realPriceEl.val(prePayAmount);
+						realPriceEl.trigger('change');
 						if (!type) {
 							// 推送二维码消息
 							Hualala.SecondScreen.publishPostMsg('PayQRCode', '');
