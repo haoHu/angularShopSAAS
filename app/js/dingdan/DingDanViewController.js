@@ -403,7 +403,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				var msg = OrderService.getOrderData();
 				IX.Debug.info("Order Detail Info:");
 				IX.Debug.info(msg);
-				Hualala.DevCom.exeCmd("PrintCheckoutBill", JSON.stringify(msg));
+				// Hualala.DevCom.exeCmd("PrintCheckoutBill", JSON.stringify(msg));
+				Hualala.DevCom.exeCmd("PrintCheckoutBillHis", JSON.stringify(msg));
 			};
 			// 反结账
 			$scope.counterSettlingAccount = function () {

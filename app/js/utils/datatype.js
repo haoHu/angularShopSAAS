@@ -83,6 +83,10 @@
 		"PrintCheckoutBill" : {
 			tagName : "HLL_SAAS_PRINT_CHECKOUT_BILL_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
 		},
+		// 账单模块打印结账清单
+		"PrintCheckoutBillHis" : {
+			tagName : "HLL_SAAS_PRINT_CHECKOUT_BILL_HIS_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
+		},
 		// 打印会员卡交易凭证 
 		"PrintCRMTransBill" : {
 			tagName : "HLL_SAAS_PRINT_CRM_TRANS_BILL_96A447B7_E982_465E_8AD6_7B94D5F097CD", isEmptyTag : false
