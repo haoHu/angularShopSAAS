@@ -26,7 +26,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "count", active : false, label : "改量"},
 				{name : "price", active : false, label : "改价"},
 				{name : "method", active : false, label : "作法"},
-				{name : "remark", active : false, label : "口味"}
+				{name : "remark", active : false, label : "口味"},
+				{name : "carry", active : false, label : "打包"}
 			];
 			$scope.OrderHandleBtns = [
 				{name : "submitOrder", active : true, label : "落单"},
@@ -226,7 +227,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				});
 				if (orderItemType.isCommonFood || orderItemType.isSetFood) {
 					activeBtns = itemStatus == 0 
-						? ['send','delete','addOne','subOne', 'count','price','method','remark']
+						? ['send','delete','addOne','subOne', 'count','price','method','remark','carry']
 						: (isNeedConfirmFoodNumber != 0 ? ['send','cancel', 'count', 'price'] : ['send','cancel','price']);
 				} else if (orderItemType.isFoodMethod) {
 					activeBtns = itemStatus == 0

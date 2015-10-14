@@ -839,6 +839,10 @@ define(['app'], function (app) {
                                 // 菜品催叫服务
                                 scope.$apply("urgeFoodAction()");
                                 break;
+                            case "carry":
+                                // 菜品打包服务
+                                scope.$apply("setFoodCarry()");
+                                break;                               
                             case "splitFood":
                                 // 拆分菜品
                                 break;
@@ -897,7 +901,7 @@ define(['app'], function (app) {
                                 });
                             }
                         };
-                        var modalAction = _.indexOf('delete,addOne,subOne,waiting,urgent,addFood,urgeFood,splitFood'.split(','), act);
+                        var modalAction = _.indexOf('delete,addOne,subOne,waiting,urgent,addFood,urgeFood,splitFood,carry'.split(','), act);
                         if (modalAction == -1) {
                             //  $modal.open({
                             //     size : modalSize,

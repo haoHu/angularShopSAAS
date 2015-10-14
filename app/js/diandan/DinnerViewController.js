@@ -28,7 +28,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				{name : "method", active : false, label : "作法"},
 				{name : "remark", active : false, label : "口味"},
 				{name : "waiting", active : false, label : "等叫"},
-				{name : "urgent", active : false, label : "加急"}
+				{name : "urgent", active : false, label : "加急"},
+				{name : "carry", active : false, label : "打包"}
 			];
 			$scope.OrderHandleBtns = [
 				{name : "submitOrder", active : true, label : "落单(F3)"},
@@ -278,7 +279,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			/**
 			 * 根据选择的订单条目数据判断可以使用哪些
 			 * @param  {String} itemKey 订单条目的itemKey
-			 * 如果被选中的订单条目是未落单普通菜品，可以操作['send','delete','addOne','subOne', 'count','price','method','remark']
+			 * 如果被选中的订单条目是未落单普通菜品，可以操作['send','delete','addOne','subOne', 'count','price','method','remark','carry']
 			 * 如果被选中的订单条目是已落单普通菜品，可以操作['send','cancel','price']
 			 * 如果被选中的订单条目是未落单普通菜品的作法，可以操作['delete','addOne','subOne','count']
 			 * 如果被选中的订单条目是已落单普通菜品的作法，可以操作[]
@@ -307,7 +308,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				});
 				if (orderItemType.isCommonFood || orderItemType.isSetFood) {
 					activeBtns = itemStatus == 0 
-						? ['send','delete','addOne','subOne', 'count','price','method','remark', 'waiting', 'urgent']
+						? ['send','delete','addOne','subOne', 'count','price','method','remark', 'waiting', 'urgent','carry']
 						: (isNeedConfirmFoodNumber != 0 ? ['send','cancel', 'count', 'price'] : ['send','cancel','price']);
 				} else if (orderItemType.isFoodMethod) {
 					activeBtns = itemStatus == 0
@@ -387,6 +388,16 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				var curItemKey = $scope.curFocusOrderItemKey;
 				if (_.isEmpty(curItemKey)) return;
 				var item = OrderService.updateOrderItemMakeStatus(curItemKey, 2);
+				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
+			};
+
+			// 设置菜品打包
+			$scope.setFoodCarry = function () {
+				var curItemKey = $scope.curFocusOrderItemKey;
+				if (_.isEmpty(curItemKey)) return;
+				var labelNum = _.findLastIndex($scope.OrderItemHandle,{name:'carry'}),
+					label = _.propertyOf($scope.OrderItemHandle[labelNum])('label');
+				var item = OrderService.updateOrderFoodRemark(curItemKey, label);
 				$scope.curOrderItems = (OrderService.getOrderFoodItemsHT()).getAll();
 			};
 

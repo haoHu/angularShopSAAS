@@ -872,22 +872,29 @@ define(['app', 'uuid'], function (app, uuid) {
 			};
 
 			/**
-			 * 设置菜品口味
+			 * 设置菜品口味,打包单注
 			 * @param  {[type]} itemKey    [description]
-			 * @param  {[type]} foodRemark [description]
+			 * @param  {[type]} foodRemark [description] 
 			 * @return {[type]}            [description]
 			 */
 			this.updateOrderFoodRemark = function (itemKey, foodRemark) {
 				var item = self.OrderFoodHT.get(itemKey),
 					itemType = self.orderFoodItemType(itemKey),
+					itemRemark = item['foodRemark'],
+					exp = new RegExp(foodRemark),
 					printStatus = _.result(item, 'printStatus', 0); 
 				if (itemType.isFoodMethod || itemType.isNotExist) return;
-				item['foodRemark'] = foodRemark;
+				if (itemRemark == null){
+					item['foodRemark'] = foodRemark;
+				}else if (exp.test(itemRemark)){
+					return;
+				}else{
+					item['foodRemark'] +=" " +foodRemark;
+				}
 				// 向子窗口推送新加菜品的消息
 				Hualala.SecondScreen.publishPostMsg('OrderDetail', self.getOrderPublishData());
 			};
 
-			
 			/**
 			 * 根据菜品条目的itemKey获取这条菜品的作法节点
 			 * @param  {[type]} itemKey [description]
