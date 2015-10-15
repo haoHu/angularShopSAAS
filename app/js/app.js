@@ -232,6 +232,11 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
                 var msgData = _.result(args, 'msgData');
                 $rootScope.$broadcast('Produce.updateOrder', msgData);
             });
+            // 打印设备消息推送
+            Hualala.PushMsg.subcribeMsg('PrinterMsg', function (topic, args) {
+                var msgData = _.result(args, 'msgData');
+                $rootScope.$broadcast('Printer.info', msgData);
+            });
         };
         
         

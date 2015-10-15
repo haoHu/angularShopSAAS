@@ -1,5 +1,5 @@
 define(['app'], function (app) {
-	app.controller('HomeViewController', ['$rootScope', '$scope', '$location', '$timeout', 'storage', 'CommonCallServer', 'AppAlert', function ($rootScope, $scope, $location, $timeout, storage, CommonCallServer, AppAlert) {
+	app.controller('HomeViewController', ['$rootScope', '$scope', '$location', '$timeout', 'storage', 'CommonCallServer', 'AppAlert', 'AppMsgBox', function ($rootScope, $scope, $location, $timeout, storage, CommonCallServer, AppAlert, AppMsgBox) {
 		// TODO 如何过场？
 		// 1.检测是否已注册（未注册->2;未登录->3;）
 		// 2.跳转注册模块
@@ -51,7 +51,10 @@ define(['app'], function (app) {
 		
 
 		$scope.getShopInfo();
-		
+		// 在顶层作用域中，监听打印机的消息
+		$rootScope.$on('Printer.info', function (d, data) {
+			AppMsgBox.add(data);
+		});
 		
 	}]);
 });

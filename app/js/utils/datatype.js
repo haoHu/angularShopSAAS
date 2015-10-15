@@ -289,6 +289,10 @@
 		// 菜品制作完成消息
 		"HLL_SAAS_MSG_BASE_UPDATE" : {
 			subName : "FoodMaked"
+		},
+		// 打印机消息推送
+		"HLL_SAAS_MSG_NEW_INFO_MSG" : {
+			subName : "PrinterMsg"
 		}
 	};
 })();

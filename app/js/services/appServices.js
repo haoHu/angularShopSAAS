@@ -130,6 +130,7 @@ define(['app'], function (app) {
 						msg : "",
 						yesText : "确认",
 						noText : "取消",
+						hasNoBtn : true,
 						yesFn : function () {},
 						noFn : function () {}
 					};
@@ -162,7 +163,7 @@ define(['app'], function (app) {
 									'<div class="btn-group" role="group">',
 										'<button type="button" class="btn btn-warning btn-lg" ng-click="yesFn()">{{confirmSet.yesText}}</button>',
 									'</div>',
-									'<div class="btn-group" role="group">',
+									'<div class="btn-group" role="group" ng-if="confirmSet.hasNoBtn">',
 										'<button type="button" class="btn btn-default btn-lg" ng-click="noFn()">{{confirmSet.noText}}</button>',
 									'</div>',
 								'</div>',
@@ -204,6 +205,129 @@ define(['app'], function (app) {
 				},
 				clear : function () {
 					$rootScope.confirmSets = [];
+				}
+			};
+		}
+	]);
+
+	// 消息推送窗口
+	app.factory('AppMsgBox', [
+		'$rootScope', '$timeout', '$sce', '$modal', 'storage',
+		function ($rootScope, $timeout, $sce, $modal, storage) {
+			var shopInfo = storage.get('SHOPINFO'),
+				webAppPageAnimationIsActive = _.result(shopInfo, 'webAppPageAnimationIsActive') == 1 ? ' fade ' : '';
+			var msgBoxService;
+			$rootScope.msgBoxSets = [];
+			app.controller('AppMsgBoxController', [
+				'$scope', '$rootScope', '$modalInstance', '$timeout', '_scope',
+				function ($scope, $rootScope, $modalInstance, $timeout, _scope) {
+					var setting = _.result(_scope, 'setting'),
+						boxObj = _.result(_scope, 'boxObj');
+					var closeBox = function () {
+						$modalInstance.close();
+						boxObj.close(setting);
+					};
+					var getModalStyle = function (icon) {
+						var iconClz, textClz;
+						if (icon == "ERROR") {
+							iconClz = 'glyphicon-question-sign';
+							textClz = 'text-danger';
+						} else if (icon == "WARNING") {
+							iconClz = 'glyphicon-exclamation-sign';
+							textClz = 'text-warning';
+						} else {
+							iconClz = 'glyphicon-info-sign';
+							textClz = 'text-info';
+						}
+						return {
+							iconClz : iconClz,
+							textClz : textClz
+						};
+					};
+					$scope.setting = _.extend(setting, getModalStyle(_.result(setting, 'icon')));
+					$scope.yesFn = function () {
+						$scope.setting.yesFn();
+						closeBox();
+					};
+					$scope.noFn = function () {
+						$scope.setting.noFn();
+						closeBox();
+					};
+					$timeout(function () {
+						closeBox();
+					}, 5000);
+				}
+			]);
+			return msgBoxService = {
+				add : function (cfg) {
+					var defSetting = {
+						title : "消息通知",
+						body : "",
+						//icon包含INFORMATION,WARNING,ERROR
+						icon : "INFORMATION",
+						yesText : "知道了",
+						noText : "取消",
+						hasNoBtn : false,
+						yesFn : function () {},
+						noFn : function () {}
+					};
+					var curSet = _.extend(defSetting, cfg);
+					$rootScope.msgBoxSets.push(curSet);
+					var modalSize = 'md',
+						windowClass = 'site-confirm ' + webAppPageAnimationIsActive,
+						backdrop = 'fixed',
+						controller = 'AppMsgBoxController',
+						template = [
+							'<div class="modal-body {{setting.textClz}}">',
+								'<div class="media">',
+									'<div class="pull-left">',
+										'<span class="media-object">',
+											'<span class="glyphicon {{setting.iconClz}}"></span>',
+										'</span>',
+									'</div>',
+									'<div class="media-body">',
+										'<h4 class="media-heading">{{setting.title}}</h4>',
+										'<p ng-bind-html="setting.body"></p>',
+									'</div>',
+								'</div>',
+							'</div>',
+							'<div class="modal-footer bg-warning">',
+								'<div class="btn-group btn-group-justified" role="group">',
+									'<div class="btn-group" role="group">',
+										'<button type="button" class="btn btn-warning btn-lg" ng-click="yesFn()">{{setting.yesText}}</button>',
+									'</div>',
+									'<div class="btn-group" role="group" ng-if="setting.hasNoBtn">',
+										'<button type="button" class="btn btn-default btn-lg" ng-click="noFn()">{{setting.noText}}</button>',
+									'</div>',
+								'</div>',
+							'</div>'
+						].join(''),
+						resolve = {
+							_scope : function () {
+								return {
+									boxObj : this,
+									setting : curSet
+								}
+							}
+						};
+					Hualala.ModalCom.openModal($rootScope, $modal, {
+	                    size : modalSize,
+						windowClass : windowClass,
+						controller : controller,
+						// templateUrl : templateUrl,
+						template : template,
+						resolve : resolve,
+						backdrop : backdrop
+	                });
+				},
+				close : function (set) {
+					return this.closeIdx($rootScope.msgBoxSets.indexOf(set));
+				},
+				closeIdx : function (index) {
+					return $rootScope.msgBoxSets.splice(index, 1);
+				},
+				clear : function () {
+					$rootScope.msgBoxSets = [];
 				}
 			};
 		}
