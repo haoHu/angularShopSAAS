@@ -762,11 +762,10 @@ define(['app'], function (app) {
 	app.factory('EMPPermission', [
 		'$rootScope', 'storage',
 		function ($rootScope, storage) {
-			var empInfo = storage.get('EMPINFO'),
-				rightIDLst = _.result(empInfo, 'rightIDLst', '');
-			var empPermission;
-			return empPermission = {
+			return {
 				chkPermission : function (pID) {
+					var empInfo = storage.get('EMPINFO'),
+						rightIDLst = _.result(empInfo, 'rightIDLst', '');
 					return rightIDLst.indexOf(pID) > -1;
 				}
 			};
