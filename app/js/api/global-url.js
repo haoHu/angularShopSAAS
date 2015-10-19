@@ -87,6 +87,8 @@ define(['IX'], function () {
 		["queryCurBizData", "/saas/order/queryCurrBizData.ajax", "", "POST"],
 		// 查询操作日志
 		["queryLog", "/saas/order/queryLog.ajax", "", "POST"],
+		// 查询时段统计报表
+		["queryPeriodData", "/saas/order/queryTimeReport.ajax", "", "POST"],
 		// 查询综合营业数据
 		["queryCompositeBizData", "/saas/order/queryCompositeBizData.ajax", "", "POST"],
 		// 获取基本信息版本表

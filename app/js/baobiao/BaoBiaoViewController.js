@@ -1,8 +1,8 @@
 define(['app'], function(app)
 {
 	app.controller('BaoBiaoViewController', [
-		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', '$sce', 'storage', 'CommonCallServer', 'AppAlert', 'ShopLogService', 'ShopCurBizService', 'ShopCompositeBizService', 'ReportDictionaryService',
-		function($scope, $rootScope, $modal, $location, $filter, $timeout, $sce, storage, CommonCallServer, AppAlert, ShopLogService, ShopCurBizService, ShopCompositeBizService, ReportDictionaryService) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', '$timeout', '$sce', 'storage', 'CommonCallServer', 'AppAlert', 'ShopLogService', 'ShopCurBizService', 'ShopCompositeBizService', 'ReportDictionaryService', 'ShopPeriodLogService',
+		function($scope, $rootScope, $modal, $location, $filter, $timeout, $sce, storage, CommonCallServer, AppAlert, ShopLogService, ShopCurBizService, ShopCompositeBizService, ReportDictionaryService, ShopPeriodLogService) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common, dictCallServer = null;
 			var empInfo = storage.get('EMPINFO'),
@@ -33,6 +33,13 @@ define(['app'], function(app)
 						pageNo : 1,
 						pageSize : 15
 					}
+				} else if ($scope.curPageType == 'period') {
+					$scope.qform = {
+						startDate : new Date(),
+						endDate : new Date(),
+						isShowPro : 1
+					};
+					$scope.chkShowPro = true;
 				} else if ($scope.curPageType == 'comp') {
 					return dictCallServer.success(function(data) {
 						var code = _.result(data, 'code');
@@ -80,6 +87,25 @@ define(['app'], function(app)
 					});
 				}
 				return null;
+			};
+			var queryPeriodData = function (params) {
+				var postData = {
+					startDate : _.isDate(params.startDate) ? IX.Date.getDateByFormat(params.startDate, 'yyyyMMdd') : '',
+					endDate : _.isDate(params.endDate) ? IX.Date.getDateByFormat(params.endDate, 'yyyyMMdd') : '',
+					isShowPro : params.isShowPro
+				};
+				var c = ShopPeriodLogService.loadLogLst(postData);
+				c.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code != '000') {
+						AppAlert.add('danger', _.result(data, 'msg', ''));
+					} else {
+						$scope.curPeriodLogLst = ShopPeriodLogService.getLogLst();
+						$scope.PeriodTableHeader = ShopPeriodLogService.getColHeader();
+					}
+				}).error(function (data) {
+					AppAlert.add('danger', '请求失败');
+				});
 			};
 			var queryLogLst = function (params) {
 				var postData = {
@@ -182,12 +208,20 @@ define(['app'], function(app)
 				// if (evtType == 'keypress' && keyCode != 13) return;
 				$scope.queryLst();
 			};
+			$scope.queryWithShowPro = function ($event, v) {
+				console.log(v);
+				$scope.qform.isShowPro = v ? 1 : 0;
+				$scope.queryLst();
+			};
 			// 查询结果
 			$scope.queryLst = function (pager) {
 				var params = _.extend($scope.qform, pager);
 				switch ($scope.curPageType) {
 					case "log":
 						queryLogLst(params);
+						break;
+					case "period":
+						queryPeriodData(params);
 						break;
 					case "biz":
 						queryBizLst(params);

@@ -77,7 +77,15 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			$scope.totalSize = _.result(searchParams, 'totalSize', 0);
 			$scope.pageSize = _.result(searchParams, 'pageSize', 10);
 			var updateOrderLstData = function () {
-                $scope.orderLstData = LocalOrderLstService.getOrderLst();
+				var lst = LocalOrderLstService.getOrderLst();
+				var delta = Math.abs(parseInt($scope.pageSize) - parseInt(lst.length));
+				for (var i = 0; i < delta; i++) {
+					lst.push({
+						"__isEmpty" : true
+					});
+				}
+				$scope.orderLstData = lst;
+                // $scope.orderLstData = LocalOrderLstService.getOrderLst();
                 var pageParams = LocalOrderLstService.getPaginationParams();
                 $scope.curPageNo = _.result(pageParams, 'pageNo');
                 $scope.totalSize = _.result(pageParams, 'totalSize');
@@ -201,6 +209,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 				});
 			};
 			$scope.selectOrder = function (order) {
+				if (order.__isEmpty) return;
 				var saasOrderKey = _.result(order, 'saasOrderKey'),
 					orderStatus = _.result(order, 'orderStatus'),
 					orderSubType = _.result(order, 'orderSubType'),

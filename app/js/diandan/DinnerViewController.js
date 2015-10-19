@@ -2070,6 +2070,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								saasOrderKey : saasOrderKey,
 								QRCodeType : scope.zhusao,
 								QRPayType : "20",
+								clientType : "50",
 								QRAuthCode : v
 							});
 							cs.success(function (data) {
@@ -2168,7 +2169,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								qrcodeCallServer = CommonCallServer.getOrderCheckoutQRCode({
 									saasOrderKey : saasOrderKey,
 									QRCodeType : QRCodeType,
-									QRPayType : "10"
+									QRPayType : "10",
+									clientType : "51"
 								});
 								qrcodeCallServer.success(function (data) {
 									var code = _.result(data, 'code');

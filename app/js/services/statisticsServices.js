@@ -212,4 +212,70 @@ define(['app'], function (app) {
 
 		}
 	]);
+
+	app.service('ShopPeriodLogService', [
+		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer',
+		function ($rootScope, $location, $filter, storage, CommonCallServer) {
+			var self = this;
+			var logHT = new IX.IListManager();
+			var reportName = '',
+				reportHead = '',
+				reportFood = '',
+				tableHeader = [],
+				tableBody = [];
+			// 初始化列表数据
+			var initListData = function (records) {
+				// logHT.clear();
+				// _.each(records, function (item, idx) {
+				// 	logHT.register(idx, item);
+				// });
+				tableBody = _.map(records, function (el) {
+					var row = _.result(el, 'row', []);
+					var ret = {};
+					_.each(row, function (item, idx) {
+						ret[idx] = item;
+					});
+					return ret;
+				});
+			};
+
+			this.loadLogLst = function (params) {
+				var callServer = CommonCallServer.queryPeriodData(params);
+				callServer.success(function (data) {
+					var _d = _.result(data, 'data'),
+						records = _.result(_d, 'records', []);
+					reportName = _.result(_d, 'reportName', '');
+					reportHead = _.result(_d, 'reportHead', '');
+					reportFood = _.result(_d, 'reportFood', '');
+					tableHeader = _.map(_.result(records.shift(), 'row', []), function (el) {
+						return {name : el};
+					});
+
+					initListData(records);
+				});
+				return callServer;
+			};
+			// 获取搜索结果
+			this.getLogLst = function () {
+				// return logHT.getAll();
+				return tableBody;
+			};
+			// 获取表格头部
+			this.getColHeader = function () {
+				return tableHeader;
+			};
+			// 获取报表头部
+			this.getReportHead = function () {
+				return reportHead;
+			};
+			// 获取报表页脚
+			this.getReportFoot = function () {
+				return reportFood;
+			};
+			// 获取报表名称
+			this.getReportName = function () {
+				return reportName;
+			};
+		}
+	]);
 });

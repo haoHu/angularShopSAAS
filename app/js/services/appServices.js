@@ -68,7 +68,7 @@ define(['app'], function (app) {
 			$rootScope.alerts = [];
 			return alertService = {
 				add : function (type, msg, timeout) {
-					timeout = timeout || 1500;
+					timeout = timeout || 3000;
 					$rootScope.alerts.push({
 						type : type,
 						msg : $sce.trustAsHtml(msg),
@@ -255,7 +255,7 @@ define(['app'], function (app) {
 					};
 					$timeout(function () {
 						closeBox();
-					}, 5000);
+					}, 10000);
 				}
 			]);
 			return msgBoxService = {
