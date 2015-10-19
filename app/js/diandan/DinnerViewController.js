@@ -1053,9 +1053,6 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 提交并关闭窗口
 			$scope.save = function () {
 				// TODO submit Modify result
-				if (_.isEmpty($scope.foodRemark)) {
-					return ;
-				}
 				IX.Debug.info("Food Remark Setting:");
 				IX.Debug.info("foodRemark:" + $scope.foodRemark);
 				OrderService.updateOrderFoodRemark(curItemKey, $scope.foodRemark);
@@ -2056,6 +2053,37 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						scope.$emit('pay.chkPayFormValid', (invalid == true && dirty == true) ? false : true);
 					};
 
+					// 主扫
+					scope.getPayCode = function (type) {
+						var paycodeEl = el.find('input[name=paycode]');
+						paycodeEl.focus();
+						scope.zhusao = type;
+					};
+
+					scope.payByQRCode = function ($event) {
+						var saasOrderKey = OrderService.getSaasOrderKey();
+						var tarEl = $($event.target);
+						var v = tarEl.val();
+						var cs;
+						if (v.indexOf('\n') > -1) {
+							cs = CommonCallServer.getOrderCheckoutQRCode({
+								saasOrderKey : saasOrderKey,
+								QRCodeType : scope.zhusao,
+								QRPayType : "20",
+								QRAuthCode : v
+							});
+							cs.success(function (data) {
+								var code = _.result(data, 'code');
+								if (code == "000") {
+									// 关闭支付窗口，重置订单页面
+									scope.$emit('pay.submit');
+								} else {
+									AppAlert.add('danger', _.result(data, 'msg', ''));
+								}
+							});
+						}
+					};
+
 					// 生成支付二维码
 					scope.genQRCode = function (type) {
 						var realPriceEl = el.find('input[name=realPrice]');
@@ -2139,7 +2167,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								// 生成二维码
 								qrcodeCallServer = CommonCallServer.getOrderCheckoutQRCode({
 									saasOrderKey : saasOrderKey,
-									QRCodeType : QRCodeType
+									QRCodeType : QRCodeType,
+									QRPayType : "10"
 								});
 								qrcodeCallServer.success(function (data) {
 									var code = _.result(data, 'code');

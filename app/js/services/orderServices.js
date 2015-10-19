@@ -884,10 +884,16 @@ define(['app', 'uuid'], function (app, uuid) {
 					exp = new RegExp(foodRemark),
 					printStatus = _.result(item, 'printStatus', 0); 
 				if (itemType.isFoodMethod || itemType.isNotExist) return;
-				if (itemRemark == null){
+				//清空单注
+				if (foodRemark == ""){
+					item['foodRemark']="";
+					return;
+				}
+				if (itemRemark == ""){
 					item['foodRemark'] = foodRemark;
 				}else if (exp.test(itemRemark)){
-					return;
+					var remark = itemRemark.replace(foodRemark,"");
+					remark==" " ? item['foodRemark']="" : item['foodRemark']=remark;
 				}else{
 					item['foodRemark'] +=" " +foodRemark;
 				}

@@ -11,11 +11,38 @@
 		</div>
 	</div>
 	<div class="col-xs-12 hll-paytype" ng-if="paySubjectGrp.name == 'hualalaPay'">
+		<h4>
+			主扫
+			<small>扫码枪扫客人二维码支付</small>
+		</h4>
+		<div class="btn-group btn-group-justified">
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'z_WECHAT'" ng-click="getPayCode('WECHAT')" ng-disabled="onlyHLLPayManual">
+				<div class="icon-zhifubao"></div>
+				<div class="btncelldoc">微信</div>
+			</label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'z_ALIPAY'" ng-click="getPayCode('ALIPAY')"  ng-disabled="onlyHLLPayManual">
+				<div class="icon-weixin"></div>
+				<div class="btncelldoc">支付宝</div>
+			</label>
+		</div>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<div class="col-xs-6" >
+					<input class="form-control input-lg" type="text" name="paycode" autofocus="true" placeholder="扫码自动录入单号" ng-change="payByQRCode($event)" ng-disabled="onlyHLLPayManual" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 hll-paytype" ng-if="paySubjectGrp.name == 'hualalaPay'">
+		<h4>
+			被扫
+			<small>生成支付二维码供客人扫码支付</small>
+		</h4>
 		<div class="btn-group btn-group-justified">
 			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="''" ng-click="genQRCode()"><div class="icon-keyboard"></div><div class="btncelldoc">手工输入</div></label>
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual"><div class="icon-hualala"></div><div class="btncelldoc">会员卡、券</div></label>
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'WECHAT'" ng-click="genQRCode('WECHAT')" ng-disabled="onlyHLLPayManual"><div class="icon-weixin"></div><div class="btncelldoc">微信</div></label>
-			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'ALIPAY'" ng-click="genQRCode('ALIPAY')" ng-disabled="onlyHLLPayManual"><div class="icon-zhifubao"></div><div class="btncelldoc">支付宝</div></label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'b_HLL'" ng-click="genQRCode('HLL')" ng-disabled="onlyHLLPayManual"><div class="icon-hualala"></div><div class="btncelldoc">会员卡、券</div></label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'b_WECHAT'" ng-click="genQRCode('WECHAT')" ng-disabled="onlyHLLPayManual"><div class="icon-weixin"></div><div class="btncelldoc">微信</div></label>
+			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'b_ALIPAY'" ng-click="genQRCode('ALIPAY')" ng-disabled="onlyHLLPayManual"><div class="icon-zhifubao"></div><div class="btncelldoc">支付宝</div></label>
 			
 		</div>
 	</div>
@@ -28,12 +55,14 @@
 
 					<input ng-if="$index == 0 && paySubjectGrp.name != 'cashPay' && paySubjectGrp.name != 'remissionPay' && paySubjectGrp.name != 'hualalaPay' && paySubjectGrp.name != 'groupBuyPay' && paySubjectGrp.name != 'voucherPay'" type="text" class="form-control input-lg" name="realPrice" ng-model="el.value" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-greaterthan min=0 ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)"/>
 
-					<input ng-if="$index == 0 && (paySubjectGrp.name == 'hualalaPay' || paySubjectGrp.name == 'groupBuyPay' || paySubjectGrp.name == 'voucherPay')" type="text" class="form-control input-lg" name="realPrice" ng-model="el.value" ng-disabled="{{el.disabled}}" ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-between="true" min=0 max="{{getUnpayAmount()}}" ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)" />
+					<input ng-if="$index == 0 && (paySubjectGrp.name == 'groupBuyPay' || paySubjectGrp.name == 'voucherPay')" type="text" class="form-control input-lg" name="realPrice" ng-model="el.value" ng-disabled="{{el.disabled}}" ng-focus="inputFocus($event)" autofocus="true" bv-isnum bv-between="true" min=0 max="{{getUnpayAmount()}}" ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)" />
+
+					<input ng-if="$index == 0 && paySubjectGrp.name == 'hualalaPay'" type="text" class="form-control input-lg" name="realPrice" ng-model="el.value" ng-disabled="{{el.disabled}}" ng-focus="inputFocus($event)" bv-isnum bv-between="true" min=0 max="{{getUnpayAmount()}}" ng-change="formElKeyup(com_pay.$invalid, com_pay.$dirty)" ng-blur="formElKeyup(com_pay.$invalid, com_pay.$dirty)" />
 
 					<input ng-if="$index != 0" type="text" class="form-control input-lg" name="{{el.name}}" value="{{el.value}}" ng-disabled={{el.disabled}} ng-focus="inputFocus($event)"/>
 					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvIsnum">必须是数字</small>
 					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvGreaterthan">必须大于0</small>
-					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvBetween">必须大于0并且不能超过未付金额</small>
+					<small ng-if="$index == 0" class="help-block" ng-show="com_pay.realPrice.$dirty && com_pay.realPrice.$error.bvBetween">必须在0和未付金额之间</small>
 				</div>
 			</div>
 		</div>
@@ -42,12 +71,15 @@
 		</div>
 	</div>
 	
-	<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}" ng-if="paySubjectGrp.name == 'hualalaPay'">
-		<h4>{{curQRCodeTitle}}</h4>
-		<div class="qrcode-wrap">
-			<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
-			<img class="qrcode-type" data-paytype="{{curQRCodeType}}" ng-src="{{curPayType}}">
+	<div class="col-xs-12">
+		<div class="qrcode-box" ng-class="{hidden : !hasQRCode()}" ng-if="paySubjectGrp.name == 'hualalaPay'">
+			<h4>{{curQRCodeTitle}}</h4>
+			<div class="qrcode-wrap">
+				<div id="qrcode" qrcode text="curQRCode" options="curQRCodeOpt"></div>
+				<img class="qrcode-type" data-paytype="{{curQRCodeType}}" ng-src="{{curPayType}}">
+			</div>
+			<p>{{curQRCodeLabel[0]}}<span class="qrcodelabel">{{curQRCodeLabel[1] | mycurrency:"￥" |prettyNum}}</span>{{curQRCodeLabel[2]}}</p>
 		</div>
-		<p>{{curQRCodeLabel[0]}}<span class="qrcodelabel">{{curQRCodeLabel[1] | mycurrency:"￥" |prettyNum}}</span>{{curQRCodeLabel[2]}}</p>
 	</div>
+	
 </form>
