@@ -2004,7 +2004,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							case "remissionPay":
 							case "voucherPay":
 							case "hualalaPay":
-								if (curName == 'hualalaPay' &&  !!scope.payType) {
+								if (curName == 'hualalaPay' &&  (!!scope.payType || !!scope.zhusao)) {
 									scanQRCodePaySubmit();
 									return;
 								} else {
@@ -2061,11 +2061,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					};
 
 					scope.payByQRCode = function ($event) {
+						var evtType = $event.type,
+							keyCode = $event.keyCode;
 						var saasOrderKey = OrderService.getSaasOrderKey();
 						var tarEl = $($event.target);
 						var v = tarEl.val();
 						var cs;
-						if (v.indexOf('\n') > -1) {
+						if (keyCode == 13) {
 							cs = CommonCallServer.getOrderCheckoutQRCode({
 								saasOrderKey : saasOrderKey,
 								QRCodeType : scope.zhusao,
@@ -2077,7 +2079,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								var code = _.result(data, 'code');
 								if (code == "000") {
 									// 关闭支付窗口，重置订单页面
-									scope.$emit('pay.submit');
+									scope.$emit('pay.submit', scope.paySubjectGrp);
 								} else {
 									AppAlert.add('danger', _.result(data, 'msg', ''));
 								}

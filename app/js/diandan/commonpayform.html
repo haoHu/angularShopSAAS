@@ -17,18 +17,18 @@
 		</h4>
 		<div class="btn-group btn-group-justified">
 			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'z_WECHAT'" ng-click="getPayCode('WECHAT')" ng-disabled="onlyHLLPayManual">
-				<div class="icon-zhifubao"></div>
+				<div class="icon-weixin"></div>
 				<div class="btncelldoc">微信</div>
 			</label>
 			<label class="btn btn-warning btn-lg " ng-model="payType" btn-radio="'z_ALIPAY'" ng-click="getPayCode('ALIPAY')"  ng-disabled="onlyHLLPayManual">
-				<div class="icon-weixin"></div>
+				<div class="icon-zhifubao"></div>
 				<div class="btncelldoc">支付宝</div>
 			</label>
 		</div>
 		<div class="form-horizontal">
 			<div class="form-group">
 				<div class="col-xs-6" >
-					<input class="form-control input-lg" type="text" name="paycode" autofocus="true" placeholder="扫码自动录入单号" ng-change="payByQRCode($event)" ng-disabled="onlyHLLPayManual" />
+					<input class="form-control input-lg" type="text" name="paycode" autofocus="true" placeholder="扫码自动录入单号" ng-keypress="payByQRCode($event)" ng-disabled="onlyHLLPayManual" />
 				</div>
 			</div>
 		</div>
