@@ -161,7 +161,7 @@
 		</div>
 		<footer class="cnt-footer">
 			<p class="pager-info pull-left">页码:{{qform.pageNo}} / {{numPages}}</p>
-			<pagination total-items="totalSize || 0" ng-model="qform.pageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="qform.pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
+			<pagination total-items="qform.totalSize || 0" ng-model="qform.pageNo" max-size="5" class="pagination-lg pull-left" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="qform.pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="selectPage()"></pagination>
 		</footer>
 	</section>
 	<section class="tab-cnt tab-comp" ng-show="curPageType=='comp'">

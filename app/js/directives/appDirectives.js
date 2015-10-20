@@ -109,6 +109,10 @@ define(['app'], function (app) {
             require : 'ngModel',
             link : function (scope, el, attrs, ctrl) {
                 ctrl.$parsers.unshift(function (viewValue) {
+                    if (viewValue == undefined){
+                        ctrl.$setValidity('bvNotempty', true);
+                        return;
+                    }
                     var l = IX.isEmpty(viewValue) ? 0 : viewValue.length;
                     if (l == 0) {
                         ctrl.$setValidity('bvNotempty', false);
@@ -165,7 +169,7 @@ define(['app'], function (app) {
                         phoneReg = /(^400\-{0,1}\d+\-{0,1}\d+$)|^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
                     var va = viewValue.length == 0 ? true : (mobileReg.test(viewValue) || phoneReg.test(viewValue));
                     ctrl.$setValidity('bvPhone', va);
-                    return viewValue;
+                    return va ? viewValue : undefined;
                 });
             }
         }
@@ -179,7 +183,7 @@ define(['app'], function (app) {
                     var mobileReg = /^1[345789]\d{9}$/;
                     var va = viewValue.length == 0 ? true : mobileReg.test(viewValue);
                     ctrl.$setValidity('bvMobile', va);
-                    return viewValue ;
+                    return va ? viewValue : undefined;
                 });
             }
         };
@@ -982,8 +986,8 @@ define(['app'], function (app) {
                             el.find('.food-item, .food-child-item').removeClass('active');
                             itemEl.addClass('active');   
                         }
-                        
                     });
+
                 }
             };
 
@@ -1075,10 +1079,7 @@ define(['app'], function (app) {
 
                             }
                         );
-
-
-                        
-
+                    
                     });
                 }
             };

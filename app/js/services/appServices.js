@@ -498,6 +498,7 @@ define(['app'], function (app) {
 						max : 100
 					};
 					$rootScope.progresses.push(_cfg);
+					$timeout(function(){progressService.close(_cfg)},10000);
 					return _cfg;
 				},
 				clear : function () {

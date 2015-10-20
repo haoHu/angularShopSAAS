@@ -31,7 +31,8 @@ define(['app'], function(app)
 						endDate : new Date(),
 						keyword : '',
 						pageNo : 1,
-						pageSize : 15
+						pageSize : 15,
+						totalSize : 0
 					}
 				} else if ($scope.curPageType == 'period') {
 					$scope.qform = {
@@ -123,6 +124,7 @@ define(['app'], function(app)
 					} else {
 						// AppAlert.add('success', "数据加载成功");
 						$scope.curLogLst = ShopLogService.getLogLst();
+						$scope.qform.totalSize = _.result(ShopLogService.getPaginationParams(), 'totalSize', 0);
 					}
 				}).error(function (data) {
 					AppAlert.add('danger', '请求失败');
@@ -233,10 +235,14 @@ define(['app'], function(app)
 			};
 			// 分页
 			$scope.selectPage = function () {
-				$scope.queryLst({
-					pageNo : $scope.qform.curPageNo,
-					pageSize : $scope.qform.pageSize
-				});
+				var pager;
+				if ($scope.curPageType == "log") {
+					pager = {
+						pageNo : $scope.qform.pageNo,
+						pageSize : $scope.qform.pageSize
+					};
+				}
+				$scope.queryLst(pager);
 			};
 			$scope.queryByFilterItem = function (item, key) {
 				$scope.qform[key] = _.result(item, 'value');
