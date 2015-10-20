@@ -1400,6 +1400,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				"remissionPay" : [
 					{label : "减免金额", name : "realPrice", value : "", disabled : false}
 				],
+				"freePay" : [
+					{label : "免单金额", name : "realPrice", value : "", disabled : true}
+				],
 				"voucherPay" : [
 					{label : "抵扣金额", name : "realPrice", value : "", disabled : false}
 				],
@@ -1426,7 +1429,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					VIPCardService.clear();
 				}
 			});
-			
+			//
 			$scope.isHiddenPrice = function (v) {
 				console.info(v);
 				return parseFloat(v) == 0;
@@ -1438,7 +1441,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 判断是否不可选择的支付科目
 			$scope.isDisabledPaySubjectGrp = function (paySubjectGrp) {
 				var name = _.result(paySubjectGrp, 'name'),
-					disabledKeys = "sendFoodPromotionPay,vipPricePromotionPay,wipeZeroPay".split(",");
+					amount = _.result(paySubjectGrp, 'amount'),
+					disabledKeys = "sendFoodPromotionPay,vipPricePromotionPay,wipeZeroPay".split(","),
+					freePayCheckNum = _.findLastIndex($scope.orderPayDetail.payGrps,{name:"freePay"}),
+					freePayCheck = _.propertyOf($scope.orderPayDetail.payGrps[freePayCheckNum])('amount');
+				if(freePayCheck){
+					return true;
+				}
 				return _.find(disabledKeys, function (k) {return k == name;});
 			};
 			// 判断是当前选中支付科目组名称
@@ -1474,7 +1483,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 获取当前支付科目组的类型
 			$scope.getPayFormType = function (paySubjectGrp) {
 				var name = _.result(paySubjectGrp, 'name');
-				return (name == 'vipCardPay' ? 'vip' : 'common');
+				switch(name){
+					case "vipCardPay":
+					break;
+					default:
+					name = "common";
+				}
+				return name;
 			};
 			// 关闭窗口
 			$scope.close = function () {
@@ -1836,8 +1851,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					var mapFormCfg = function () {
 						var formCfg = scope.formCfg;
 						var prePayAmount = OrderPayService.preCalcPayAmountByPaySubjectGrpName(curPayGrpName);
+						var allPayAmount = OrderPayService.sumFoodAmount();
 						switch(curPayGrpName) {
 							// 现金支付，账单减免，代金券，哗啦啦支付
+							case "freePay":
+								_.each(formCfg, function (el) {
+									var name = _.result(el, 'name');
+									if (name == 'realPrice') {
+										el.value = allPayAmount;
+									} else {
+										el.value = 0;
+									}
+								});
+								break;
 							case "cashPay":
 							case "remissionPay":
 							case "voucherPay":
@@ -1997,9 +2023,18 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					// 结账提交
 					scope.$on('pay.submit', function (d, targetPaySubjectGrp) {
 						var curName = scope.paySubjectGrp.name,
-							tarName = targetPaySubjectGrp.name;
+							tarName = targetPaySubjectGrp.name,
+							prePayAmount = OrderPayService.preCalcPayAmountByPaySubjectGrpName(curPayGrpName),
+							allPayAmount = OrderPayService.sumFoodAmount();
 						if (curName != tarName) return;	
 						switch(curName) {
+							case "freePay":
+								if(prePayAmount == allPayAmount){
+									singlePaySubjectSubmit(curName);
+								}else{
+									AppAlert.add('danger', '有其他结账方式存在，请清空后再免单');
+								}
+								break;
 							case "cashPay":
 							case "remissionPay":
 							case "voucherPay":
@@ -2052,6 +2087,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					scope.formElKeyup = function (invalid, dirty) {
 						scope.$emit('pay.chkPayFormValid', (invalid == true && dirty == true) ? false : true);
 					};
+
 
 					// 主扫
 					scope.getPayCode = function (type) {
@@ -2172,7 +2208,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									saasOrderKey : saasOrderKey,
 									QRCodeType : QRCodeType,
 									QRPayType : "10",
-									clientType : "51"
+									clientType : "51",
+									QRCodeType : QRCodeType
 								});
 								qrcodeCallServer.success(function (data) {
 									var code = _.result(data, 'code');

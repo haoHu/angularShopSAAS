@@ -2007,6 +2007,8 @@ define(['app', 'uuid'], function (app, uuid) {
 					case "wipeZeroPay":
 					// 账单减免
 					case "remissionPay":
+					//免单
+					case "freePay":
 					// 哗啦啦
 					case "hualalaPay":
 					// 代金券
@@ -2140,6 +2142,8 @@ define(['app', 'uuid'], function (app, uuid) {
 						break;
 					// 账单减免
 					case "remissionPay":
+					//免单
+					case "freePay":
 					// 现金支付
 					case "cashPay":
 					// 哗啦啦
@@ -2419,7 +2423,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					payGrps = _.result(payDetail, 'payGrps', []);
 				// 计算消费金额
 				var promotionTotal = _.filter(payGrps, function (el) {
-					var promotionKeys = 'sendFoodPromotionPay,vipPricePromotionPay,wipeZeroPay,remissionPay,discountPay'.split(',');
+					var promotionKeys = 'sendFoodPromotionPay,vipPricePromotionPay,wipeZeroPay,remissionPay,freePay,discountPay'.split(',');
 					var idx = _.indexOf(promotionKeys, el.name);
 					return idx > -1;
 				});
