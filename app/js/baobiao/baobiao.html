@@ -92,7 +92,10 @@
 			<table class="table table-bordered">
 				<thead>
 					<tr>
-						<th class="txt" ng-repeat="th in PeriodTableHeader">{{th.name}}</th>
+						<th class="txt" ng-repeat="th in PeriodTableHeaderTitle" colspan="{{th.col}}" rowspan="{{th.row}}">{{th.name}}</th>
+					</tr>
+					<tr>
+						<th class="txt" ng-repeat="th in PeriodTableHeaderSub track by $index">{{th}}</th>
 					</tr>
 				</thead>
 				<tbody>

@@ -113,7 +113,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 			};
 			// 打开订单详情窗口
 			var openOrderDetailModal = function () {
-				if ($scope.modalIsOpen()) return;
+				// if ($scope.modalIsOpen()) return;
 				var modalSize = 'lg',
 					windowClass = 'orderdetail-modal ' + webAppPageAnimationIsActive,
 					backdrop = 'static',
@@ -124,7 +124,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function(app)
 							return $scope;
 						}
 					};
-				$scope.modalIsOpen(true);
+				// $scope.modalIsOpen(true);
 				// $modal.open({
 				// 	size : modalSize,
 				// 	windowClass : windowClass,

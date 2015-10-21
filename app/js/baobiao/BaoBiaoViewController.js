@@ -101,8 +101,30 @@ define(['app'], function(app)
 					if (code != '000') {
 						AppAlert.add('danger', _.result(data, 'msg', ''));
 					} else {
-						$scope.curPeriodLogLst = ShopPeriodLogService.getLogLst();
-						$scope.PeriodTableHeader = ShopPeriodLogService.getColHeader();
+						var curPeriodLogLst = ShopPeriodLogService.getLogLst(),
+							tableHeaderStyle = ShopPeriodLogService.getColHeader(),
+							tableHeaderStyleTitle = [];
+							tableHeaderStyleSub = [];
+						for(var i=0;i<tableHeaderStyle.length;i++){
+							tableHeaderStyle[i].namelist = tableHeaderStyle[i].name.split("|");
+							tableHeaderStyle[i].name = tableHeaderStyle[i].namelist[0];
+							tableHeaderStyleSub.push(_.rest(tableHeaderStyle[i].namelist));
+							if(i>0){
+								if(tableHeaderStyle[i].name == tableHeaderStyle[i-1].name){
+									tableHeaderStyleTitle[tableHeaderStyleTitle.length-1].col++;
+									continue;
+								}else{
+									tableHeaderStyleTitle.push({"name":tableHeaderStyle[i].name,"col":1})
+									continue;
+								}
+							}else{
+								tableHeaderStyleTitle.push({"name":tableHeaderStyle[i].name,"row":2})
+							}
+						}
+						tableHeaderStyleSub = _.flatten(tableHeaderStyleSub);
+						$scope.curPeriodLogLst = curPeriodLogLst;
+						$scope.PeriodTableHeaderTitle = tableHeaderStyleTitle;
+						$scope.PeriodTableHeaderSub = tableHeaderStyleSub;
 					}
 				}).error(function (data) {
 					AppAlert.add('danger', '请求失败');
