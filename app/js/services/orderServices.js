@@ -4,6 +4,7 @@ define(['app', 'uuid'], function (app, uuid) {
 		['$rootScope', '$location', '$filter', 'storage', 'CommonCallServer', 'OrderChannel', function ($rootScope, $location, $filter, storage, CommonCallServer, OrderChannel) {
 			IX.ns('Hualala');
 			var self = this;
+			var HCMath = Hualala.Common.Math;
 			this._OrderData = null;
 			this.OrderFoodHT = null;
 			this.FJZFlag = '';
@@ -731,6 +732,7 @@ define(['app', 'uuid'], function (app, uuid) {
 						childType = self.orderFoodItemType(childItemKey),
 						parentFoodFromItemKey = _.result(child, 'parentFoodFromItemKey'),
 						addPriceType = null;
+					var origChildFoodNumber, num = 0;
 					if (itemType.isCommonFood) {
 						addPriceType = _.result(child, 'foodKey', '').split('-')[1];
 						if (childType.isFoodMethod && addPriceType == 2) {
@@ -743,7 +745,14 @@ define(['app', 'uuid'], function (app, uuid) {
 							// child['foodNumber'] = item.foodNumber;
 							self.updateOrderItemCount(childItemKey, 0, _.result(item, 'foodNumber', 0));
 						} else if (childType.isSetFoodDetail) {
-							self.updateOrderItemCount(childItemKey, 0, _.result(item, 'foodNumber', 0));
+							origChildFoodNumber = _.result(child, 'origChildFoodNumber', null);
+							if (origChildFoodNumber == null) {
+								origChildFoodNumber = _.result(child, 'foodNumber');
+								child['origChildFoodNumber'] = origChildFoodNumber;
+							}
+							num = HCMath.multi(origChildFoodNumber, _.result(item, 'foodNumber', 0));
+							self.updateOrderItemCount(childItemKey, 0, num);
+							// self.updateOrderItemCount(childItemKey, 0, _.result(item, 'foodNumber', 0));
 						} else if (childType.isFoodMethod && parentFoodFromItemKey != itemKey && addPriceType == 2) {
 							var _pItem = self.getParentFoodItemByItemKey(childItemKey);
 							self.updateOrderItemCount(childItemKey, 0, _.result(_pItem, 'foodNumber', 0));

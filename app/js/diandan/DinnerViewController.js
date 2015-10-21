@@ -2096,15 +2096,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						scope.zhusao = type;
 					};
 
+					scope.resetPayCode = function ($event) {
+						el.find(':text[name=paycode]').val('').focus();
+					};
+
 					scope.payByQRCode = function ($event) {
 						var evtType = $event.type,
 							keyCode = $event.keyCode;
 						var saasOrderKey = OrderService.getSaasOrderKey();
 						var tarEl = $($event.target);
 						var v = tarEl.val();
-						var cs;
-						if (keyCode == 13) {
-							cs = CommonCallServer.getOrderCheckoutQRCode({
+						var precheckoutCallServer;
+						var _payByQRCode = function () {
+							var cs = CommonCallServer.getOrderCheckoutQRCode({
 								saasOrderKey : saasOrderKey,
 								QRCodeType : scope.zhusao,
 								QRPayType : "20",
@@ -2116,6 +2120,25 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								if (code == "000") {
 									// 关闭支付窗口，重置订单页面
 									scope.$emit('pay.submit', scope.paySubjectGrp);
+								} else {
+									AppAlert.add('danger', _.result(data, 'msg', ''));
+								}
+							});
+						};
+						if (keyCode == 13) {
+							scope.curQRCode = null;
+							scope.curQRCodeOpt = null;
+							scope.curQRCodeLabel = null;
+							scope.curQRCodeTitle = null;
+							precheckoutCallServer = OrderService.submitOrder('YJZ', _.extend(OrderPayService.getOrderPayParams(), {
+								payQRCodeTitle : scope.curQRCodeTitle,
+								payQRCodeTxt : scope.curQRCode,
+								payQRCodeRemark : scope.curQRCodeLabel
+							}));
+							precheckoutCallServer.success(function (data) {
+								var c = _.result(data, 'code');
+								if (c == '000') {
+									_payByQRCode();
 								} else {
 									AppAlert.add('danger', _.result(data, 'msg', ''));
 								}
