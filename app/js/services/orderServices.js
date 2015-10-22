@@ -695,10 +695,12 @@ define(['app', 'uuid'], function (app, uuid) {
 				if (printStatus != 0 && isNeedConfirmFoodNumber == 0) return;
 				if (step > 0) {
 					// 加数量
-					item.foodNumber = parseFloat(item.foodNumber) + step;
+					// item.foodNumber = parseFloat(item.foodNumber) + step;
+					item.foodNumber = parseFloat(HCMath.add(parseFloat(item.foodNumber), step));
 				} else if (step < 0) {
 					// 减数量
-					item.foodNumber = parseFloat(item.foodNumber) + step;
+					// item.foodNumber = parseFloat(item.foodNumber) + step;
+					item.foodNumber = parseFloat(HCMath.add(parseFloat(item.foodNumber), step));
 				} else if(step == 0 && count >= 0) {
 					item.foodNumber = count;
 				}
