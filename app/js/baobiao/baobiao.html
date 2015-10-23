@@ -100,7 +100,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="row in curPeriodLogLst">
-						<td class="txt" ng-repeat="td in row">{{td}}</td>
+						<td class="txt" ng-repeat="td in row track by $index">{{td}}</td>
 					</tr>
 					<tr ng-if="!curPeriodLogLst || curPeriodLogLst.length == 0">
 						<td class="text-center">无报表</td>

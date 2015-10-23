@@ -56,7 +56,7 @@
 					<commonpayform ng-if="getPayFormType(paySubjectGrp) == 'common'" pay-subject-grp="paySubjectGrp" form-cfg="payFormCfg[paySubjectGrp.name]" ></commonpayform>
 					<vippayform ng-if="getPayFormType(paySubjectGrp) == 'vipCardPay'" pay-subject-grp="paySubjectGrp"></vippayform>
 				</div>
-				<div class="panel-footer" ng-if="paySubjectGrp.name !== 'cashPay' && paySubjectGrp.name !== 'freePay'">
+				<div class="panel-footer" ng-if="paySubjectGrp.name !== 'cashPay' && paySubjectGrp.name !== 'freePay' && paySubjectGrp.name !== 'discountPay'">
 					<button  class="btn btn-default btn-block btn-lg" ng-if="getPayFormType(paySubjectGrp) == 'common'" ng-click="submitPayForm(paySubjectGrp)" ng-disabled="!formIsValid">
 						确认收款
 					</button>

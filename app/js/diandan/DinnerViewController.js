@@ -1464,7 +1464,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			$scope.isNotZeroAmount = function (paySubjectGrp) {
 				var amount = _.result(paySubjectGrp, 'amount'),
 					name = _.result(paySubjectGrp, 'name');
-				return amount != 0 && name != "sendFoodPromotionPay";
+				return amount != 0 && (_.indexOf(["sendFoodPromotionPay","vipPricePromotionPay","discountPay","wipeZeroPay"],name) == -1? true : false);
 			};
 			// 判断是否可以完成结账
 			$scope.isCanbeSubmit = function (orderPayDetail) {
@@ -2017,6 +2017,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						console.info("current discount rule:");
 						console.info(params);
 						curDiscountRule = discountRule;
+						var params = _.object('_id,discountRate,discountRange,isVipPrice'.split(','), curDiscountRule.split(';'));
+						OrderPayService.updatePaySubjectItem(scope.paySubjectGrp.name, params);
+						scope.$emit('pay.detailUpdate');
+						initPayForm();
+						scope.$apply();
 					};
 
 
@@ -2055,8 +2060,6 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 								break;
 							// 折扣方案选择
 							case "discountPay" :
-								var params = _.object('_id,discountRate,discountRange,isVipPrice'.split(','), curDiscountRule.split(';'));
-								OrderPayService.updatePaySubjectItem(curName, params);
 								break;
 						}
 						scope.$emit('pay.detailUpdate');

@@ -41,8 +41,8 @@
 									<p ng-if="order.orderRemark.length > 0">{{order.orderRemark}}</p>
 								</td>
 								<td>
-									<div class="status" ng-class="{hidden : order.acceptTime == 0}">{{getOrderStatusLabel(order)}}</div>
-									<div class="date" ng-class="{hidden : order.acceptTime == 0}">{{getTimeoutStr(order)}}</div>
+									<div class="status" ng-class="{hidden : order.acceptTime == 0 && order.orderSubtype != '41'}">{{getOrderStatusLabel(order)}}</div>
+									<div class="date" ng-class="{hidden : order.acceptTime == 0 && order.orderSubtype != '41'}">{{getTimeoutStr(order)}}</div>
 								</td>
 							</tr>
 
