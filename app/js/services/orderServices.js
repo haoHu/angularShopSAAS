@@ -1909,10 +1909,14 @@ define(['app', 'uuid'], function (app, uuid) {
 			this.mapPayGrpSchema = function (payGrp, payLst) {
 				var name = _.result(payGrp, 'name');
 				var ret;
-				var mapCommonSubjectSchema = function (items) {
+				var mapCommonSubjectSchema = function (items, name) {
 					var amount = 0, detail = '',
 						isEmpty = _.isEmpty(items);
 					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
+					if (name == "voucherPay" || name == "freePay") {
+						detail = _.pluck(items, 'payRemark', '');
+						detail = detail.join(';');
+					}
 					return {
 						amount : amount,
 						detail : detail
@@ -1996,6 +2000,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				var mapHangingPaySchema = function (items) {
 					var amount = 0, detail = '',
 						isEmpty = _.isEmpty(items);
+					var payRemarks = (_.pluck(items, 'payRemark', '')).join(';');
 					amount = isEmpty ? 0 : HCMath.add.apply(null, _.pluck(items, 'debitAmount'));
 					var subjectNames = isEmpty ? '' : _.pluck(items, 'paySubjectName', ''),
 						debitAmounts = isEmpty ? '' : _.pluck(items, 'debitAmount', '');
@@ -2004,6 +2009,7 @@ define(['app', 'uuid'], function (app, uuid) {
 						return el.join(':');
 					});
 					detail = detail.join(';');
+					detail += payRemarks.length == 0 ? '' : (';' + payRemarks);
 					return {
 						amount : amount,
 						detail : detail
@@ -2024,7 +2030,7 @@ define(['app', 'uuid'], function (app, uuid) {
 					case "hualalaPay":
 					// 代金券
 					case "voucherPay":
-						ret = mapCommonSubjectSchema(payLst);
+						ret = mapCommonSubjectSchema(payLst, name);
 						break;
 					case "cashPay":
 						ret = mapCashPaySubjectSchema(payLst);

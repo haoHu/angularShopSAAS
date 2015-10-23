@@ -1401,16 +1401,19 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					{label : "减免金额", name : "realPrice", value : "", disabled : false}
 				],
 				"freePay" : [
-					{label : "免单金额", name : "realPrice", value : "", disabled : true}
+					{label : "免单金额", name : "realPrice", value : "", disabled : true},
+					{label : "备注", name : "remark", value : "", disabled : false}
 				],
 				"voucherPay" : [
-					{label : "抵扣金额", name : "realPrice", value : "", disabled : false}
+					{label : "抵扣金额", name : "realPrice", value : "", disabled : false},
+					{label : "备注", name : "remark", value : "", disabled : false}
 				],
 				"hualalaPay" : [
 					{label : "金额", name : "realPrice", value : "", disabled : false}
 				],
 				"hangingPay" : [
-					{label : "金额", name : "realPrice", value : "", disabled : false}
+					{label : "金额", name : "realPrice", value : "", disabled : false},
+					{label : "备注", name : "remark", value : "", disabled : false}
 				],
 				"bankCardPay" : [
 					{label : "金额", name : "realPrice", value : "", disabled : false}
@@ -1782,6 +1785,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 					IX.ns("Hualala");
 					var HCMath = Hualala.Common.Math;
 					var curPayGrpName = scope.paySubjectGrp.name;
+					console.info(scope.paySubjectGrp);
 					scope.discountRuleLst = OrderPayService.getDiscountRules();
 					scope.curDiscountRule = OrderPayService.getCurDiscountRule();
 					// 普通单一支付科目组的提交
@@ -1794,6 +1798,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						if (curName == 'cashPay') {
 							payRemark = '应收:' + prePayAmount + ';实收:' + realPay + ';找零:' + (delta <= 0 ? delta : 0);
 							realPay = delta < 0 ? prePayAmount : realPay;
+						}
+						if (curName == 'voucherPay' || curName == 'freePay') {
+							payRemark = el.find(':text[name=remark]').val();
 						}
 						OrderPayService.updatePaySubjectItem(curName, {
 							debitAmount : realPay,
@@ -1809,9 +1816,14 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						var realPay = parseFloat(realPriceEl.val());
 						var selectedSubCodes = scope.optCfg.selectedSubjects;
 						var curSubCode = selectedSubCodes[selectedSubCodes.length - 1];
+						var payRemark = '';
+						if (curName == "hangingPay") {
+							payRemark = el.find(':text[name=remark]').val();
+						}
 						OrderPayService.updatePaySubjectItem(curName, {
 							debitAmount : realPay,
-							subjectCode : curSubCode
+							subjectCode : curSubCode,
+							payRemark : payRemark
 						});
 						if (_.isEmpty(curSubCode)) {
 							AppAlert.add('danger', '请选择科目');
@@ -1860,7 +1872,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									if (name == 'realPrice') {
 										el.value = allPayAmount;
 									} else {
-										el.value = 0;
+										el.value = "";
 									}
 								});
 								break;
@@ -1873,7 +1885,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									if (name == 'realPrice') {
 										el.value = prePayAmount;
 									} else {
-										el.value = 0;
+										el.value = curPayGrpName == "cashPay" ? 0 : "";
 									}
 								});
 								if (curPayGrpName == 'hualalaPay') {
@@ -1908,7 +1920,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 									if (name == 'realPrice') {
 										el.value = delta;
 									} else {
-										el.value = 0;
+										el.value = "";
 									}
 								});
 								break;
