@@ -1677,7 +1677,6 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						
 					});
 				}
-				Hualala.DevCom.exeCmd("OpenCashbox");
 				
 			};
 
