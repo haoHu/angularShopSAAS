@@ -1731,6 +1731,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						// 3. 打印结账清单
 						Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
 						$scope.$broadcast("scanPay.done");
+						AppAlert.add('success', "付款成功");
 					});
 				}
 			});
