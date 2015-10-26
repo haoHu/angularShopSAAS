@@ -276,9 +276,9 @@
 			subName : 'NewOrder'
 		},
 		// 收到新的消息
-		"HLL_SAAS_MSG_NEW_INFO_MSG" : {
-			subName : "NewMsg"
-		},
+		// "HLL_SAAS_MSG_NEW_INFO_MSG" : {
+		// 	subName : "NewMsg"
+		// },
 		// 订单自助支付成功
 		"HLL_SAAS_MSG_SELF_ORDER_PAID" : {
 			subName : "SelfPay"

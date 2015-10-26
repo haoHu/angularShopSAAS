@@ -1720,6 +1720,21 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				$scope.curQRCodeLabel = params.curQRCodeLabel || '';
 			});
 
+			// 主扫支付消息推送
+			$scope.$on('Pay.selfPay', function (d, params) {
+				var _saasOrderKey = _.result(params, 'saasOrderKey');
+				var curSaasOrderKey = OrderService.getSaasOrderKey();
+				var c;
+				if (!!curSaasOrderKey && curSaasOrderKey == _saasOrderKey) {
+					c = OrderService.getOrderByOrderKey({saasOrderKey : curSaasOrderKey});
+					c.success(function (data) {
+						// 3. 打印结账清单
+						Hualala.DevCom.exeCmd('PrintCheckoutBill', JSON.stringify(_.result(data, 'data')));
+						$scope.$broadcast("scanPay.done");
+					});
+				}
+			});
+
 			// 开钱箱
 			$scope.openCashBox = function ($event) {
 				var $btn = $($event.target);

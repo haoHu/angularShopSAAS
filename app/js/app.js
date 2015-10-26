@@ -221,7 +221,8 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
             });
             // 订阅自助支付消息
             Hualala.PushMsg.subcribeMsg('SelfPay', function (topic, args) {
-
+                var msgData = _.result(args, 'msgData');
+                $rootScope.$broadcast('Pay.selfPay', msgData);
             });
             // 订阅基本信息更新消息
             Hualala.PushMsg.subcribeMsg('BaseUpdate', function (topic, args) {
