@@ -222,10 +222,14 @@ define(['app'], function (app) {
 				'$scope', '$rootScope', '$modalInstance', '$timeout', '_scope',
 				function ($scope, $rootScope, $modalInstance, $timeout, _scope) {
 					var setting = _.result(_scope, 'setting'),
-						boxObj = _.result(_scope, 'boxObj');
+						cleanSetting = _scope.cleanSetting;
+					var timer = null;
 					var closeBox = function () {
+						if (timer){
+							$timeout.cancel(timer);
+						}
+						_.isFunction(cleanSetting) && cleanSetting(setting);
 						$modalInstance.close();
-						boxObj.close(setting);
 					};
 					var getModalStyle = function (icon) {
 						var iconClz, textClz;
@@ -253,7 +257,7 @@ define(['app'], function (app) {
 						$scope.setting.noFn();
 						closeBox();
 					};
-					$timeout(function () {
+					timer = $timeout(function () {
 						closeBox();
 					}, 10000);
 				}
@@ -305,7 +309,10 @@ define(['app'], function (app) {
 						resolve = {
 							_scope : function () {
 								return {
-									boxObj : this,
+									cleanSetting : function (set) {
+										var idx = $rootScope.msgBoxSets.indexOf(set);
+										return $rootScope.msgBoxSets.splice(idx, 1);
+									},
 									setting : curSet
 								}
 							}
