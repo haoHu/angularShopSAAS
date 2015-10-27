@@ -2265,7 +2265,8 @@ define(['app', 'uuid'], function (app, uuid) {
 								paySubjectCode = _.result(el, 'subjectCode'),
 								paySubjectKey = _.result(el, 'subjectKey');
 							var debitAmount = _.result(params, 'debitAmount', 0),
-								subjectCode = _.result(params, 'subjectCode', '');
+								subjectCode = _.result(params, 'subjectCode', ''),
+								payRemark = _.result(params, 'payRemark', '');
 							if (paySubjectCode == subjectCode) {
 								self.OrderPaySubjectHT.register(paySubjectCode, {
 									paySubjectName : paySubjectName,
@@ -2273,7 +2274,7 @@ define(['app', 'uuid'], function (app, uuid) {
 									paySubjectKey : paySubjectKey,
 									debitAmount : debitAmount,
 									giftItemNoLst : '',
-									payRemark : '',
+									payRemark : payRemark,
 									payTransNo : ''
 								});
 							}
