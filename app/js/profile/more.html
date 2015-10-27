@@ -5,6 +5,7 @@
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appModifyPWD($event)">修改密码</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appSetting($event)">站点设置</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appServerInfo($event)">服务器信息</button>
+		<button class="btn btn-default col-xs-4" type="button" ng-click="appChangeShiftInfo($event)">班结信息</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appLogout()">注销</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appExit($event)">退出</button>
 		<button class="btn btn-default col-xs-4" type="button" ng-click="appDebug($event)" ng-if="isDevMode()">调试</button>
@@ -128,9 +129,10 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="col-xs-4 control-label">自助下单验证码</label>
-								<div class="col-xs-8">
+								<label for="" class="col-xs-4 control-label">自助下单安全码</label>
+								<div class="col-xs-8" ng-if="shopInfo.shopBizMode == 0">
 									<p class="form-control-static">{{localServer.ConfirmationCode}}</p>
+									<button class="btn btn-default btn-sm col-xs-4 btn-success" ng-click="RefreshConfirmationCode()">刷新</button>
 								</div>
 							</div>
 							<div class="form-group">
@@ -289,6 +291,285 @@
 			</div>
 		</div>
 	</script>
+	<!-- 班结表 -->
+	<script type="text/ng-template" id="js/profile/changeshift.html">
+		<div class="modal-header">
+			<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">
+				班结表
+			</h4>
+			
+		</div>
+		<div class="modal-body">
+			<div class="col-xs-6 clearfix">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							店铺基本信息
+						</h4>
+					</div>
+					<div class="panel-body">
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">集团名称</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{shopInfo.groupName}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">店铺ID</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{shopInfo.shopID}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">店铺名称</label>
+								<div class="col-xs-8">
+									<p class="form-control-static" >{{shopInfo.shopName + '(' + (shopInfo.IsShopReged == 1 ? '已' : '未') + '注册)'}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">店铺电话</label>
+								<div class="col-xs-8">
+									<p class="form-control-static" >{{shopInfo.shopTel}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">所在城市</label>
+								<div class="col-xs-8">
+									<p class="form-control-static" >{{shopInfo.shopCityName}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">店铺地址</label>
+								<div class="col-xs-8">
+									<p class="form-control-static" >{{shopInfo.shopAddress}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">营业模式</label>
+								<div class="col-xs-8">
+									<p class="form-control-static" >{{shopInfo.shopBizMode == 0 ? '正餐' : '快餐'}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">开通业务</label>
+								<div class="col-xs-8">
+									<p class="form-control-static" >
+										<span class="serv-item" ng-class="{active : chkServiceFeatureIsOpen(el.value)}" ng-repeat="el in ShopServiceFeatures">
+											<span class="glyphicon glyphicon-ok"></span>
+											{{el.label}}
+										</span>
+										{{mapShopServiceFeatures(shopInfo.shopServiceFeatures)}}
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							本地服务器信息
+						</h4>
+					</div>
+					<div class="panel-body">
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">服务器名</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.HttpServerComputerName}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">服务器地址</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{getLocalServerLocation()}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">日期格式</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.HttpServerSysDateTimeFormatStr}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">厨打凭证类型</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.KitchenPrintBillTypeLst}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">账单元整方式</label>
+								<div class="col-xs-8">
+									<!--<p class="form-control-static">{{localServer.moneyWipeZeroType}}</p>-->
+									<p class="form-control-static">{{mapMoneyWipeZeroTypeLabel(localServer.moneyWipeZeroType)}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">自助下单验证码</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.ConfirmationCode}}</p>
+									<button>刷新</button>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">打印机端口名</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.LocalSitePrinterPortName}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">打印机端口类型</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.LocalSitePrinterPortType}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">打印机纸张大小</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.LocalSitePrinterPageSize}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">每行打印字符数</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localServer.LocalSitePrinterLineMaxCharCount}}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-6 clearfix">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							云端服务器信息
+						</h4>
+					</div>
+					<div class="panel-body">
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">云端接口域名</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{cloudServer.apiAPIHost}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">云端服务器状态</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{cloudServer.CloudHostConnecttionStatus == 'ONLINE' ? '在线' : '离线'}}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							本地APP信息
+						</h4>
+					</div>
+					<div class="panel-body">
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">服务端版本号</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localApp.appVersionNo}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">WebAPP版本号</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localApp.WebAppVersionNo}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">安装路径</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localApp.appPath}}</p>
+								</div>
+							</div>
+							<div class="form-group hidden">
+								<label for="" class="col-xs-4 control-label">数据库文件名</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localApp.DBFileName}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">数据库大小</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localApp.DBFileSize}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">调试模式</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localApp.DebugModel == 'ON' ?  "开启" : "关闭"}}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							本地服务器统计信息
+						</h4>
+					</div>
+					<div class="panel-body">
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">厨打程序状态</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localMonitor.KitchenPrintActive == 1 ? '开启' : '关闭'}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">接收远端消息</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{localMonitor.IsRevMsgFormAPIHost == 1 ? '开启' : '关闭'}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">服务器运行时长</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.HttpServerStartTickCount)}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">监控程序运行时长</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.MonitorThreadLastTickCount)}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">消息程序运行时长</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.MsgThreadLastTickCount)}}</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-xs-4 control-label">厨打程序运行时长</label>
+								<div class="col-xs-8">
+									<p class="form-control-static">{{formatTimeInterval(localMonitor.PrintThreadLastTickCount)}}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-default btn-lg" ng-click="close()" >关闭</button>
+				</div>
+			</div>
+		</div>
+	</script>
+	<!-- 密码重置 -->
 	<script type="text/ng-template" id="js/profile/modifypwd.html">
 		<div class="modal-header">
 			<button class="close" type="button" data-dismiss="modal" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>

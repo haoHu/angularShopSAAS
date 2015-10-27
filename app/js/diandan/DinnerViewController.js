@@ -684,9 +684,11 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 				curFoodSendNumber = _.result(curItem, 'foodSendNumber', 0),
 				curSendReason = _.result(curItem, 'sendReason', ''),
 				curFoodCancelNumber = _.result(curItem, 'foodCancelNumber', 0);
+			$scope.curFoodNumber = curFoodNumber;
+			$scope.curFoodCancelNumber = curFoodCancelNumber;
 			$scope.SendFoodReasons = _.result(sendReasonData, 'items', []);
-			$scope.enableSendNumber = curFoodNumber - curFoodCancelNumber;
-			$scope.foodSendNumber = 1;
+			$scope.enableSendNumber = curFoodNumber - curFoodCancelNumber - curFoodSendNumber;
+			$scope.enableSendNumber == 0 ?$scope.foodSendNumber = 0:$scope.foodSendNumber = 1;
 			$scope.sendReason = '';
 			$scope.curFoodName = _.result(curItem, 'foodName', '');
 			// 关闭窗口
@@ -696,7 +698,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 提交并关闭窗口
 			$scope.save = function () {
 				// TODO submit Modify result
-				if (parseInt($scope.foodSendNumber) > parseInt($scope.enableSendNumber) || _.isEmpty($scope.sendReason)) {
+				if ($scope.foodSendNumber == undefined || parseFloat($scope.foodSendNumber)<=0 || _.isEmpty($scope.sendReason)) {
 					AppAlert.add('danger', "请检查赠送数量和原因！");
 					return ;
 				}
@@ -718,6 +720,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 							}
 						});
+					} else if(code == 'CS999'){
+						AppAlert.add('danger', data.msg);
+						return ;
 					}
 				};
 				if (!_.isEmpty(callServer)) {
@@ -758,10 +763,13 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			var curItemKey = _scope.curFocusOrderItemKey,
 				curItem = OrderService.getOrderFoodItemByItemKey(curItemKey),
 				curFoodNumber = _.result(curItem, 'foodNumber', 0),
-				curFoodCancelNumber = _.result(curItem, 'foodCancelNumber', 0);
+				curFoodCancelNumber = _.result(curItem, 'foodCancelNumber', 0),
+				curFoodSendNumber = _.result(curItem,'foodSendNumber', 0);
 			$scope.CancelFoodReasons = _.result(cancelReasonData, 'items', []);
-			$scope.enableCancelNumber = curFoodNumber;
-			$scope.foodCancelNumber = 1;
+			$scope.curFoodSendNumber = curFoodSendNumber;
+			$scope.curFoodNumber = curFoodNumber;
+			$scope.enableCancelNumber = curFoodNumber - curFoodCancelNumber - curFoodSendNumber;
+			$scope.enableCancelNumber == 0 ? $scope.foodCancelNumber = 0 : $scope.foodCancelNumber = 1;
 			$scope.cancelReason = '';
 			$scope.curFoodName = _.result(curItem, 'foodName', '');
 			// 关闭窗口
@@ -771,7 +779,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 			// 提交并关闭窗口
 			$scope.save = function () {
 				// TODO submit Modify result
-				if (parseInt($scope.foodCancelNumber) > parseInt($scope.enableCancelNumber) || _.isEmpty($scope.cancelReason)) {
+				if ($scope.foodCancelNumber == undefined || parseFloat($scope.foodCancelNumber)<=0  || _.isEmpty($scope.cancelReason)) {
 					AppAlert.add('danger', "请检查退菜数量和原因！");
 					return ;
 				}
@@ -793,8 +801,9 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 
 							}
 						});
-					} else {
-
+					} else if(code == 'CS999'){
+						AppAlert.add('danger', data.msg);
+						return ;
 					}
 				};
 				callServer.success(function (data) {

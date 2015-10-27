@@ -211,15 +211,15 @@ define(['app'], function (app) {
         return {
             require : 'ngModel',
             link : function (scope, el, attrs, ctrl) {
-                var min = parseFloat(attrs.min) || null, inclusive = attrs.bvBetween == "true",
-                    max = parseFloat(attrs.max) || null;
+                var min =(attrs.min == 0 ? 0 : parseFloat(attrs.min) || null), inclusive = attrs.bvBetween == "true",
+                    max =(attrs.max == 0 ? 0 : parseFloat(attrs.max) || null);
                 ctrl.$parsers.unshift(function (viewValue) {
                     var v = parseFloat(viewValue), va = false;
-                    if (!min && max) {
+                    if (min == null && max) {
                         va = inclusive ? (v <= max) : (v < max);
-                    } else if (min && !max) {
+                    } else if (min && max == null) {
                         va = inclusive ? (v >= min) : (v > min);
-                    } else if (!min && !max) {
+                    } else if (min == null && max == null) {
                         va = true;
                     } else {
                         va = inclusive ? (v <= max && v >= min) : (v < max && v > min);

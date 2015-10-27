@@ -124,8 +124,11 @@
 						<div class="form-group has-feedback">
 							<label for="" class="col-xs-3 control-label">数量</label>
 							<div class="col-xs-7" ng-class="{'has-success' : send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$valid, 'has-error' : send_food.foodSendNumber.$invalid}">
-								<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" autofocus="true"  bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableSendNumber}}" tabindex="1" />
+								<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" autofocus="true"  bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableSendNumber}}" ng-disabled="enableSendNumber==0" tabindex="1" />
 								<span class="help-block">可以赠送数量：{{enableSendNumber}}</span>
+								<span class="help-block">点单数量：{{curFoodNumber}}</span>
+								<span class="help-block">已退菜数量：{{curFoodCancelNumber}}</span>
+								<span class="help-block">已赠菜数量:{{curFoodNumber - curFoodCancelNumber - enableSendNumber}}</span>
 								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvNotempty">请输入赠送数量</small>
 								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvIsnum">必须是数字</small>
 								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvFloatprecision">精确到小数点后2位</small>
@@ -171,8 +174,11 @@
 						<div class="form-group has-feedback">
 							<label for="" class="col-xs-3 control-label">数量</label>
 							<div class="col-xs-7" ng-class="{'has-success' : cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$valid, 'has-error' : cancel_food.foodCancelNumber.$invalid}">
-								<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" autofocus="true"   bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableCancelNumber}}" tabindex="1" />
+								<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" autofocus="true"   bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableCancelNumber}}" ng-disabled="enableCancelNumber==0" tabindex="1" />
 								<span class="help-block">可以退菜数量：{{enableCancelNumber}}</span>
+								<span class="help-block">点单数量：{{curFoodNumber}}</span>
+								<span class="help-block">已赠菜数量：{{curFoodSendNumber}}</span>
+								<span class="help-block">已退菜数量：{{curFoodNumber - curFoodSendNumber - enableCancelNumber}}</span>
 								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvNotempty">请输入退菜数量</small>
 								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvIsnum">必须是数字</small>
 								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvFloatprecision">精确到小数点后2位</small>

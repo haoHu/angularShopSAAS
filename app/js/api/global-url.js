@@ -73,6 +73,8 @@ define(['IX'], function () {
 		["confirmCloudOrderTakeout", "/saas/order/confirmTakeout.ajax", "", "POST"],
 		// 确认送达
 		["confirmCloudOrderDelivery", "/saas/order/takeoutConfirm.ajax", "", "POST"],
+		// 下单自助安全码更新
+		["refreshConfirmCheckCode", "/base/order/setordercheckcode.ajax", "", "POST"],
 		// 获取门店服务器相关信息
 		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"],
 		// 设置沽清菜品

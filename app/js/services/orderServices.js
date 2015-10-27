@@ -840,6 +840,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				}
 				if (callServer) {
 					callServer.success(function (data) {
+						var foodKey = _.findIndex(data.data.foodLst, {itemKey:itemKey});
+						item.foodSendNumber = data.data.foodLst[foodKey].foodSendNumber;
+						item.sendReason = data.data.foodLst[foodKey].sendReason;
 						publishMsg();
 					});
 				} else {
@@ -874,6 +877,9 @@ define(['app', 'uuid'], function (app, uuid) {
 				}
 				if (callServer) {
 					callServer.success(function (data) {
+						var foodKey = _.findIndex(data.data.foodLst, {itemKey:itemKey});
+						item.foodCancelNumber = data.data.foodLst[foodKey].foodCancelNumber;
+						item.cancelReason = data.data.foodLst[foodKey].cancelReason;
 						publishMsg();
 					});
 				} else {
