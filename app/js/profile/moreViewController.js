@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	app.controller('MoreViewController',[
-		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'AppAlert',
-		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, AppAlert) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'AppAlert', 'AppConfirm',
+		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, AppAlert, AppConfirm) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get('SHOPINFO'),
@@ -138,8 +138,22 @@ define(['app'], function (app) {
 			};
 			// 退出
 			$scope.appExit = function (e) {
-				storage.clearAll();
-				Hualala.DevCom.exeCmd('AppExit');
+				// 确认退出窗口
+				AppConfirm.add({
+					title : "确认退出",
+					msg : '是否确认退出？',
+					yesFn : function () {
+						// 清空本地缓存信息并执行退出指令
+						storage.clearAll();
+						Hualala.DevCom.exeCmd('AppExit');
+					},
+					noFn : function () {
+
+						return;
+					}
+				});
+				// storage.clearAll();
+				// Hualala.DevCom.exeCmd('AppExit');
 			};
 			$scope.isDevMode = function () {
 				return window.HualalaWorkMode == 'dev';

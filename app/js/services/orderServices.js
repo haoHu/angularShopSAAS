@@ -2356,6 +2356,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				var checkoutKeys = 'cardNo,cardKey,cardTransID,discountRate,discountRange,isVipPrice,moneyWipeZeroType,promotionAmount,promotionDesc,invoiceTitle,invoiceAmount,payLst'.split(',');
 				var pdata = _.pick(self, checkoutKeys);
 				pdata = _.extend(pdata, {
+					cardTransAfterRemark : _.isEmpty(pdata.cardTransID) ? "" : _.result(self, 'cardTransAfterRemark'),
 					payLst : payLst
 				});
 				return pdata;
@@ -2402,6 +2403,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				self.cardNo = _.result(params, 'cardNo', '');
 				self.cardKey = _.result(params, 'cardKey', '');
 				self.cardTransPWD = _.result(params, 'cardTransPWD', '');
+				self.customerName = _.result(params, 'customerName', '');
 			};
 
 			/**
@@ -2456,7 +2458,7 @@ define(['app', 'uuid'], function (app, uuid) {
 				consumptionAmount = HCMath.sub(foodAmount, promotionTotal);
 				// 计算消费可积分金额
 				consumptionPointAmount = _.filter(payGrps, function (el) {
-					var pointKeys = 'cashPay,bankCardPay,hualalaPay';
+					var pointKeys = 'cashPay,bankCardPay,hualalaPay,hangingPay'.split(',');
 					var idx = _.indexOf(pointKeys, el.name);
 					return idx > -1;
 				});
@@ -2493,12 +2495,28 @@ define(['app', 'uuid'], function (app, uuid) {
 					exchangeItemIDList : exchangeItemIDList,
 					posOrderNo : posOrderNo
 				};
+				var formatCardTransAfterRemark = function (data) {
+					var transAfterMoneyBalance = _.result(data, 'transAfterMoneyBalance', 0), 
+						transAfterGiveBalance = _.result(data, 'transAfterGiveBalance', 0), 
+						transAfterPointBalance = _.result(data, 'transAfterPointBalance', 0);
+					return "会员姓名:" + (self.customerName || "")
+						+ ";交易后卡上余额:" + HCMath.add(transAfterMoneyBalance, transAfterGiveBalance)
+						+ ";交易后积分余额:" + transAfterPointBalance;
+				};
 				var callServer = CommonCallServer.cardDeductMoney(postParams);
 				callServer.success(function (data) {
 					var code = _.result(data, 'code'),
 						ret = _.result(data, 'data');
 					// 如果扣款成功，会返回交易号 
-					self.cardTransID = code == '000' ? _.result(ret, 'transID', '') : ''; 
+					if (code == '000') {
+						self.cardTransID = _.result(ret, 'transID', ''); 
+						self.cardTransAfterRemark = formatCardTransAfterRemark(ret);
+					} else {
+						self.cardTransID = "";
+						self.cardTransAfterRemark = "";
+					}
+					
+
 					var vipCardMoneyPay = _.find(paySubjects, function (el) {
 							return el.paySubjectCode == '51010609';
 						}),

@@ -2587,6 +2587,8 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 							AppAlert.add('danger', '请使用会员卡消费');
 							return;
 						}
+						// 会员卡姓名
+						var customerName = _.result(scope.vipInfo, 'userName', '');
 						var items = targetPaySubjectGrp.items;
 						var ret = {};
 						_.each(items, function (el) {
@@ -2609,6 +2611,7 @@ define(['app', 'diandan/OrderHeaderSetController'], function (app) {
 						// 更新会员卡支付相关参数
 						OrderPayService.updateVIPCardPayParams({
 							cardKey : _.result(scope.vipInfo, 'cardKey', ''),
+							customerName : customerName,
 							cardNo : _.result(scope.vipInfo, 'mobileIsCardID') == 1 ? _.result(scope.vipInfo, 'userMobile', '') : _.result(scope.vipInfo, 'cardNo', ''),
 							cardTransPWD : scope.cardTransPWD
 						});
