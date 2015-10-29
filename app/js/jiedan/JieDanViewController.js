@@ -326,6 +326,18 @@ define(['app'], function(app) {
 								if (code == '000') {
 									AppAlert.add('success', '下单成功');
 									_orderStatus == 40 && $scope.printAction(_.result(data, 'data'));
+									if (_orderStatus == 40) {
+										CommonCallServer.getOrderByOrderKey({
+											saasOrderKey : _.result(_data, 'saasOrderKey', '')
+										}).success(function (data) {
+											var code = _.result(data, 'code');
+											if (code == '000') {
+												_scope.printAction(_.result(data, 'data'));
+											} else {
+												AppAlert.add('danger', _.result(data, 'msg', ''));
+											}
+										});
+									}
 									$scope.queryOrderLst({
 										pageNo : $scope.curPageNo,
 										pageSize : $scope.pageSize
@@ -727,10 +739,22 @@ define(['app'], function(app) {
 							callServer.success(function (data) {
 								var code = _.result(data, 'code');
 								var _data = _.result(data, 'data'),
-									_orderStatus = _.result(data, 'orderStatus');
+									_orderStatus = _.result(_data, 'orderStatus');
 								if (code == '000') {
 									AppAlert.add('success', '下单成功');
-									_orderStatus == 40 && _scope.printAction(_.result(data, 'data'));
+									// _orderStatus == 40 && _scope.printAction(_data);
+									if (_orderStatus == 40) {
+										CommonCallServer.getOrderByOrderKey({
+											saasOrderKey : _.result(_data, 'saasOrderKey', '')
+										}).success(function (data) {
+											var code = _.result(data, 'code');
+											if (code == '000') {
+												_scope.printAction(_.result(data, 'data'));
+											} else {
+												AppAlert.add('danger', _.result(data, 'msg', ''));
+											}
+										});
+									}
 									_scope.queryOrderLst({
 										pageNo : $scope.curPageNo,
 										pageSize : $scope.pageSize
