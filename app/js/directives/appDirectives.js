@@ -312,7 +312,7 @@ define(['app'], function (app) {
                            var digit = false;
                         }
                     }
-                    var isdigit = viewValue.length == 0 ? true : digit;
+                    var isdigit = (viewValue == undefined ? true : digit);
                     ctrl.$setValidity('bvIsdigit', isdigit);
                     return isdigit ? viewValue : undefined;
                 });

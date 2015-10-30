@@ -553,7 +553,20 @@ define(['app'], function (app) {
 				});
 				return callServer;
 			};
-
+			/**
+			 * 刷新安全码
+			 * @return {[code]} [description]
+			 */
+			this.refreshcodeServer = function () {
+				var callServer = CommonCallServer.refreshConfirmCheckCode();
+				callServer.success(function (data, status, headers, config) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						_LocalServerInfo = _.result(data, 'data', {});
+					}
+				});
+				return callServer;
+			}
 			/**
 			 * 获取店铺配置信息
 			 * @return {[type]} [description]
@@ -599,6 +612,56 @@ define(['app'], function (app) {
 				return _.pick(_LocalServerInfo, baseLocalMonitorKeys.split(','));
 			};
 		}
+	]);
+	
+	// 班结信息服务
+	app.service('ChangeShiftServer',[
+		'$rootScope', '$location', '$filter', 'storage', 'CommonCallServer', 
+		function ($rootScope, $location, $filter, storage, CommonCallServer) {
+			IX.ns("Hualala");
+			var self = this;
+			var changeServerInfo = null,
+				modifyServerInfo = null;
+			/**
+			 * 发送请求
+			 * @return {[type]} [description]
+			 */
+			this.loadChangeShiftInfo = function () {
+				var callServer = CommonCallServer.changeShiftServer({
+					"checkoutBy" : arguments[0],
+					"deviceName" : arguments[1]
+				});
+				callServer.success(function (data, status, headers, config) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						changeServerInfo = _.result(data, 'data', {});
+					}
+				});
+				return callServer;
+			};
+			this.modifyChangeShiftInfo = function (){
+				var callServer = CommonCallServer.modifyChangeShift({
+					"actionType" : arguments[0] ,
+					"shiftKey" : arguments[1],
+					"inSpareCashAmount" : arguments[2],
+					"shiftRemark" : arguments[3]
+				});
+				callServer.success(function (data){
+					var code = _.result(data,'code');
+					if(code == '000') {
+						modifyServerInfo = _.result(data,'data',{});
+					}
+				});
+				return callServer;
+			}
+			this.modifyServerInfoFn = function(){
+				return modifyServerInfo;
+			}
+			this.changeServerInfoFn = function (){
+				return changeServerInfo;
+			}
+
+		}	
 	]);
 
 	// 沽清菜品列表服务
@@ -765,7 +828,61 @@ define(['app'], function (app) {
 
 		}
 	]);
-
+	/**
+	 * 处理报表服务
+	 * @param  {[type]} $rootScope        [description]
+	 * @param  {[type]} $location         [description]
+	 * @param  {[type]} $filter           [description]
+	 * @param  {[type]} storage           [description]
+	 * @param  {[type]} CommonCallServer) {		}	]      [description]
+	 * @return {[type]}                   [description]
+	 */
+	app.service('DisposeFormService',[
+		'$rootScope', '$location', '$filter', 'storage',
+		function ($rootScope, $location, $filter, storage) {
+			var self = this;
+			var matchFontStyle = function (line) {
+				var reg = /^\<(HLLFONT)\-(\d)\-(\d)\-(\d)\>/,
+					m, fontSize, fontBold, fontBG, fontStyle, txt;
+				if (_.isEmpty(line)) return '';
+				m = line.match(reg);
+				if (m && _.isArray(m) && m.length == 5) {
+					fontSize = 'font-' + m[2] + 'x';
+					fontBold = m[3] == '0' ? '' : 'bold';
+					fontBG = m[4] == '0' ? '' : 'highlight';
+					fontStyle = [fontSize, fontBold, fontBG].join(' ');
+				} else {
+					fontStyle = '';
+				}
+				txt = line.replace(reg, '').replace(/\s/g, '&nbsp;');
+				return {
+					txt : txt,
+					fontStyle : fontStyle
+				};
+			};
+			this.parseReceiptInfo = function (txt,print) {
+				var reportPrnTxt = decodeURIComponent(txt);
+				// for test
+				// reportPrnTxt = '<HLLFONT-1-2-0>          哗啦啦体验店铺(测试)\n               消费明细单\n----------------------------------------\n单号:0006  开单时间:17:29\n台牌:16  人数:6  开单:1001|丁木\n----------------------------------------\n项目名称                   数量  金额(元)\n----------------------------------------\n蜗居自制豆腐 / 份           1      28.00\n蜗居秘制风味鱼 / 份         1      58.00\n一品山珍宝 / 份             1      58.00\n小飞生焖鲈鱼 / 份           1      78.00\n油炸花生米 / 份             1       8.00\n凉拌文山小木耳 / 份         1      13.00\n下饭菜 / 份                 2      18.00\n萝卜皮 / 份                 1       8.00\n----------------------------------------\n消费项目合计:                     269.00\n----------------------------------------\n           Key:2015062670006\n      打印时间:2015-06-26 17:31:31\n<HLLFONT-1-2-2>    系统由哗啦啦提供 Tel:4006527557    \n\n\n\n<HLLFONT-1-2-0>          哗啦啦体验店铺(测试)\n               消费明细单\n----------------------------------------\n单号:0006  开单时间:17:29\n台牌:16  人数:6  开单:1001|丁木\n----------------------------------------\n项目名称                   数量  金额(元)\n----------------------------------------\n蜗居自制豆腐 / 份           1      28.00\n蜗居秘制风味鱼 / 份         1      58.00\n一品山珍宝 / 份             1      58.00\n小飞生焖鲈鱼 / 份           1      78.00\n油炸花生米 / 份             1       8.00\n凉拌文山小木耳 / 份         1      13.00\n下饭菜 / 份                 2      18.00\n萝卜皮 / 份                 1       8.00\n----------------------------------------\n消费项目合计:                     269.00\n----------------------------------------\n           Key:2015062670006\n      打印时间:2015-06-26 17:31:31\n<HLLFONT-1-2-2>    系统由哗啦啦提供 Tel:4006527557    \n<HLLFONT-1-2-0>          哗啦啦体验店铺(测试)\n             预结账单(外卖)\n----------------------------------------\n单号:0006  开单时间:17:29\n台牌:16  人数:6  开单:1001|丁木\n----------------------------------------\n项目名称                   数量  金额(元)\n----------------------------------------\n蜗居自制豆腐 / 份           1      28.00\n蜗居秘制风味鱼 / 份         1      58.00\n一品山珍宝 / 份             1      58.00\n小飞生焖鲈鱼 / 份           1      78.00\n油炸花生米 / 份             1       8.00\n凉拌文山小木耳 / 份         1      13.00\n下饭菜 / 份                 2      18.00\n萝卜皮 / 份                 1       8.00\n----------------------------------------\n消费项目合计:                     269.00\n----------------------------------------\n账单减免:                           9.00\n----------------------------------------\n※应收:                           260.00\n----------------------------------------\n           Key:2015062670006\n      打印时间:2015-06-26 17:31:31\n<HLLFONT-1-2-2>    系统由哗啦啦提供 Tel:4006527557    \n\n\n\n<HLLFONT-1-2-0>          哗啦啦体验店铺(测试)\n               消费明细单\n----------------------------------------\n单号:0006  开单时间:17:29\n台牌:16  人数:6  开单:1001|丁木\n----------------------------------------\n项目名称                   数量  金额(元)\n----------------------------------------\n蜗居自制豆腐 / 份           1      28.00\n蜗居秘制风味鱼 / 份         1      58.00\n一品山珍宝 / 份             1      58.00\n小飞生焖鲈鱼 / 份           1      78.00\n油炸花生米 / 份             1       8.00\n凉拌文山小木耳 / 份         1      13.00\n下饭菜 / 份                 2      18.00\n萝卜皮 / 份                 1       8.00\n----------------------------------------\n消费项目合计:                     269.00\n----------------------------------------\n           Key:2015062670006\n      打印时间:2015-06-26 17:31:31\n<HLLFONT-1-2-2>    系统由哗啦啦提供 Tel:4006527557    \n<HLLFONT-1-2-0>          哗啦啦体验店铺(测试)\n             预结账单(外卖)\n----------------------------------------\n单号:0006  开单时间:17:29\n台牌:16  人数:6  开单:1001|丁木\n----------------------------------------\n项目名称                   数量  金额(元)\n----------------------------------------\n蜗居自制豆腐 / 份           1      28.00\n蜗居秘制风味鱼 / 份         1      58.00\n一品山珍宝 / 份             1      58.00\n小飞生焖鲈鱼 / 份           1      78.00\n油炸花生米 / 份             1       8.00\n凉拌文山小木耳 / 份         1      13.00\n下饭菜 / 份                 2      18.00\n萝卜皮 / 份                 1       8.00\n----------------------------------------\n消费项目合计:                     269.00\n----------------------------------------\n账单减免:                           9.00\n----------------------------------------\n※应收:                           260.00\n----------------------------------------\n           Key:2015062670006\n      打印时间:2015-06-26 17:31:31\n<HLLFONT-1-2-2>    系统由哗啦啦提供 Tel:4006527557    \n<HLLFONT-1-2-0>          哗啦啦体验店铺(测试)\n             结账清单(外卖)\n----------------------------------------\n单号:0006  收银:1001|丁木 YJZ:0 FJZ:0\n来源:店内  时间:2015-06-26 17:30:33\n台牌:16  人数:6  站点:\n----------------------------------------\n项目名称                   数量  金额(元)\n----------------------------------------\n蜗居自制豆腐 / 份           1      28.00\n蜗居秘制风味鱼 / 份         1      58.00\n一品山珍宝 / 份             1      58.00\n小飞生焖鲈鱼 / 份           1      78.00\n油炸花生米 / 份             1       8.00\n凉拌文山小木耳 / 份         1      13.00\n下饭菜 / 份                 2      18.00\n萝卜皮 / 份                 1       8.00\n----------------------------------------\n消费项目合计:                     269.00\n----------------------------------------\n账单减免:                           9.00\n----------------------------------------\n※应收:                           260.00\n----------------------------------------\n人民币:                           260.00\n----------------------------------------\n           Key:2015062670006\n      打印时间:2015-06-26 17:31:31\n<HLLFONT-1-2-2>    系统由哗啦啦提供 Tel:4006527557    ';
+				if (_.isEmpty(reportPrnTxt)) return '';
+				var arr = reportPrnTxt.split('\n');
+				if (print != undefined){
+					return arr.join('');
+				}
+				var htm = _.map(arr, function (line) {
+					var t = matchFontStyle(line),
+						s = '';
+					// var fontStyle = matchFontStyle(line);
+					// var reg = /^\<(HLLFONT)\-\d\-\d\-\d\>/,
+					// 	txt = line.replace(reg, '').replace(/\s/g, '&nbsp;');
+					// return '<p class="' + fontStyle + '"><span>' + txt + '</span></p>';
+					s = '<p class="' + _.result(t, 'fontStyle') + '"><span>' + _.result(t, 'txt', '') + '</span></p>';
+					return s;
+				});
+				return htm.join('');
+			};
+		}
+	]);
 	// 判断登录用户是否存在权限
 	app.factory('EMPPermission', [
 		'$rootScope', 'storage',

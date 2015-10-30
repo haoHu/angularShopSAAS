@@ -127,8 +127,8 @@
 								<input type="text" class="form-control" name="foodSendNumber" ng-model="foodSendNumber" ng-focus="inputFocus($event)" autofocus="true"  bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableSendNumber}}" ng-disabled="enableSendNumber==0" tabindex="1" />
 								<span class="help-block">可以赠送数量：{{enableSendNumber}}</span>
 								<span class="help-block">点单数量：{{curFoodNumber}}</span>
-								<span class="help-block">已退菜数量：{{curFoodCancelNumber}}</span>
-								<span class="help-block">已赠菜数量:{{curFoodNumber - curFoodCancelNumber - enableSendNumber}}</span>
+								<span class="help-block" ng-hide="{{curFoodCancelNumber}}==0">已退菜数量：{{curFoodCancelNumber}}</span>
+								<span class="help-block" ng-hide="{{curFoodNumber - curFoodCancelNumber - enableSendNumber}}==0">已赠菜数量:{{curFoodNumber - curFoodCancelNumber - enableSendNumber}}</span>
 								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvNotempty">请输入赠送数量</small>
 								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvIsnum">必须是数字</small>
 								<small class="help-block" ng-show="send_food.foodSendNumber.$dirty && send_food.foodSendNumber.$error.bvFloatprecision">精确到小数点后2位</small>
@@ -141,7 +141,7 @@
 				<div class="col-xs-6">
 					<div class="" >
 						<h4>赠菜原因</h4>
-						<div class="btngrp-box btngrp-3x3" pager-list="loop" pager-data="{{SendFoodReasons}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-4x3" pager-list="loop" pager-data="{{SendFoodReasons}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="SendFoodReasons" radio-name="sendReason" cur-val="{{sendReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onSendReasonChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>
@@ -177,8 +177,8 @@
 								<input type="text" class="form-control" name="foodCancelNumber" ng-model="foodCancelNumber" ng-focus="inputFocus($event)" autofocus="true"   bv-notempty bv-isnum bv-floatprecision="2" bv-between="true" min="0" max="{{enableCancelNumber}}" ng-disabled="enableCancelNumber==0" tabindex="1" />
 								<span class="help-block">可以退菜数量：{{enableCancelNumber}}</span>
 								<span class="help-block">点单数量：{{curFoodNumber}}</span>
-								<span class="help-block">已赠菜数量：{{curFoodSendNumber}}</span>
-								<span class="help-block">已退菜数量：{{curFoodNumber - curFoodSendNumber - enableCancelNumber}}</span>
+								<span class="help-block" ng-hide="{{curFoodSendNumber}}==0">已赠菜数量：{{curFoodSendNumber}}</span>
+								<span class="help-block" ng-hide="{{curFoodNumber - curFoodSendNumber - enableCancelNumber}}==0">已退菜数量：{{curFoodNumber - curFoodSendNumber - enableCancelNumber}}</span>
 								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvNotempty">请输入退菜数量</small>
 								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvIsnum">必须是数字</small>
 								<small class="help-block" ng-show="cancel_food.foodCancelNumber.$dirty && cancel_food.foodCancelNumber.$error.bvFloatprecision">精确到小数点后2位</small>
@@ -192,7 +192,7 @@
 				<div class="col-xs-6">
 					<div class="" >
 						<h4>退菜原因</h4>
-						<div class="btngrp-box btngrp-3x3" pager-list="loop" pager-data="{{CancelFoodReasons}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
+						<div class="btngrp-box btngrp-4x3" pager-list="loop" pager-data="{{CancelFoodReasons}}" page-size="8" item-selector=".btn.btn-radio" btn-selector=".btn-pager" page-num="0">
 							<radiogroup group-opts="CancelFoodReasons" radio-name="cancelReason" cur-val="{{cancelReason}}" class="btn-group" role="group" data-toggle="buttons" on-change="onCancelReasonChange(val)"></radiogroup>
 							<div class="col-xs-2 cell-btn btn btn-default btn-pager" pager-direction="+1"><span>翻页</span></div>
 						</div>

@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	app.controller('MoreViewController',[
-		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'AppAlert', 'AppConfirm',
-		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, AppAlert, AppConfirm) {
+		'$scope', '$rootScope', '$modal', '$location', '$filter', 'storage', 'CommonCallServer', 'AppAlert', 'AppConfirm', 'EMPPermission',
+		function ($scope, $rootScope, $modal, $location, $filter, storage, CommonCallServer, AppAlert, AppConfirm, EMPPermission) {
 			IX.ns("Hualala");
 			var HC = Hualala.Common;
 			var shopInfo = storage.get('SHOPINFO'),
@@ -96,6 +96,42 @@ define(['app'], function (app) {
 					backdrop = 'static',
 					controller = 'LocalServerInfoModalController',
 					templateUrl = 'js/profile/servermodal.html',
+					resolve = {
+						_scope : function () {
+							return $scope;
+						}
+					};
+				$scope.modalIsOpen(true);
+				// $modal.open({
+				// 	size : modalSize,
+				// 	windowClass : windowClass,
+				// 	controller : controller,
+				// 	templateUrl : templateUrl,
+				// 	resolve : resolve,
+				// 	backdrop : backdrop
+				// });
+				Hualala.ModalCom.openModal($rootScope, $modal, {
+                    size : modalSize,
+					windowClass : windowClass,
+					controller : controller,
+					templateUrl : templateUrl,
+					resolve : resolve,
+					backdrop : backdrop
+                });
+			};
+			// 班结表
+			$scope.appChangeShiftInfo = function (e) {
+				if ($scope.modalIsOpen()) return;
+				var hasPermission = EMPPermission.chkPermission('2010050');
+				if (!hasPermission) {
+					AppAlert.add('danger', '没有权限班结!');
+					return;
+				}
+				var modalSize = 'lg',
+					windowClass = 'server-modal ' + webAppPageAnimationIsActive,
+					backdrop = 'static',
+					controller = 'changeShiftModalController',
+					templateUrl = 'js/profile/changeshift.html',
 					resolve = {
 						_scope : function () {
 							return $scope;
@@ -221,6 +257,97 @@ define(['app'], function (app) {
 			$scope.formatTimeInterval = function (timeTick) {
 				if (_.isEmpty(timeTick)) return '';
 				return HC.formatTimeInterval(Math.floor(parseInt(timeTick) / 1000));
+			};
+			$scope.RefreshConfirmationCode = function () {
+				SAASLocalServerInfo.refreshcodeServer()
+				.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						$scope.localServer.ConfirmationCode = data.data.checkCode;
+					} else {
+						AppAlert.add("danger", _.result(data, 'msg', ''));
+					}
+				}).error(function (data) {
+					AppAlert.add("danger", "服务请求失败!")
+				});
+			}
+		}
+	]);
+	
+	app.controller('changeShiftModalController', [
+		'$scope', '$modalInstance', '$sce', '$filter', '$location', '_scope', 'storage', 'ChangeShiftServer', 'AppAlert','DisposeFormService',
+		function ($scope, $modalInstance, $sce, $filter, $location, _scope, storage, ChangeShiftServer, AppAlert, DisposeFormService) {
+			IX.ns("Hualala");
+			var initModalData = function () {
+				var changeShiftInfo = ChangeShiftServer.changeServerInfoFn();
+				$scope.shiftForm = DisposeFormService.parseReceiptInfo(changeShiftInfo.printTxt);
+				$scope.shiftFormPrint = DisposeFormService.parseReceiptInfo(changeShiftInfo.printTxt,print);
+				$scope.shiftNote = changeShiftInfo.shiftRemark;
+				$scope.pettyCash = changeShiftInfo.inSpareCashAmount;
+				$scope.shiftCode = changeShiftInfo.shiftKey;
+			};
+			var modifyModalData = function () {
+				$scope.modifyShiftInfo = ChangeShiftServer.modifyServerInfo;
+			}
+			$scope.save = function(){
+				upAjax("UPDATE");
+			};
+			$scope.print = function(){
+				Hualala.DevCom.exeCmd("PrintOther", $scope.shiftFormPrint);
+			};
+			$scope.submit = function(){
+				upAjax("COMPLETED");
+			};
+			var upAjax = function(type){
+				ChangeShiftServer.modifyChangeShiftInfo(type,$scope.shiftCode,$scope.pettyCash,$scope.shiftNote)
+				.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						initModalData();
+						AppAlert.add("success", "提交成功");
+						if (type == "COMPLETED"){
+							$scope.close();
+						}
+					} else {
+						AppAlert.add("danger", _.result(data, 'msg', ''));
+					}
+				}).error(function (data) {
+					AppAlert.add("danger", "服务请求失败!")
+				});
+			};
+		    var shopInfo = storage.get('SHOPINFO'),
+                empInfo = storage.get('EMPINFO');
+			ChangeShiftServer.loadChangeShiftInfo(empInfo.empName, shopInfo.shopName)
+				.success(function (data) {
+					var code = _.result(data, 'code');
+					if (code == '000') {
+						initModalData();
+					} else {
+						AppAlert.add("danger", _.result(data, 'msg', ''));
+					}
+				}).error(function (data) {
+					AppAlert.add("danger", "服务请求失败!")
+				});
+			// 关闭窗口
+			$scope.close = function () {
+				_scope.modalIsOpen(false);
+				$modalInstance.close();
+			};
+			// 输入框聚焦事件
+            // 告诉软键盘当前操作控件
+            $scope.inputFocus = function ($event) {
+                var curEl = $($event.target);
+                var keyboard = $('.site-numkeyboard');
+                if (!curEl.attr('readonly')) {
+                    $scope.focusInputEl = curEl;
+                } else {
+                    $scope.focusInputEl = null;
+                }
+                return;
+            };
+    		// html解析
+			$scope.parseSnippet = function (v) {
+				return $sce.trustAsHtml(v);
 			};
 		}
 	]);

@@ -582,8 +582,10 @@ define(['app'], function(app)
                             '<ul class="table-viplevel">',
                                 '<li role="presentation" ng-repeat="el in viplevels" name="{{el.cardLevelName}}" levelid="{{el.cardLevelID}}" class="{{el.def}}">',
                                     '<div class="name">{{el.cardLevelName}} {{el.isDefaultLevel == "1" ? "（默认）" : ""}}</div>',
-                                    '<div class="account">会员价 部分{{el.discountRate * 10}}折</div>',
-                                    '<div class="point">消费100元积{{el.pointRate * 100}}分</div>',
+                                    // '<div class="account">会员价 部分{{el.discountRate * 10}}折</div>',
+                                    // '<div class="point">消费100元积{{el.pointRate * 100}}分</div>',
+                                    '<div class="account">会员价 部分{{calcDiscount(el.discountRate)}}折</div>',
+                                    '<div class="point">消费100元积{{calcPoint(el.pointRate)}}分</div>',
                                 '</li>',
                             '</ul>',
                         '</div>',
@@ -804,6 +806,12 @@ define(['app'], function(app)
                             }
                         }
                     });
+                    scope.calcDiscount = function (discountRate) {
+                        return Hualala.Common.Math.multi(discountRate, 10);
+                    };
+                    scope.calcPoint = function (pointRate) {
+                        return Hualala.Common.Math.multi(pointRate, 100);
+                    };
                 }
             };
         }
@@ -1076,7 +1084,7 @@ define(['app'], function(app)
                     '<form name="consume_form" class="tab tab-consume form-horizontal">',
                         '<div class="form-group has-feedback">',
                             '<label class="control-label col-xs-3 col-lg-3">卡号/手机号</label>',
-                            '<div class="col-xs-6 col-lg-6">',
+                            '<div class="col-xs-5 col-lg-6">',
                                 '<div class="input-group">',
                                     '<input type="text" ng-model="cardnumber" class="form-control input-lg cardnumber"  ng-focus="inputFocus($event)" autofocus="true" tabindex="1">',
                                     '<span class="input-group-btn"><button type="button" class="btn btn-default btn-lg btn-query"><span class="glyphicon glyphicon-search"></span></button></span>',
@@ -1085,19 +1093,19 @@ define(['app'], function(app)
                         '</div>',
                         '<div class="form-group">',
                             '<label class="control-label col-xs-3 col-lg-3">本次消费金额</label>',
-                            '<div class="col-xs-3 col-lg-3" ng-class="{\'has-success\' : consume_form.consumeamount.$dirty && consume_form.consumeamount.$valid, \'has-error\' : consume_form.consumeamount.$invalid}">',
+                            '<div class="col-xs-2 col-lg-3" ng-class="{\'has-success\' : consume_form.consumeamount.$dirty && consume_form.consumeamount.$valid, \'has-error\' : consume_form.consumeamount.$invalid}">',
                                 '<input name="consumeamount" type="text" class="form-control input-lg group" ng-model="group.consumeamount" ng-change="calculate(\'consumeamount\')" bv-greaterthan="true" min="0" bv-isdigit  ng-focus="inputFocus($event)" tabindex="2">',
                                 '<small class="help-block" ng-show="consume_form.consumeamount.$dirty && consume_form.consumeamount.$error.bvIsdigit">请输入正确金额</small>',
                                 '<small class="help-block" ng-show="consume_form.consumeamount.$dirty && consume_form.consumeamount.$error.bvGreaterthan">必须大于或等于0</small>',
                             '</div>',
                             '<label class="control-label col-xs-1 col-lg-2 onumber">单号</label>',
-                            '<div class="col-xs-3 col-lg-3" ng-class="">',
+                            '<div class="col-xs-2 col-lg-3" ng-class="">',
                                 '<input style="width: 86px;" type="text" class="form-control input-lg ordernumber" ng-model="ordernumber"  ng-focus="inputFocus($event)" tabindex="3">',
                             '</div>',
                         '</div>',
                         '<div class="form-group">',
                             '<label class="control-label col-xs-3 col-lg-3">代金券抵扣金额</label>',
-                            '<div class="col-xs-6 col-lg-6">',
+                            '<div class="col-xs-5 col-lg-6">',
                                 '<input type="text" disabled class="form-control input-lg group usevoucheramount" ng-model="group.usevoucheramount" ng-change="calculate(\'usevoucheramount\')"  ng-focus="inputFocus($event)" tabindex="4">',
                             '</div>',
                         '</div>',
@@ -1108,7 +1116,7 @@ define(['app'], function(app)
                                 '<small class="help-block" ng-show="consume_form.pointamount.$dirty && consume_form.pointamount.$error.bvBetween">必须在0~{{user.pointaccount || 0}}</small>',
                                 '<small class="help-block" ng-show="consume_form.pointamount.$dirty && consume_form.pointamount.$error.bvIsdigit">请输入正确金额</small>',
                             '</div>',
-                            '<span class="col-xs-3 col-lg-5">积分可抵扣金额: {{user.pointaccount || 0 | mycurrency: "￥"}}</span>',
+                            '<span class="col-xs-2 col-lg-5">积分可抵扣金额: {{user.pointaccount || 0 | mycurrency: "￥"}}</span>',
                         '</div>',
                         '<div class="form-group ca" style="display:none;">',
                             '<label class="control-label col-xs-3 col-lg-3">储值余额付款</label>',
@@ -1117,7 +1125,7 @@ define(['app'], function(app)
                                 '<small class="help-block" ng-show="consume_form.balanceamount.$dirty && consume_form.balanceamount.$error.bvGreaterthan">必须在0~{{user.cashaccount || 0}}</small>',
                                 '<small class="help-block" ng-show="consume_form.balanceamount.$dirty && consume_form.balanceamount.$error.bvIsdigit">请输入正确金额</small>',
                             '</div>',
-                            '<span class="col-xs-3 col-lg-5">可用余额: {{user.cashaccount || 0 | mycurrency: "￥"}}</span>',
+                            '<span class="col-xs-2 col-lg-5">可用余额: {{user.cashaccount || 0 | mycurrency: "￥"}}</span>',
                         '</div>',
                         '<div class="form-group">',
                             '<label class="control-label col-xs-3 col-lg-3">消费可积分金额</label>',
@@ -1141,7 +1149,7 @@ define(['app'], function(app)
                         '</div>',
                         '<div class="form-group">',
                             '<label class="control-label col-xs-3 col-lg-3">备注</label>',
-                            '<div class="col-xs-6 col-lg-6">',
+                            '<div class="col-xs-5 col-lg-6">',
                                 '<input type="text" class="form-control input-lg remark" ng-model="remark"  ng-focus="inputFocus($event)" tabindex="9">',
                             '</div>',
                         '</div>',

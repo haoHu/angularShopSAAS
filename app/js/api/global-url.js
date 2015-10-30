@@ -80,7 +80,11 @@ define(['IX'], function () {
 		// 设置沽清菜品
 		["setSoldOutFoodLst", "/saas/base/setSoldOutFoodLst.ajax", "", "POST"],
 		// 获取本地服务器信息
-		["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"],
+		//["getSaasLocalServerInfo", "/saas/base/getLocalServerInfo.ajax", "", "POST"],
+		// 交班-获取交班数据
+		["changeShiftServer","/saas/order/getShiftReportData.ajax","","POST"],
+		// 交班-修改交班日志或完成交班
+		["modifyChangeShift","/saas/order/saveShiftData.ajax","","POST"],
 		// 账单审核
 		["orderAudit", "/saas/order/review.ajax", "", "POST"],
 		// 更改已结账单发票信息
